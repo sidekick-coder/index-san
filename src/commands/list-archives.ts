@@ -1,6 +1,6 @@
-import { Command } from "../types";
+import { defineCommand } from "@/utils/command";
 
-const command: Command = {
+export default defineCommand({
     name: "list-archives",
     description: "List current archives",
     async execute({ prisma }) {
@@ -8,6 +8,4 @@ const command: Command = {
 
         console.table(archives);
     },
-};
-
-export default command;
+});

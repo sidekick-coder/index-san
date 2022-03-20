@@ -1,24 +1,10 @@
-import glob from "glob";
-import path from "path";
 import { PrismaClient } from "@prisma/client";
-import { Command } from "./types";
+import { findCommand } from "./utils/command";
 
 export async function cli(args: string[]) {
     const name = args[0];
-    const files = glob.sync(path.resolve(__dirname, "commands", "*"));
 
-    const commands = await Promise.all(
-        files.map(async (f) => (await import(f)).default)
-    );
-
-    const command: Command = commands.find(
-        (c) => c.name === name || (!name && c.default)
-    );
-
-    if (!command) {
-        console.log("Command not found");
-        return;
-    }
+    const command = await findCommand(name);
 
     const prisma = new PrismaClient();
 

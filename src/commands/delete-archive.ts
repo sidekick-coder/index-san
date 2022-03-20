@@ -1,6 +1,6 @@
-import { Command } from "../types";
+import { defineCommand } from "@/utils/command";
 
-const command: Command = {
+export default defineCommand({
     name: "delete-archive",
     description: "Delete a archive by id",
     async execute({ prisma, args }) {
@@ -23,6 +23,4 @@ const command: Command = {
 
         console.log("Archive deleted");
     },
-};
-
-export default command;
+});

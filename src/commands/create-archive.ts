@@ -1,6 +1,7 @@
-import { Command } from "../types";
 import fs from "fs";
 import path from "path";
+
+import { defineCommand } from "@/utils/command";
 
 async function folderExist(filename: string) {
     return fs.promises
@@ -9,7 +10,7 @@ async function folderExist(filename: string) {
         .catch(() => false);
 }
 
-const command: Command = {
+export default defineCommand({
     name: "create-archive",
     description: "Create a new archives",
     async execute({ prisma, args }) {
@@ -42,6 +43,4 @@ const command: Command = {
             ["target", archive.target],
         ]);
     },
-};
-
-export default command;
+});
