@@ -4,10 +4,10 @@ export default defineCommand({
     name: "delete-archive",
     description: "Delete a archive by id",
     async execute({ prisma, args }) {
+        const name = args[0];
+
         const archive = await prisma.archive.findFirst({
-            where: {
-                id: Number(args[0]),
-            },
+            where: { name },
         });
 
         if (!archive) {
@@ -16,9 +16,7 @@ export default defineCommand({
         }
 
         await prisma.archive.delete({
-            where: {
-                id: Number(args[0]),
-            },
+            where: { name },
         });
 
         console.log("Archive deleted");

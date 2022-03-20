@@ -5,11 +5,11 @@ export default defineCommand({
     name: "restore-file",
     description: "Move a file from archive target to source",
     async execute({ args, prisma }) {
-        const id = Number(args[0]);
         const filename = args[1];
+        const name = args[0];
 
         const archive = await prisma.archive.findFirst({
-            where: { id },
+            where: { name },
         });
 
         if (!archive) {

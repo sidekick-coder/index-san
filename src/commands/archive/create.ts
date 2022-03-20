@@ -14,8 +14,9 @@ export default defineCommand({
     name: "create-archive",
     description: "Create a new archives",
     async execute({ prisma, args }) {
-        const source = path.resolve(args[0]);
-        const target = path.resolve(args[1]);
+        const name = args[0];
+        const source = path.resolve(args[1]);
+        const target = path.resolve(args[2]);
 
         const sourceExist = await folderExist(source);
         const targetExist = await folderExist(target);
@@ -32,6 +33,7 @@ export default defineCommand({
 
         const archive = await prisma.archive.create({
             data: {
+                name,
                 source: source,
                 target: target,
             },

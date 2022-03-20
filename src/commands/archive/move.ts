@@ -5,11 +5,11 @@ export default defineCommand({
     name: "move-file",
     description: "Move a file from archive source to target",
     async execute({ args, prisma }) {
-        const id = Number(args[0]);
+        const name = args[0];
         const filename = args[1];
 
         const archive = await prisma.archive.findFirst({
-            where: { id },
+            where: { name },
         });
 
         if (!archive) {

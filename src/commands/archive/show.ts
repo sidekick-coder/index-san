@@ -5,11 +5,11 @@ export default defineCommand({
     name: "list-files",
     description: "List files of archive",
     async execute({ prisma, args }) {
-        const id = Number(args[0]);
+        const name = args[0];
         const type = args[1];
 
         const archive = await prisma.archive.findFirst({
-            where: { id },
+            where: { name },
         });
 
         if (!archive) {
