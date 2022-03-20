@@ -1,0 +1,27 @@
+{
+    "name": "index-san",
+    "version": "1.0.0",
+    "description": "Cli to help archive files",
+    "bin": {
+        "index-san": "index.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "cli"
+    ],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/glob": "^7.2.0",
+        "ts-node": "^10.7.0",
+        "typescript": "^4.6.2"
+    },
+    "dependencies": {
+        "glob": "^7.2.0"
+    }
+}
