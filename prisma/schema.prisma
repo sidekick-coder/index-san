@@ -9,3 +9,10 @@ datasource db {
   provider = "sqlite"
   url      = "file:data.db"
 }
+
+model Archive {
+  id        Int      @id @default(autoincrement())
+  source    String
+  target    String
+  createdAt DateTime @default(now())
+}

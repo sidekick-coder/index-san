@@ -1,9 +1,12 @@
-const command = {
+import { Command } from "../types";
+import figlet from "figlet";
+
+const command: Command = {
     name: "welcome",
     description: "Welcome to the index-san",
     default: true,
-    execute() {
-        console.log("Welcome to the index-san!");
+    async execute() {
+        console.log(figlet.textSync("index-san"));
     },
 };
 
