@@ -17,7 +17,8 @@ export default defineCommand({
         }
 
         const directory = new Directory(
-            type === "target" ? archive.target : archive.source
+            type === "target" ? archive.target : archive.source,
+            type === "target" ? "Target" : "Source"
         );
 
         directory.print();
