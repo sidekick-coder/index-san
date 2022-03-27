@@ -34,7 +34,7 @@ export default defineCommand({
         const items = template?.items || [];
 
         const wherePutFile = await prompt.choice("Where to put the file", [
-            "root",
+            "Root",
             ...items.filter((i) => i.isFolder).map((i) => i.name),
         ]);
 
@@ -46,7 +46,7 @@ export default defineCommand({
             throw new Error("Could not create root folder");
         }
 
-        if (wherePutFile === "root") {
+        if (wherePutFile === "Root") {
             await target.move(file, root);
         }
 

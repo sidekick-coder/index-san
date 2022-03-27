@@ -1,11 +1,17 @@
 #!/usr/bin/env node
-const tsConfig = require("./tsconfig.json");
+const path = require("path");
+const tsConfigPath = path.resolve(__dirname, "tsconfig.json");
+const tsConfig = require(tsConfigPath);
 
-require("ts-node").register({});
+require("ts-node").register({
+    cwd: __dirname,
+});
 
 require("tsconfig-paths").register({
-    baseUrl: tsConfig.compilerOptions.baseUrl,
+    baseUrl: path.resolve(__dirname, tsConfig.compilerOptions.baseUrl),
     paths: tsConfig.compilerOptions.paths,
 });
 
-require("./src/index.ts");
+const appPath = path.resolve(__dirname, "src/index.ts");
+
+require(appPath);

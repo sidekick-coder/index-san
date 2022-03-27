@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "prisma/client";
 import { Prompt } from "@poppinss/prompts";
 
 export interface CommandExecArgs {
@@ -26,6 +26,7 @@ export default class Command {
 
     public async execute(args: string[]) {
         const prisma = new PrismaClient();
+
         const prompt = new Prompt();
 
         await this.options
