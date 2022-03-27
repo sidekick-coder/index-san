@@ -9,7 +9,7 @@
         "access": "public"
     },
     "scripts": {
-        "test": "ts-node bin/test.ts"
+        "test": "node -r ts-node/register/transpile-only -r tsconfig-paths/register bin/test.ts"
     },
     "keywords": [
         "cli"

@@ -1,8 +1,6 @@
-import { PrismaClient } from "prisma/client";
 import { Prompt } from "@poppinss/prompts";
 
 export interface CommandExecArgs {
-    prisma: PrismaClient;
     args: string[];
     prompt: Prompt;
 }
@@ -25,16 +23,11 @@ export default class Command {
     }
 
     public async execute(args: string[]) {
-        const prisma = new PrismaClient();
-
         const prompt = new Prompt();
 
-        await this.options
-            .execute({
-                prisma: prisma,
-                args: this.parseArgs(args),
-                prompt,
-            })
-            .finally(() => prisma.$disconnect());
+        await this.options.execute({
+            args: this.parseArgs(args),
+            prompt,
+        });
     }
 }
