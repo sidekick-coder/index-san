@@ -1,20 +1,23 @@
-import Cli from "./cli";
-
-class IndexSan extends Cli {
-    public defaultCommand = "welcome";
-
+import { resolve } from "path";
+import { CommandOptions } from "./composable/command";
+class IndexSan {
     public async run(args: string[]) {
-        let command = await this.find(args);
+        const commands = new Map();
 
-        if (!command && args.length === 0) {
-            command = await this.find([this.defaultCommand]);
+        let [commandName, ...commandArgs] = args || [];
+
+        commands.set("init", resolve(__dirname, "commands/init.ts"));
+        commands.set("welcome", resolve(__dirname, "commands/welcome.ts"));
+
+        if (!commands.has(commandName)) {
+            commandName = "welcome";
         }
 
-        if (!command) {
-            throw new Error("Command not found");
-        }
+        const command: CommandOptions = require(commands.get(
+            commandName
+        )).default;
 
-        await command.execute(args);
+        await command.execute(commandArgs);
     }
 }
 

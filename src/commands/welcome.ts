@@ -1,6 +1,5 @@
 import figlet from "figlet";
-
-import { defineCommand } from "@/utils/command";
+import { defineCommand } from "@/composable/command";
 
 export default defineCommand({
     name: "welcome",
