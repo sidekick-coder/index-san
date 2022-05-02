@@ -1,8 +1,14 @@
-#!/usr/bin/env node
-require("./register");
+const { app, BrowserWindow } = require('electron')
 
-const path = require("path");
+const createWindow = () => {
+    const win = new BrowserWindow({
+      width: 800,
+      height: 600
+    })
+  
+    win.loadFile('src/index.html')
+}
 
-const appPath = path.resolve(__dirname, "src/index.ts");
-
-require(appPath);
+app.whenReady().then(() => {
+    createWindow()
+})
