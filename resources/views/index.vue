@@ -9,5 +9,5 @@ console.log(window)
 
 </script>
 <template>
-    <div>Hello word 15</div>
+    <div>Hello word 22</div>
 </template>
