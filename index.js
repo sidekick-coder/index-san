@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 
-const distFile = path.resolve(__dirname, 'dist', 'index.html')
+const distFile = path.resolve(__dirname, 'public', 'index.html')
 
 const host = process.env.HOST || 'localhost';
 const port = process.env.HOST || 3333;
