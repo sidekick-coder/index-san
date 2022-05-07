@@ -5,12 +5,18 @@ import { useWindowApi  } from '../composables/api'
 
 const api = useWindowApi();
 
-const message = ref('');
+const workspaces = ref([]);
 
-
-api.invoke('app:info').then(info => message.value = info)
+api.invoke('workspace:index').then(data => workspaces.value = data)
 
 </script>
 <template>
-    <div>Hello word {{ message }}</div>
+    <w-layout>
+        <i-left-bar></i-left-bar>
+        
+        <w-content>
+            content
+        </w-content>
+
+    </w-layout>
 </template>
