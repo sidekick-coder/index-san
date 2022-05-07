@@ -11,6 +11,6 @@ export default defineConfig({
         port: Number(process.env.PORT) || 3333,
     },
     build: {
-        outDir: path.resolve(__dirname, 'public')
+        outDir: path.resolve(__dirname, '..', 'public'),
     }
 })
