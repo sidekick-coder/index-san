@@ -34,12 +34,13 @@
         "cross-env": "^7.0.3",
         "electron": "^18.2.0",
         "execa": "^5.1.1",
+        "ts-node": "^10.7.0",
         "tsc-prog": "^2.2.1",
         "typescript": "^4.6.2",
         "vite": "^2.9.6"
     },
     "dependencies": {
-        "@code-pieces/db-json": "^0.0.9",
+        "@code-pieces/db-json": "^0.0.10",
         "lodash": "^4.17.21",
         "vue": "^3.2.33"
     }

@@ -1,6 +1,13 @@
-let count = 0
+import { app } from 'electron';
 export default class AppController {
     public index(){
-        return `Count alala: ${count++}`;
+        return {
+            name: app.getName(),
+            version: app.getVersion(),
+        };
+    }
+
+    public bounds(){
+
     }
 }

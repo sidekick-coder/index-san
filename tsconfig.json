@@ -7,7 +7,8 @@
         "outDir": "dist",
         "strict": true,
         "skipLibCheck": true,
-        "skipDefaultLibCheck": true
+        "skipDefaultLibCheck": true,
+        "strictPropertyInitialization": false,
     },
     "include": [
         "main.ts",

@@ -1,6 +1,7 @@
 import { ipcMain  } from 'electron'
 
-export async function boot(){
+
+export default async () => {
     const AppController = (await import('../app/controllers/AppController')).default
     
     const appController = new AppController()
