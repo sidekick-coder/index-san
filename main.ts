@@ -1,8 +1,8 @@
 import { app, BrowserWindow } from 'electron'
 import { resolve } from 'path'
 import { Builder } from './bin/app-build';
-import { watchApp } from './bin/app-watch'
 import { watch } from './helpers/watch'
+import { boot } from './start/routes'
 
 const isDev = process.env.NODE_ENV === 'development';
 const distFile = resolve(__dirname, 'public', 'index.html')
@@ -24,15 +24,21 @@ export async function createWindow () {
 
 export async function main(){
 
+  await boot();
+
   if (!isDev) {
     return await createWindow();
   }
 
   const builder = new Builder(app.getAppPath());
+  
   let window = await createWindow();
+  
   const files = [
     resolve(app.getAppPath(), 'main.ts'),
+    resolve(app.getAppPath(), 'app'),
     resolve(app.getAppPath(), 'resources'),
+    resolve(app.getAppPath(), 'start'),
   ]
 
   watch(files, async (filename) => {
@@ -44,7 +50,7 @@ export async function main(){
       builder.vue()
     }
     
-    if (filename?.includes('.tsc')) {
+    if (filename?.includes('.ts')) {
       builder.tsc()
     }
 
@@ -55,6 +61,15 @@ export async function main(){
       console.timeEnd('Reload-time')
       return;
     }
+
+    Object.keys(require.cache)
+    .filter(key => /app|config/.test(key))
+    .forEach(key => {
+      console.log('Clearing cache: ', key)
+      delete require.cache[key]
+    })
+
+    await boot();
 
     window.close();
     window = await createWindow();

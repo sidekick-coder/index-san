@@ -1,13 +1,16 @@
 <script setup lang="ts">
-// const { ipcRenderer } = require('electron')
+import { ref } from 'vue'
 
-// ipcRenderer.on('/', (event, arg) => {
-//     console.log(arg)
-// })
+import { useWindowApi  } from '../composables/api'
 
-console.log(window)
+const api = useWindowApi();
+
+const message = ref('');
+
+
+api.invoke('app:info').then(info => message.value = info)
 
 </script>
 <template>
-    <div>Hello word 22</div>
+    <div>Hello word {{ message }}</div>
 </template>
