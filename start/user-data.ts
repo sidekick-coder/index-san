@@ -5,6 +5,7 @@ import { app } from 'electron'
 export default async () => {
     const files = [
         'options.json',
+        'workspaces.json',
     ]
 
     await Promise.all(files.map(async file => {

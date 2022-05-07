@@ -10,6 +10,7 @@ module.exports = {
       resolve(__dirname, 'components/**/*.vue'),
       resolve(__dirname, 'views/**/*.vue'),
       resolve(__dirname, 'styles/*.css'),
+      resolve(__dirname, '..', 'node_modules', 'vue-wind', 'safe-list.txt'),
     ],
     transform: {
       vue: (content) => {

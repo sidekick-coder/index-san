@@ -12,10 +12,10 @@ api.invoke('workspace:index').then(data => workspaces.value = data)
 </script>
 <template>
     <w-layout>
-        <i-left-bar></i-left-bar>
+        <i-left-bar />
         
         <w-content>
-            content
+            <i-item-view  />
         </w-content>
 
     </w-layout>

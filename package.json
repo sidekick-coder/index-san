@@ -45,6 +45,7 @@
     "dependencies": {
         "@code-pieces/db-json": "^0.0.10",
         "lodash": "^4.17.21",
+        "pinia": "^2.0.14",
         "vue": "^3.2.33",
         "vue-wind": "^0.0.17-next"
     }
