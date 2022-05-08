@@ -1,27 +1,51 @@
 import { ipcMain  } from 'electron'
+import { EventContext } from '../contracts/event-context'
 
+class Router {
+    public controllers = new Map();
 
-export default async () => {
-    const AppController = (await import('../app/controllers/AppController')).default
-    const WorkspaceController = (await import('../app/controllers/WorkspaceController')).default
-    
-    const app = new AppController()
-    const workspace = new WorkspaceController()
+    public findController(name: string) {
+        if (this.controllers.has(name)) {
+            return this.controllers.get(name);
+        }
 
-    const routes = {
-        'app:info': app.index,
-        'workspace:index': workspace.index,
-        'workspace:store': workspace.store,
-        'workspace:destroy': workspace.destroy,
+        const Module = require(`../app/controllers/${name}`).default;
 
+        this.controllers.set(name, new Module());
+
+        return this.controllers.get(name);
     }
 
-    Object.entries(routes).forEach(([key, handler]) => {
+    public register(path: string, handler: string) {
+        const [controllerName, method] = handler.split('.');
 
-        ipcMain.removeHandler(key)
-        ipcMain.handle(key, (_, ...args: any) => (handler as any)(...args))
-    })
+        const controller = this.findController(controllerName);
+
+        ipcMain.removeHandler(path);
+
+        ipcMain.handle(path, (_, args) => {
+            if (!controller[method]) {
+                throw new Error(`Handler ${handler} not found`);
+            }
+
+            const context: EventContext = {
+                data: args,
+            }
+
+            return controller[method](context);
+        })
+    }
+}
+
+export default async () => {
+    const router = new Router();
+
+    router.register('app:info', 'AppController.index');
+
+    router.register('workspace:index', 'WorkspaceController.index');
+    router.register('workspace:store', 'WorkspaceController.store');
+    router.register('workspace:destroy', 'WorkspaceController.destroy');
     
-
+    router.register('item:show', 'ItemsController.show');
 }
 

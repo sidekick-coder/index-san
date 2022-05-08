@@ -1,6 +1,7 @@
 import Workspace from "../models/Workspace";
+import { EventContext } from '../../contracts/event-context'
 
-import {dialog } from 'electron'
+import { dialog } from 'electron'
 
 export default class WorkspaceController {
     public async index(){
@@ -17,8 +18,10 @@ export default class WorkspaceController {
         return true
     }
 
-    public async destroy(path: string){
-        console.log(path)
+    public async destroy({ data }: EventContext){
+        
+        const path = data.path;
+
         const workspace = await Workspace.find(path);
 
         if (!workspace) {
