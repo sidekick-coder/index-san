@@ -15,5 +15,6 @@
         "main.ts",
         "app/**/*.ts",
         "config/**/*.ts",
+        "helpers/**/*.ts",
     ]
 }

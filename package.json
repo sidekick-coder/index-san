@@ -11,10 +11,9 @@
     "scripts": {
         "start": "electron .",
         "dev": "cross-env NODE_ENV=development electron .",
+        "build": "ts-node --transpile-only bin/app-build.ts",
         "test": "node -r ./register bin/test.ts",
-        "build": "node -r ts-node/register bin/app-build.ts",
         "lint": "eslint . --ext=.ts,.vue --max-warnings=0",
-        "vue:build": "vite build resources",
         "postinstall": "npm run build"
     },
     "keywords": [
@@ -48,7 +47,6 @@
         "prettier": "2.6.2",
         "tailwindcss": "^3.0.24",
         "ts-node": "^10.7.0",
-        "tsc-prog": "^2.2.1",
         "typescript": "^4.6.2",
         "vite": "^2.9.6"
     },

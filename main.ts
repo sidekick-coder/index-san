@@ -4,7 +4,7 @@ import { resolve } from 'path'
 
 import Option from './app/models/Option'
 import { Builder } from './bin/app-build'
-import { watch } from './helpers/watch'
+import { watch, colorize, createTimer } from './helpers'
 
 const isDev = process.env.NODE_ENV === 'development'
 const distFile = resolve(__dirname, 'public', 'index.html')
@@ -68,44 +68,44 @@ export async function main() {
   let window = await createWindow()
 
   async function reload(filename: string) {
-    console.log('File changed: ', filename)
-    console.log('\x1b[33m', 'Reloading...', '\x1b[0m')
-    console.time('Reload-time')
+    console.log(colorize(`watcher: file changed: ${filename} `, 'gray'))
+    console.log(colorize('watcher: rebuilding...', 'gray'))
 
-    if (filename?.includes('resources')) {
-      builder.vue()
+    const timer = createTimer()
+    const isResource = filename.includes('resources')
+
+    if (isResource) {
+      await builder.vue()
     }
 
-    if (filename?.includes('.ts')) {
-      builder.tsc()
+    if (!isResource) {
+      await builder.tsc()
+      Object.keys(require.cache)
+        .filter((key) => /app|config/.test(key))
+        .forEach((key) => {
+          delete require.cache[key]
+        })
     }
 
     builder.postBuild()
 
-    if (filename?.includes('resources')) {
+    if (isResource) {
       window.webContents.reload()
-      console.timeEnd('Reload-time')
-      return
     }
 
-    Object.keys(require.cache)
-      .filter((key) => /app|config/.test(key))
-      .forEach((key) => {
-        console.log('Clearing cache: ', key)
-        delete require.cache[key]
-      })
+    if (!isResource) {
+      await boot()
 
-    await boot()
+      window.close()
+      window = await createWindow()
+    }
 
-    window.close()
-    window = await createWindow()
-
-    console.timeEnd('Reload-time')
+    console.log(colorize(`watcher: reload time ${timer.get()}ms `, 'gray'))
   }
 
-  watch(app.getAppPath(), reload, { ignore: ['dist', 'node_modules', '.git'] })
+  watch(app.getAppPath(), reload, { ignore: ['dist', 'node_modules', 'public', '.git'] })
 
-  console.log('Watching...')
+  console.log(colorize('watcher: watching for changes...', 'gray'))
 }
 
 app.whenReady().then(main).catch(console.error)
