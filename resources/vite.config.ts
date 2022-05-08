@@ -5,6 +5,9 @@ import path from 'path'
 export default defineConfig({
   plugins: [vue()],
   base: process.env.NODE_ENV === 'development' ? '/' : './',
+  resolve: {
+    alias: [{ find: '@', replacement: path.resolve(__dirname) }],
+  },
   server: {
     open: false, // do not open the browser as we use electron
     port: Number(process.env.PORT) || 3333,

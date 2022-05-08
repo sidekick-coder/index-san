@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { useWindowApi } from '../composables/api'
+import { useWindowApi } from '@/composables/api'
 
 const api = useWindowApi()
 

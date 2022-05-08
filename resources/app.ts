@@ -1,15 +1,16 @@
 import { createApp } from 'vue'
-import App from './views/index.vue'
-import gc from './plugins/gc'
-import pinia from './plugins/pinia'
-import vWind from './plugins/vue-wind'
+import { orderBy } from 'lodash'
 
 import './styles/index.css'
 
+import App from './app.vue'
+
 const app = createApp(App)
 
-gc({ app })
-vWind({ app })
-pinia({ app })
+const plugins = import.meta.globEager('./plugins/*.ts')
+
+orderBy(Object.values(plugins), 'priority')
+  .map((p) => p.default)
+  .forEach((plugin) => plugin({ app }))
 
 app.mount('#app')

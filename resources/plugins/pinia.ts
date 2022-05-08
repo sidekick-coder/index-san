@@ -1,5 +1,8 @@
+import { definePlugin } from '@/composables/define-plugin'
 import { createPinia } from 'pinia'
 
-export default ({ app }) => {
+export const priority = 1
+
+export default definePlugin(({ app }) => {
   app.use(createPinia())
-}
+})

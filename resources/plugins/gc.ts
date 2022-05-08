@@ -1,7 +1,7 @@
+import { definePlugin } from '@/composables/define-plugin'
 import { upperFirst, camelCase } from 'lodash'
-import { App } from 'vue'
 
-export default ({ app }: { app: App }) => {
+export default definePlugin(({ app }) => {
   const files = import.meta.globEager('../components/*.vue')
 
   Object.entries(files).forEach(([filename, component]) => {
@@ -9,4 +9,4 @@ export default ({ app }: { app: App }) => {
 
     app.component(name, component.default || component)
   })
-}
+})
