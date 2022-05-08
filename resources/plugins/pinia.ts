@@ -1,6 +1,5 @@
 import { createPinia } from 'pinia'
 
-
 export default ({ app }) => {
-    app.use(createPinia())
+  app.use(createPinia())
 }

@@ -1,42 +1,40 @@
-import { Query } from '@code-pieces/db-json';
+import { Query } from '@code-pieces/db-json'
 import { app } from 'electron'
 import { resolve } from 'path'
 import { isJSON } from '../../helpers/is-json'
 
-const filename = resolve( app.getPath('userData'), 'options.json' );
+const filename = resolve(app.getPath('userData'), 'options.json')
 
 export default class Option<T = string> {
-    public name: string;
-    public value: T;
+  public name: string
+  public value: T
 
-    public static async find<T = string>(name: string){
-        const item = await Query.from(filename).findBy('name', name);
+  public static async find<T = string>(name: string) {
+    const item = await Query.from(filename).findBy('name', name)
 
-        if (!item) return null;
+    if (!item) return null
 
-        const option = new Option<T>();
-        
-        
-        if (isJSON(item.value)) {
-            item.value = JSON.parse(item.value);
-        }
+    const option = new Option<T>()
 
-        option.name = item.name;
-        option.value = item.value;
-
-        return option
-        
+    if (isJSON(item.value)) {
+      item.value = JSON.parse(item.value)
     }
 
-    public static async updateOrCreate(name: string, value: string){
-        const option = await Option.find(name);
+    option.name = item.name
+    option.value = item.value
 
-        const query = Query.from(filename);
+    return option
+  }
 
-        if (option) {
-            return query.where('name', name).update({ value });
-        }
+  public static async updateOrCreate(name: string, value: string) {
+    const option = await Option.find(name)
 
-        return query.insert({ name, value });
+    const query = Query.from(filename)
+
+    if (option) {
+      return query.where('name', name).update({ value })
     }
+
+    return query.insert({ name, value })
+  }
 }

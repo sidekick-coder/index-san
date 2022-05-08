@@ -4,6 +4,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "esModuleInterop": true,
+        "incremental": true,
         "outDir": "dist",
         "strict": true,
         "skipLibCheck": true,

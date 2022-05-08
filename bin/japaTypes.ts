@@ -6,7 +6,7 @@ declare module '@japa/runner' {
     expect: Expect
   }
 
-  interface Test<TestData> {
-    // notify TypeScript about custom test properties
-  }
+  // interface Test<TestData> {
+  // notify TypeScript about custom test properties
+  // }
 }

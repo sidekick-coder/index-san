@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { useWindowApi  } from '../composables/api'
+import { useWindowApi } from '../composables/api'
 
-const api = useWindowApi();
+const api = useWindowApi()
 
-const workspaces = ref([]);
+const workspaces = ref([])
 
-api.invoke('workspace:index').then(data => workspaces.value = data)
-
+api.invoke('workspace:index').then((data) => (workspaces.value = data))
 </script>
 <template>
-    <w-layout>
-        <i-left-bar />
-        
-        <w-content>
-            <i-item-view  />
-        </w-content>
+  <w-layout>
+    <i-left-bar />
 
-    </w-layout>
+    <w-content>
+      <i-item-view />
+    </w-content>
+  </w-layout>
 </template>

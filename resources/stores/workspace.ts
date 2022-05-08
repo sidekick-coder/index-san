@@ -7,12 +7,12 @@ export interface Workspace {
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => {
     return {
-      current: null as Workspace | null
+      current: null as Workspace | null,
     }
   },
   actions: {
-    setCurrent (payload: Workspace) {
+    setCurrent(payload: Workspace) {
       this.current = payload
-    }
-  }
+    },
+  },
 })

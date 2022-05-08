@@ -13,4 +13,3 @@ vWind({ app })
 pinia({ app })
 
 app.mount('#app')
-
