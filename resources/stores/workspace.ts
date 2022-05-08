@@ -1,25 +1,20 @@
 import { defineStore } from 'pinia'
 
 export interface Workspace {
+  name: string
   path: string
-}
-
-function lastWorkspace() {
-  const last = localStorage.getItem('workspace:last')
-
-  return last ? JSON.parse(last) : null
 }
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => {
     return {
-      current: lastWorkspace() as Workspace | null,
+      current: localStorage.getItem('workspace:last'),
     }
   },
   actions: {
-    setCurrent(payload: Workspace) {
+    setCurrent(payload: string) {
       this.current = payload
-      localStorage.setItem('workspace:last', JSON.stringify(payload))
+      localStorage.setItem('workspace:last', payload)
     },
   },
 })

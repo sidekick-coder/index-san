@@ -47,4 +47,7 @@ export default async () => {
   router.register('workspace:destroy', 'WorkspaceController.destroy')
 
   router.register('item:show', 'ItemsController.show')
+
+  router.register('file:metadata', 'FilesController.metadata')
+  router.register('file:list-folder', 'FilesController.listFolder')
 }
