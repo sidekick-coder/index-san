@@ -70,12 +70,12 @@ export async function main(){
     resolve(app.getAppPath(), 'start'),
   ]
 
-  watch(files, async (filename) => {
+  async function reload(filename: string){
     console.log('File changed: ', filename)
     console.log("\x1b[33m", 'Reloading...', '\x1b[0m')
     console.time('Reload-time')
 
-    if (filename?.includes('.vue')) {
+    if (filename?.includes('resources')) {
       builder.vue()
     }
     
@@ -85,7 +85,7 @@ export async function main(){
 
     builder.postBuild()
 
-    if (filename?.includes('.vue')) {
+    if (filename?.includes('resources')) {
       window.webContents.reload();
       console.timeEnd('Reload-time')
       return;
@@ -104,7 +104,9 @@ export async function main(){
     window = await createWindow();
 
     console.timeEnd('Reload-time')
-  })
+  }
+
+  watch(app.getAppPath(), reload, { ignore: ['dist', 'node_modules', '.git'] })
   
   console.log('Watching...')
 
