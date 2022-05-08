@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import {useItemStore } from '../stores/item'
+import { ref } from 'vue'
+import { useWorkspaceStore } from '../stores/workspace'
+import { useWindowApi } from '../composables/api'
 
-const store = useItemStore();
+const store = useWorkspaceStore();
+const api = useWindowApi();
 
+const item = ref(null)
 
 </script>
 <template>

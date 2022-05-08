@@ -1,39 +1,38 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useWindowApi } from '../composables/api'
-import { useItemStore, Item } from '../stores/item'
+import { useWorkspaceStore, Workspace } from '../stores/workspace'
 
-const api = useWindowApi();
-const store = useItemStore();
+const api = useWindowApi()
+const store = useWorkspaceStore()
 
-const workspaces = ref([]);
+const workspaces = ref([])
 
-async function setWorkspaces(){
-    const data = await api.invoke('workspace:index')
+async function setWorkspaces () {
+  const data = await api.invoke('workspace:index')
 
-    console.log(data)
-
-    workspaces.value = data
+  workspaces.value = data
 }
 
-async function setCurrent(item: Item){
-    await store.setCurrent(item)
+function setCurrent (item: Workspace) {
+  store.setCurrent(item)
 }
 
-async function addItem(){
-    await api.invoke('workspace:store')
+async function addItem () {
+  await api.invoke('workspace:store')
 
-    await setWorkspaces()
+  await setWorkspaces()
 }
 
-async function deleteWorkspace(path: string){
-    await api.invoke('workspace:destroy', path)
+async function deleteWorkspace (path: string) {
+  await api.invoke('workspace:destroy', {
+    path
+  })
 
-    await setWorkspaces()
+  await setWorkspaces()
 }
 
-
-setWorkspaces();
+setWorkspaces()
 
 </script>
 
@@ -49,13 +48,14 @@ setWorkspaces();
 
     <div
         v-for="workspace in workspaces"
+        :key="workspace.path"
         class="left-bar-item cursor-pointer"
         @click="setCurrent(workspace)"
     >
         <div class="w-8/12">
             {{ workspace.name }}
         </div>
-        
+
         <w-btn
             class="w-4/12 action"
             text-size="xs"
@@ -66,7 +66,7 @@ setWorkspaces();
         </w-btn>
 
     </div>
-    
+
     <div class="left-bar-item cursor-pointer" @click="addItem">
         + Add new
     </div>
