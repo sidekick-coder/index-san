@@ -1,4 +1,4 @@
-import { readdir, stat } from 'fs/promises'
+import { readdir, readFile, stat, writeFile } from 'fs/promises'
 import { basename, extname, resolve } from 'path'
 import { EventContext } from '../../contracts/event-context'
 
@@ -15,6 +15,40 @@ export default class FilesController {
       extension: extname(path),
       isDirectory: stats.isDirectory(),
     }
+  }
+
+  public async read({ data }: EventContext) {
+    const { path } = data
+
+    const exists = await stat(path)
+      .then((d) => d.isFile())
+      .catch(() => false)
+
+    if (!exists) {
+      return {
+        status: 404,
+        message: 'File not found',
+      }
+    }
+
+    return readFile(path, 'utf8')
+  }
+
+  public async write({ data }: EventContext) {
+    const { path, content } = data
+
+    const exists = await stat(path)
+      .then((d) => d.isFile())
+      .catch(() => false)
+
+    if (!exists) {
+      return {
+        status: 404,
+        message: 'File not found',
+      }
+    }
+
+    return writeFile(path, content, 'utf8')
   }
 
   public async listFolder({ data }: EventContext) {

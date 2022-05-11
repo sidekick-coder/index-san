@@ -25,7 +25,8 @@ class Router {
 
     ipcMain.handle(path, (_, args) => {
       if (!controller[method]) {
-        throw new Error(`Handler ${handler} not found`)
+        console.error(`Handler ${handler} not found`)
+        return
       }
 
       const context: EventContext = {
@@ -50,4 +51,6 @@ export default async () => {
 
   router.register('file:metadata', 'FilesController.metadata')
   router.register('file:list-folder', 'FilesController.listFolder')
+  router.register('file:read', 'FilesController.read')
+  router.register('file:write', 'FilesController.write')
 }

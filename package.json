@@ -33,6 +33,7 @@
         "@vitejs/plugin-vue": "^2.3.2",
         "autoprefixer": "^10.4.7",
         "cross-env": "^7.0.3",
+        "editorjs-drag-drop": "^1.1.0",
         "electron": "^18.2.0",
         "eslint": "^8.15.0",
         "eslint-config-prettier": "^8.5.0",
@@ -52,6 +53,7 @@
     },
     "dependencies": {
         "@code-pieces/db-json": "^0.0.10",
+        "@editorjs/editorjs": "^2.24.3",
         "lodash": "^4.17.21",
         "pinia": "^2.0.14",
         "vue": "^3.2.33",

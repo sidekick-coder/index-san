@@ -40,7 +40,13 @@ const views = [
     component: defineAsyncComponent(() => import('@/views/folder.vue')),
     test: (item: Item) => item.isDirectory,
   },
+  {
+    name: 'editor',
+    component: defineAsyncComponent(() => import('@/views/editor.vue')),
+    test: (item: Item) => /md/.test(item.extension),
+  },
 ]
+
 const view = ref(defaultView)
 
 function setView() {
@@ -58,7 +64,7 @@ watch(() => item.value, setView, {
 })
 </script>
 <template>
-  <div class="p-10 h-full w-full relative">
+  <div class="pt-10 px-16 h-full w-full relative">
     <div v-if="!item">No items selected</div>
 
     <component :is="view.component" v-else-if="!loading" :path="store.current" />
