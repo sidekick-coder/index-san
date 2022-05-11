@@ -37,4 +37,10 @@ export default class Option<T = string> {
 
     return query.insert({ name, value })
   }
+
+  public static async get<T = any>(name: string, defaultValue?: T) {
+    const option = await this.find(name)
+
+    return (option ? option.value : defaultValue) as T
+  }
 }

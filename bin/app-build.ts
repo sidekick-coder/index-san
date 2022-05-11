@@ -1,4 +1,4 @@
-import { cpSync, rmSync } from 'fs'
+import { cp, rm } from 'fs/promises'
 import { resolve } from 'path'
 import execa from 'execa'
 import { colorize, createTimer } from '../helpers'
@@ -41,10 +41,10 @@ export class Builder {
     console.log(colorize(`tsc: build-time ${timer.get()}ms`, 'blue'))
   }
 
-  postBuild() {
-    rmSync(resolve(this.paths.dist, 'public'), { recursive: true })
+  async postBuild() {
+    await rm(resolve(this.paths.dist, 'public'), { recursive: true })
 
-    return cpSync(this.paths.public, resolve(this.paths.dist, 'public'), {
+    await cp(this.paths.public, resolve(this.paths.dist, 'public'), {
       recursive: true,
     })
   }
