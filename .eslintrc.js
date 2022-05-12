@@ -24,12 +24,11 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    'quotes': 'off',
+    'indent': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'vue/multi-word-component-names': 'off',
-    'quotes': 'off',
     '@typescript-eslint/quotes': ['error', 'single'],
-    'indent': 'off',
     '@typescript-eslint/indent': [
       'error',
       2,
@@ -39,5 +38,8 @@ module.exports = {
         ignoredNodes: ['TSTypeParameterInstantiation'],
       },
     ],
+    // vue
+    'vue/multi-word-component-names': 'off',
+    'vue/no-multiple-template-root': 'off',
   },
 }
