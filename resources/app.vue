@@ -11,10 +11,10 @@ api.invoke('workspace:index').then((data) => (workspaces.value = data))
 </script>
 <template>
   <w-layout>
-    <i-left-bar />
+    <is-left-bar />
 
     <w-content>
-      <i-item-view />
+      <is-view-controller />
     </w-content>
   </w-layout>
 </template>

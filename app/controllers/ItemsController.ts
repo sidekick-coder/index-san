@@ -1,9 +1,9 @@
 import { readdir, stat } from 'fs/promises'
 import { basename, resolve } from 'path'
-import { EventContext } from '../../contracts/event-context'
+import { ISEventContext } from '../../lib/ISEventContext'
 
 export default class ItemsController {
-  public async show({ data }: EventContext) {
+  public async show({ data }: ISEventContext) {
     const { path } = data
 
     const isDir = await stat(path)

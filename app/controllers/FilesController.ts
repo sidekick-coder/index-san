@@ -1,9 +1,9 @@
 import { readdir, readFile, stat, writeFile } from 'fs/promises'
 import { basename, extname, resolve } from 'path'
-import { EventContext } from '../../contracts/event-context'
+import { ISEventContext } from '../../lib/ISEventContext'
 
 export default class FilesController {
-  public async metadata({ data }: EventContext) {
+  public async metadata({ data }: ISEventContext) {
     const { path } = data
 
     const stats = await stat(path)
@@ -17,7 +17,7 @@ export default class FilesController {
     }
   }
 
-  public async read({ data }: EventContext) {
+  public async read({ data }: ISEventContext) {
     const { path } = data
 
     const exists = await stat(path)
@@ -34,7 +34,7 @@ export default class FilesController {
     return readFile(path, 'utf8')
   }
 
-  public async write({ data }: EventContext) {
+  public async write({ data }: ISEventContext) {
     const { path, content } = data
 
     const exists = await stat(path)
@@ -51,7 +51,7 @@ export default class FilesController {
     return writeFile(path, content, 'utf8')
   }
 
-  public async listFolder({ data }: EventContext) {
+  public async listFolder({ data }: ISEventContext) {
     const { path } = data
 
     const exists = await stat(path)

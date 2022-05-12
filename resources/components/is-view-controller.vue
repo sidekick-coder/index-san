@@ -47,7 +47,7 @@ const views = [
   },
 ]
 
-const view = ref(defaultView)
+const view = ref<any>(defaultView)
 
 function setView() {
   loading.value = true
@@ -56,7 +56,7 @@ function setView() {
 
   view.value = search || defaultView
 
-  setTimeout(() => (loading.value = false), 800)
+  setTimeout(() => (loading.value = false), 500)
 }
 
 watch(() => item.value, setView, {

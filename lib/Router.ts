@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { EventContext } from '../contracts/event-context'
+import { ISEventContext } from './ISEventContext'
 
 export default class Router {
   public controllers = new Map()
@@ -29,7 +29,7 @@ export default class Router {
         return
       }
 
-      const context: EventContext = {
+      const context: ISEventContext = {
         data: args,
       }
 
