@@ -1,34 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useWindowApi } from '../composables/api'
-import { useWorkspaceStore, Workspace } from '../stores/workspace'
+import { useWorkspaceStore } from '../stores/workspace'
 
 const api = useWindowApi()
 const store = useWorkspaceStore()
 
-const workspaces = ref<Workspace[]>([])
-
-async function setWorkspaces() {
-  const data = await api.invoke('workspace:index')
-
-  workspaces.value = data
-}
-
-async function addItem() {
+async function addWorkspace() {
   await api.invoke('workspace:store')
 
-  await setWorkspaces()
+  await store.setWorkspaces()
 }
 
-async function deleteWorkspace(path: string) {
-  await api.invoke('workspace:destroy', {
-    path,
-  })
-
-  await setWorkspaces()
-}
-
-setWorkspaces()
+store.setWorkspaces()
 </script>
 
 <template>
@@ -37,42 +20,22 @@ setWorkspaces()
       <h1 class="text-2xl font-bold">Index-san</h1>
     </div>
 
-    <div v-if="!workspaces.length" class="left-bar-item">No items</div>
+    <div v-if="!store.workspaces.length" class="left-bar-item">No items</div>
+
+    <is-left-bar-item
+      v-for="workspace in store.workspaces"
+      :key="workspace.path"
+      :label="workspace.name"
+      :path="workspace.path"
+      :is-workspace="true"
+    />
 
     <div
-      v-for="workspace in workspaces"
-      :key="workspace.path"
-      class="left-bar-item cursor-pointer"
-      @click="store.setCurrent(workspace.path)"
+      class="left-bar-item justify-self-end mt-auto cursor-pointer flex justify-between border-t hover:bg-gray-200"
+      @click="addWorkspace"
     >
-      <div class="w-8/12">
-        {{ workspace.name }}
-      </div>
-
-      <w-btn
-        class="w-4/12 action"
-        text-size="xs"
-        color="gray-100"
-        @click.stop="deleteWorkspace(workspace.path)"
-      >
-        Delete
-      </w-btn>
+      Add workspace
+      <fa-icon icon="plus" />
     </div>
-
-    <div class="left-bar-item cursor-pointer" @click="addItem">+ Add new</div>
   </w-drawer>
 </template>
-
-<style>
-.left-bar-item {
-  @apply px-4 font-bold h-[50px] flex items-center transition-all hover:bg-gray-100;
-}
-
-.left-bar-item .action {
-  @apply opacity-0;
-}
-
-.left-bar-item:hover .action {
-  @apply opacity-100;
-}
-</style>

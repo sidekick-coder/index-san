@@ -8,6 +8,8 @@ export default async (router: Router) => {
   router.register('workspace:destroy', 'WorkspaceController.destroy')
 
   router.register('item:show', 'ItemsController.show')
+  router.register('item:store', 'ItemsController.store')
+  router.register('item:destroy', 'ItemsController.destroy')
 
   router.register('file:metadata', 'FilesController.metadata')
   router.register('file:list-folder', 'FilesController.listFolder')
