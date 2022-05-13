@@ -4,6 +4,12 @@ const colors = require('tailwindcss/colors')
 const { transformer } = require('vue-wind')
 
 module.exports = {
+  theme: {
+    colors: {
+      ...colors,
+      accent: '#22C55E',
+    },
+  },
   content: {
     files: [
       resolve(__dirname, 'index.html'),

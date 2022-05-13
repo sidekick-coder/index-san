@@ -54,9 +54,13 @@
     "dependencies": {
         "@code-pieces/db-json": "^0.0.10",
         "@editorjs/editorjs": "^2.24.3",
+        "@fortawesome/fontawesome-svg-core": "^6.1.1",
+        "@fortawesome/free-regular-svg-icons": "^6.1.1",
+        "@fortawesome/free-solid-svg-icons": "^6.1.1",
+        "@fortawesome/vue-fontawesome": "^3.0.0-5",
         "lodash": "^4.17.21",
         "pinia": "^2.0.14",
         "vue": "^3.2.33",
-        "vue-wind": "^0.0.18-next"
+        "vue-wind": "^0.0.21-next"
     }
 }
