@@ -4,8 +4,12 @@ import { orderBy } from 'lodash'
 import './styles/index.css'
 
 import App from './app.vue'
+import createRouter from './router'
 
 const app = createApp(App)
+const router = createRouter()
+
+app.use(router)
 
 const plugins = import.meta.globEager('./plugins/*.ts')
 

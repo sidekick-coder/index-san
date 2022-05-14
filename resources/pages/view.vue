@@ -5,18 +5,23 @@ import { useWorkspaceStore, Item } from '@/stores/workspace'
 
 const store = useWorkspaceStore()
 const api = useWindowApi()
+const props = defineProps({
+  workspace: {
+    type: String,
+    required: true,
+  },
+  path: {
+    type: String,
+    required: true,
+  },
+})
 
 const item = ref<Item>()
 const loading = ref(false)
 
-async function setItem(path: string | null) {
-  if (!path) {
-    item.value = undefined
-    return
-  }
-
+async function setItem() {
   await api
-    .invoke('item:show', { path: path })
+    .invoke('item:show', { workspace: props.workspace, path: props.path })
     .then((data) => (item.value = data))
     .catch(() => alert('Failed to load item'))
 }
@@ -60,13 +65,21 @@ watch(() => item.value, setView, {
 })
 </script>
 <template>
-  <div class="pt-10 px-16 h-full w-full relative">
-    <div v-if="!item">No items selected</div>
+  <div class="h-full w-full relative">
+    <is-toolbar />
+    <div class="pt-10 px-16 h-[calc(100%_-_50px)]">
+      <div v-if="!item">No items selected</div>
 
-    <component :is="view.component" v-else-if="item && !loading" :path="item.index || item.path" />
+      <component
+        :is="view.component"
+        v-else-if="item && !loading"
+        :item="item"
+        :path="item.index || item.path"
+      />
 
-    <div v-if="loading" class="h-full w-full flex items-center justify-center absolute inset-0">
-      <h2 class="text-2xl font-bold">Loading...</h2>
+      <div v-if="loading" class="h-full w-full flex items-center justify-center absolute inset-0">
+        <h2 class="text-2xl font-bold">Loading...</h2>
+      </div>
     </div>
   </div>
 </template>

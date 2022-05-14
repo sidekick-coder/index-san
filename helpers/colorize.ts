@@ -4,6 +4,7 @@ const colors = {
   blue: '\x1b[34m',
   yellow: '\x1b[33m',
   gray: '\x1b[90m',
+  red: '\x1b[31m',
 }
 
 export function colorize(value: string, colorName: keyof typeof colors = 'white') {

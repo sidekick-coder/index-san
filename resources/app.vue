@@ -13,8 +13,8 @@ api.invoke('workspace:index').then((data) => (workspaces.value = data))
   <w-layout>
     <is-left-bar />
 
-    <w-content>
-      <is-view-controller />
+    <w-content layout>
+      <router-view />
     </w-content>
   </w-layout>
 </template>
