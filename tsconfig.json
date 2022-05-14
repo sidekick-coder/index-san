@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "target": "ESNext",
         "module": "commonjs",
         "moduleResolution": "node",
@@ -10,11 +12,22 @@
         "skipLibCheck": true,
         "skipDefaultLibCheck": true,
         "strictPropertyInitialization": false,
+        "baseUrl": ".",
+        "paths": {
+            "App/*": [
+                "app/*"
+            ],
+            "Tests/*": [
+                "tests/*"
+            ]
+        }
     },
     "include": [
         "main.ts",
+        "start/**/*.ts",
         "app/**/*.ts",
+        "types/**/*.ts",
         "config/**/*.ts",
-        "helpers/**/*.ts",
+        "helpers/**/*.ts"
     ]
 }

@@ -1,8 +1,11 @@
 import Workspace from '../models/Workspace'
 import { ISEventContext } from '../../lib/ISEventContext'
 
+import { injectable } from 'tsyringe'
+
 import { dialog } from 'electron'
 
+@injectable()
 export default class WorkspaceController {
   public async index() {
     return Workspace.all()

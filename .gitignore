@@ -3,3 +3,4 @@ dist
 .env
 tests/data
 public
+tmp

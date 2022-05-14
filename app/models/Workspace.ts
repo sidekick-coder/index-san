@@ -1,14 +1,19 @@
 import { Query } from '@code-pieces/db-json'
-import { app } from 'electron'
 import { resolve, basename } from 'path'
-
-const filename = resolve(app.getPath('userData'), 'workspaces.json')
+import { container } from 'tsyringe'
+import App from '../../app'
 
 export default class Workspace {
   public name: string
   public path: string
 
   public static query() {
+    const app = container.resolve(App)
+
+    const filename = app.userDataPath('workspaces.json')
+
+    console.log(app.userDataPath('workspace.json'))
+
     return Query.from(filename)
   }
 

@@ -1,16 +1,23 @@
 import { Query } from '@code-pieces/db-json'
-import { app } from 'electron'
-import { resolve } from 'path'
-import { isJSON } from '../../helpers/is-json'
+import { container } from 'tsyringe'
 
-const filename = resolve(app.getPath('userData'), 'options.json')
+import App from '../../app'
+import { isJSON } from '../../helpers/is-json'
 
 export default class Option<T = string> {
   public name: string
   public value: T
 
+  public static query() {
+    const app = container.resolve(App)
+
+    const filename = app.userDataPath('options.json')
+
+    return Query.from(filename)
+  }
+
   public static async find<T = string>(name: string) {
-    const item = await Query.from(filename).findBy('name', name)
+    const item = await this.query().findBy('name', name)
 
     if (!item) return null
 

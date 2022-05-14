@@ -1,13 +1,15 @@
-import { resolve } from 'path'
+import 'reflect-metadata'
 import { expect } from '@japa/expect'
 import { specReporter } from '@japa/spec-reporter'
 // import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run } from '@japa/runner'
 
+const files = ['app/**/*.spec.ts']
+
 configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
-    files: [resolve(__dirname, '..', 'src', '**', '*.spec.ts')],
+    files,
     plugins: [expect()],
     reporters: [specReporter()],
     importer: (filePath) => import(filePath),

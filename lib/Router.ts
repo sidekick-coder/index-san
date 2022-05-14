@@ -1,7 +1,8 @@
-import { ipcMain } from 'electron'
-import { ISEventContext } from './ISEventContext'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export default class Router {
+  public routes = new Map<string, () => Promise<any>>()
   public controllers = new Map()
 
   public findController(name: string) {
@@ -16,24 +17,19 @@ export default class Router {
     return this.controllers.get(name)
   }
 
+  public createContext(...args: any[]) {
+    return args
+  }
+
+  public use(callback: (path: string, handler: (...args: any[]) => Promise<any>) => void) {
+    return Array.from(this.routes.entries()).forEach(([p, h]) => callback(p, h))
+  }
+
   public register(path: string, handler: string) {
     const [controllerName, method] = handler.split('.')
 
     const controller = this.findController(controllerName)
 
-    ipcMain.removeHandler(path)
-
-    ipcMain.handle(path, (_, args) => {
-      if (!controller[method]) {
-        console.error(`Handler ${handler} not found`)
-        return
-      }
-
-      const context: ISEventContext = {
-        data: args,
-      }
-
-      return controller[method](context)
-    })
+    this.routes.set(path, controller[method].bind(controller))
   }
 }

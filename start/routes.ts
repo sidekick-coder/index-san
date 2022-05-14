@@ -1,6 +1,10 @@
-import Router from '../lib/Router'
+import { colorize } from 'helpers'
+import { ISEventContext } from 'lib/ISEventContext'
+import App from '../app'
 
-export default async (router: Router) => {
+export default async (app: App) => {
+  const { router, electron } = app
+
   router.register('app:info', 'AppController.index')
 
   router.register('workspace:index', 'WorkspaceController.index')
@@ -15,4 +19,23 @@ export default async (router: Router) => {
   router.register('file:list-folder', 'FilesController.listFolder')
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')
+
+  router.use((path, handler) => {
+    electron.ipcMain.removeHandler(path)
+
+    electron.ipcMain.handle(path, async (_, args) => {
+      if (!handler) {
+        console.error(colorize(`Handler ${handler} not found`, 'red'))
+        return
+      }
+
+      const context: ISEventContext = {
+        data: args,
+      }
+
+      const result = await handler(context)
+
+      return result
+    })
+  })
 }

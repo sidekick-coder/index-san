@@ -1,16 +1,24 @@
-import { BrowserWindow, app } from 'electron'
+import Electron from 'electron'
 import { resolve } from 'path'
 import { debounce } from 'lodash'
 
 import Router from './lib/Router'
 import Option from './app/models/Option'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export default class App {
-  public router: Router
-  public window: BrowserWindow
+  public window: Electron.BrowserWindow
+
+  constructor(
+    public electron = Electron,
+    private _appPath = Electron.app.getAppPath(),
+    private _userDataPath = Electron.app.getPath('userData'),
+    public router = new Router()
+  ) {}
 
   public appPath(...args: string[]) {
-    return resolve(app.getAppPath(), ...args)
+    return resolve(this._appPath, ...args)
   }
 
   public distPath(...args: string[]) {
@@ -21,13 +29,17 @@ export default class App {
     return this.distPath('public', ...args)
   }
 
+  public userDataPath(...args: string[]) {
+    return resolve(this._userDataPath, ...args)
+  }
+
   public async boot() {
     const register = (await import('./start/routes')).default
-    const userData = (await import('./start/user-data')).default
+    const userData = (await import('./start/data')).default
 
-    await register(this.router)
+    await register(this)
 
-    await userData()
+    await userData(this)
   }
 
   public async startWindow() {

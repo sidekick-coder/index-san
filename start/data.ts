@@ -1,13 +1,13 @@
 import fs from 'fs'
-import { resolve } from 'path'
-import { app } from 'electron'
+import App from '../app'
 
-export default async () => {
+export default async (app: App) => {
   const files = ['options.json', 'workspaces.json']
 
   await Promise.all(
     files.map(async (file) => {
-      const filename = resolve(app.getPath('userData'), file)
+      const filename = app.userDataPath(file)
+
       const exists = await fs.promises
         .stat(filename)
         .then(() => true)
