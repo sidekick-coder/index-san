@@ -61,4 +61,8 @@ export default class Workspace {
   public async destroy() {
     return Workspace.query().where('path', this.path).delete()
   }
+
+  public resolve(...path: string[]) {
+    return `/${path.filter((p) => p !== '/').join('/')}`
+  }
 }

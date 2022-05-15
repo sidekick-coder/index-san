@@ -18,33 +18,6 @@ export default class ItemsController {
     const { workspace, path } = data
 
     return await Item.find(workspace, path)
-
-    // const isDir = await stat(path)
-    //   .then((stats) => stats.isDirectory())
-    //   .catch(() => false)
-
-    // if (!isDir) {
-    //   return {
-    //     status: 404,
-    //     message: 'Not a directory',
-    //   }
-    // }
-
-    // const index = resolve(path, 'index.md')
-    // const haveIndex = await exists(index)
-    // const rawFiles = await readdir(path, { withFileTypes: true })
-
-    // const files = rawFiles.map((file) => ({
-    //   name: basename(file.name),
-    //   path: resolve(path, file.name),
-    //   isFolder: file.isDirectory(),
-    // }))
-
-    // return {
-    //   name: basename(path),
-    //   index: haveIndex ? index : null,
-    //   files,
-    // }
   }
 
   public async store({ data }: ISEventContext) {
@@ -79,5 +52,11 @@ export default class ItemsController {
     }
 
     await rmdir(path, { recursive: true })
+  }
+
+  public async files({ data }: ISEventContext) {
+    const item = await Item.findOrFail(data.workspace, data.path)
+
+    return item.files()
   }
 }

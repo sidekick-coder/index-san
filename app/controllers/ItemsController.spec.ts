@@ -26,22 +26,61 @@ test.group('ItemsController', (group) => {
   })
 
   test('should show return an item from workspace', async ({ expect }) => {
-    const item = await itemFactory.create(workspace, 'my-item')
+    await itemFactory.create(workspace, 'my-item')
 
     const data = await controller.show({
       data: { workspace: workspace.name, path: 'my-item' },
     })
 
-    expect(data).toEqual(item)
+    expect(data).toEqual({
+      name: 'my-item',
+      path: 'my-item',
+      index: '/my-item/index.md',
+      workspace: workspace,
+    })
   })
 
   test('should show return an very deep item from workspace', async ({ expect }) => {
-    const item = await itemFactory.create(workspace, 'first-level/second-level/last-level')
+    const path = 'first-level/second-level/last-level'
+    await itemFactory.create(workspace, path)
 
     const data = await controller.show({
-      data: { workspace: workspace.name, path: 'first-level/second-level/last-level' },
+      data: { workspace: workspace.name, path },
     })
 
-    expect(data).toEqual(item)
+    expect(data).toEqual({
+      name: 'last-level',
+      path,
+      index: '/first-level/second-level/last-level/index.md',
+      workspace: workspace,
+    })
+  })
+
+  test('should return workspace as item when using /', async ({ expect }) => {
+    const data = await controller.show({
+      data: { workspace: workspace.name, path: '/' },
+    })
+
+    expect(data).toEqual({
+      name: workspace.name,
+      path: '/',
+      workspace: workspace,
+      index: null,
+    })
+  })
+
+  test('should return item files', async ({ expect }) => {
+    await itemFactory.create(workspace, 'my-item')
+
+    const [data] = await controller.files({
+      data: { workspace: workspace.name, path: '/' },
+    })
+
+    expect(data).toEqual({
+      name: 'my-item',
+      path: '/my-item',
+      workspace: workspace,
+      index: '/my-item/index.md',
+    })
   })
 })
