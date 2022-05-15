@@ -1,24 +1,24 @@
 import Electron from 'electron'
 import { resolve } from 'path'
-import { debounce } from 'lodash'
 
 import Router from './lib/Router'
-import Option from './app/models/Option'
-import { inject, injectable } from 'tsyringe'
+import { container, injectable } from 'tsyringe'
+import { debounce } from 'lodash'
+import Option from 'App/models/Option'
+export default class IndexSan {
+  public router = new Router()
+  public _rootDir: string
+  public _userDataDir: string
 
-@injectable()
-export default class App {
-  public window: Electron.BrowserWindow
+  constructor(public electron = Electron) {
+    container.register(IndexSan, { useValue: this })
 
-  constructor(
-    public electron = Electron,
-    private _appPath = Electron.app.getAppPath(),
-    private _userDataPath = Electron.app.getPath('userData'),
-    public router = new Router()
-  ) {}
+    this._rootDir = electron.app.getAppPath()
+    this._userDataDir = electron.app.getPath('userData')
+  }
 
   public appPath(...args: string[]) {
-    return resolve(this._appPath, ...args)
+    return resolve(this._rootDir, ...args)
   }
 
   public distPath(...args: string[]) {
@@ -30,53 +30,38 @@ export default class App {
   }
 
   public userDataPath(...args: string[]) {
-    return resolve(this._userDataPath, ...args)
+    return resolve(this.electron.app.getPath('userData'), ...args)
   }
 
   public async boot() {
-    const register = (await import('./start/routes')).default
-    const userData = (await import('./start/data')).default
+    const files = [() => import('./start/routes'), () => import('./start/data')]
 
-    await register(this)
+    const modules = await Promise.all(files.map((f) => f()))
 
-    await userData(this)
+    await Promise.all(modules.map((m) => m.default(this)))
   }
 
-  public async startWindow() {
-    const bounds = await Option.get('window:bounds', {
-      width: 800,
-      height: 600,
-      x: 0,
-      y: 0,
-    })
+  public async start() {
+    return this.electron.app.whenReady()
+  }
 
-    this.window = new BrowserWindow({
+  public async createWindow() {
+    const bounds = await Option.get('window:bounds', {})
+
+    const window = new this.electron.BrowserWindow({
       ...bounds,
       webPreferences: {
         preload: this.distPath('config', 'preload.js'),
       },
     })
 
-    await this.window.loadFile(this.publicPath('index.html')).catch(console.error)
-
-    this.window.on(
+    window.on(
       'resize',
-      debounce(
-        () => Option.updateOrCreate('window:bounds', JSON.stringify(this.window.getBounds())),
-        500
-      )
+      debounce(async () => {
+        await Option.set('window:bounds', window.getBounds())
+      }, 1000)
     )
-  }
 
-  public async start() {
-    this.router = new Router()
-
-    await this.boot()
-
-    await this.startWindow()
-  }
-
-  public stop() {
-    this.window.close()
+    return window
   }
 }

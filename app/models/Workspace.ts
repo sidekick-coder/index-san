@@ -1,14 +1,14 @@
 import { Query } from '@code-pieces/db-json'
 import { basename } from 'path'
 import { container } from 'tsyringe'
-import App from '../../app'
+import IndexSan from '../../app'
 
 export default class Workspace {
   public name: string
   public path: string
 
   public static query() {
-    const app = container.resolve(App)
+    const app = container.resolve(IndexSan)
 
     const filename = app.userDataPath('workspaces.json')
 

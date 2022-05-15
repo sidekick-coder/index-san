@@ -14,6 +14,9 @@
         "strictPropertyInitialization": false,
         "baseUrl": ".",
         "paths": {
+            "IndexSan": [
+                "app.ts"
+            ],
             "App/*": [
                 "app/*"
             ],
@@ -32,6 +35,7 @@
         "types/**/*.ts",
         "config/**/*.ts",
         "helpers/**/*.ts",
-        "tests/**/*.ts"
+        "tests/**/*.ts",
+        "bin/**/*.ts"
     ]
 }

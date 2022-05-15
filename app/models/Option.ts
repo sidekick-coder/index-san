@@ -1,7 +1,7 @@
 import { Query } from '@code-pieces/db-json'
-import { container } from 'tsyringe'
+import { container, delay, inject } from 'tsyringe'
 
-import App from '../../app'
+import IndexSan from 'IndexSan'
 import { isJSON } from '../../helpers/is-json'
 
 export default class Option<T = string> {
@@ -9,10 +9,9 @@ export default class Option<T = string> {
   public value: T
 
   public static query() {
-    const app = container.resolve(App)
+    const app = container.resolve(IndexSan)
 
     const filename = app.userDataPath('options.json')
-
     return Query.from(filename)
   }
 
@@ -33,10 +32,14 @@ export default class Option<T = string> {
     return option
   }
 
-  public static async updateOrCreate(name: string, value: string) {
+  public static async set(name: string, value: any) {
     const option = await Option.find(name)
 
-    const query = Query.from(filename)
+    const query = this.query()
+
+    if (Array.isArray(value) || typeof value === 'object') {
+      value = JSON.stringify(value)
+    }
 
     if (option) {
       return query.where('name', name).update({ value })

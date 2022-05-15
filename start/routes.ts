@@ -1,8 +1,8 @@
 import { colorize } from 'helpers'
 import { ISEventContext } from 'lib/ISEventContext'
-import App from '../app'
+import indexSan from '../app'
 
-export default async (app: App) => {
+export default async (app: indexSan) => {
   const { router, electron } = app
 
   router.register('app:info', 'AppController.index')

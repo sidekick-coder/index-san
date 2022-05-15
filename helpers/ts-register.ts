@@ -3,16 +3,17 @@ const { readFileSync } = require('fs')
 
 const tsConfigPaths = require('tsconfig-paths')
 
-const filename = resolve(__dirname, '../tsconfig.json')
+const root = process.cwd()
+const filename = resolve(root, 'tsconfig.json')
 
 const tsConfig = JSON.parse(readFileSync(filename, 'utf8'))
 
 require('ts-node').register({
   transpileOnly: true,
-  project: require('path').resolve(__dirname, '..', 'tsconfig.json'),
+  project: filename,
 })
 
 tsConfigPaths.register({
-  baseUrl: require('path').resolve(__dirname, '..'),
+  baseUrl: root,
   paths: tsConfig.compilerOptions.paths,
 })

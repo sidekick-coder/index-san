@@ -8,13 +8,17 @@ export async function createTestApp() {
   const tmp = resolve(process.cwd(), 'tmp', 'user-data')
 
   const electron = {
+    app: {
+      getAppPath: sinon.stub().returns(process.cwd()),
+      getPath: sinon.stub().returns(tmp),
+    },
     ipcMain: {
       removeHandler: sinon.stub(),
       handle: sinon.stub(),
     },
   }
 
-  const app = new App(electron as any, process.cwd(), tmp)
+  const app = new App(electron as any)
 
   container.registerInstance(App, app)
 
