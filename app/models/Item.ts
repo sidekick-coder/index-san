@@ -1,6 +1,7 @@
 import { mkdir, readdir, writeFile } from 'fs/promises'
 import { exists } from 'Helpers/filesystem'
 import { basename, resolve } from 'path'
+import File from './File'
 import Workspace from './Workspace'
 
 export default class Item {
@@ -25,15 +26,15 @@ export default class Item {
   public static async create(workspaceName: string, path: string) {
     const workspace = await Workspace.findOrFail(workspaceName)
 
-    const folder = resolve(workspace.path, ...path.split('/'))
-    const index = resolve(folder, 'index.md')
+    const folder = workspace.systemResolve(path)
+    const index = workspace.systemResolve(path, 'index.md')
 
     await mkdir(folder, { recursive: true })
     await writeFile(index, '# New item')
 
     return this.make({
       name: basename(folder),
-      path,
+      path: workspace.resolve(path),
       workspace: workspace,
       index: workspace.resolve(path, 'index.md'),
     })
@@ -56,7 +57,7 @@ export default class Item {
 
     return this.make({
       name: name,
-      path: itemPath,
+      path: workspace.resolve(itemPath),
       workspace: workspace,
       index: haveIndex ? workspace.resolve(itemPath, 'index.md') : null,
     })
@@ -72,33 +73,27 @@ export default class Item {
     return item
   }
 
-  public async files() {
-    const all = await readdir(this.systemPath, { withFileTypes: true })
+  public resolve(...args: string[]) {
+    return this.workspace.resolve(this.path, ...args)
+  }
 
-    const subitems = await Promise.all(
-      all
-        .filter((file) => file.isDirectory())
-        .map(async (file) => {
-          const haveIndex = await exists(resolve(this.systemPath, file.name, 'index.md'))
-          const index = haveIndex ? this.workspace.resolve(this.path, file.name, 'index.md') : null
+  public async subitems() {
+    const raw = await readdir(this.systemPath, { withFileTypes: true })
 
-          return {
-            name: file.name,
-            path: this.workspace.resolve(this.path, file.name),
-            workspace: this.workspace,
-            index,
-          }
-        })
+    return await Promise.all(
+      raw
+        .filter((f) => f.isDirectory())
+        .map((f) => Item.find(this.workspace.name, `${this.path}/${f.name}`))
     )
+  }
 
-    const files = all
-      .filter((f) => !f.isDirectory())
-      .map((file) => ({
-        name: file.name,
-        path: this.workspace.resolve(this.path, file.name),
-        workspace: this.workspace,
-      }))
+  public async files() {
+    const raw = await readdir(this.systemPath, { withFileTypes: true })
 
-    return [...subitems, ...files]
+    return await Promise.all(
+      raw
+        .filter((f) => !f.isDirectory())
+        .map((f) => File.find(this.workspace.name, this.path, f.name))
+    )
   }
 }

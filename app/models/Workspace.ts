@@ -1,5 +1,5 @@
 import { Query } from '@code-pieces/db-json'
-import { basename } from 'path'
+import { basename, resolve } from 'path'
 import { container } from 'tsyringe'
 import IndexSan from '../../app'
 
@@ -62,7 +62,18 @@ export default class Workspace {
     return Workspace.query().where('path', this.path).delete()
   }
 
-  public resolve(...path: string[]) {
-    return `/${path.filter((p) => p !== '/').join('/')}`
+  public systemResolve(...args: string[]) {
+    return resolve(this.path, ...this.normalizePath(...args))
+  }
+
+  public normalizePath(...args: string[]) {
+    return args
+      .map((p) => p.split('/'))
+      .flat()
+      .filter((p) => !!p)
+  }
+
+  public resolve(...args: string[]) {
+    return '/' + this.normalizePath(...args).join('/')
   }
 }

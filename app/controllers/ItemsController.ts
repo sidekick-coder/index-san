@@ -1,12 +1,7 @@
 import Item from 'App/models/Item'
-import { readdir, stat, mkdir, writeFile, rmdir } from 'fs/promises'
-import { basename, resolve } from 'path'
+import { stat, mkdir, writeFile, rmdir } from 'fs/promises'
+import { resolve } from 'path'
 import { ISEventContext } from '../../lib/ISEventContext'
-
-const exists = (path: string) =>
-  stat(path)
-    .then(() => true)
-    .catch(() => false)
 
 const isDirectory = (path: string) =>
   stat(path)
@@ -52,6 +47,12 @@ export default class ItemsController {
     }
 
     await rmdir(path, { recursive: true })
+  }
+
+  public async subitems({ data }: ISEventContext) {
+    const item = await Item.findOrFail(data.workspace, data.path)
+
+    return item.subitems()
   }
 
   public async files({ data }: ISEventContext) {
