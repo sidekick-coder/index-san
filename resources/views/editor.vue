@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { useWindowApi } from '@/composables/api'
 import { useEditor } from '@/composables/use-editor'
-import { ref, onMounted } from 'vue'
+import { Item } from '@/stores/workspace'
+import { ref, onMounted, PropType } from 'vue'
 
 const props = defineProps({
+  item: {
+    type: Object as PropType<Item>,
+    required: true,
+  },
   path: {
     type: String,
     default: '',
@@ -41,6 +46,9 @@ async function load() {
 onMounted(load)
 </script>
 <template>
+  <h2 class="text-2xl mb-4">
+    <input :value="item.name" readonly class="focus:border-0 outline-none font-bold" />
+  </h2>
   <div ref="editorRef" class="w-full"></div>
 </template>
 

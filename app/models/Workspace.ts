@@ -1,5 +1,5 @@
 import { Query } from '@code-pieces/db-json'
-import { resolve, basename } from 'path'
+import { basename } from 'path'
 import { container } from 'tsyringe'
 import App from '../../app'
 
@@ -12,20 +12,26 @@ export default class Workspace {
 
     const filename = app.userDataPath('workspaces.json')
 
-    console.log(app.userDataPath('workspace.json'))
-
     return Query.from(filename)
   }
 
-  public static async find(path: string) {
-    const data = await Workspace.query().findBy('path', path)
+  public static async find(name: string) {
+    const data = await Workspace.query().findBy('name', name)
 
     if (!data) return null
 
-    return Object.assign(new Workspace(), data)
+    return Object.assign(new Workspace(), data) as Workspace
   }
 
-  public static async all() {
+  public static async findOrFail(name: string) {
+    const data = await this.find(name)
+
+    if (!data) throw new Error('Workspace not found')
+
+    return data
+  }
+
+  public static async all(): Promise<Workspace[]> {
     const all = await Workspace.query()
 
     return all.map((data) => Object.assign(new Workspace(), data))
@@ -33,15 +39,23 @@ export default class Workspace {
 
   public static async create(path: string) {
     const all = await Workspace.all()
+    const search = all.find((w) => w.path === path)
 
-    if (all.some((w) => w.path === path)) {
-      return
+    if (search) {
+      return search
     }
 
-    return Workspace.query().insert({
+    await Workspace.query().insert({
       path,
       name: basename(path),
     })
+
+    const workspace = new Workspace()
+
+    workspace.name = basename(path)
+    workspace.path = path
+
+    return workspace
   }
 
   public async destroy() {

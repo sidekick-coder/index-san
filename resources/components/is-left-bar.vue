@@ -15,7 +15,7 @@ store.setWorkspaces()
 </script>
 
 <template>
-  <w-drawer layout width="[300px]" class="flex flex-wrap flex-col justify-start border-r">
+  <w-drawer width="[300px]" class="flex flex-wrap flex-col justify-start border-r">
     <div class="left-bar-item">
       <h1 class="text-2xl font-bold">Index-san</h1>
     </div>

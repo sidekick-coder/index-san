@@ -6,15 +6,15 @@ import { ref, watch } from 'vue'
 const props = defineProps({
   path: {
     type: String,
-    default: '',
+    required: true,
+  },
+  workspace: {
+    type: String,
+    required: true,
   },
   label: {
     type: String,
     default: '',
-  },
-  isWorkspace: {
-    type: Boolean,
-    default: false,
   },
   deep: {
     type: Number,
@@ -93,14 +93,14 @@ async function deleteItem() {
     @click="store.setCurrent(path)"
   >
     <div class="w-2/12 justify-start">
-      <i class="icon" @click="expand = !expand">
+      <i class="icon" @click.stop="expand = !expand">
         <fa-icon v-if="loading" icon="spinner" class="animate-spin" />
         <fa-icon v-else :icon="expand ? 'chevron-down' : 'chevron-right'" />
       </i>
     </div>
 
     <div class="w-6/12 font-bold flex items-center">
-      <fa-icon icon="folder" class="mr-2" />
+      <fa-icon icon="file" class="mr-4" />
       <p class="truncate">
         {{ label }}
       </p>
@@ -111,7 +111,7 @@ async function deleteItem() {
         <fa-icon icon="plus" @click.stop="dialog = true" />
       </i>
       <i class="icon">
-        <fa-icon v-if="isWorkspace" icon="link-slash" @click.stop="deleteWorkspace" />
+        <fa-icon v-if="workspace === path" icon="link-slash" @click.stop="deleteWorkspace" />
         <fa-icon v-else icon="trash" @click.stop="deleteItem" />
       </i>
     </div>
@@ -126,6 +126,7 @@ async function deleteItem() {
       v-for="item in children"
       :key="item.path"
       :label="item.name"
+      :workspace="workspace"
       :path="item.path"
       :deep="deep + 1"
       @deleted="setChildren"
