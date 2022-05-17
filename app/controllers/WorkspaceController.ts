@@ -1,22 +1,26 @@
 import Workspace from '../models/Workspace'
 import { ISEventContext } from '../../lib/ISEventContext'
 
-import { injectable } from 'tsyringe'
+import { injectable, inject } from 'tsyringe'
 
-import { dialog } from 'electron'
+import IndexSan from 'IndexSan'
 
 @injectable()
 export default class WorkspaceController {
+  constructor(@inject(IndexSan) public app: IndexSan) {}
+
   public async index() {
     return Workspace.all()
   }
 
   public async store() {
-    const { filePaths } = await dialog.showOpenDialog({
+    const { filePaths } = await this.app.electron.dialog.showOpenDialog({
       properties: ['openDirectory', 'multiSelections'],
     })
 
-    await Promise.all(filePaths.map(Workspace.create))
+    for (const path of filePaths) {
+      await Workspace.create(path)
+    }
 
     return true
   }
