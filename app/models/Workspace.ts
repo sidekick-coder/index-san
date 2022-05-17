@@ -12,11 +12,11 @@ export default class Workspace {
 
     const filename = app.userDataPath('workspaces.json')
 
-    return Query.from(filename)
+    return Query.from<Workspace[]>(filename)
   }
 
   public static async find(name: string) {
-    const data = await Workspace.query().findBy('name', name)
+    const [data] = await Workspace.query().where('name', name)
 
     if (!data) return null
 

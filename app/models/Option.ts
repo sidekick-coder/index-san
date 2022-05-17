@@ -12,11 +12,12 @@ export default class Option<T = string> {
     const app = container.resolve(IndexSan)
 
     const filename = app.userDataPath('options.json')
+
     return Query.from(filename)
   }
 
   public static async find<T = string>(name: string) {
-    const item = await this.query().findBy('name', name)
+    const [item] = await this.query().where('name', name)
 
     if (!item) return null
 
