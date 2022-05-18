@@ -69,6 +69,6 @@
         "uuid": "^8.3.2",
         "vue": "^3.2.33",
         "vue-router": "^4.0.15",
-        "vue-wind": "^0.0.26-next"
+        "vue-wind": "^0.0.31-next"
     }
 }

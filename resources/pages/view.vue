@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useWindowApi } from '@/composables/api'
-import { defineAsyncComponent, ref, watch } from 'vue'
-import { useWorkspaceStore, Item } from '@/stores/workspace'
+import { defineAsyncComponent, ref, shallowRef, watch } from 'vue'
+import { Item } from '@/stores/workspace'
+import { useRoute } from 'vue-router'
 
-const store = useWorkspaceStore()
 const api = useWindowApi()
 const props = defineProps({
   workspace: {
@@ -18,17 +18,16 @@ const props = defineProps({
 
 const item = ref<Item>()
 const loading = ref(false)
+const route = useRoute()
 
 async function setItem() {
+  loading.value = true
   await api
     .invoke('item:show', { workspace: props.workspace, path: props.path })
     .then((data) => (item.value = data))
     .catch(() => alert('Failed to load item'))
+    .finally(() => setTimeout(() => (loading.value = false), 800))
 }
-
-watch(() => store.current, setItem, {
-  immediate: true,
-})
 
 const defaultView = {
   name: 'default',
@@ -37,18 +36,13 @@ const defaultView = {
 
 const views = [
   {
-    name: 'folder',
-    component: defineAsyncComponent(() => import('@/views/folder.vue')),
-    test: (item: Item) => item.isFolder,
-  },
-  {
     name: 'editor',
     component: defineAsyncComponent(() => import('@/views/editor.vue')),
     test: (item: Item) => /md/.test(item.index || item.path),
   },
 ]
 
-const view = ref<any>(defaultView)
+const view = shallowRef<any>(defaultView)
 
 function setView() {
   loading.value = true
@@ -60,26 +54,26 @@ function setView() {
   setTimeout(() => (loading.value = false), 500)
 }
 
+watch(() => route.fullPath, setItem, {
+  immediate: true,
+})
+
 watch(() => item.value, setView, {
   immediate: true,
 })
 </script>
 <template>
   <div class="h-full w-full relative">
-    <is-toolbar />
-    <div class="pt-10 px-16 h-[calc(100%_-_50px)]">
-      <div v-if="!item">No items selected</div>
-
-      <component
-        :is="view.component"
-        v-else-if="item && !loading"
-        :item="item"
-        :path="item.index || item.path"
-      />
-
-      <div v-if="loading" class="h-full w-full flex items-center justify-center absolute inset-0">
-        <h2 class="text-2xl font-bold">Loading...</h2>
+    <div
+      v-if="loading"
+      class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
+    >
+      <div class="text-center">
+        <fa-icon icon="spinner" class="animate-spin text-2xl" />
+        <h2 class="font-bold">Loading...</h2>
       </div>
     </div>
+
+    <component :is="view.component" v-if="item" :item="item" :path="item.index || item.path" />
   </div>
 </template>

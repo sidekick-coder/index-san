@@ -17,8 +17,6 @@ export default async (app: indexSan) => {
   router.register('item:files', 'ItemsController.files')
   router.register('item:subitems', 'ItemsController.subitems')
 
-  router.register('file:metadata', 'FilesController.metadata')
-  router.register('file:list-folder', 'FilesController.listFolder')
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')
 
@@ -35,9 +33,15 @@ export default async (app: indexSan) => {
         data: args,
       }
 
-      const result = await handler(context)
-
-      return result
+      return handler(context)
+        .then((data) => ({
+          status: 'success',
+          data,
+        }))
+        .catch((error) => ({
+          status: 'error',
+          error,
+        }))
     })
   })
 }

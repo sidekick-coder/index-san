@@ -1,17 +1,16 @@
-import { defineAsyncComponent } from 'vue'
 import { createRouter as baseCreateRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
     name: 'home',
     path: '/',
-    component: defineAsyncComponent(() => import('@/pages/index.vue')),
+    component: () => import('@/pages/index.vue'),
   },
   {
     name: 'file',
-    path: '/:workspace/:file(.*)',
+    path: '/:workspace/:path(.*)',
     props: true,
-    component: defineAsyncComponent(() => import('@/pages/view.vue')),
+    component: () => import('@/pages/view.vue'),
   },
 ]
 

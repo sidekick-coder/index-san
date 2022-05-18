@@ -36,11 +36,13 @@ const children = ref<Item[]>([])
 async function setChildren() {
   loading.value = true
 
-  const data = await api.invoke<{ files: Item[] }>('item:show', { path: props.path })
-
-  children.value = []
-
-  children.value = data.files.filter((i) => i.isFolder)
+  await api
+    .invoke('item:subitems', {
+      path: props.path,
+      workspace: props.workspace,
+    })
+    .then((data) => (children.value = data))
+    .catch(() => alert('Error loading items'))
 
   setTimeout(() => (loading.value = false), 500)
 }
@@ -87,10 +89,10 @@ async function deleteItem() {
 }
 </script>
 <template>
-  <div
+  <router-link
     class="left-bar-item cursor-pointer hover:bg-gray-100"
     :style="`padding-left: ${deep}rem`"
-    @click="store.setCurrent(path)"
+    :to="`/${workspace}${path}`"
   >
     <div class="w-2/12 justify-start">
       <i class="icon" @click.stop="expand = !expand">
@@ -115,7 +117,7 @@ async function deleteItem() {
         <fa-icon v-else icon="trash" @click.stop="deleteItem" />
       </i>
     </div>
-  </div>
+  </router-link>
 
   <div v-if="expand" class="w-full">
     <div v-if="!children.length" class="left-bar-item" :style="`padding-left: ${deep + 1}rem`">

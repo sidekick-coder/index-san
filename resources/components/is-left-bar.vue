@@ -1,33 +1,40 @@
 <script setup lang="ts">
 import { useWindowApi } from '../composables/api'
 import { useWorkspaceStore } from '../stores/workspace'
+import { useLayoutStore } from '../stores/layout'
 
 const api = useWindowApi()
-const store = useWorkspaceStore()
+const workspaceStore = useWorkspaceStore()
+const layoutStore = useLayoutStore()
 
 async function addWorkspace() {
   await api.invoke('workspace:store')
 
-  await store.setWorkspaces()
+  await workspaceStore.setWorkspaces()
 }
 
-store.setWorkspaces()
+workspaceStore.setWorkspaces()
 </script>
 
 <template>
-  <w-drawer width="[300px]" class="flex flex-wrap flex-col justify-start border-r">
-    <div class="left-bar-item">
+  <w-drawer
+    v-model="layoutStore.left"
+    width="[300px]"
+    layout
+    class="flex flex-wrap flex-col justify-start border-r"
+  >
+    <div class="left-bar-item flex justify-between">
       <h1 class="text-2xl font-bold">Index-san</h1>
     </div>
 
-    <div v-if="!store.workspaces.length" class="left-bar-item">No items</div>
+    <div v-if="!workspaceStore.workspaces.length" class="left-bar-item">No items</div>
 
     <is-left-bar-item
-      v-for="workspace in store.workspaces"
+      v-for="workspace in workspaceStore.workspaces"
       :key="workspace.path"
       :label="workspace.name"
-      :path="workspace.path"
-      :is-workspace="true"
+      :workspace="workspace.name"
+      path="/"
     />
 
     <div
