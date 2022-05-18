@@ -7,10 +7,10 @@ const routes = [
     component: () => import('@/pages/index.vue'),
   },
   {
-    name: 'file',
+    name: 'item',
     path: '/:workspace/:path(.*)',
     props: true,
-    component: () => import('@/pages/item.vue'),
+    component: () => import('@/pages/item/index.vue'),
   },
 ]
 

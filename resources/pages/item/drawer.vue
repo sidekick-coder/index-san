@@ -3,6 +3,7 @@ import { ref, PropType, watch } from 'vue'
 import { useLayoutStore } from '@/stores/layout'
 import { Item, File } from '@/types'
 import { useWindowApi } from '@/composables/api'
+import { useVModel } from '@vueuse/core'
 
 const api = useWindowApi()
 const layoutStore = useLayoutStore()
@@ -12,11 +13,22 @@ const props = defineProps({
     type: Object as PropType<Item>,
     required: true,
   },
+  file: {
+    type: Object as PropType<File | null>,
+    default: null,
+  },
 })
 
+const emit = defineEmits(['update:file'])
+
 const files = ref<File[]>([])
+const model = useVModel(props, 'file', emit)
 
 async function setFiles() {
+  if (files.value.length) {
+    return
+  }
+
   await api
     .invoke('item:files', {
       path: props.item.path,
@@ -26,13 +38,19 @@ async function setFiles() {
     .catch(() => alert('Error loading files'))
 }
 
-watch(() => props.item.path, setFiles, {
+watch(() => layoutStore.right, setFiles, {
   immediate: true,
 })
 </script>
 <template>
   <w-drawer v-model="layoutStore.right" class="border-l" width="[300px]">
-    <div v-for="file in files" :key="file.name" class="list-item clickable">
+    <div
+      v-for="f in files"
+      :key="f.name"
+      class="list-item clickable"
+      :class="model?.path === f.path ? 'bg-gray-100' : ''"
+      @click="model = f"
+    >
       <div class="w-2/12 justify-start">
         <i class="icon">
           <fa-icon icon="file" class="mr-4" />
@@ -40,7 +58,7 @@ watch(() => props.item.path, setFiles, {
       </div>
 
       <div class="grow">
-        {{ file.name }}
+        {{ f.name }}
       </div>
     </div>
   </w-drawer>

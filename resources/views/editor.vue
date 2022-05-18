@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { useWindowApi } from '@/composables/api'
 import { useEditor } from '@/composables/use-editor'
-import { Item } from '@/stores/workspace'
 import { ref, onMounted, PropType } from 'vue'
+import { File } from '@/types'
 
 const props = defineProps({
-  item: {
-    type: Object as PropType<Item>,
-    required: true,
-  },
-  path: {
-    type: String,
+  file: {
+    type: Object as PropType<File>,
     required: true,
   },
 })
@@ -29,12 +25,16 @@ async function save(data: any) {
 }
 
 async function load() {
+  const { workspace } = props.file.item
   await api
     .invoke('file:read', {
-      workspace: props.item.workspace.name,
-      path: props.path,
+      workspace: workspace.name,
+      path: props.file.path,
     })
-    .catch(() => alert('Failed to load file'))
+    .catch((er) => {
+      console.error(er)
+      alert('Failed to load file')
+    })
     .then(async (raw) => {
       if (!editorRef.value) {
         alert('Failed to load editor')
@@ -54,7 +54,7 @@ onMounted(load)
 <template>
   <div class="pt-10 px-16">
     <h2 class="text-2xl mb-4">
-      <input :value="item.name" readonly class="focus:border-0 outline-none font-bold" />
+      <input :value="file.name" readonly class="focus:border-0 outline-none font-bold" />
     </h2>
     <div ref="editorRef" class="w-full"></div>
   </div>
