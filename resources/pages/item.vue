@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useWindowApi } from '@/composables/api'
 import { defineAsyncComponent, ref, shallowRef, watch } from 'vue'
-import { Item } from '@/stores/workspace'
 import { useRoute } from 'vue-router'
+import { Item } from '@/types'
+import { useWindowApi } from '@/composables/api'
 
 const api = useWindowApi()
+
 const props = defineProps({
   workspace: {
     type: String,
@@ -20,15 +21,6 @@ const item = ref<Item>()
 const loading = ref(false)
 const route = useRoute()
 
-async function setItem() {
-  loading.value = true
-  await api
-    .invoke('item:show', { workspace: props.workspace, path: props.path })
-    .then((data) => (item.value = data))
-    .catch(() => alert('Failed to load item'))
-    .finally(() => setTimeout(() => (loading.value = false), 800))
-}
-
 const defaultView = {
   name: 'default',
   component: defineAsyncComponent(() => import('@/views/default.vue')),
@@ -38,11 +30,21 @@ const views = [
   {
     name: 'editor',
     component: defineAsyncComponent(() => import('@/views/editor.vue')),
-    test: (item: Item) => /md/.test(item.index || item.path),
+    test: (item: Item) => /md/.test(item.path),
   },
 ]
 
 const view = shallowRef<any>(defaultView)
+
+async function setItem() {
+  loading.value = true
+
+  await api
+    .invoke('item:show', { path: props.path, workspace: props.workspace })
+    .then((data) => (item.value = data))
+    .catch(() => alert('Failed to load item'))
+    .finally(() => setTimeout(() => (loading.value = false), 800))
+}
 
 function setView() {
   loading.value = true
@@ -54,7 +56,7 @@ function setView() {
   setTimeout(() => (loading.value = false), 500)
 }
 
-watch(() => route.fullPath, setItem, {
+watch(props, setItem, {
   immediate: true,
 })
 
@@ -63,7 +65,7 @@ watch(() => item.value, setView, {
 })
 </script>
 <template>
-  <div class="h-full w-full relative">
+  <w-layout use-percentage>
     <div
       v-if="loading"
       class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
@@ -74,6 +76,17 @@ watch(() => item.value, setView, {
       </div>
     </div>
 
-    <component :is="view.component" v-if="item" :item="item" :path="item.index || item.path" />
-  </div>
+    <w-content v-else-if="!item" class="flex items-center justify-center">
+      Error loading item
+    </w-content>
+
+    <template v-else>
+      <is-toolbar :layout-ignore="['right']" />
+      <w-content>
+        <component :is="view.component" :item="item" :path="item.path" />
+      </w-content>
+
+      <is-right-bar :item="item" right layout-id="right" />
+    </template>
+  </w-layout>
 </template>

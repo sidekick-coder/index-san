@@ -23,11 +23,11 @@ workspaceStore.setWorkspaces()
     layout
     class="flex flex-wrap flex-col justify-start border-r"
   >
-    <div class="left-bar-item flex justify-between">
+    <div class="list-item flex justify-between">
       <h1 class="text-2xl font-bold">Index-san</h1>
     </div>
 
-    <div v-if="!workspaceStore.workspaces.length" class="left-bar-item">No items</div>
+    <div v-if="!workspaceStore.workspaces.length" class="list-item">No items</div>
 
     <is-left-bar-item
       v-for="workspace in workspaceStore.workspaces"
@@ -38,7 +38,7 @@ workspaceStore.setWorkspaces()
     />
 
     <div
-      class="left-bar-item justify-self-end mt-auto cursor-pointer flex justify-between border-t hover:bg-gray-200"
+      class="list-item justify-self-end mt-auto cursor-pointer flex justify-between border-t hover:bg-gray-200"
       @click="addWorkspace"
     >
       Add workspace

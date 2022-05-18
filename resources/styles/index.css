@@ -8,3 +8,24 @@
 body {
     @apply text-gray-500;
 }
+
+.list-item {
+    @apply px-[1rem] h-[50px] flex flex-wrap items-center transition-all text-sm;
+}
+
+.list-item.clickable {
+    @apply cursor-pointer hover:bg-gray-100;
+}
+
+.list-item .icon {
+    @apply w-8 h-8 flex items-center justify-center;
+    @apply rounded-full hover:bg-gray-200;
+}
+
+.list-item .actions {
+    @apply flex justify-end items-center opacity-0;
+}
+
+.list-item:hover .actions {
+    @apply opacity-100;
+}

@@ -90,10 +90,15 @@ export default class Item {
   public async files() {
     const raw = await readdir(this.systemPath, { withFileTypes: true })
 
-    return await Promise.all(
-      raw
-        .filter((f) => !f.isDirectory())
-        .map((f) => File.find(this.workspace.name, this.path, f.name))
-    )
+    return raw
+      .filter((f) => f.isFile())
+      .map((f) =>
+        File.make({
+          name: f.name,
+          path: this.resolve(f.name),
+          workspace: this.workspace,
+          item: this,
+        })
+      )
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWindowApi } from '@/composables/api'
-import { useWorkspaceStore, Item } from '@/stores/workspace'
+import { useWorkspaceStore } from '@/stores/workspace'
+import { Item } from '@/types'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
@@ -74,10 +75,6 @@ async function addItem() {
 }
 
 async function deleteItem() {
-  if (store.current === props.path) {
-    store.setCurrent(null)
-  }
-
   await api
     .invoke('item:destroy', {
       path: props.path,
@@ -90,7 +87,7 @@ async function deleteItem() {
 </script>
 <template>
   <router-link
-    class="left-bar-item cursor-pointer hover:bg-gray-100"
+    class="list-item clickable"
     :style="`padding-left: ${deep}rem`"
     :to="`/${workspace}${path}`"
   >
@@ -144,22 +141,3 @@ async function deleteItem() {
     </w-form>
   </w-dialog>
 </template>
-
-<style>
-.left-bar-item {
-  @apply px-[1rem] h-[50px] flex flex-wrap items-center transition-all text-sm;
-}
-
-.left-bar-item .icon {
-  @apply w-8 h-8 flex items-center justify-center;
-  @apply rounded-full hover:bg-gray-200;
-}
-
-.left-bar-item .actions {
-  @apply flex justify-end items-center opacity-0;
-}
-
-.left-bar-item:hover .actions {
-  @apply opacity-100;
-}
-</style>

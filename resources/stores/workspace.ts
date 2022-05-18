@@ -1,16 +1,7 @@
-import { useWindowApi } from '@/composables/api'
 import { defineStore } from 'pinia'
 
-export interface Workspace {
-  name: string
-  path: string
-}
-export interface Item {
-  name: string
-  path: string
-  index: string | null
-  workspace: Workspace
-}
+import { useWindowApi } from '@/composables/api'
+import { Workspace } from '@/types'
 
 const api = useWindowApi()
 
