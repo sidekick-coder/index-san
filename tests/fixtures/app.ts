@@ -16,6 +16,9 @@ export async function createTestApp() {
       removeHandler: sinon.stub(),
       handle: sinon.stub(),
     },
+    dialog: {
+      showOpenDialog: sinon.stub(),
+    },
   }
 
   const app = new App(electron as any)
@@ -32,5 +35,6 @@ export async function createTestApp() {
 
   return Object.assign(app, {
     cleanup,
+    electronStub: electron,
   })
 }

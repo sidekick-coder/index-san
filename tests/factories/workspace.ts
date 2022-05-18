@@ -15,12 +15,14 @@ export function createWorkspaceFactory() {
     return await Workspace.create(filepath)
   }
 
-  function createMany(count = 5) {
-    return Promise.all(
-      Array(count)
-        .fill(null)
-        .map(() => create())
-    )
+  async function createMany(count = 5) {
+    const workspaces = []
+
+    for (let i = 0; i < count; i++) {
+      workspaces.push(await create())
+    }
+
+    return workspaces
   }
 
   async function cleanup() {

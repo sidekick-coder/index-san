@@ -1,37 +1,26 @@
+import File from 'App/models/File'
+import Workspace from 'App/models/Workspace'
 import { readdir, readFile, stat, writeFile } from 'fs/promises'
+import { exists } from 'Helpers/filesystem'
 import { basename, extname, resolve } from 'path'
 import { ISEventContext } from '../../lib/ISEventContext'
 
 export default class FilesController {
-  public async metadata({ data }: ISEventContext) {
-    const { path } = data
-
-    const stats = await stat(path)
-
-    return {
-      name: basename(path),
-      size: stats.size,
-      path: path,
-      extension: extname(path),
-      isDirectory: stats.isDirectory(),
-    }
-  }
-
   public async read({ data }: ISEventContext) {
-    const { path } = data
+    const workspace = await Workspace.findOrFail(data.workspace)
 
-    const exists = await stat(path)
-      .then((d) => d.isFile())
-      .catch(() => false)
+    const filename = workspace.systemResolve(data.path)
 
-    if (!exists) {
+    const exist = await exists(filename)
+
+    if (!exist) {
       return {
         status: 404,
         message: 'File not found',
       }
     }
 
-    return readFile(path, 'utf8')
+    return readFile(filename, 'utf8')
   }
 
   public async write({ data }: ISEventContext) {

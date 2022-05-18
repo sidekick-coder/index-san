@@ -36,4 +36,14 @@ export default class File {
       item: item,
     })
   }
+
+  public static async findOrFail(workspaceName: string, itemName: string, filename: string) {
+    const file = await this.find(workspaceName, itemName, filename)
+
+    if (!file) {
+      throw new Error('File not found')
+    }
+
+    return file
+  }
 }

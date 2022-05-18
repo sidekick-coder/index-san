@@ -11,7 +11,7 @@ const props = defineProps({
   },
   path: {
     type: String,
-    default: '',
+    required: true,
   },
 })
 
@@ -22,34 +22,42 @@ const saving = ref(false)
 async function save(data: any) {
   saving.value = true
 
-  await api
-    .invoke('file:write', { path: props.path, content: data })
-    .catch(() => console.error('Failed to save file'))
-    .finally(() => (saving.value = false))
+  // await api
+  //   .invoke('file:write', { path: props.path, content: data })
+  //   .catch(() => console.error('Failed to save file'))
+  //   .finally(() => (saving.value = false))
 }
 
 async function load() {
-  if (!editorRef.value) {
-    alert('Failed to load editor')
-    return
-  }
+  await api
+    .invoke('file:read', {
+      workspace: props.item.workspace.name,
+      path: props.path,
+    })
+    .catch(() => alert('Failed to load file'))
+    .then(async (raw) => {
+      if (!editorRef.value) {
+        alert('Failed to load editor')
+        return
+      }
 
-  const raw = await api.invoke('file:read', { path: props.path })
+      const editor = useEditor(editorRef.value, raw)
 
-  const editor = useEditor(editorRef.value, raw)
+      await editor.start()
 
-  await editor.start()
-
-  editor.onchange(save)
+      editor.onchange(save)
+    })
 }
 
 onMounted(load)
 </script>
 <template>
-  <h2 class="text-2xl mb-4">
-    <input :value="item.name" readonly class="focus:border-0 outline-none font-bold" />
-  </h2>
-  <div ref="editorRef" class="w-full"></div>
+  <div class="pt-10 px-16">
+    <h2 class="text-2xl mb-4">
+      <input :value="item.name" readonly class="focus:border-0 outline-none font-bold" />
+    </h2>
+    <div ref="editorRef" class="w-full"></div>
+  </div>
 </template>
 
 <style>

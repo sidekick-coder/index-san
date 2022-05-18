@@ -1,7 +1,7 @@
 import EditorJS from '@editorjs/editorjs'
 import DragDrop from 'editorjs-drag-drop'
 
-export function toBlocks(raw: string) {
+export function toBlocks(raw = '') {
   const blocks = raw.split('\n').map((line) => ({
     type: 'paragraph',
     data: { text: line },

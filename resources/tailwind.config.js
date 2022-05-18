@@ -6,17 +6,21 @@ const { transformer } = require('vue-wind')
 module.exports = {
   theme: {
     colors: {
-      ...colors,
       accent: '#22C55E',
+      white: colors.white,
+      black: colors.black,
+      gray: colors.gray,
+      red: colors.red,
     },
   },
   content: {
     files: [
       resolve(__dirname, 'index.html'),
-      resolve(__dirname, 'components/**/*.vue'),
+      resolve(__dirname, 'app.vue'),
+      resolve(__dirname, 'components/*.vue'),
+      resolve(__dirname, 'pages/**/*.vue'),
       resolve(__dirname, 'views/**/*.vue'),
       resolve(__dirname, 'styles/*.css'),
-      resolve(__dirname, '..', 'node_modules', 'vue-wind', 'safe-list.txt'),
     ],
     transform: {
       vue: (content) => {
