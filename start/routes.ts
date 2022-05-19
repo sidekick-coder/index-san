@@ -14,8 +14,9 @@ export default async (app: indexSan) => {
   router.register('item:show', 'ItemsController.show')
   router.register('item:store', 'ItemsController.store')
   router.register('item:destroy', 'ItemsController.destroy')
-  router.register('item:files', 'ItemsController.files')
-  router.register('item:subitems', 'ItemsController.subitems')
+  router.register('item:files', 'ItemsController.showFiles')
+  router.register('item:subitems', 'ItemsController.showSubitems')
+  router.register('item:options', 'ItemsController.showOptions')
 
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')

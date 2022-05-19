@@ -19,6 +19,9 @@ export async function createTestApp() {
     dialog: {
       showOpenDialog: sinon.stub(),
     },
+    protocol: {
+      registerFileProtocol: sinon.stub(),
+    },
   }
 
   const app = new App(electron as any)

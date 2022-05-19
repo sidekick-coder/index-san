@@ -1,5 +1,6 @@
+import { Query } from '@code-pieces/db-json'
 import { mkdir, readdir, writeFile } from 'fs/promises'
-import { exists } from 'Helpers/filesystem'
+import { exists, writeFileIfNotExist } from 'Helpers/filesystem'
 import { basename, resolve } from 'path'
 import File from './File'
 import Workspace from './Workspace'
@@ -7,7 +8,6 @@ import Workspace from './Workspace'
 export default class Item {
   public name: string
   public path: string
-  public fullPath: string
   public systemPath: string
 
   public workspace: Workspace
@@ -17,11 +17,17 @@ export default class Item {
 
     Object.assign(item, data)
 
-    item.fullPath = item.workspace.resolve(item.path)
-
     item.systemPath = item.workspace.systemResolve(item.path)
 
     return item
+  }
+
+  public resolve(...args: string[]) {
+    return this.workspace.resolve(this.path, ...args)
+  }
+
+  public systemResolve(...args: string[]) {
+    return this.workspace.systemResolve(this.systemPath, ...args)
   }
 
   public static async create(workspaceName: string, path: string) {
@@ -70,10 +76,6 @@ export default class Item {
     return item
   }
 
-  public resolve(...args: string[]) {
-    return this.workspace.resolve(this.path, ...args)
-  }
-
   public async subitems() {
     const raw = await readdir(this.systemPath, { withFileTypes: true })
 
@@ -97,5 +99,32 @@ export default class Item {
           item: this,
         })
       )
+  }
+
+  public async findOption(name: string) {
+    const optionsFilePath = this.systemResolve('.index-san', 'options.json')
+
+    await writeFileIfNotExist(optionsFilePath, JSON.stringify([]))
+
+    const [option] = await Query.from(optionsFilePath).where('name', name)
+
+    return option ? option.data : {}
+  }
+
+  public async setOption(name: string, data: any) {
+    const optionsFilePath = this.systemResolve('.index-san', 'options.json')
+
+    await writeFileIfNotExist(optionsFilePath, JSON.stringify([]))
+
+    const [option] = await Query.from(optionsFilePath).where('name', name)
+
+    if (option) {
+      return Query.from(optionsFilePath).where('name', name).update({ data })
+    }
+
+    return Query.from(optionsFilePath).insert({
+      name,
+      data,
+    })
   }
 }

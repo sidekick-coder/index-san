@@ -5,7 +5,6 @@ import Workspace from './workspace'
 export default class File {
   public name: string
   public path: string
-  public fullPath: string
   public systemPath: string
 
   public workspace: Workspace
@@ -16,7 +15,6 @@ export default class File {
 
     Object.assign(file, data)
 
-    file.fullPath = file.item.resolve(file.path)
     file.systemPath = file.item.workspace.systemResolve(file.path)
 
     return file

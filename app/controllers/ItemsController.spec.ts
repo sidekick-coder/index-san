@@ -7,7 +7,7 @@ import { container } from 'tsyringe'
 import ItemsController from './ItemsController'
 import Workspace from 'App/models/Workspace'
 
-test.group('ItemsController', (group) => {
+test.group('ItemsController (unit)', (group) => {
   const itemFactory = createItemFactory()
   const workspaceFactory = createWorkspaceFactory()
   let app: Awaited<ReturnType<typeof createTestApp>>
@@ -26,34 +26,24 @@ test.group('ItemsController', (group) => {
   })
 
   test('should show return an item from workspace', async ({ expect }) => {
-    await itemFactory.create(workspace, 'my-item')
+    const item = await itemFactory.create(workspace, 'my-item')
 
     const data = await controller.show({
       data: { workspace: workspace.name, path: 'my-item' },
     })
 
-    expect(data).toEqual({
-      name: 'my-item',
-      path: '/my-item',
-      index: '/my-item/index.md',
-      workspace: workspace,
-    })
+    expect(data).toEqual(item)
   })
 
   test('should show return an very deep item from workspace', async ({ expect }) => {
     const path = '/first-level/second-level/last-level'
-    await itemFactory.create(workspace, path)
+    const item = await itemFactory.create(workspace, path)
 
     const data = await controller.show({
       data: { workspace: workspace.name, path },
     })
 
-    expect(data).toEqual({
-      name: 'last-level',
-      path,
-      index: '/first-level/second-level/last-level/index.md',
-      workspace: workspace,
-    })
+    expect(data).toEqual(item)
   })
 
   test('should return workspace as item when using /', async ({ expect }) => {
@@ -63,39 +53,61 @@ test.group('ItemsController', (group) => {
 
     expect(data).toEqual({
       name: workspace.name,
+      systemPath: workspace.systemResolve(),
       path: '/',
       workspace: workspace,
-      index: null,
     })
   })
 
   test('should return item subitems', async ({ expect }) => {
-    await itemFactory.create(workspace, 'my-item')
+    const item = await itemFactory.create(workspace, 'my-item')
 
-    const [data] = await controller.subitems({
+    const [data] = await controller.showSubitems({
       data: { workspace: workspace.name, path: '/' },
     })
 
-    expect(data).toEqual({
-      name: 'my-item',
-      path: '/my-item',
-      workspace: workspace,
-      index: '/my-item/index.md',
-    })
+    expect(data).toEqual(item)
   })
 
   test('should return item files', async ({ expect }) => {
     const item = await itemFactory.create(workspace, 'my-item')
 
-    const [data] = await controller.files({
+    const [data] = await controller.showFiles({
       data: { workspace: workspace.name, path: '/my-item' },
     })
 
     expect(data).toEqual({
       name: 'index.md',
       path: '/my-item/index.md',
+      systemPath: workspace.systemResolve('/my-item/index.md'),
       workspace: workspace,
       item: item,
     })
+  })
+
+  test('should return item file option not exist', async ({ expect }) => {
+    const item = await itemFactory.create(workspace, 'my-item')
+
+    const option = {
+      name: 'test',
+    }
+
+    await item.setOption('index.md', option)
+
+    const data = await controller.showOptions({
+      data: { workspaceName: workspace.name, itemPath: item.path, filename: 'index.md' },
+    })
+
+    expect(data).toEqual(option)
+  })
+
+  test('should return empty if item file option not exist', async ({ expect }) => {
+    const item = await itemFactory.create(workspace, 'my-item')
+
+    const options = await controller.showOptions({
+      data: { workspaceName: workspace.name, itemPath: item.path, filename: '/' },
+    })
+
+    expect(options).toEqual({})
   })
 })

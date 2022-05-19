@@ -3,7 +3,7 @@ import { createWorkspaceFactory } from 'Tests/factories/workspace'
 import { createTestApp } from 'Tests/fixtures/app'
 import WorkspaceController from './WorkspaceController'
 
-test.group('ItemsController', (group) => {
+test.group('WorkspaceController (unit)', (group) => {
   const factory = createWorkspaceFactory()
   let controller: WorkspaceController
   let app: Awaited<ReturnType<typeof createTestApp>>

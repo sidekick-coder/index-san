@@ -49,15 +49,21 @@ export default class ItemsController {
     await rmdir(path, { recursive: true })
   }
 
-  public async subitems({ data }: ISEventContext) {
+  public async showSubitems({ data }: ISEventContext) {
     const item = await Item.findOrFail(data.workspace, data.path)
 
     return item.subitems()
   }
 
-  public async files({ data }: ISEventContext) {
+  public async showFiles({ data }: ISEventContext) {
     const item = await Item.findOrFail(data.workspace, data.path)
 
     return item.files()
+  }
+
+  public async showOptions({ data }: ISEventContext) {
+    const item = await Item.findOrFail(data.workspaceName, data.itemPath)
+
+    return item.findOption(data.filename)
   }
 }
