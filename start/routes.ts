@@ -54,6 +54,7 @@ export default async (app: indexSan) => {
   router.register('item:files', 'ItemsController.showFiles')
   router.register('item:subitems', 'ItemsController.showSubitems')
   router.register('item:option', 'ItemsController.showOption')
+  router.register('item:update-option', 'ItemsController.updateOption')
 
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')

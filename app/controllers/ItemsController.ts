@@ -61,9 +61,19 @@ export default class ItemsController {
     return item.files()
   }
 
-  public async showOptions({ data }: ISEventContext) {
-    const item = await Item.findOrFail(data.workspaceName, data.itemPath)
+  public async showOption(ctx: ISEventContext) {
+    const { workspaceName, itemPath, name } = ctx.data
 
-    return item.findOption(data.filename)
+    const item = await Item.findOrFail(workspaceName, itemPath)
+
+    return item.findOption(name)
+  }
+
+  public async updateOption(ctx: ISEventContext) {
+    const { workspaceName, itemPath, name, data } = ctx.data
+
+    const item = await Item.findOrFail(workspaceName, itemPath)
+
+    return item.updateOption(name, data)
   }
 }

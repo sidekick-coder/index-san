@@ -89,13 +89,13 @@ test.group('ItemsController (unit)', (group) => {
     const item = await itemFactory.create(workspace, 'my-item')
 
     const option = {
-      name: 'test',
+      displayName: 'test',
     }
 
-    await item.setOption('index.md', option)
+    await item.updateOption('index.md', option)
 
-    const data = await controller.showOptions({
-      data: { workspaceName: workspace.name, itemPath: item.path, filename: 'index.md' },
+    const data = await controller.showOption({
+      data: { workspaceName: workspace.name, itemPath: item.path, name: 'index.md' },
     })
 
     expect(data).toEqual(option)
@@ -104,10 +104,33 @@ test.group('ItemsController (unit)', (group) => {
   test('should return empty if item file option not exist', async ({ expect }) => {
     const item = await itemFactory.create(workspace, 'my-item')
 
-    const options = await controller.showOptions({
-      data: { workspaceName: workspace.name, itemPath: item.path, filename: '/' },
+    const options = await controller.showOption({
+      data: { workspaceName: workspace.name, itemPath: item.path, name: '/' },
     })
 
     expect(options).toEqual({})
+  })
+
+  test('should update an option of item', async ({ expect }) => {
+    const item = await itemFactory.create(workspace, 'my-item')
+
+    await item.updateOption('index.md', {
+      displayName: 'old',
+    })
+
+    await controller.updateOption({
+      data: {
+        workspaceName: workspace.name,
+        itemPath: item.path,
+        name: 'index.md',
+        data: {
+          displayName: 'new',
+        },
+      },
+    })
+
+    const option = await item.findOption('index.md')
+
+    expect(option).toEqual({ displayName: 'new' })
   })
 })
