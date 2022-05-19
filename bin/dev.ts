@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 import IndexSan from '../app'
 import { resolve } from 'path'
@@ -33,7 +33,7 @@ async function reopenApp() {
 
   await window.loadURL(`http://${host}:${port}`)
 
-  installExtension(VUEJS3_DEVTOOLS)
+  installExtension(VUEJS_DEVTOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) => console.log('An error occurred: ', err))
 

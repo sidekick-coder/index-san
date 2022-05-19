@@ -13,6 +13,8 @@ export interface Item {
 export interface File {
   name: string
   path: string
+  fullPath: string
+  systemPath: string
   workspace: Workspace
   item: Item
 }

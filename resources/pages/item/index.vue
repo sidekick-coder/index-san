@@ -38,6 +38,11 @@ const views = [
     component: defineAsyncComponent(() => import('@/views/editor.vue')),
     test: (filename: string) => /md/.test(filename),
   },
+  {
+    name: 'image',
+    component: defineAsyncComponent(() => import('@/views/image.vue')),
+    test: (filename: string) => /(png|jpg|jpeg|gif|svg)/.test(filename),
+  },
 ]
 
 async function setItem() {

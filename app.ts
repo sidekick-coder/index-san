@@ -34,7 +34,11 @@ export default class IndexSan {
   }
 
   public async boot() {
-    const files = [() => import('./start/routes'), () => import('./start/data')]
+    const files = [
+      () => import('./start/routes'),
+      () => import('./start/data'),
+      () => import('./start/protocols'),
+    ]
 
     const modules = await Promise.all(files.map((f) => f()))
 
