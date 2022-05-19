@@ -1,12 +1,10 @@
 import Electron from 'electron'
 import { resolve } from 'path'
 
-import Router from './lib/Router'
-import { container, injectable } from 'tsyringe'
+import { container } from 'tsyringe'
 import { debounce } from 'lodash'
 import Option from 'App/models/Option'
 export default class IndexSan {
-  public router = new Router()
   public _rootDir: string
   public _userDataDir: string
 

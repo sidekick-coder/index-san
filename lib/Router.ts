@@ -1,34 +1,23 @@
-import { injectable, container } from 'tsyringe'
-@injectable()
+interface RouteResolver {
+  (...args: any): Promise<any>
+}
+
 export default class Router {
-  public routes = new Map<string, () => Promise<any>>()
-  public controllers = new Map()
+  public routes = new Map<string, RouteResolver>()
 
-  public findController(name: string) {
-    if (this.controllers.has(name)) {
-      return this.controllers.get(name)
-    }
+  constructor(public resolveHandler: (nameOrHandler: string | RouteResolver) => RouteResolver) {}
 
-    const Module = require(`../app/controllers/${name}`).default
-
-    this.controllers.set(name, container.resolve(Module))
-
-    return this.controllers.get(name)
-  }
-
-  public createContext(...args: any[]) {
-    return args
-  }
-
-  public use(callback: (path: string, handler: (...args: any[]) => Promise<any>) => void) {
+  public use(callback: (path: string, handler: RouteResolver) => void) {
     return Array.from(this.routes.entries()).forEach(([p, h]) => callback(p, h))
   }
 
-  public register(path: string, handler: string) {
-    const [controllerName, method] = handler.split('.')
+  public register(path: string, handler: string | RouteResolver) {
+    if (!this.resolveHandler) {
+      throw new Error('router: resolveHandler must be defined before register routes')
+    }
 
-    const controller = this.findController(controllerName)
+    const resolver = this.resolveHandler(handler)
 
-    this.routes.set(path, controller[method].bind(controller))
+    this.routes.set(path, resolver)
   }
 }

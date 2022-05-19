@@ -1,9 +1,46 @@
+import Router from 'Lib/Router'
+
 import { colorize } from 'helpers'
 import { ISEventContext } from 'lib/ISEventContext'
 import indexSan from '../app'
+import { container } from 'tsyringe'
+
+const controllers = new Map()
+
+function findController(name: string) {
+  if (controllers.has(name)) {
+    return controllers.get(name)
+  }
+
+  const Module = require(`../app/controllers/${name}`).default
+
+  controllers.set(name, container.resolve(Module))
+
+  return controllers.get(name)
+}
+
+const resolveHandler: Router['resolveHandler'] = (nameOrHandler) => {
+  if (typeof nameOrHandler !== 'string') {
+    return nameOrHandler
+  }
+
+  const [controllerName, method] = nameOrHandler.split('.')
+
+  const controller = findController(controllerName)
+
+  if (!controller || !controller[method]) {
+    console.log(colorize(`routes: ${nameOrHandler} not found`, 'red'))
+
+    return () => true
+  }
+
+  return controller[method]
+}
 
 export default async (app: indexSan) => {
-  const { router, electron } = app
+  const { electron } = app
+
+  const router = new Router(resolveHandler)
 
   router.register('app:info', 'AppController.index')
 
@@ -16,7 +53,7 @@ export default async (app: indexSan) => {
   router.register('item:destroy', 'ItemsController.destroy')
   router.register('item:files', 'ItemsController.showFiles')
   router.register('item:subitems', 'ItemsController.showSubitems')
-  router.register('item:options', 'ItemsController.showOptions')
+  router.register('item:option', 'ItemsController.showOption')
 
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')
