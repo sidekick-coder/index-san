@@ -22,8 +22,21 @@ export function normalizePath(...args: string[]) {
     .map((p) => p.split('/'))
     .flat()
     .filter((p) => !!p)
+    .filter((p) => !p.includes(path.sep))
 }
 
 export function resolve(...args: string[]) {
-  return path.resolve(...normalizePath(...args))
+  return normalizePath(...args).join('/')
+}
+
+export function systemResolve(...args: string[]) {
+  return path.resolve(...args)
+}
+
+export function basename(args: string) {
+  return path.basename(args)
+}
+
+export function extname(args: string) {
+  return path.extname(args)
 }

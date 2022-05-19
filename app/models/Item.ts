@@ -7,18 +7,19 @@ import Workspace from './Workspace'
 export default class Item {
   public name: string
   public path: string
-  public index: string | null
+  public fullPath: string
+  public systemPath: string
 
   public workspace: Workspace
-
-  public get systemPath() {
-    return resolve(this.workspace.path, ...this.path.split('/'))
-  }
 
   public static make(data: Partial<Item>) {
     const item = new Item()
 
     Object.assign(item, data)
+
+    item.fullPath = item.workspace.resolve(item.path)
+
+    item.systemPath = item.workspace.systemResolve(item.path)
 
     return item
   }
@@ -36,7 +37,6 @@ export default class Item {
       name: basename(folder),
       path: workspace.resolve(path),
       workspace: workspace,
-      index: workspace.resolve(path, 'index.md'),
     })
   }
 
@@ -51,15 +51,12 @@ export default class Item {
       return null
     }
 
-    const haveIndex = await exists(resolve(filepath, 'index.md'))
-
     const name = itemPath === '/' ? workspace.name : basename(filepath)
 
     return this.make({
       name: name,
       path: workspace.resolve(itemPath),
       workspace: workspace,
-      index: haveIndex ? workspace.resolve(itemPath, 'index.md') : null,
     })
   }
 

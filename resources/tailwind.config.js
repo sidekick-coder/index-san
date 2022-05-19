@@ -20,6 +20,7 @@ module.exports = {
       resolve(__dirname, 'components/*.vue'),
       resolve(__dirname, 'pages/**/*.vue'),
       resolve(__dirname, 'views/**/*.vue'),
+      resolve(__dirname, 'views/**/**/**/*.ts'),
       resolve(__dirname, 'styles/*.css'),
     ],
     transform: {

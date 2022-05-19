@@ -19,6 +19,8 @@ export default async (app: indexSan) => {
 
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')
+  router.register('file:copy', 'FilesController.copy')
+  router.register('file:pick', 'FilesController.pick')
 
   router.use((path, handler) => {
     electron.ipcMain.removeHandler(path)

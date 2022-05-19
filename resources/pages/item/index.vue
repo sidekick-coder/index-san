@@ -35,7 +35,7 @@ const defaultView = {
 const views = [
   {
     name: 'editor',
-    component: defineAsyncComponent(() => import('@/views/editor.vue')),
+    component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
     test: (filename: string) => /md/.test(filename),
   },
   {
@@ -109,7 +109,9 @@ watch(file, setView)
       </w-content>
 
       <w-content v-else-if="file">
-        <component :is="view.component" :file="file" />
+        <div class="h-full w-full overflow-auto">
+          <component :is="view.component" :file="file" />
+        </div>
       </w-content>
 
       <w-content v-else class="flex items-center justify-center"> Select a file </w-content>

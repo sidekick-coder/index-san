@@ -1,17 +1,18 @@
-import File from 'App/models/File'
-import Workspace from 'App/models/Workspace'
-import { readdir, readFile, stat, writeFile } from 'fs/promises'
+import { inject, injectable } from 'tsyringe'
+
+import IndexSan from 'IndexSan'
+
+import { cp, readFile, stat, writeFile } from 'fs/promises'
 import { exists } from 'Helpers/filesystem'
-import { basename, extname, resolve } from 'path'
-import { ISEventContext } from '../../lib/ISEventContext'
-
+import { ISEventContext } from 'Lib/ISEventContext'
+@injectable()
 export default class FilesController {
+  constructor(@inject(IndexSan) public app: IndexSan) {}
+
   public async read({ data }: ISEventContext) {
-    const workspace = await Workspace.findOrFail(data.workspace)
+    const { path } = data
 
-    const filename = workspace.systemResolve(data.path)
-
-    const exist = await exists(filename)
+    const exist = await exists(path)
 
     if (!exist) {
       return {
@@ -20,7 +21,7 @@ export default class FilesController {
       }
     }
 
-    return readFile(filename, 'utf8')
+    return readFile(path, 'utf8')
   }
 
   public async write({ data }: ISEventContext) {
@@ -40,27 +41,33 @@ export default class FilesController {
     return writeFile(path, content, 'utf8')
   }
 
-  public async listFolder({ data }: ISEventContext) {
-    const { path } = data
+  public async pick({ data }: ISEventContext) {
+    const { filters, properties } = data
 
-    const exists = await stat(path)
-      .then((d) => d.isDirectory())
-      .catch(() => false)
+    const { filePaths } = await this.app.electron.dialog.showOpenDialog({
+      properties,
+      filters,
+    })
 
-    if (!exists) {
-      return {
-        status: 404,
-        message: 'Not a directory',
-      }
+    return filePaths
+  }
+
+  public async copy({ data }: ISEventContext) {
+    const { source, target } = data
+
+    const sourceExists = await exists(source)
+    const targetExists = await exists(target)
+
+    if (!sourceExists) {
+      throw new Error('Source file not found')
     }
 
-    const files = await readdir(path, { withFileTypes: true })
+    if (targetExists) {
+      throw new Error('Target file already exist')
+    }
 
-    return files.map((file) => ({
-      name: basename(file.name),
-      path: resolve(path, file.name),
-      isDirectory: file.isDirectory(),
-      extension: extname(path),
-    }))
+    await cp(source, target)
+
+    return true
   }
 }

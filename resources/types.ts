@@ -6,6 +6,8 @@ export interface Workspace {
 export interface Item {
   name: string
   path: string
+  fullPath: string
+  systemPath: string
   index: string | null
   workspace: Workspace
 }

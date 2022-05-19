@@ -1,5 +1,4 @@
-import { injectable } from 'tsyringe'
-
+import { injectable, container } from 'tsyringe'
 @injectable()
 export default class Router {
   public routes = new Map<string, () => Promise<any>>()
@@ -12,7 +11,7 @@ export default class Router {
 
     const Module = require(`../app/controllers/${name}`).default
 
-    this.controllers.set(name, new Module())
+    this.controllers.set(name, container.resolve(Module))
 
     return this.controllers.get(name)
   }

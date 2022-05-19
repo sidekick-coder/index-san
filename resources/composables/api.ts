@@ -1,5 +1,8 @@
 interface FilesystemHelper {
+  basename(args: string): string
+  extname(args: string): string
   resolve(...args: string[]): string
+  systemResolve(...args: string[]): string
   normalizePath(...args: string[]): string[]
 }
 interface WindowAPi {

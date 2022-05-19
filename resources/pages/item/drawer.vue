@@ -57,7 +57,7 @@ watch(() => layoutStore.right, setFiles, {
         </i>
       </div>
 
-      <div class="grow">
+      <div class="w-8/12 truncate">
         {{ f.name }}
       </div>
     </div>
