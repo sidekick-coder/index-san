@@ -4,7 +4,7 @@ import { specReporter } from '@japa/spec-reporter'
 // import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run } from '@japa/runner'
 
-const files = ['app/**/*.spec.ts']
+const files = ['src/**/*.spec.ts']
 
 configure({
   ...processCliArgs(process.argv.slice(2)),
