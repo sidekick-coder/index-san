@@ -1,4 +1,4 @@
-import { debounce, throttle } from 'lodash'
+import { throttle } from 'lodash'
 import { watch as fsWatch, readdirSync } from 'fs'
 import { resolve } from 'path'
 
@@ -27,7 +27,7 @@ export function watch(source: string, callback: Callback, options?: Options) {
   }, options?.throttleTime || 1000)
 
   files.forEach((file) =>
-    fsWatch(file, { recursive: true }, (_, filename) => {
+    fsWatch(resolve(source, file), { recursive: true }, (_, filename) => {
       if (!filename) return
 
       reload(resolve(file, filename))

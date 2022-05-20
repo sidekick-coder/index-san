@@ -10,11 +10,10 @@
     },
     "scripts": {
         "start": "electron .",
-        "dev": "cross-env NODE_ENV=development electron -r ./helpers/ts-register.ts bin/dev.ts",
-        "build": "ts-node --transpile-only bin/app-build.ts",
-        "test": "node -r ./helpers/ts-register.ts bin/test.ts",
-        "lint": "eslint . --ext=.ts,.vue --max-warnings=0",
-        "postinstall": "npm run build"
+        "preview": "cross-env NODE_ENV=production electron -r ./bin/ts-register.ts bin/preview.ts",
+        "dev": "cross-env NODE_ENV=development electron -r ./bin/ts-register.ts bin/dev.ts",
+        "test": "node -r ./bin/ts-register.ts bin/test.ts",
+        "lint": "eslint . --ext=.ts,.vue --max-warnings=0"
     },
     "keywords": [
         "cli"

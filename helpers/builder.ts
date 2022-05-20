@@ -13,9 +13,7 @@ export function createBuilder(root = process.cwd()) {
   function vite(command = '', ...args: string[]) {
     const bin = resolve(root, 'node_modules', '.bin', 'vite')
 
-    const folder = resolve(root, 'resources')
-
-    const child = execa(bin, [command, folder, ...args], {
+    const child = execa(bin, [command, ...args], {
       stderr: 'inherit',
       cleanup: true,
     })
