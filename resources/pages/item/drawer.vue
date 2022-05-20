@@ -35,7 +35,7 @@ async function setFiles() {
       workspace: props.item.workspace.name,
     })
     .then((data) => (files.value = data))
-    .catch(() => alert('Error loading files'))
+    .catch(console.error)
 
   if (!model.value) {
     const index = files.value.find((file) => file.name.includes('index'))
@@ -63,7 +63,7 @@ watch(() => layoutStore.right, setFiles, {
       </div>
 
       <div class="w-8/12 truncate">
-        {{ f.name }}
+        {{ f.displayName }}
       </div>
     </div>
   </w-drawer>

@@ -3,6 +3,7 @@ import { mkdir, readdir, writeFile } from 'fs/promises'
 import { exists, writeFileIfNotExist } from 'Helpers/filesystem'
 import { basename, resolve } from 'path'
 import File from './File'
+import Option from './Option'
 import Workspace from './Workspace'
 
 export default class Item {
@@ -88,12 +89,16 @@ export default class Item {
 
   public async files() {
     const raw = await readdir(this.systemPath, { withFileTypes: true })
+    const options = await this.findOptions()
+
+    console.log(options.find((o) => o.name === 'index.md'))
 
     return raw
       .filter((f) => f.isFile())
       .map((f) =>
         File.make({
           name: f.name,
+          displayName: options.find((o) => o.name === f.name)?.value?.displayTitle,
           path: this.resolve(f.name),
           workspace: this.workspace,
           item: this,
@@ -101,30 +106,11 @@ export default class Item {
       )
   }
 
-  public async findOption(name: string) {
+  public async findOptions() {
     const optionsFilePath = this.systemResolve('.index-san', 'options.json')
 
     await writeFileIfNotExist(optionsFilePath, JSON.stringify([]))
 
-    const [option] = await Query.from(optionsFilePath).where('name', name)
-
-    return option ? option.data : {}
-  }
-
-  public async updateOption(name: string, data: any) {
-    const optionsFilePath = this.systemResolve('.index-san', 'options.json')
-
-    await writeFileIfNotExist(optionsFilePath, JSON.stringify([]))
-
-    const [option] = await Query.from(optionsFilePath).where('name', name)
-
-    if (option) {
-      return Query.from(optionsFilePath).where('name', name).update({ data })
-    }
-
-    return Query.from(optionsFilePath).insert({
-      name,
-      data,
-    })
+    return Option.from<any>(optionsFilePath).all()
   }
 }

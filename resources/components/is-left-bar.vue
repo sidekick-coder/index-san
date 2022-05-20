@@ -34,7 +34,7 @@ workspaceStore.setWorkspaces()
       :key="workspace.path"
       :label="workspace.name"
       :workspace="workspace.name"
-      path="/"
+      path=""
     />
 
     <div

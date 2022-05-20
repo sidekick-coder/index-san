@@ -17,6 +17,7 @@ export interface ItemOption {
 
 export interface File {
   name: string
+  displayName: string
   path: string
   systemPath: string
   workspace: Workspace

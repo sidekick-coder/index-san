@@ -4,6 +4,7 @@ import Workspace from './workspace'
 
 export default class File {
   public name: string
+  public displayName: string
   public path: string
   public systemPath: string
 
@@ -16,6 +17,7 @@ export default class File {
     Object.assign(file, data)
 
     file.systemPath = file.item.workspace.systemResolve(file.path)
+    file.displayName = file.displayName || file.name
 
     return file
   }

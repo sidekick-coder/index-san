@@ -1,11 +1,28 @@
 import { Query } from '@code-pieces/db-json'
 import { isJSON } from '../../helpers/is-json'
 
+interface OptionObject<T> {
+  name: string
+  value: T
+}
+
 export default class Option<T = string | Record<string, any>> {
   constructor(public filename: string) {}
 
   public static from<T>(filename: string) {
     return new Option<T>(filename)
+  }
+
+  public async all() {
+    const options = await Query.from<OptionObject<any>[]>(this.filename)
+
+    options.forEach((option) => {
+      if (isJSON(option.value)) {
+        option.value = JSON.parse(option.value)
+      }
+    })
+
+    return options as OptionObject<T>[]
   }
 
   public query() {
