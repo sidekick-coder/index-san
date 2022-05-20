@@ -74,6 +74,6 @@ export default class Workspace {
   }
 
   public resolve(...args: string[]) {
-    return '/' + this.normalizePath(...args).join('/')
+    return this.normalizePath(...args).join('/')
   }
 }

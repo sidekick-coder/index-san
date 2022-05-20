@@ -1,45 +1,36 @@
 import { Query } from '@code-pieces/db-json'
-import { container, delay, inject } from 'tsyringe'
-
-import IndexSan from 'IndexSan'
 import { isJSON } from '../../helpers/is-json'
 
-export default class Option<T = string> {
-  public name: string
-  public value: T
+export default class Option<T = string | Record<string, any>> {
+  constructor(public filename: string) {}
 
-  public static query() {
-    const app = container.resolve(IndexSan)
-
-    const filename = app.userDataPath('options.json')
-
-    return Query.from(filename)
+  public static from<T>(filename: string) {
+    return new Option<T>(filename)
   }
 
-  public static async find<T = string>(name: string) {
+  public query() {
+    return Query.from(this.filename)
+  }
+
+  public async find<T = string>(name: string) {
     const [item] = await this.query().where('name', name)
 
     if (!item) return null
-
-    const option = new Option<T>()
 
     if (isJSON(item.value)) {
       item.value = JSON.parse(item.value)
     }
 
-    option.name = item.name
-    option.value = item.value
-
-    return option
+    return item
   }
 
-  public static async set(name: string, value: any) {
-    const option = await Option.find(name)
+  public async set(name: string, value: T) {
+    const option = await this.find(name)
 
     const query = this.query()
 
     if (Array.isArray(value) || typeof value === 'object') {
-      value = JSON.stringify(value)
+      value = JSON.stringify(value) as any as T
     }
 
     if (option) {
@@ -49,7 +40,7 @@ export default class Option<T = string> {
     return query.insert({ name, value })
   }
 
-  public static async get<T = any>(name: string, defaultValue?: T) {
+  public async get<T = any>(name: string, defaultValue?: T) {
     const option = await this.find(name)
 
     return (option ? option.value : defaultValue) as T

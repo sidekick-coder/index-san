@@ -9,6 +9,13 @@ export async function exists(path: string) {
     .catch(() => false)
 }
 
+export async function isDirectory(path: string) {
+  return fs
+    .stat(path)
+    .then((f) => f.isDirectory())
+    .catch(() => false)
+}
+
 export async function removeIfExist(path: string, options: RmOptions = { recursive: true }) {
   const isValid = await exists(path)
 

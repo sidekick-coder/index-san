@@ -33,9 +33,9 @@ async function reopenApp() {
 
   await window.loadURL(`http://${host}:${port}`)
 
-  installExtension(VUEJS_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err))
+  await installExtension(VUEJS_DEVTOOLS)
+    .then((name) => app.logger.info(`Added Extension:  ${name}`))
+    .catch((err) => app.logger.child({ err }).error('An error occurred: %s', err.message))
 
   return app
 }

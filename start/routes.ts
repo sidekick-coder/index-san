@@ -1,9 +1,9 @@
+import { container } from 'tsyringe'
 import Router from 'Lib/Router'
 
 import { colorize } from 'helpers'
 import { ISEventContext } from 'lib/ISEventContext'
 import indexSan from '../app'
-import { container } from 'tsyringe'
 
 const controllers = new Map()
 
@@ -34,11 +34,11 @@ const resolveHandler: Router['resolveHandler'] = (nameOrHandler) => {
     return () => true
   }
 
-  return controller[method]
+  return controller[method].bind(controller)
 }
 
 export default async (app: indexSan) => {
-  const { electron } = app
+  const { electron, logger } = app
 
   const router = new Router(resolveHandler)
 
@@ -53,13 +53,34 @@ export default async (app: indexSan) => {
   router.register('item:destroy', 'ItemsController.destroy')
   router.register('item:files', 'ItemsController.showFiles')
   router.register('item:subitems', 'ItemsController.showSubitems')
-  router.register('item:option', 'ItemsController.showOption')
-  router.register('item:update-option', 'ItemsController.updateOption')
 
   router.register('file:read', 'FilesController.read')
   router.register('file:write', 'FilesController.write')
   router.register('file:copy', 'FilesController.copy')
   router.register('file:pick', 'FilesController.pick')
+
+  router.get('/options/:filename', 'OptionsController.show')
+
+  electron.ipcMain.removeHandler('request')
+
+  electron.ipcMain.handle('request', (_event, method, route) => {
+    return router
+      .resolve(method, route)
+      .then((result) => {
+        logger.info(`routes ${route}`)
+        return {
+          success: true,
+          data: result,
+        }
+      })
+      .catch((error) => {
+        logger.error(error)
+        return {
+          success: false,
+          error,
+        }
+      })
+  })
 
   router.use((path, handler) => {
     electron.ipcMain.removeHandler(path)
@@ -72,15 +93,16 @@ export default async (app: indexSan) => {
 
       const context: ISEventContext = {
         data: args,
+        params: {},
       }
 
       return handler(context)
         .then((data) => ({
-          status: 'success',
+          success: true,
           data,
         }))
         .catch((error) => ({
-          status: 'error',
+          success: false,
           error,
         }))
     })

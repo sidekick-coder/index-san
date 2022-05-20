@@ -7,6 +7,7 @@ interface FilesystemHelper {
 }
 interface WindowAPi {
   invoke<T = any>(name: string, args?: any): Promise<T>
+  get<T = any>(name: string): Promise<T>
   filesystem: FilesystemHelper
 }
 

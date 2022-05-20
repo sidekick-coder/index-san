@@ -57,11 +57,11 @@ export default class Item {
       return null
     }
 
-    const name = itemPath === '/' ? workspace.name : basename(filepath)
+    const isWorkspace = itemPath === '/'
 
     return this.make({
-      name: name,
-      path: workspace.resolve(itemPath),
+      name: isWorkspace ? workspace.name : basename(filepath),
+      path: isWorkspace ? '/' : workspace.resolve(itemPath),
       workspace: workspace,
     })
   }
@@ -111,7 +111,7 @@ export default class Item {
     return option ? option.data : {}
   }
 
-  public async setOption(name: string, data: any) {
+  public async updateOption(name: string, data: any) {
     const optionsFilePath = this.systemResolve('.index-san', 'options.json')
 
     await writeFileIfNotExist(optionsFilePath, JSON.stringify([]))

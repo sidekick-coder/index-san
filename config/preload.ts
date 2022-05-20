@@ -16,6 +16,17 @@ const WINDOW_API = {
       resolve(result.data)
     })
   },
+  get: (route: string) => {
+    return new Promise(async (resolve, reject) => {
+      const result = await ipcRenderer.invoke('request', 'get', route)
+
+      if (!result.success) {
+        return reject(result)
+      }
+
+      resolve(result)
+    })
+  },
 }
 
 contextBridge.exposeInMainWorld('WINDOW_API', WINDOW_API)
