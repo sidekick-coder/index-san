@@ -132,12 +132,14 @@ async function deleteItem() {
     />
   </div>
 
-  <w-dialog v-model="dialog">
-    <w-form @submit="addItem">
-      <w-card class="p-4 rounded">
-        <w-input v-model="name" label="Name" placeholder="item name" class="mb-4" />
-        <w-btn :disabled="!name" color="accent" text-color="white">Submit</w-btn>
-      </w-card>
-    </w-form>
-  </w-dialog>
+  <teleport to="body">
+    <w-dialog v-model="dialog">
+      <w-form @submit="addItem">
+        <w-card class="p-4 rounded">
+          <w-input v-model="name" label="Name" placeholder="item name" class="mb-4" />
+          <w-btn :disabled="!name" color="accent" text-color="white">Submit</w-btn>
+        </w-card>
+      </w-form>
+    </w-dialog>
+  </teleport>
 </template>
