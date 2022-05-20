@@ -14,6 +14,7 @@ interface WindowAPi {
   invoke<T = any>(name: string, args?: any): Promise<T>
   get<T = any>(name: string): Promise<Response<T>>
   patch<T = any>(name: string, data?: any): Promise<Response<T>>
+  on: (event: string, cb: (...args: any[]) => void) => void
   filesystem: FilesystemHelper
 }
 

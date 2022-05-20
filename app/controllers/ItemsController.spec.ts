@@ -20,10 +20,7 @@ test.group('ItemsController (unit)', (group) => {
     workspace = await workspaceFactory.create('test')
     controller = container.resolve(ItemsController)
 
-    return async () => {
-      await app.cleanup()
-      await workspaceFactory.cleanup()
-    }
+    return workspaceFactory.cleanup
   })
 
   test('should show return an item from workspace', async ({ expect }) => {
@@ -88,6 +85,7 @@ test.group('ItemsController (unit)', (group) => {
     )
 
     expect(data).toEqual({
+      displayName: 'index.md',
       name: 'index.md',
       path: 'my-item/index.md',
       systemPath: workspace.systemResolve('/my-item/index.md'),

@@ -2,7 +2,7 @@ import App from '../../app'
 import sinon from 'sinon'
 import { container } from 'tsyringe'
 import { resolve } from 'path'
-import { mkdir, rm } from 'fs/promises'
+import { mkdirIfNotExist, removeIfExist } from 'Helpers/filesystem'
 
 export async function createTestApp() {
   const tmp = resolve(process.cwd(), 'tmp', 'user-data')
@@ -15,6 +15,7 @@ export async function createTestApp() {
     ipcMain: {
       removeHandler: sinon.stub(),
       handle: sinon.stub(),
+      emit: sinon.stub(),
     },
     dialog: {
       showOpenDialog: sinon.stub(),
@@ -22,22 +23,20 @@ export async function createTestApp() {
     protocol: {
       registerFileProtocol: sinon.stub(),
     },
+    webContents: {
+      getAllWebContents: sinon.stub().returns([]),
+    },
   }
 
   const app = new App(electron as any)
 
   container.registerInstance(App, app)
 
-  await mkdir(tmp, { recursive: true })
+  await mkdirIfNotExist(tmp)
 
   await app.boot()
 
-  async function cleanup() {
-    await rm(tmp, { recursive: true })
-  }
-
   return Object.assign(app, {
-    cleanup,
     electronStub: electron,
   })
 }

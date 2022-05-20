@@ -78,7 +78,17 @@ async function main() {
   await reopenApp()
 
   watch(app.appPath(), reload, {
-    ignore: ['dist', 'main.ts', 'node_modules', 'public', '.git', 'bin', 'resources'],
+    ignore: [
+      'dist',
+      'main.ts',
+      'node_modules',
+      'public',
+      '.git',
+      '.vscode',
+      'bin',
+      'resources',
+      'tmp',
+    ],
   })
 }
 

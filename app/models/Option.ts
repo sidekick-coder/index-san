@@ -26,7 +26,7 @@ export default class Option<T = string | Record<string, any>> {
   }
 
   public query() {
-    return Query.from(this.filename)
+    return Query.from<OptionObject<T>>(this.filename)
   }
 
   public async find(name: string) {
@@ -38,7 +38,7 @@ export default class Option<T = string | Record<string, any>> {
       item.value = JSON.parse(item.value)
     }
 
-    return item
+    return item as OptionObject<T>
   }
 
   public async set(name: string, value: T) {

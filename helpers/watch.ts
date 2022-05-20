@@ -1,4 +1,4 @@
-import { debounce } from 'lodash'
+import { debounce, throttle } from 'lodash'
 import { watch as fsWatch, readdirSync } from 'fs'
 import { resolve } from 'path'
 
@@ -8,6 +8,7 @@ interface Callback {
 
 interface Options {
   ignore?: string[]
+  throttleTime?: number
 }
 
 export function watch(source: string, callback: Callback, options?: Options) {
@@ -19,11 +20,11 @@ export function watch(source: string, callback: Callback, options?: Options) {
     return !options.ignore.some((pattern) => new RegExp(pattern).test(filename))
   })
 
-  const reload = debounce((filename: string | null) => {
+  const reload = throttle((filename: string | null) => {
     if (!filename) return
 
     callback(filename)
-  }, 500)
+  }, options?.throttleTime || 1000)
 
   files.forEach((file) =>
     fsWatch(file, { recursive: true }, (_, filename) => {

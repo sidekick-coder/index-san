@@ -16,30 +16,30 @@ const props = defineProps({
 
 const editorRef = ref<HTMLElement>()
 const saving = ref(false)
-const displayTitle = ref('')
+const displayName = ref('')
 
 const saveTitle = throttle(async () => {
   const { path, workspace } = props.file
 
   await api
     .patch(`/options/${workspace.name}/${path}`, {
-      displayTitle: displayTitle.value,
+      displayName: displayName.value,
     })
     .catch(console.error)
+    .then(console.log)
 }, 1000)
 
 async function setTitle() {
   const { path, workspace } = props.file
-  displayTitle.value = props.file.name
-
   await api
     .get<ItemOption>(`/options/${workspace.name}/${path}`)
     .then(({ data }) => {
-      if (!data.displayTitle) return
+      console.log(data, path)
+      if (!data.displayName) return
 
-      displayTitle.value = data.displayTitle
+      displayName.value = data.displayName
     })
-    .catch(console.error)
+    .catch(() => (displayName.value = props.file.name))
 }
 
 async function save(data: EditorSaveContext) {
@@ -78,7 +78,7 @@ onMounted(load)
   <div class="pt-10 px-16">
     <h2 class="text-2xl mb-4">
       <input
-        v-model="displayTitle"
+        v-model="displayName"
         class="focus:border-0 outline-none font-bold"
         @change="saveTitle"
       />

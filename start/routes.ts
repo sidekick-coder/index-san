@@ -59,8 +59,8 @@ export default async (app: indexSan) => {
   router.register('file:copy', 'FilesController.copy')
   router.register('file:pick', 'FilesController.pick')
 
-  router.get('/options/:workspaceName/:path', 'OptionsController.show')
-  router.patch('/options/:workspaceName/:path', 'OptionsController.update')
+  router.get('/options/:workspaceName/:path(.*)', 'OptionsController.show')
+  router.patch('/options/:workspaceName/:path(.*)', 'OptionsController.update')
 
   electron.ipcMain.removeHandler('request')
 

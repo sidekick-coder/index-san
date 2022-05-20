@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, PropType, watch } from 'vue'
+
 import { useLayoutStore } from '@/stores/layout'
 import { Item, File } from '@/types'
 import { useWindowApi } from '@/composables/api'
@@ -42,6 +43,15 @@ async function setFiles() {
     model.value = index || files.value[0] || null
   }
 }
+
+api.on('option:updated', (payload: any) => {
+  console.log(payload)
+  files.value
+    .filter((file) => payload.name.includes(file.name))
+    .forEach((file) => {
+      file.displayName = payload.data.displayName
+    })
+})
 
 watch(() => layoutStore.right, setFiles, {
   immediate: true,

@@ -38,6 +38,7 @@ const WINDOW_API = {
       resolve(result)
     })
   },
+  on: (event: string, cb: (...args: any[]) => void) => ipcRenderer.on(event, (e, data) => cb(data)),
 }
 
 contextBridge.exposeInMainWorld('WINDOW_API', WINDOW_API)

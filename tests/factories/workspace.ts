@@ -1,8 +1,7 @@
 import Workspace from 'App/models/workspace'
-import { mkdir } from 'fs/promises'
 import { resolve } from 'path'
 import { v4 as uuid } from 'uuid'
-import { removeIfExist } from 'Helpers/filesystem'
+import { mkdirIfNotExist, removeIfExist } from 'Helpers/filesystem'
 
 export function createWorkspaceFactory() {
   const tmp = resolve(process.cwd(), 'tmp', 'dummy', 'workspaces')
@@ -10,9 +9,9 @@ export function createWorkspaceFactory() {
   async function create(name = uuid()) {
     const filepath = resolve(tmp, name)
 
-    await mkdir(filepath, { recursive: true })
+    await mkdirIfNotExist(filepath)
 
-    return await Workspace.create(filepath)
+    return Workspace.create(filepath)
   }
 
   async function createMany(count = 5) {
@@ -26,6 +25,7 @@ export function createWorkspaceFactory() {
   }
 
   async function cleanup() {
+    await Workspace.query().delete()
     await removeIfExist(tmp)
   }
 

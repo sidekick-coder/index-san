@@ -117,7 +117,7 @@ async function deleteItem() {
   </router-link>
 
   <div v-if="expand" class="w-full">
-    <div v-if="!children.length" class="left-bar-item" :style="`padding-left: ${deep + 1}rem`">
+    <div v-if="!children.length" class="list-item" :style="`padding-left: ${deep + 1}rem`">
       No items
     </div>
 

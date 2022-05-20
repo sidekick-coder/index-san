@@ -5,18 +5,18 @@ import { createContext } from 'Tests/fixtures/context'
 import WorkspaceController from './WorkspaceController'
 
 test.group('WorkspaceController (unit)', (group) => {
-  const factory = createWorkspaceFactory()
   let controller: WorkspaceController
   let app: Awaited<ReturnType<typeof createTestApp>>
 
-  group.each.setup(async () => {
+  const factory = createWorkspaceFactory()
+
+  group.setup(async () => {
     app = await createTestApp()
     controller = new WorkspaceController(app)
+  })
 
-    return async () => {
-      await app.cleanup()
-      await factory.cleanup()
-    }
+  group.each.setup(() => {
+    return async () => await factory.cleanup()
   })
 
   test('should return a all workspaces', async ({ expect }) => {

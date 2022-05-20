@@ -17,9 +17,9 @@ export async function isDirectory(path: string) {
 }
 
 export async function removeIfExist(path: string, options: RmOptions = { recursive: true }) {
-  const isValid = await exists(path)
+  const fileExist = await exists(path)
 
-  if (!isValid) return
+  if (!fileExist) return
 
   await fs.rm(path, options)
 }

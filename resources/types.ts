@@ -12,7 +12,7 @@ export interface Item {
 }
 
 export interface ItemOption {
-  displayTitle?: string
+  displayName?: string
 }
 
 export interface File {

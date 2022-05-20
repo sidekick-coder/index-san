@@ -83,6 +83,7 @@ export default class Item {
     return await Promise.all(
       raw
         .filter((f) => f.isDirectory())
+        .filter((f) => f.name !== '.index-san')
         .map((f) => Item.find(this.workspace.name, `${this.path}/${f.name}`))
     )
   }
@@ -91,14 +92,12 @@ export default class Item {
     const raw = await readdir(this.systemPath, { withFileTypes: true })
     const options = await this.findOptions()
 
-    console.log(options.find((o) => o.name === 'index.md'))
-
     return raw
       .filter((f) => f.isFile())
       .map((f) =>
         File.make({
           name: f.name,
-          displayName: options.find((o) => o.name === f.name)?.value?.displayTitle,
+          displayName: options.find((o) => o.name === this.resolve(f.name))?.value?.displayName,
           path: this.resolve(f.name),
           workspace: this.workspace,
           item: this,
