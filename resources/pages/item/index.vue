@@ -54,10 +54,10 @@ async function setItem() {
     .invoke('item:show', { path: props.path, workspace: props.workspace })
     .then((data) => (item.value = data))
     .catch(() => alert('Failed to load item'))
-    .finally(() => setTimeout(() => (loading.value.item = false), 800))
+    .finally(() => setTimeout(() => (loading.value.item = false), 500))
 }
 
-function setView() {
+async function setView() {
   loading.value.view = true
 
   const search = views.find((view) => {
@@ -96,7 +96,7 @@ watch(file, setView)
     </w-content>
 
     <template v-else>
-      <toolbar :layout-ignore="['right']" />
+      <Toolbar :layout-ignore="['right']" />
 
       <w-content
         v-if="loading.view"
@@ -108,7 +108,7 @@ watch(file, setView)
         </div>
       </w-content>
 
-      <w-content v-else-if="file">
+      <w-content v-else-if="file" v-show="!loading.view">
         <div class="h-full w-full overflow-auto">
           <component :is="view.component" :file="file" />
         </div>
@@ -116,7 +116,7 @@ watch(file, setView)
 
       <w-content v-else class="flex items-center justify-center"> Select a file </w-content>
 
-      <drawer v-model:file="file" :item="item" right layout-id="right" />
+      <Drawer v-model:file="file" :item="item" right layout-id="right" />
     </template>
   </w-layout>
 </template>

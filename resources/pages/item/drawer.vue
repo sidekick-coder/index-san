@@ -36,6 +36,11 @@ async function setFiles() {
     })
     .then((data) => (files.value = data))
     .catch(() => alert('Error loading files'))
+
+  if (!model.value) {
+    const index = files.value.find((file) => file.name.includes('index'))
+    model.value = index || files.value[0] || null
+  }
 }
 
 watch(() => layoutStore.right, setFiles, {
@@ -43,7 +48,7 @@ watch(() => layoutStore.right, setFiles, {
 })
 </script>
 <template>
-  <w-drawer v-model="layoutStore.right" class="border-l" width="[300px]">
+  <w-drawer v-model="layoutStore.right" class="border-l bg-white" width="[300px]">
     <div
       v-for="f in files"
       :key="f.name"

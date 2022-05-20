@@ -26,7 +26,7 @@ export default class Workspace {
   public static async findOrFail(name: string) {
     const data = await this.find(name)
 
-    if (!data) throw new Error('Workspace not found')
+    if (!data) throw new Error(`Workspace not found ${name}`)
 
     return data
   }

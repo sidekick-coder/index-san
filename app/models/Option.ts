@@ -12,7 +12,7 @@ export default class Option<T = string | Record<string, any>> {
     return Query.from(this.filename)
   }
 
-  public async find<T = string>(name: string) {
+  public async find(name: string) {
     const [item] = await this.query().where('name', name)
 
     if (!item) return null

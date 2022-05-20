@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import { createWorkspaceFactory } from 'Tests/factories/workspace'
 import { createTestApp } from 'Tests/fixtures/app'
+import { createContext } from 'Tests/fixtures/context'
 import WorkspaceController from './WorkspaceController'
 
 test.group('WorkspaceController (unit)', (group) => {
@@ -46,7 +47,7 @@ test.group('WorkspaceController (unit)', (group) => {
   test('should destroy a workspace', async ({ expect }) => {
     const workspace = await factory.create()
 
-    await controller.destroy({ data: { path: workspace.name } })
+    await controller.destroy(createContext({ data: { path: workspace.name } }))
 
     const workspaces = await controller.index()
 

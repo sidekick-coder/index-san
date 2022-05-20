@@ -27,6 +27,17 @@ const WINDOW_API = {
       resolve(result)
     })
   },
+  patch: (route: string, data: any) => {
+    return new Promise(async (resolve, reject) => {
+      const result = await ipcRenderer.invoke('request', 'patch', route, data)
+
+      if (!result.success) {
+        return reject(result)
+      }
+
+      resolve(result)
+    })
+  },
 }
 
 contextBridge.exposeInMainWorld('WINDOW_API', WINDOW_API)

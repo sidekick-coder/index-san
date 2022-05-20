@@ -89,7 +89,7 @@ async function deleteItem() {
   <router-link
     class="list-item clickable"
     :style="`padding-left: ${deep}rem`"
-    :to="`/${workspace}${path}`"
+    :to="`/${workspace}/${path}`"
   >
     <div class="w-2/12 justify-start">
       <i class="icon" @click.stop="expand = !expand">

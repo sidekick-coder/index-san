@@ -22,7 +22,7 @@ export default class OptionsController {
 
     const option = await Option.from(optionsFilePath).find(basename(realPath))
 
-    return option.data
+    return option.value
   }
 
   public async update({ params, data }: ISEventContext) {

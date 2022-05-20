@@ -13,7 +13,7 @@ interface Route {
   name: string
   path: string
   handler: RouteResolver
-  method: 'get'
+  method: 'get' | 'patch'
 }
 export default class Router {
   public routes: Route[] = []
@@ -54,7 +54,22 @@ export default class Router {
     })
   }
 
-  public async resolve(method: string, url: string, ...args: any[]) {
+  public patch(path: string, handler: string | RouteResolver) {
+    if (!this.resolveHandler) {
+      throw new Error('router: resolveHandler must be defined before register routes')
+    }
+
+    const resolver = this.resolveHandler(handler)
+
+    this.routes.push({
+      name: path,
+      path,
+      handler: resolver,
+      method: 'patch',
+    })
+  }
+
+  public async resolve(method: string, url: string, data?: any) {
     const route = this.routes
       .filter((route) => route.method === method)
       .find((route) => PathMatch(route.path)(url))
@@ -67,7 +82,7 @@ export default class Router {
 
     const params = match(url)
 
-    const context = { params }
+    const context = { params, data }
 
     return route.handler(context)
   }
