@@ -6,4 +6,12 @@ function useCase(name, args) {
   })
 }
 
+const electron = {
+  showOpenDialog: (args) =>
+    ipcRenderer.invoke('electron:show-dialog', {
+      ...args,
+    }),
+}
+
 contextBridge.exposeInMainWorld('useCase', useCase)
+contextBridge.exposeInMainWorld('electron', electron)

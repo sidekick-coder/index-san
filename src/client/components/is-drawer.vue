@@ -2,18 +2,35 @@
 import { useWindowApi } from '../composables/api'
 import { useWorkspaceStore } from '../stores/workspace'
 import { useLayoutStore } from '../stores/layout'
+import { useElectron } from '@/composables/use-electron'
+import { useCase } from '@/composables/use-case'
 
-const api = useWindowApi()
-const workspaceStore = useWorkspaceStore()
+const electron = useElectron()
+const store = useWorkspaceStore()
 const layoutStore = useLayoutStore()
 
 async function addWorkspace() {
-  await api.invoke('workspace:store')
+  const request = await electron.showOpenDialog({
+    properties: ['openDirectory'],
+  })
 
-  await workspaceStore.setWorkspaces()
+  if (request.canceled) {
+    return
+  }
+
+  const filepath = request.filePaths[0]
+  const basename = filepath.split(/\/|\\/).pop()
+
+  await useCase('create-workspace', {
+    id: filepath,
+    name: basename,
+    displayName: basename,
+  })
+
+  await store.setWorkspaces()
 }
 
-workspaceStore.setWorkspaces()
+store.setWorkspaces()
 </script>
 
 <template>
@@ -27,10 +44,10 @@ workspaceStore.setWorkspaces()
       <h1 class="text-2xl font-bold">Index-san</h1>
     </div>
 
-    <div v-if="!workspaceStore.workspaces.length" class="list-item">No items</div>
+    <div v-if="!store.workspaces.length" class="list-item">No items</div>
 
     <is-left-bar-item
-      v-for="workspace in workspaceStore.workspaces"
+      v-for="workspace in store.workspaces"
       :key="workspace.path"
       :label="workspace.name"
       :workspace="workspace.name"

@@ -1,4 +1,4 @@
-import { ipcMain, app } from 'electron'
+import { ipcMain, app, dialog } from 'electron'
 import { resolve } from 'path'
 import FileSystemWorkspaceRepository from 'Repositories/implementations/FilesystemWorkspaceRepository'
 import CreateWorkspace from 'UseCases/create-workspace'
@@ -19,3 +19,5 @@ useCases.forEach(({ name, useCase }) => {
   ipcMain.removeHandler(`use-case:${name}`)
   ipcMain.handle(`use-case:${name}`, (_, data) => useCase.execute(data))
 })
+
+ipcMain.handle('electron:show-dialog', (_, data) => dialog.showOpenDialog(data))
