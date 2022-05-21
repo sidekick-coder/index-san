@@ -47,11 +47,11 @@ store.setWorkspaces()
 
     <is-drawer-item
       v-for="workspace in store.workspaces"
-      :id="workspace.id"
       :key="workspace.id"
       :workspace-id="workspace.id"
       :to="`/`"
       :label="workspace.displayName"
+      :is-workspace="true"
     />
 
     <div

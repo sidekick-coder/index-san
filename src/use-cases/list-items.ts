@@ -3,6 +3,11 @@ import IConfigsRepository from 'Repositories/IConfigsRepository'
 import IItemsRepository, { IndexFilters } from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
+interface Args {
+  workspaceId: string
+  filters?: IndexFilters
+}
+
 export default class ListItems {
   constructor(
     private workspacesRepository: IWorkspacesRepository,
@@ -10,7 +15,7 @@ export default class ListItems {
     private configsRepository: IConfigsRepository
   ) {}
 
-  public async execute(workspaceId: string, filters?: IndexFilters) {
+  public async execute({ workspaceId, filters }: Args) {
     const workspace = await this.workspacesRepository.findById(workspaceId)
 
     if (!workspace) throw new WorkspaceNotFound(workspaceId)

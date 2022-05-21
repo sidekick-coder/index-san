@@ -23,7 +23,9 @@ test.group('use-case: list-items', () => {
     const workspace = await workspaceFactory.create()
     const items = await itemFactory.createMany(workspace)
 
-    const result = await listItems.execute(workspace.id)
+    const result = await listItems.execute({
+      workspaceId: workspace.id,
+    })
 
     expect(result).toEqual(items)
   })
@@ -36,7 +38,9 @@ test.group('use-case: list-items', () => {
       value: { displayName: 'hello word' },
     })
 
-    const [result] = await listItems.execute(workspace.id)
+    const [result] = await listItems.execute({
+      workspaceId: workspace.id,
+    })
 
     expect(result).toEqual({
       ...item,
@@ -52,11 +56,14 @@ test.group('use-case: list-items', () => {
       path: parent.path + '/child',
     })
 
-    const result = await listItems.execute(workspace.id, {
-      parentPath: parent.path,
+    const result = await listItems.execute({
+      workspaceId: workspace.id,
+      filters: {
+        parentPath: parent.path,
+      },
     })
 
-    // expect(result).toHaveLength(1)
+    expect(result).toHaveLength(1)
 
     expect(result).toEqual([child])
   })

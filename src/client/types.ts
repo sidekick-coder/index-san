@@ -8,9 +8,8 @@ export interface Workspace {
 export interface Item {
   name: string
   path: string
-  systemPath: string
-  index: string | null
-  workspace: Workspace
+  workspaceId: string
+  config?: any
 }
 
 export interface ItemOption {

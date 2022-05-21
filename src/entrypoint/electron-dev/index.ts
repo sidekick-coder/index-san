@@ -41,6 +41,8 @@ export default class ElectronDevApplication extends ElectronApplication {
   public async reload(filename: string) {
     if (filename.includes('client')) return
 
+    console.log(colorize(`reload: ${filename}`, 'blue'))
+
     this.builder.clearCache()
 
     await this.tsc()

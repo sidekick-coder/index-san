@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { useWindowApi } from '@/composables/api'
 import { useCase } from '@/composables/use-case'
 import { useWorkspaceStore } from '@/stores/workspace'
 import { Item } from '@/types'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
   workspaceId: {
     type: String,
     required: true,
+  },
+  path: {
+    type: String,
+    default: '',
   },
   to: {
     type: String,
@@ -26,6 +25,10 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  isWorkspace: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 // const emit = defineEmits(['deleted'])
@@ -37,10 +40,20 @@ const dialog = ref(false)
 const expand = ref(false)
 const loading = ref(false)
 const name = ref('')
-// const children = ref<Item[]>([])
+const children = ref<Item[]>([])
 
 async function setChildren() {
   loading.value = true
+
+  useCase<Item[]>('list-items', {
+    workspaceId: props.workspaceId,
+    filters: {
+      parentPath: props.path,
+    },
+  })
+    .then((data) => (children.value = data))
+    .catch(console.error)
+    .finally(() => setTimeout(() => (loading.value = false), 500))
 
   // await api
   //   .invoke('item:subitems', {
@@ -59,7 +72,9 @@ watch(
 )
 
 async function deleteWorkspace() {
-  await useCase('delete-workspace', props.id).catch(console.error).then(store.setWorkspaces)
+  await useCase('delete-workspace', props.workspaceId)
+    .catch(console.error)
+    .then(store.setWorkspaces)
 }
 
 async function addItem() {
@@ -116,26 +131,27 @@ async function deleteItem() {
         <fa-icon icon="plus" @click.stop="dialog = true" />
       </i>
       <i class="icon">
-        <fa-icon v-if="id === workspaceId" icon="link-slash" @click.stop="deleteWorkspace" />
+        <fa-icon v-if="isWorkspace" icon="link-slash" @click.stop="deleteWorkspace" />
         <fa-icon v-else icon="trash" @click.stop="deleteItem" />
       </i>
     </div>
   </router-link>
 
-  <!-- <div v-if="expand" class="w-full">
+  <div v-if="expand" class="w-full">
     <div v-if="!children.length" class="list-item" :style="`padding-left: ${deep + 1}rem`">
       No items
     </div>
 
-    <is-left-bar-item
+    <is-drawer-item
       v-for="item in children"
       :key="item.path"
-      :label="item.name"
+      to="/"
+      :workspace-id="workspaceId"
       :path="item.path"
+      :label="item.name"
       :deep="deep + 1"
-      @deleted="setChildren"
     />
-  </div> -->
+  </div>
 
   <teleport to="body">
     <w-dialog v-model="dialog">

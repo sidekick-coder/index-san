@@ -8,23 +8,28 @@ import CreateItem from 'UseCases/create-item'
 import CreateWorkspace from 'UseCases/create-workspace'
 import DeleteWorkspace from 'UseCases/delete-workspace'
 import ListWorkspaces from 'UseCases/list-workspaces'
+import FSConfigsRepository from 'Repositories/implementations/FSConfigsRepository'
+import ListItems from 'UseCases/list-items'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
 const workspacesRepository = new FSWorkspacesRepository(filename)
 const itemsRepository = new FsItemsRepository()
+const configsRepository = new FSConfigsRepository()
 
 const createWorkspace = new CreateWorkspace(workspacesRepository)
 const deleteWorkspace = new DeleteWorkspace(workspacesRepository)
 const listWorkspaces = new ListWorkspaces(workspacesRepository)
 
 const createItem = new CreateItem(workspacesRepository, itemsRepository)
+const listItems = new ListItems(workspacesRepository, itemsRepository, configsRepository)
 
 const useCases = [
   { name: 'create-workspace', useCase: createWorkspace },
   { name: 'list-workspaces', useCase: listWorkspaces },
   { name: 'delete-workspace', useCase: deleteWorkspace },
   { name: 'create-item', useCase: createItem },
+  { name: 'list-items', useCase: listItems },
 ]
 
 useCases.forEach(({ name, useCase }) => {

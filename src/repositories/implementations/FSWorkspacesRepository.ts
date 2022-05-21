@@ -1,6 +1,8 @@
 import { Query } from '@code-pieces/db-json'
 import Workspace from 'Entities/Workspace'
+import { resolve } from 'path'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
+import { writeFileIfNotExist } from 'Utils/filesystem'
 
 export default class FSWorkspacesRepository implements IWorkspacesRepository {
   constructor(private readonly filename: string) {}
@@ -23,6 +25,10 @@ export default class FSWorkspacesRepository implements IWorkspacesRepository {
 
   public async create(data: Workspace) {
     await this.query().insert(data)
+
+    const filename = resolve(data.path, '.index-san', 'configs.json')
+
+    await writeFileIfNotExist(filename, JSON.stringify([]))
 
     return data
   }
