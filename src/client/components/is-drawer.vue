@@ -49,7 +49,7 @@ store.setWorkspaces()
       v-for="workspace in store.workspaces"
       :key="workspace.id"
       :workspace-id="workspace.id"
-      :to="`/`"
+      :to="`/${workspace.id}/root`"
       :label="workspace.displayName"
       :is-workspace="true"
     />

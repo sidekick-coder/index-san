@@ -10,6 +10,7 @@ import DeleteWorkspace from 'UseCases/delete-workspace'
 import ListWorkspaces from 'UseCases/list-workspaces'
 import FSConfigsRepository from 'Repositories/implementations/FSConfigsRepository'
 import ListItems from 'UseCases/list-items'
+import ShowItem from 'UseCases/show-item'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
@@ -21,8 +22,9 @@ const createWorkspace = new CreateWorkspace(workspacesRepository)
 const deleteWorkspace = new DeleteWorkspace(workspacesRepository)
 const listWorkspaces = new ListWorkspaces(workspacesRepository)
 
-const createItem = new CreateItem(workspacesRepository, itemsRepository)
 const listItems = new ListItems(workspacesRepository, itemsRepository, configsRepository)
+const showItem = new ShowItem(workspacesRepository, itemsRepository, configsRepository)
+const createItem = new CreateItem(workspacesRepository, itemsRepository)
 
 const useCases = [
   { name: 'create-workspace', useCase: createWorkspace },
@@ -30,6 +32,7 @@ const useCases = [
   { name: 'delete-workspace', useCase: deleteWorkspace },
   { name: 'create-item', useCase: createItem },
   { name: 'list-items', useCase: listItems },
+  { name: 'show-item', useCase: showItem },
 ]
 
 useCases.forEach(({ name, useCase }) => {

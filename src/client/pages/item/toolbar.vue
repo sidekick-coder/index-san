@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { useLayoutStore } from '@/stores/layout'
+import { Item } from '@/types'
+
+defineProps({
+  item: {
+    type: Object as () => Item,
+    required: true,
+  },
+})
 
 const layoutStore = useLayoutStore()
 </script>
@@ -8,8 +16,8 @@ const layoutStore = useLayoutStore()
     <button class="btn-toolbar justify-self-start hided-actions" @click="layoutStore.toggleLeft">
       <fa-icon class="text-lg" icon="chevron-right" :class="layoutStore.left ? 'rotate-180' : ''" />
     </button>
-    <div class="justify-self-start mr-auto">
-      {{ $route.path }}
+    <div class="justify-self-start mr-auto font-bold">
+      {{ item.name }}
     </div>
     <button class="btn-toolbar">
       <fa-icon icon="eye" />

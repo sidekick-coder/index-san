@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref, shallowRef, watch } from 'vue'
-import { Item, File } from '@/types'
-import { useWindowApi } from '@/composables/api'
+
+import { Item } from '@/types'
+import { useCase } from '@/composables/use-case'
 
 import Toolbar from './toolbar.vue'
 import Drawer from './drawer.vue'
 
-const api = useWindowApi()
-
 const props = defineProps({
-  workspace: {
+  workspaceId: {
     type: String,
     required: true,
   },
@@ -24,15 +23,19 @@ const loading = ref({
   view: false,
 })
 const item = ref<Item>()
-const file = ref<File>()
 const view = shallowRef<any>()
 
-const defaultView = {
-  name: 'default',
-  component: defineAsyncComponent(() => import('@/views/default.vue')),
-}
-
 const views = [
+  {
+    name: 'default',
+    component: defineAsyncComponent(() => import('@/views/default.vue')),
+    test: () => false,
+  },
+  {
+    name: 'folder',
+    component: defineAsyncComponent(() => import('@/views/folder.vue')),
+    test: () => props.path === 'root',
+  },
   {
     name: 'editor',
     component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
@@ -47,26 +50,22 @@ const views = [
 
 async function setItem() {
   loading.value.item = true
-  item.value = undefined
-  file.value = undefined
 
-  await api
-    .invoke('item:show', { path: props.path, workspace: props.workspace })
+  useCase<Item>('show-item', {
+    workspaceId: props.workspaceId,
+    path: props.path === 'root' ? '' : props.path,
+  })
     .then((data) => (item.value = data))
-    .catch(() => alert('Failed to load item'))
+    .catch(console.error)
     .finally(() => setTimeout(() => (loading.value.item = false), 500))
 }
 
 async function setView() {
   loading.value.view = true
 
-  const search = views.find((view) => {
-    if (file.value) {
-      return view.test(file.value.path)
-    }
+  const search = views.find((view) => view.test(props.path))
 
-    return item.value && view.test(item.value?.path)
-  })
+  const defaultView = views.find((view) => view.name === 'default')
 
   view.value = search || defaultView
 
@@ -77,7 +76,7 @@ watch(props, setItem, {
   immediate: true,
 })
 
-watch(file, setView)
+watch(item, setView)
 </script>
 <template>
   <w-layout use-percentage>
@@ -96,7 +95,7 @@ watch(file, setView)
     </w-content>
 
     <template v-else>
-      <Toolbar :layout-ignore="['right']" />
+      <Toolbar :item="item" :layout-ignore="['right']" />
 
       <w-content
         v-if="loading.view"
@@ -108,15 +107,15 @@ watch(file, setView)
         </div>
       </w-content>
 
-      <w-content v-else-if="file" v-show="!loading.view">
+      <w-content v-if="item" v-show="!loading.view">
         <div class="h-full w-full overflow-auto">
-          <component :is="view.component" :file="file" />
+          <component :is="view.component" :item="item" />
         </div>
       </w-content>
 
-      <w-content v-else class="flex items-center justify-center"> Select a file </w-content>
+      <w-content v-else class="flex items-center justify-center"> Error </w-content>
 
-      <Drawer v-model:file="file" :item="item" right layout-id="right" />
+      <Drawer :item="item" right layout-id="right" /> -->
     </template>
   </w-layout>
 </template>

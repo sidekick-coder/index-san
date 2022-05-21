@@ -22,6 +22,12 @@ export default class FSConfigsRepository implements IConfigsRepository {
     return all.filter(({ name }) => names.includes(name))
   }
 
+  public async findByName(workspace: Workspace, name: string): Promise<Config | null> {
+    const [config] = await this.query(workspace).where('name', name)
+
+    return config || null
+  }
+
   public async create(workspace: Workspace, data: Omit<Config, 'workspaceId'>): Promise<Config> {
     const config = new Config({
       ...data,

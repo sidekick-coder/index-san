@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { File } from '@/types'
+import { Item } from '@/types'
 import { capitalize } from 'lodash'
 import { computed } from 'vue'
 
 const props = defineProps({
-  file: {
-    type: Object as () => File,
+  item: {
+    type: Object as () => Item,
     required: true,
   },
 })
 
-const keys = computed(() => Object.entries(props.file).filter(([_k, v]) => typeof v === 'string'))
+const keys = computed(() => Object.entries(props.item).filter(([_k, v]) => typeof v === 'string'))
 </script>
 <template>
   <div class="flex h-full w-full items-center justify-center">
