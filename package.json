@@ -12,7 +12,7 @@
         "start": "electron .",
         "preview": "cross-env NODE_ENV=production electron -r ./bin/ts-register.ts bin/preview.ts",
         "dev": "cross-env NODE_ENV=development electron -r ./bin/ts-register.ts bin/dev.ts",
-        "test": "node -r ./bin/ts-register.ts bin/test.ts",
+        "test": "nodemon  -r ./bin/ts-register.ts bin/test.ts",
         "lint": "eslint . --ext=.ts,.vue --max-warnings=0"
     },
     "keywords": [
@@ -46,6 +46,7 @@
         "eslint-plugin-promise": "^6.0.0",
         "eslint-plugin-vue": "^8.7.1",
         "execa": "^5.1.1",
+        "nodemon": "^2.0.16",
         "pino": "^7.11.0",
         "pino-pretty": "^7.6.1",
         "postcss": "^8.4.13",

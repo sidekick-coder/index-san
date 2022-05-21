@@ -1,4 +1,4 @@
-import { throttle } from 'lodash'
+import { debounce } from 'lodash'
 import { watch as fsWatch, readdirSync } from 'fs'
 import { resolve } from 'path'
 
@@ -20,7 +20,7 @@ export function watch(source: string, callback: Callback, options?: Options) {
     return !options.ignore.some((pattern) => new RegExp(pattern).test(filename))
   })
 
-  const reload = throttle((filename: string | null) => {
+  const reload = debounce((filename: string | null) => {
     if (!filename) return
 
     callback(filename)

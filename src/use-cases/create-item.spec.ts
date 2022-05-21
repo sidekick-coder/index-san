@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import Workspace from 'Entities/Workspace'
-import InMemoryItemsRepository from 'TestRepositories/InMemoryItemRepository'
+import InMemoryItemsRepository from 'TestRepositories/InMemoryItemsRepository'
 import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
 import CreateItem from './create-item'
 
@@ -21,7 +21,6 @@ test.group('use-case: create-item', () => {
 
     await createItem.execute({
       name: 'test.txt',
-      displayName: 'test.txt',
       path: 'C:\\fake-path\\Root\\test.txt',
       workspaceId: workspace.id,
     })

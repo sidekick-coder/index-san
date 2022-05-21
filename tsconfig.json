@@ -42,7 +42,7 @@
                 "src/utils/*"
             ],
             "TestRepositories/*": [
-                "src/tests/repositories/*"
+                "src/__tests__/repositories/*"
             ]
         }
     },
@@ -52,7 +52,7 @@
         "src/entrypoint/*.ts",
         "src/errors/*.ts",
         "src/repositories/**/*.ts",
-        "src/tests/**/*.ts",
+        "src/__tests__/**/*.ts",
         "src/use-cases/*.ts",
         "start/**/*.ts",
         "app/**/*.ts",
