@@ -1,8 +1,18 @@
 import Workspace from 'Entities/Workspace'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
-export default class InMemoryWorkspaceRepository implements IWorkspacesRepository {
+export default class InMemoryWorkspacesRepository implements IWorkspacesRepository {
   public workspaces: Workspace[] = []
+
+  public async index() {
+    return this.workspaces
+  }
+
+  public async findById(id: string) {
+    const workspace = this.workspaces.find((workspace) => workspace.id === id)
+
+    return workspace || null
+  }
 
   public async create(data: Workspace) {
     const workspace = new Workspace(data)
@@ -10,10 +20,6 @@ export default class InMemoryWorkspaceRepository implements IWorkspacesRepositor
     this.workspaces.push(workspace)
 
     return workspace
-  }
-
-  public async index() {
-    return this.workspaces
   }
 
   public async destroy(id: string) {

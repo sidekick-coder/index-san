@@ -1,12 +1,12 @@
 import Workspace from 'Entities/Workspace'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
-import { v4 as uuid } from 'uuid'
 
+type CreateWorkspaceData = Omit<Workspace, 'id'>
 export default class CreateWorkspace {
   constructor(private workspaceRepository: IWorkspacesRepository) {}
 
-  public async execute(data: Omit<Workspace, 'id'>) {
-    const workspace = new Workspace(data, uuid())
+  public async execute(data: CreateWorkspaceData) {
+    const workspace = new Workspace(data)
 
     await this.workspaceRepository.create(workspace)
 

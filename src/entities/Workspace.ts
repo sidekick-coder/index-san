@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 export default class Workspace {
   public readonly id: string
   public name: string
@@ -9,8 +10,6 @@ export default class Workspace {
   constructor(data: Omit<Workspace, 'id'>, id?: string) {
     Object.assign(this, data)
 
-    if (id) {
-      this.id = id
-    }
+    this.id = id ?? uuid()
   }
 }

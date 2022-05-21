@@ -32,8 +32,14 @@
             "Repositories/*": [
                 "src/repositories/*"
             ],
+            "Errors/*": [
+                "src/errors/*"
+            ],
             "UseCases/*": [
                 "src/use-cases/*"
+            ],
+            "TestRepositories/*": [
+                "src/tests/repositories/*"
             ]
         }
     },
@@ -41,8 +47,9 @@
         "main.ts",
         "src/entities/*.ts",
         "src/entrypoint/*.ts",
+        "src/errors/*.ts",
         "src/repositories/**/*.ts",
-        "src/tests/*.ts",
+        "src/tests/**/*.ts",
         "src/use-cases/*.ts",
         "start/**/*.ts",
         "app/**/*.ts",

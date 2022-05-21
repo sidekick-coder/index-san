@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
-import InMemoryWorkspaceRepository from 'src/tests/repositories/InMemoryWorkspaceRepository'
+import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
 import CreateWorkspace from './create-workspace'
 
-test.group('create-workspace', () => {
-  const repository = new InMemoryWorkspaceRepository()
+test.group('use-case: create-workspace', () => {
+  const repository = new InMemoryWorkspacesRepository()
   const createWorkspace = new CreateWorkspace(repository)
 
   test('should create a new workspace', async ({ expect }) => {

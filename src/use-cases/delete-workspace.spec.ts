@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
-import InMemoryWorkspaceRepository from 'src/tests/repositories/InMemoryWorkspaceRepository'
+import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
 import DeleteWorkspace from './delete-workspace'
 
-test.group('delete-workspaces', () => {
-  const repository = new InMemoryWorkspaceRepository()
+test.group('use-case: delete-workspaces', () => {
+  const repository = new InMemoryWorkspacesRepository()
   const deleteWorkspace = new DeleteWorkspace(repository)
 
   test('should list all workspaces', async ({ expect }) => {

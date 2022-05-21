@@ -1,7 +1,9 @@
 export default class Item {
   // workspace-path
-  public id: string
+  public path: string
+
   public workspaceId: string
+
   public name: string
   public displayName: string
 
