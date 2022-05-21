@@ -2,17 +2,23 @@ import { Query } from '@code-pieces/db-json'
 import Workspace from 'Entities/Workspace'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
-export default class FileSystemWorkspaceRepository implements IWorkspacesRepository {
+export default class FSWorkspacesRepository implements IWorkspacesRepository {
   constructor(private readonly filename: string) {}
 
   public query() {
-    return Query.from(this.filename)
+    return Query.from<Workspace[]>(this.filename)
   }
 
   public async index() {
     const workspaces = await this.query()
 
     return workspaces
+  }
+
+  public async findById(id: string) {
+    const [workspace] = await this.query().where('id', id)
+
+    return workspace ?? null
   }
 
   public async create(data: Workspace) {

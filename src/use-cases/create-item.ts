@@ -2,11 +2,12 @@ import Item from 'Entities/Item'
 import IItemsRepository from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
+import ItemAlreadyExists from 'Errors/ItemAlreadyExists'
 
 export default class CreateItem {
   constructor(
     private workspaceRepository: IWorkspacesRepository,
-    private readonly repository: IItemsRepository
+    private readonly itemsRepository: IItemsRepository
   ) {}
 
   public async execute(data: Item) {
@@ -16,8 +17,14 @@ export default class CreateItem {
       throw new WorkspaceNotFound(data.workspaceId)
     }
 
-    const item = new Item(data)
+    let item = await this.itemsRepository.findByPath(workspace, data.path)
 
-    return this.repository.create(item)
+    if (item) {
+      throw new ItemAlreadyExists(data.path)
+    }
+
+    item = new Item(data)
+
+    return this.itemsRepository.create(workspace, item)
   }
 }

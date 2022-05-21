@@ -63,6 +63,16 @@ async function deleteWorkspace() {
 }
 
 async function addItem() {
+  const basename = name.value.split(/\/|\\/).pop()
+
+  await useCase('create-item', {
+    workspaceId: props.workspaceId,
+    path: name.value,
+    name: name.value,
+    displayName: basename,
+  })
+    .catch(console.error)
+    .finally(() => (dialog.value = false))
   // await api
   //   .invoke('item:store', {
   //     path: props.path,

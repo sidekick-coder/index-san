@@ -41,4 +41,27 @@ test.group('use-case: create-item', () => {
       'Workspace with id non-existing not found'
     )
   })
+
+  test('should throw an error if item already exists', async ({ expect }) => {
+    const workspace = await workspaceRepository.create(
+      new Workspace({
+        name: 'Root',
+        displayName: 'Root',
+        path: 'C:\\fake-path\\Root',
+      })
+    )
+
+    const data = {
+      name: 'test.txt',
+      displayName: 'test.txt',
+      path: '/deep/test.txt',
+      workspaceId: workspace.id,
+    }
+
+    await createItem.execute(data)
+
+    await expect(createItem.execute(data)).rejects.toThrow(
+      'Item with path /deep/test.txt already exists'
+    )
+  })
 })

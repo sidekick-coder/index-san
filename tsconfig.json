@@ -38,6 +38,9 @@
             "UseCases/*": [
                 "src/use-cases/*"
             ],
+            "Utils/*": [
+                "src/utils/*"
+            ],
             "TestRepositories/*": [
                 "src/tests/repositories/*"
             ]

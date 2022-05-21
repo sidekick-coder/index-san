@@ -45,6 +45,8 @@ export default class ElectronDevApplication extends ElectronApplication {
 
     await this.tsc()
 
+    await this.boot()
+
     const devWindow = new BrowserWindow({
       show: false,
     })

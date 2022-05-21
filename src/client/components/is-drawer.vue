@@ -21,7 +21,7 @@ async function addWorkspace() {
   const basename = filepath.split(/\/|\\/).pop()
 
   await useCase('create-workspace', {
-    id: filepath,
+    path: filepath,
     name: basename,
     displayName: basename,
   })
