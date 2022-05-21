@@ -20,4 +20,8 @@ export default class FileSystemWorkspaceRepository implements IWorkspacesReposit
 
     return data
   }
+
+  public async destroy(id: string) {
+    await this.query().where('id', id).delete()
+  }
 }

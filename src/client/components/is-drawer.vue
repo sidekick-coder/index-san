@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useWindowApi } from '../composables/api'
 import { useWorkspaceStore } from '../stores/workspace'
 import { useLayoutStore } from '../stores/layout'
 import { useElectron } from '@/composables/use-electron'
@@ -46,12 +45,13 @@ store.setWorkspaces()
 
     <div v-if="!store.workspaces.length" class="list-item">No items</div>
 
-    <is-left-bar-item
+    <is-drawer-item
       v-for="workspace in store.workspaces"
-      :key="workspace.path"
-      :label="workspace.name"
-      :workspace="workspace.name"
-      path=""
+      :id="workspace.id"
+      :key="workspace.id"
+      :workspace-id="workspace.id"
+      :to="`/`"
+      :label="workspace.displayName"
     />
 
     <div

@@ -1,5 +1,7 @@
 export interface Workspace {
+  id: string
   name: string
+  displayName: string
   path: string
 }
 

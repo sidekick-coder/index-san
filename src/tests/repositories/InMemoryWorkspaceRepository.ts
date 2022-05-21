@@ -15,4 +15,8 @@ export default class InMemoryWorkspaceRepository implements IWorkspacesRepositor
   public async index() {
     return this.workspaces
   }
+
+  public async destroy(id: string) {
+    this.workspaces = this.workspaces.filter((workspace) => workspace.id !== id)
+  }
 }

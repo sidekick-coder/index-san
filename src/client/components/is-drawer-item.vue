@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { useWindowApi } from '@/composables/api'
+import { useCase } from '@/composables/use-case'
 import { useWorkspaceStore } from '@/stores/workspace'
 import { Item } from '@/types'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
-  path: {
+  id: {
     type: String,
     required: true,
   },
-  workspace: {
+  workspaceId: {
+    type: String,
+    required: true,
+  },
+  to: {
     type: String,
     required: true,
   },
@@ -23,29 +28,29 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['deleted'])
+// const emit = defineEmits(['deleted'])
 
-const api = useWindowApi()
+// const api = useWindowApi()
 const store = useWorkspaceStore()
 
 const dialog = ref(false)
 const expand = ref(false)
 const loading = ref(false)
 const name = ref('')
-const children = ref<Item[]>([])
+// const children = ref<Item[]>([])
 
 async function setChildren() {
   loading.value = true
 
-  await api
-    .invoke('item:subitems', {
-      path: props.path,
-      workspace: props.workspace,
-    })
-    .then((data) => (children.value = data))
-    .catch(() => alert('Error loading items'))
+  // await api
+  //   .invoke('item:subitems', {
+  //     path: props.path,
+  //     workspace: props.workspace,
+  //   })
+  //   .then((data) => (children.value = data))
+  //   .catch(() => alert('Error loading items'))
 
-  setTimeout(() => (loading.value = false), 500)
+  // setTimeout(() => (loading.value = false), 500)
 }
 
 watch(
@@ -54,43 +59,34 @@ watch(
 )
 
 async function deleteWorkspace() {
-  await api.invoke('workspace:destroy', {
-    path: props.path,
-  })
-
-  await store.setWorkspaces()
+  await useCase('delete-workspace', props.id).catch(console.error).then(store.setWorkspaces)
 }
 
 async function addItem() {
-  await api
-    .invoke('item:store', {
-      path: props.path,
-      name: name.value,
-    })
-    .finally(() => {
-      dialog.value = false
-    })
-
-  await setChildren()
+  // await api
+  //   .invoke('item:store', {
+  //     path: props.path,
+  //     name: name.value,
+  //   })
+  //   .finally(() => {
+  //     dialog.value = false
+  //   })
+  // await setChildren()
 }
 
 async function deleteItem() {
-  await api
-    .invoke('item:destroy', {
-      path: props.path,
-      name: name.value,
-    })
-    .then(() => alert('item deleted'))
-    .catch(() => alert('error on delete item'))
-    .finally(() => emit('deleted'))
+  // await api
+  //   .invoke('item:destroy', {
+  //     path: props.path,
+  //     name: name.value,
+  //   })
+  //   .then(() => alert('item deleted'))
+  //   .catch(() => alert('error on delete item'))
+  //   .finally(() => emit('deleted'))
 }
 </script>
 <template>
-  <router-link
-    class="list-item clickable"
-    :style="`padding-left: ${deep}rem`"
-    :to="`/${workspace}/${path}`"
-  >
+  <router-link class="list-item clickable" :style="`padding-left: ${deep}rem`" :to="to">
     <div class="w-2/12 justify-start">
       <i class="icon" @click.stop="expand = !expand">
         <fa-icon v-if="loading" icon="spinner" class="animate-spin" />
@@ -110,13 +106,13 @@ async function deleteItem() {
         <fa-icon icon="plus" @click.stop="dialog = true" />
       </i>
       <i class="icon">
-        <fa-icon v-if="workspace === path" icon="link-slash" @click.stop="deleteWorkspace" />
+        <fa-icon v-if="id === workspaceId" icon="link-slash" @click.stop="deleteWorkspace" />
         <fa-icon v-else icon="trash" @click.stop="deleteItem" />
       </i>
     </div>
   </router-link>
 
-  <div v-if="expand" class="w-full">
+  <!-- <div v-if="expand" class="w-full">
     <div v-if="!children.length" class="list-item" :style="`padding-left: ${deep + 1}rem`">
       No items
     </div>
@@ -125,12 +121,11 @@ async function deleteItem() {
       v-for="item in children"
       :key="item.path"
       :label="item.name"
-      :workspace="workspace"
       :path="item.path"
       :deep="deep + 1"
       @deleted="setChildren"
     />
-  </div>
+  </div> -->
 
   <teleport to="body">
     <w-dialog v-model="dialog">
