@@ -1,11 +1,21 @@
-import { ipcMain } from 'electron'
-import InMemoryWorkspaceRepository from 'src/tests/repositories/InMemoryWorkspaceRepository'
+import { ipcMain, app } from 'electron'
+import { resolve } from 'path'
+import FileSystemWorkspaceRepository from 'Repositories/implementations/FilesystemWorkspaceRepository'
 import CreateWorkspace from 'UseCases/create-workspace'
 import ListWorkspaces from 'UseCases/list-workspaces'
 
-const repository = new InMemoryWorkspaceRepository()
-const createWorkspace = new CreateWorkspace(repository)
-const listWorkspaces = new ListWorkspaces(repository)
+const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
-ipcMain.handle('use-case:create-workspace', (_, data) => createWorkspace.execute(data))
-ipcMain.handle('use-case:list-workspaces', () => listWorkspaces.execute())
+const workspacesRepository = new FileSystemWorkspaceRepository(filename)
+const createWorkspace = new CreateWorkspace(workspacesRepository)
+const listWorkspaces = new ListWorkspaces(workspacesRepository)
+
+const useCases = [
+  { name: 'create-workspace', useCase: createWorkspace },
+  { name: 'list-workspaces', useCase: listWorkspaces },
+]
+
+useCases.forEach(({ name, useCase }) => {
+  ipcMain.removeHandler(`use-case:${name}`)
+  ipcMain.handle(`use-case:${name}`, (_, data) => useCase.execute(data))
+})

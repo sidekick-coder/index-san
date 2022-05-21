@@ -1,7 +1,7 @@
 import Workspace from 'Entities/Workspace'
-import IWorkspaceRepository from 'Repositories/IWorkspaceRepository'
+import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
-export default class InMemoryWorkspaceRepository implements IWorkspaceRepository {
+export default class InMemoryWorkspaceRepository implements IWorkspacesRepository {
   public workspaces: Workspace[] = []
 
   public async create(data: Workspace) {

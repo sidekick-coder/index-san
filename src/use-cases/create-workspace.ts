@@ -1,9 +1,9 @@
 import Workspace from 'Entities/Workspace'
-import IWorkspaceRepository from 'Repositories/IWorkspaceRepository'
+import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 import { v4 as uuid } from 'uuid'
 
 export default class CreateWorkspace {
-  constructor(private workspaceRepository: IWorkspaceRepository) {}
+  constructor(private workspaceRepository: IWorkspacesRepository) {}
 
   public async execute(data: Omit<Workspace, 'id'>) {
     const workspace = new Workspace(data, uuid())

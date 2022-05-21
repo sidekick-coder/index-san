@@ -3,6 +3,8 @@ import { resolve } from 'path'
 import { BrowserWindow, app } from 'electron'
 
 import { createBuilder } from 'Helpers/builder'
+import { Query } from '@code-pieces/db-json'
+import { debounce } from 'lodash'
 
 export default class ElectronApplication {
   constructor(
@@ -10,14 +12,49 @@ export default class ElectronApplication {
     protected publicDir = resolve(__dirname, 'public')
   ) {}
 
+  public async getBounds() {
+    const filename = resolve(app.getPath('userData'), 'options.json')
+
+    const [option] = await Query.from(filename).where('name', 'window:bounds')
+
+    return option?.value ?? {}
+  }
+
+  public async setBounds(data: any) {
+    const filename = resolve(app.getPath('userData'), 'options.json')
+
+    const [option] = await Query.from(filename).where('name', 'window:bounds')
+
+    if (option) {
+      return Query.from(filename).where('name', 'window:bounds').update({
+        value: data,
+      })
+    }
+
+    return Query.from(filename).insert({
+      name: 'window:bounds',
+      value: data,
+    })
+  }
+
   protected async createWindow() {
-    return new BrowserWindow({
-      width: 800,
-      height: 600,
+    const bounds = await this.getBounds()
+
+    const window = new BrowserWindow({
+      ...bounds,
       webPreferences: {
         preload: resolve(__dirname, 'preload.js'),
       },
     })
+
+    window.on(
+      'resize',
+      debounce(async () => {
+        await this.setBounds(window.getBounds())
+      }, 1000)
+    )
+
+    return window
   }
 
   public async build() {

@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 
-import { useWindowApi } from '@/composables/api'
+import { useCase } from '@/composables/use-case'
 import { Workspace } from '@/types'
-
-const api = useWindowApi()
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => {
@@ -13,7 +11,7 @@ export const useWorkspaceStore = defineStore('workspace', {
   },
   actions: {
     async setWorkspaces() {
-      const data = await api.invoke('workspace:index')
+      const data = await useCase('list-workspaces')
 
       this.workspaces = data
     },

@@ -41,7 +41,7 @@
         "main.ts",
         "src/entities/*.ts",
         "src/entrypoint/*.ts",
-        "src/repositories/*.ts",
+        "src/repositories/**/*.ts",
         "src/tests/*.ts",
         "src/use-cases/*.ts",
         "start/**/*.ts",
