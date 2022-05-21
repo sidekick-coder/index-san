@@ -1,12 +1,11 @@
 import { test } from '@japa/runner'
-import Workspace from 'Entities/Workspace'
 import ConfigFactory from 'src/__tests__/factories/ConfigFactory'
 import WorkspaceFactory from 'src/__tests__/factories/WorkspaceFactory'
 import InMemoryConfigsRepository from 'TestRepositories/InMemoryConfigsRepository'
 import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
 import ListConfig from './list-config'
 
-test.group('use-case: List-config', () => {
+test.group('use-case: list-config', () => {
   const workspaceRepository = new InMemoryWorkspacesRepository()
   const configsRepository = new InMemoryConfigsRepository()
 
