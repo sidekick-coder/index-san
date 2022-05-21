@@ -1,6 +1,6 @@
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
 import IConfigsRepository from 'Repositories/IConfigsRepository'
-import IItemsRepository from 'Repositories/IItemsRepository'
+import IItemsRepository, { IndexFilters } from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
 export default class ListItems {
@@ -10,12 +10,12 @@ export default class ListItems {
     private configsRepository: IConfigsRepository
   ) {}
 
-  public async execute(workspaceId: string) {
+  public async execute(workspaceId: string, filters?: IndexFilters) {
     const workspace = await this.workspacesRepository.findById(workspaceId)
 
     if (!workspace) throw new WorkspaceNotFound(workspaceId)
 
-    const items = await this.itemsRepository.index(workspace)
+    const items = await this.itemsRepository.index(workspace, filters)
 
     const paths = items.map((item) => item.path)
 

@@ -43,4 +43,21 @@ test.group('use-case: list-items', () => {
       config,
     })
   })
+
+  test('should filter items by parent path', async ({ expect }) => {
+    const workspace = await workspaceFactory.create()
+    const parent = await itemFactory.create(workspace, { name: 'parent' })
+    const child = await itemFactory.create(workspace, {
+      name: 'child',
+      path: parent.path + '/child',
+    })
+
+    const result = await listItems.execute(workspace.id, {
+      parentPath: parent.path,
+    })
+
+    // expect(result).toHaveLength(1)
+
+    expect(result).toEqual([child])
+  })
 })
