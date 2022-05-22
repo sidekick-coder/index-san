@@ -7,14 +7,22 @@ import IItemsRepository from 'Repositories/IItemsRepository'
 export default class ItemFactory {
   constructor(private itemsRepository: IItemsRepository) {}
 
-  public async create(workspace: Workspace, data?: Partial<Item>): Promise<Item> {
+  public make(data?: Partial<Item>): Item {
     const path = uuid()
 
-    const item = new Item({
+    return new Item({
       name: path,
       path,
-      workspaceId: workspace.id,
+      workspaceId: '',
+      type: 'file',
       config: {},
+      ...data,
+    })
+  }
+
+  public async create(workspace: Workspace, data?: Partial<Item>) {
+    const item = this.make({
+      workspaceId: workspace.id,
       ...data,
     })
 

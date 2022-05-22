@@ -3,6 +3,7 @@ export default class Item {
   public path: string
   public workspaceId: string
   public name: string
+  public type: 'file' | 'folder'
 
   public config?: any = {}
 

@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import Workspace from 'Entities/Workspace'
+import ItemFactory from 'src/__tests__/factories/ItemFactory'
 import InMemoryItemsRepository from 'TestRepositories/InMemoryItemsRepository'
 import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
 import CreateItem from './create-item'
@@ -7,6 +8,8 @@ import CreateItem from './create-item'
 test.group('use-case: create-item', () => {
   const workspaceRepository = new InMemoryWorkspacesRepository()
   const itemRepository = new InMemoryItemsRepository()
+
+  const itemFactory = new ItemFactory(itemRepository)
 
   const createItem = new CreateItem(workspaceRepository, itemRepository)
 
@@ -23,18 +26,19 @@ test.group('use-case: create-item', () => {
       name: 'test.txt',
       path: 'C:\\fake-path\\Root\\test.txt',
       workspaceId: workspace.id,
+      type: 'file',
     })
 
     expect(itemRepository.items).toHaveLength(1)
   })
 
   test('should throw an error if the workspace does not exist', async ({ expect }) => {
-    const data = {
+    const data = itemFactory.make({
       name: 'test.txt',
-      displayName: 'test.txt',
       path: 'C:\\fake-path\\Root\\test.txt',
       workspaceId: 'non-existing',
-    }
+      type: 'file',
+    })
 
     await expect(createItem.execute(data)).rejects.toThrow(
       'Workspace with id non-existing not found'
@@ -50,12 +54,11 @@ test.group('use-case: create-item', () => {
       })
     )
 
-    const data = {
+    const data = itemFactory.make({
       name: 'test.txt',
-      displayName: 'test.txt',
       path: '/deep/test.txt',
       workspaceId: workspace.id,
-    }
+    })
 
     await createItem.execute(data)
 
