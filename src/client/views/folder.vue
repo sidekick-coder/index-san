@@ -1,13 +1,8 @@
 <script setup lang="ts">
+import { orderBy } from 'lodash'
 import { useCase } from '@/composables/use-case'
 import { Item } from '@/types'
 import { ref } from 'vue'
-
-interface FolderChildren {
-  name: string
-  icon: string
-  to: string
-}
 
 const props = defineProps({
   item: {
@@ -16,29 +11,21 @@ const props = defineProps({
   },
 })
 
-const children = ref<FolderChildren[]>([])
+const subitems = ref<Item[]>([])
 
-async function addSubItems() {
+async function setItems() {
   useCase<Item[]>('list-items', {
     workspaceId: props.item.workspaceId,
-    path: props.item.path,
+    filters: {
+      parentPath: props.item.path,
+    },
   })
-    .then((data) => {
-      data.forEach((item) => {
-        children.value.push({
-          name: item.name,
-          icon: 'folder',
-          to: `/${item.workspaceId}/${item.path}`,
-        })
-      })
-    })
+    .then((data) => (subitems.value = data))
     .catch(console.error)
 }
 
 async function load() {
-  children.value = []
-
-  await addSubItems()
+  await setItems()
 }
 
 load()
@@ -46,9 +33,18 @@ load()
 
 <template>
   <div class="flex flex-wrap">
-    <router-link v-for="child in children" :key="child.name" class="w-full" :to="child.to">
+    <router-link
+      v-for="child in orderBy(subitems, ['type', 'name'], ['desc', 'asc'])"
+      :key="child.name"
+      class="w-full"
+      :to="`/${item.workspaceId}/${child.path}`"
+    >
       <div class="list-item clickable border-b">
-        <fa-icon :icon="child.icon" class="mr-4" />
+        <fa-icon
+          :icon="child.type === 'file' ? 'file' : 'folder'"
+          class="mr-4"
+          :class="child.type === 'file' ? 'text-gray-400' : ''"
+        />
         {{ child.name }}
       </div>
     </router-link>

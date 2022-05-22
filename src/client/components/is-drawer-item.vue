@@ -31,9 +31,6 @@ const props = defineProps({
   },
 })
 
-// const emit = defineEmits(['deleted'])
-
-// const api = useWindowApi()
 const store = useWorkspaceStore()
 
 const dialog = ref(false)
@@ -51,19 +48,11 @@ async function setChildren() {
       parentPath: props.path,
     },
   })
-    .then((data) => (children.value = data))
+    .then((data) => {
+      children.value = data.filter((item) => item.type === 'folder')
+    })
     .catch(console.error)
     .finally(() => setTimeout(() => (loading.value = false), 500))
-
-  // await api
-  //   .invoke('item:subitems', {
-  //     path: props.path,
-  //     workspace: props.workspace,
-  //   })
-  //   .then((data) => (children.value = data))
-  //   .catch(() => alert('Error loading items'))
-
-  // setTimeout(() => (loading.value = false), 500)
 }
 
 watch(
@@ -88,15 +77,6 @@ async function addItem() {
   })
     .catch(console.error)
     .finally(() => (dialog.value = false))
-  // await api
-  //   .invoke('item:store', {
-  //     path: props.path,
-  //     name: name.value,
-  //   })
-  //   .finally(() => {
-  //     dialog.value = false
-  //   })
-  // await setChildren()
 }
 
 async function deleteItem() {
@@ -145,7 +125,7 @@ async function deleteItem() {
     <is-drawer-item
       v-for="item in children"
       :key="item.path"
-      to="/"
+      :to="`/${workspaceId}/${item.path}`"
       :workspace-id="workspaceId"
       :path="item.path"
       :label="item.name"

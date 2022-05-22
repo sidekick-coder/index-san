@@ -17,20 +17,19 @@ export default class FsItemsRepository implements IItemsRepository {
 
     const result = await fs.readdir(folderPath, { withFileTypes: true })
 
-    const folders = result.filter((r) => r.isDirectory())
-
-    const items = folders
+    const items = result
       .filter((f) => f.name !== '.index-san')
-      .map((folder) => {
+      .map((f) => {
         const path = pathToArray(folderPath.replace(workspace.path, ''))
           .filter((p) => p !== '')
-          .concat(folder.name)
+          .concat(f.name)
           .join('/')
 
         return new Item({
           path: path,
           workspaceId: workspace.id,
-          name: folder.name,
+          name: f.name,
+          type: f.isFile() ? 'file' : 'folder',
         })
       })
 
@@ -38,19 +37,20 @@ export default class FsItemsRepository implements IItemsRepository {
   }
 
   public async findByPath(workspace: Workspace, path: string) {
-    const folderName = resolve(workspace.path, ...pathToArray(path))
+    const filename = resolve(workspace.path, ...pathToArray(path))
 
-    const isValid = await fs
-      .stat(folderName)
-      .then((stat) => stat.isDirectory())
-      .catch(() => false)
+    const stats = await fs
+      .stat(filename)
+      .then((s) => s)
+      .catch(() => null)
 
-    if (!isValid) return null
+    if (!stats) return null
 
     return new Item({
       path,
       workspaceId: workspace.id,
-      name: basename(folderName),
+      name: basename(filename),
+      type: stats.isFile() ? 'file' : 'folder',
     })
   }
 

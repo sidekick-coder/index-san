@@ -10,6 +10,7 @@ export interface Item {
   path: string
   workspaceId: string
   config?: any
+  type: 'file' | 'folder'
 }
 
 export interface ItemOption {

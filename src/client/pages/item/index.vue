@@ -34,18 +34,18 @@ const views = [
   {
     name: 'folder',
     component: defineAsyncComponent(() => import('@/views/folder.vue')),
-    test: () => props.path === 'root',
+    test: () => item.value?.type === 'folder',
   },
-  {
-    name: 'editor',
-    component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
-    test: (filename: string) => /md/.test(filename),
-  },
-  {
-    name: 'image',
-    component: defineAsyncComponent(() => import('@/views/image.vue')),
-    test: (filename: string) => /(png|jpg|jpeg|gif|svg)/.test(filename),
-  },
+  // {
+  //   name: 'editor',
+  //   component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
+  //   test: (filename: string) => /md/.test(filename),
+  // },
+  // {
+  //   name: 'image',
+  //   component: defineAsyncComponent(() => import('@/views/image.vue')),
+  //   test: (filename: string) => /(png|jpg|jpeg|gif|svg)/.test(filename),
+  // },
 ]
 
 async function setItem() {

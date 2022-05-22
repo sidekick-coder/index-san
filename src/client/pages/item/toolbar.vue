@@ -13,8 +13,8 @@ const layoutStore = useLayoutStore()
 </script>
 <template>
   <w-toolbar class="toolbar border-b h-[50px] flex justify-end z-10" color="white">
-    <button class="btn-toolbar justify-self-start hided-actions" @click="layoutStore.toggleLeft">
-      <fa-icon class="text-lg" icon="chevron-right" :class="layoutStore.left ? 'rotate-180' : ''" />
+    <button class="btn-toolbar justify-self-start" @click="layoutStore.toggleLeft">
+      <fa-icon class="text-lg" icon="bars" />
     </button>
     <div class="justify-self-start mr-auto font-bold">
       {{ item.name }}
@@ -34,13 +34,5 @@ const layoutStore = useLayoutStore()
 <style>
 .btn-toolbar {
   @apply h-full w-[60px] hover:bg-gray-100;
-}
-
-.toolbar .hided-actions {
-  @apply opacity-25 transition-all;
-}
-
-.toolbar:hover .hided-actions {
-  @apply opacity-100;
 }
 </style>
