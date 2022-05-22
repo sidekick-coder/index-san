@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useCase } from '@/composables/use-case'
 import { Item, Workspace } from '@/types'
+import { ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   workspace: {
     type: Object as () => Workspace,
     required: true,
@@ -11,11 +13,30 @@ defineProps({
     required: true,
   },
 })
+
+const src = ref()
+
+async function setImage() {
+  await useCase<ArrayBuffer>('show-item-file', {
+    workspaceId: props.workspace.id,
+    path: props.item.path,
+  })
+    .then((data) => {
+      const base64 = btoa(
+        new Uint8Array(data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+      )
+
+      src.value = `data:${props.item.type};base64,${base64}`
+    })
+    .catch(console.error)
+}
+
+setImage()
 </script>
 <template>
   <div class="flex h-full w-full items-center justify-center">
-    <w-card color="white" class="drop-shadow-md flex flex-wrap mx-auto max-w-[80%]">
-      <img :src="`${workspace.path}\\${item.path}`" class="w-full object-cover" />
+    <w-card color="white" class="drop-shadow-md mx-auto max-w-[80%]">
+      <img v-if="src" :src="src" class="w-full object-cover" />
     </w-card>
   </div>
 </template>

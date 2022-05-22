@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 
-import { Item, Workspace } from '@/types'
+import { Item } from '@/types'
 import { useCase } from '@/composables/use-case'
 
 import Toolbar from './toolbar.vue'

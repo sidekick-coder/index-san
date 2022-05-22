@@ -3,20 +3,26 @@ import { resolve } from 'path'
 
 import FSWorkspacesRepository from 'Repositories/implementations/FSWorkspacesRepository'
 import FsItemsRepository from 'Repositories/implementations/FSItemsRepository'
+import FSConfigsRepository from 'Repositories/implementations/FSConfigsRepository'
 
-import CreateItem from 'UseCases/create-item'
+import FSDrive from 'Providers/implementations/FSDrive'
+
 import CreateWorkspace from 'UseCases/create-workspace'
 import DeleteWorkspace from 'UseCases/delete-workspace'
 import ListWorkspaces from 'UseCases/list-workspaces'
-import FSConfigsRepository from 'Repositories/implementations/FSConfigsRepository'
+
+import CreateItem from 'UseCases/create-item'
 import ListItems from 'UseCases/list-items'
 import ShowItem from 'UseCases/show-item'
+import ShowItemFile from 'UseCases/show-item-file'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
 const workspacesRepository = new FSWorkspacesRepository(filename)
 const itemsRepository = new FsItemsRepository()
 const configsRepository = new FSConfigsRepository()
+
+const drive = new FSDrive()
 
 const createWorkspace = new CreateWorkspace(workspacesRepository)
 const deleteWorkspace = new DeleteWorkspace(workspacesRepository)
@@ -25,6 +31,7 @@ const listWorkspaces = new ListWorkspaces(workspacesRepository)
 const listItems = new ListItems(workspacesRepository, itemsRepository, configsRepository)
 const showItem = new ShowItem(workspacesRepository, itemsRepository, configsRepository)
 const createItem = new CreateItem(workspacesRepository, itemsRepository)
+const showItemFile = new ShowItemFile(workspacesRepository, itemsRepository, drive)
 
 const useCases = [
   { name: 'create-workspace', useCase: createWorkspace },
@@ -33,6 +40,7 @@ const useCases = [
   { name: 'create-item', useCase: createItem },
   { name: 'list-items', useCase: listItems },
   { name: 'show-item', useCase: showItem },
+  { name: 'show-item-file', useCase: showItemFile },
 ]
 
 useCases.forEach(({ name, useCase }) => {

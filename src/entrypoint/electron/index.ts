@@ -44,7 +44,6 @@ export default class ElectronApplication {
       ...bounds,
       webPreferences: {
         preload: resolve(__dirname, 'preload.js'),
-        webSecurity: false,
       },
     })
 

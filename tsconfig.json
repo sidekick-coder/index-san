@@ -14,18 +14,6 @@
         "strictPropertyInitialization": false,
         "baseUrl": ".",
         "paths": {
-            "IndexSan": [
-                "app.ts"
-            ],
-            "App/*": [
-                "app/*"
-            ],
-            "Helpers/*": [
-                "helpers/*"
-            ],
-            "Tests/*": [
-                "tests/*"
-            ],
             "Entities/*": [
                 "src/entities/*"
             ],
@@ -34,6 +22,9 @@
             ],
             "Errors/*": [
                 "src/errors/*"
+            ],
+            "Providers/*": [
+                "src/providers/*"
             ],
             "UseCases/*": [
                 "src/use-cases/*"
@@ -51,6 +42,7 @@
         "src/entities/*.ts",
         "src/entrypoint/*.ts",
         "src/errors/*.ts",
+        "src/providers/**/*.ts",
         "src/repositories/**/*.ts",
         "src/__tests__/**/*.ts",
         "src/use-cases/*.ts",
