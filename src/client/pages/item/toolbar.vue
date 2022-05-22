@@ -5,7 +5,7 @@ import { Item } from '@/types'
 defineProps({
   item: {
     type: Object as () => Item,
-    required: true,
+    default: null,
   },
 })
 
@@ -17,7 +17,7 @@ const layoutStore = useLayoutStore()
       <fa-icon class="text-lg" icon="bars" />
     </button>
     <div class="justify-self-start mr-auto font-bold">
-      {{ item.name }}
+      {{ item ? item.name : 'No items selected' }}
     </div>
     <button class="btn-toolbar">
       <fa-icon icon="eye" />

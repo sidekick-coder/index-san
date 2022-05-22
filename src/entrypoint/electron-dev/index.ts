@@ -1,7 +1,10 @@
 import { BrowserWindow, app } from 'electron'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+
 import { colorize } from 'Helpers/colorize'
 import { watch } from 'Helpers/watch'
 import { resolve } from 'path'
+
 import ElectronApplication from '../electron'
 
 const port = process.env.PORT || 3333
@@ -18,6 +21,10 @@ export default class ElectronDevApplication extends ElectronApplication {
     this.window = await this.createWindow()
 
     await this.window.loadURL(`http://${host}:${port}`)
+
+    await installExtension(VUEJS_DEVTOOLS)
+      .then(() => console.log(colorize('Vue Devtools installed', 'blue')))
+      .catch((err) => console.error(err))
 
     this.startWatch()
   }

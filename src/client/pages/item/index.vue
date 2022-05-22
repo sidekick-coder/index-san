@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref, shallowRef, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 
-import { Item } from '@/types'
+import { Item, Workspace } from '@/types'
 import { useCase } from '@/composables/use-case'
 
 import Toolbar from './toolbar.vue'
 import Drawer from './drawer.vue'
+import { useWorkspaceStore } from '@/stores/workspace'
 
 const props = defineProps({
   workspaceId: {
@@ -22,8 +23,15 @@ const loading = ref({
   item: false,
   view: false,
 })
+
+const store = useWorkspaceStore()
+
 const item = ref<Item>()
 const view = shallowRef<any>()
+
+const workspace = computed(() =>
+  store.workspaces.find((workspace) => workspace.id === props.workspaceId)
+)
 
 const views = [
   {
@@ -41,14 +49,14 @@ const views = [
   //   component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
   //   test: (filename: string) => /md/.test(filename),
   // },
-  // {
-  //   name: 'image',
-  //   component: defineAsyncComponent(() => import('@/views/image.vue')),
-  //   test: (filename: string) => /(png|jpg|jpeg|gif|svg)/.test(filename),
-  // },
+  {
+    name: 'image',
+    component: defineAsyncComponent(() => import('@/views/image.vue')),
+    test: (filename: string) => /(png|jpg|jpeg|gif|svg)/.test(filename),
+  },
 ]
 
-async function setItem() {
+async function load() {
   loading.value.item = true
 
   useCase<Item>('show-item', {
@@ -72,7 +80,7 @@ async function setView() {
   setTimeout(() => (loading.value.view = false), 500)
 }
 
-watch(props, setItem, {
+watch(props, load, {
   immediate: true,
 })
 
@@ -80,6 +88,8 @@ watch(item, setView)
 </script>
 <template>
   <w-layout use-percentage>
+    <Toolbar :item="item" :layout-ignore="['right']" />
+
     <div
       v-if="loading.item"
       class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
@@ -95,8 +105,6 @@ watch(item, setView)
     </w-content>
 
     <template v-else>
-      <Toolbar :item="item" :layout-ignore="['right']" />
-
       <w-content
         v-if="loading.view"
         class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
@@ -107,15 +115,15 @@ watch(item, setView)
         </div>
       </w-content>
 
-      <w-content v-if="item" v-show="!loading.view">
+      <w-content v-if="item && workspace" v-show="!loading.view">
         <div class="h-full w-full overflow-auto">
-          <component :is="view.component" :item="item" />
+          <component :is="view.component" :workspace="workspace" :item="item" />
         </div>
       </w-content>
 
       <w-content v-else class="flex items-center justify-center"> Error </w-content>
-
-      <Drawer :item="item" right layout-id="right" /> -->
     </template>
+
+    <Drawer :item="item" right layout-id="right" />
   </w-layout>
 </template>

@@ -1,55 +1,69 @@
 <script setup lang="ts">
+import { orderBy } from 'lodash'
 import { ref, PropType, watch } from 'vue'
 
 import { useLayoutStore } from '@/stores/layout'
-import { Item, File } from '@/types'
+import { Item } from '@/types'
+import { useCase } from '@/composables/use-case'
 
 const layoutStore = useLayoutStore()
 
 const props = defineProps({
   item: {
-    type: Object as PropType<Item>,
-    required: true,
+    type: Object as PropType<Item | null>,
+    default: null,
   },
 })
 
-const files = ref<File[]>([])
+const subitems = ref<Item[]>([])
 
-async function setFiles() {
-  if (files.value.length) {
+function dirname(path: string) {
+  const args = path.split('\\|/')
+
+  args.pop()
+
+  return args[0]
+}
+
+async function setItems() {
+  if (!props.item) {
+    subitems.value = []
     return
   }
 
-  // await api
-  //   .invoke('item:files', {
-  //     path: props.item.path,
-  //     workspace: props.item.workspace.name,
-  //   })
-  //   .then((data) => (files.value = data))
-  //   .catch(console.error)
+  const { item } = props
 
-  // if (!model.value) {
-  //   const index = files.value.find((file) => file.name.includes('index'))
-  //   model.value = index || files.value[0] || null
-  // }
+  const path = item.type === 'folder' ? item.path : dirname(item.path)
+
+  useCase('list-items', {
+    workspaceId: item.workspaceId,
+    filters: {
+      parentPath: path,
+    },
+  })
+    .then((data) => (subitems.value = data))
+    .catch(console.error)
 }
 
-watch(() => layoutStore.right, setFiles, {
+watch(() => props.item?.path, setItems, {
   immediate: true,
 })
 </script>
 <template>
   <w-drawer v-model="layoutStore.right" class="border-l bg-white" width="[300px]">
-    <div v-for="f in files" :key="f.name" class="list-item clickable">
-      <div class="w-2/12 justify-start">
-        <i class="icon">
-          <fa-icon icon="file" class="mr-4" />
-        </i>
-      </div>
-
-      <div class="w-8/12 truncate">
-        {{ f.displayName }}
-      </div>
-    </div>
+    <div v-if="!subitems.length" class="list-item">No Items found</div>
+    <router-link
+      v-for="child in orderBy(subitems, ['type', 'name'], ['desc', 'asc'])"
+      :key="child.name"
+      class="w-full list-item clickable border-b"
+      :to="`/${child.workspaceId}/${child.path}`"
+    >
+      <i class="w-2/12" :class="child.type === 'file' ? 'text-gray-400' : ''">
+        <fa-icon :icon="child.type === 'file' ? 'file' : 'folder'" />
+      </i>
+      <p class="truncate w-10/12">
+        {{ child.name }}
+      </p>
+    </router-link>
   </w-drawer>
 </template>
