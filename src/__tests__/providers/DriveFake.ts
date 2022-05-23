@@ -17,4 +17,14 @@ export default class DriveFake implements IDrive {
 
     return Promise.resolve(file.content)
   }
+
+  public async update(workspace: Workspace, path: string, content: Buffer | string) {
+    const search = this.files.findIndex((f) => f.workspaceId === workspace.id && f.path === path)
+
+    if (search !== -1) {
+      this.files[search].content = typeof content === 'string' ? Buffer.from(content) : content
+    }
+
+    return Promise.resolve()
+  }
 }
