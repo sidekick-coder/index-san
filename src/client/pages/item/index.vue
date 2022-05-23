@@ -44,11 +44,11 @@ const views = [
     component: defineAsyncComponent(() => import('@/views/folder.vue')),
     test: () => item.value?.type === 'folder',
   },
-  // {
-  //   name: 'editor',
-  //   component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
-  //   test: (filename: string) => /md/.test(filename),
-  // },
+  {
+    name: 'editor',
+    component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
+    test: (filename: string) => /md/.test(filename),
+  },
   {
     name: 'image',
     component: defineAsyncComponent(() => import('@/views/image.vue')),

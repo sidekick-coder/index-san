@@ -15,6 +15,7 @@ import CreateItem from 'UseCases/create-item'
 import ListItems from 'UseCases/list-items'
 import ShowItem from 'UseCases/show-item'
 import ShowItemFile from 'UseCases/show-item-file'
+import UpdateItemFile from 'UseCases/update-item-file'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
@@ -31,7 +32,9 @@ const listWorkspaces = new ListWorkspaces(workspacesRepository)
 const listItems = new ListItems(workspacesRepository, itemsRepository, configsRepository)
 const showItem = new ShowItem(workspacesRepository, itemsRepository, configsRepository)
 const createItem = new CreateItem(workspacesRepository, itemsRepository)
+
 const showItemFile = new ShowItemFile(workspacesRepository, itemsRepository, drive)
+const updateItemFile = new UpdateItemFile(workspacesRepository, itemsRepository, drive)
 
 const useCases = [
   { name: 'create-workspace', useCase: createWorkspace },
@@ -41,6 +44,7 @@ const useCases = [
   { name: 'list-items', useCase: listItems },
   { name: 'show-item', useCase: showItem },
   { name: 'show-item-file', useCase: showItemFile },
+  { name: 'update-item-file', useCase: updateItemFile },
 ]
 
 useCases.forEach(({ name, useCase }) => {

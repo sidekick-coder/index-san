@@ -3,7 +3,6 @@ import { useObservers } from '@/composables/use-observers'
 export interface EditorPluginOptions {
   tools: Map<string, EditorJS.ToolConstructable | EditorJS.ToolSettings>
   events: ReturnType<typeof useObservers>
-  systemPath: string
 }
 
 export interface EditorPlugin {

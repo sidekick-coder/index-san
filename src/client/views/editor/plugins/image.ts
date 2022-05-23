@@ -102,20 +102,13 @@ export class ImageTool {
     return this.wrapper
   }
 
-  public save(blockContent: HTMLElement) {
-    const image = blockContent.querySelector('img')
-
-    return {
-      src: image?.src,
-    }
+  public save() {
+    return this.data
   }
 }
 
-export default defineEditorPlugin(({ tools, systemPath }) => {
+export default defineEditorPlugin(({ tools }) => {
   tools.set('image', {
     class: ImageTool,
-    config: {
-      systemPath,
-    },
   })
 })

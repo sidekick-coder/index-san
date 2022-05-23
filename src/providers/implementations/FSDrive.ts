@@ -1,4 +1,4 @@
-import { readFile, stat } from 'fs/promises'
+import { readFile, stat, writeFile } from 'fs/promises'
 import { resolve } from 'path'
 
 import Workspace from 'Entities/Workspace'
@@ -17,5 +17,17 @@ export default class FSDrive implements IDrive {
     if (!fileExist) return null
 
     return readFile(filePath)
+  }
+
+  public async update(workspace: Workspace, path: string, content: Buffer | string) {
+    const filePath = resolve(workspace.path, ...pathToArray(path))
+
+    const fileExist = await stat(filePath)
+      .then((s) => s.isFile())
+      .catch(() => false)
+
+    if (!fileExist) return Promise.resolve()
+
+    return writeFile(filePath, content)
   }
 }

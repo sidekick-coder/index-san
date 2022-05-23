@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { useWindowApi } from '@/composables/api'
-import { useEditor, EditorSaveContext } from './editor'
-import { ref, onMounted, PropType } from 'vue'
-import { File, ItemOption } from '@/types'
+import { useEditor } from './editor'
+import { parseText, parseBlocks } from './main-parser'
+import { ref, onMounted } from 'vue'
+import { Item } from '@/types'
 import { throttle } from 'lodash'
-
-const api = useWindowApi()
+import { useCase } from '@/composables/use-case'
 
 const props = defineProps({
-  file: {
-    type: Object as PropType<File>,
+  item: {
+    type: Object as () => Item,
     required: true,
   },
 })
@@ -19,35 +18,37 @@ const saving = ref(false)
 const displayName = ref('')
 
 const saveTitle = throttle(async () => {
-  const { path, workspace } = props.file
-
-  await api
-    .patch(`/options/${workspace.name}/${path}`, {
-      displayName: displayName.value,
-    })
-    .catch(console.error)
-    .then(console.log)
+  // const { path, workspace } = props.file
+  // await api
+  //   .patch(`/options/${workspace.name}/${path}`, {
+  //     displayName: displayName.value,
+  //   })
+  //   .catch(console.error)
+  //   .then(console.log)
 }, 1000)
 
-async function setTitle() {
-  const { path, workspace } = props.file
-  await api
-    .get<ItemOption>(`/options/${workspace.name}/${path}`)
-    .then(({ data }) => {
-      console.log(data, path)
-      if (!data.displayName) return
-
-      displayName.value = data.displayName
-    })
-    .catch(() => (displayName.value = props.file.name))
+function setTitle() {
+  displayName.value = props.item.config.displayName || props.item.name
+  // const { path, workspace } = props.file
+  // await api
+  //   .get<ItemOption>(`/options/${workspace.name}/${path}`)
+  //   .then(({ data }) => {
+  //     console.log(data, path)
+  //     if (!data.displayName) return
+  //     displayName.value = data.displayName
+  //   })
+  //   .catch(() => (displayName.value = props.file.name))
 }
 
-async function save(data: EditorSaveContext) {
-  saving.value = true
+async function save(data: EditorJS.OutputData) {
+  const text = await parseBlocks(props.item, data.blocks)
 
-  await api
-    .invoke('file:write', { path: props.file.systemPath, content: data.text })
-    .catch(() => console.error('Failed to save file'))
+  await useCase('update-item-file', {
+    workspaceId: props.item.workspaceId,
+    path: props.item.path,
+    content: text,
+  })
+    .catch(console.error)
     .finally(() => (saving.value = false))
 }
 
@@ -56,19 +57,32 @@ async function setContent() {
     alert('Failed to load file')
     return
   }
-  const { events, setContentByText } = useEditor(editorRef.value, props.file.item.systemPath)
 
-  const content = await api.invoke('file:read', { path: props.file.systemPath })
-
-  events.subscribe('ready', () => {
-    setContentByText(content)
-  })
+  const { events, editor } = useEditor(editorRef.value)
 
   events.subscribe('change', save)
+
+  const buffer = await useCase<ArrayBuffer | null>('show-item-file', {
+    workspaceId: props.item.workspaceId,
+    path: props.item.path,
+  })
+
+  if (!buffer) return
+
+  const decoder = new TextDecoder('utf-8')
+
+  const text = decoder.decode(buffer)
+
+  events.subscribe('ready', async () => {
+    const blocks = await parseText(props.item, text)
+
+    editor.blocks.render({ blocks })
+  })
 }
 
 async function load() {
-  await setTitle()
+  displayName.value = props.item.config.displayName || props.item.name
+
   await setContent()
 }
 
