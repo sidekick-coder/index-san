@@ -1,8 +1,8 @@
 import { BrowserWindow, app } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
-import { colorize } from 'Helpers/colorize'
-import { watch } from 'Helpers/watch'
+import { colorize } from 'Utils/colorize'
+import { watch } from 'Utils/watch'
 import { resolve } from 'path'
 
 import ElectronApplication from '../electron'

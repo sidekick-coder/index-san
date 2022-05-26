@@ -38,7 +38,7 @@
         }
     },
     "include": [
-        "main.ts",
+        "bin/**/*.ts",
         "src/entities/*.ts",
         "src/entrypoint/*.ts",
         "src/errors/*.ts",
@@ -46,12 +46,6 @@
         "src/repositories/**/*.ts",
         "src/__tests__/**/*.ts",
         "src/use-cases/*.ts",
-        "start/**/*.ts",
-        "app/**/*.ts",
-        "types/**/*.ts",
-        "config/**/*.ts",
-        "helpers/**/*.ts",
-        "tests/**/*.ts",
-        "bin/**/*.ts"
+        "src/@types/*.ts"
     ]
 }

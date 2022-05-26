@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import { resolve } from 'path'
 import { BrowserWindow, app } from 'electron'
 
-import { createBuilder } from 'Helpers/builder'
+import { createBuilder } from 'Utils/builder'
 import { Query } from '@code-pieces/db-json'
 import { debounce } from 'lodash'
 
