@@ -1,6 +1,6 @@
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
-import IConfigsRepository from 'Repositories/IConfigsRepository'
 import IItemsRepository, { IndexFilters } from 'Repositories/IItemsRepository'
+import IMetadataRepository from 'Repositories/IMetadataRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
 interface Args {
@@ -12,7 +12,7 @@ export default class ListItems {
   constructor(
     private workspacesRepository: IWorkspacesRepository,
     private itemsRepository: IItemsRepository,
-    private configsRepository: IConfigsRepository
+    private metadataRepository: IMetadataRepository
   ) {}
 
   public async execute({ workspaceId, filters }: Args) {
@@ -24,14 +24,14 @@ export default class ListItems {
 
     const paths = items.map((item) => item.path)
 
-    const configs = await this.configsRepository.index(workspace, { names: paths })
+    const metas = await this.metadataRepository.index(workspace, { paths })
 
-    configs.forEach((config) => {
-      const item = items.find((item) => item.path === config.name)
+    Object.keys(metas).forEach((name) => {
+      const item = items.find((item) => item.path === name)
 
       if (!item) return
 
-      item.config = config
+      item.metas = metas[name]
     })
 
     return items

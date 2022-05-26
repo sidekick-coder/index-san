@@ -1,9 +1,8 @@
 import { test } from '@japa/runner'
-import ConfigFactory from 'src/__tests__/factories/ConfigFactory'
 import ItemFactory from 'src/__tests__/factories/ItemFactory'
 import WorkspaceFactory from 'src/__tests__/factories/WorkspaceFactory'
-import InMemoryConfigsRepository from 'TestRepositories/InMemoryConfigsRepository'
 import InMemoryItemsRepository from 'TestRepositories/InMemoryItemsRepository'
+import InMemoryMetadataRepository from 'TestRepositories/InMemoryMetadataRepository'
 import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
 
 import ListItems from './list-items'
@@ -11,13 +10,12 @@ import ListItems from './list-items'
 test.group('use-case: list-items', () => {
   const workspaceRepository = new InMemoryWorkspacesRepository()
   const itemRepository = new InMemoryItemsRepository()
-  const configRepository = new InMemoryConfigsRepository()
+  const metadataRepository = new InMemoryMetadataRepository()
 
   const workspaceFactory = new WorkspaceFactory(workspaceRepository)
   const itemFactory = new ItemFactory(itemRepository)
-  const configFactory = new ConfigFactory(configRepository)
 
-  const listItems = new ListItems(workspaceRepository, itemRepository, configRepository)
+  const listItems = new ListItems(workspaceRepository, itemRepository, metadataRepository)
 
   test('should list all items in a workspace', async ({ expect }) => {
     const workspace = await workspaceFactory.create()
@@ -30,22 +28,19 @@ test.group('use-case: list-items', () => {
     expect(result).toEqual(items)
   })
 
-  test('should return items with config if exists', async ({ expect }) => {
+  test('should return items with metadata', async ({ expect }) => {
     const workspace = await workspaceFactory.create()
-    const item = await itemFactory.create(workspace)
-    const config = await configFactory.create(workspace, {
-      name: item.path,
-      value: { displayName: 'hello word' },
+    const items = await itemFactory.createMany(workspace)
+
+    metadataRepository.metas.set(items[0].path, {
+      displayName: 'foo',
     })
 
     const [result] = await listItems.execute({
       workspaceId: workspace.id,
     })
 
-    expect(result).toEqual({
-      ...item,
-      config,
-    })
+    expect(result.metas).toEqual({ displayName: 'foo' })
   })
 
   test('should filter items by parent path', async ({ expect }) => {

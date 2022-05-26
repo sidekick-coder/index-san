@@ -18,7 +18,7 @@ export default class FsItemsRepository implements IItemsRepository {
     const result = await fs.readdir(folderPath, { withFileTypes: true })
 
     const items = result
-      .filter((f) => f.name !== '.index-san')
+      .filter((f) => f.name !== '.metas')
       .map((f) => {
         const path = pathToArray(folderPath.replace(workspace.path, ''))
           .filter((p) => p !== '')

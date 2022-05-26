@@ -5,7 +5,7 @@ export default class Item {
   public name: string
   public type: 'file' | 'folder'
 
-  public config?: any = {}
+  public metas?: any = {}
 
   constructor(data: Item) {
     Object.assign(this, data)

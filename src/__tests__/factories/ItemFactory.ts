@@ -15,7 +15,6 @@ export default class ItemFactory {
       path,
       workspaceId: '',
       type: 'file',
-      config: {},
       ...data,
     })
   }

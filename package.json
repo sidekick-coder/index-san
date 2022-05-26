@@ -66,6 +66,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
         "@fortawesome/vue-fontawesome": "^3.0.0-5",
         "@vueuse/core": "^8.5.0",
+        "fast-glob": "^3.2.11",
         "lodash": "^4.17.21",
         "path-match": "^1.2.4",
         "pinia": "^2.0.14",
@@ -74,6 +75,7 @@
         "uuid": "^8.3.2",
         "vue": "^3.2.33",
         "vue-router": "^4.0.15",
-        "vue-wind": "^0.0.31-next"
+        "vue-wind": "^0.0.31-next",
+        "yaml": "^2.1.0"
     }
 }

@@ -1,8 +1,8 @@
 import Item from 'Entities/Item'
 import ItemNotFound from 'Errors/ItemNotFound'
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
-import IConfigsRepository from 'Repositories/IConfigsRepository'
 import IItemsRepository from 'Repositories/IItemsRepository'
+import IMetadataRepository from 'Repositories/IMetadataRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
 interface Args {
@@ -14,7 +14,7 @@ export default class ShowItem {
   constructor(
     private workspacesRepository: IWorkspacesRepository,
     private itemsRepository: IItemsRepository,
-    private configRepository: IConfigsRepository
+    private metasRepository: IMetadataRepository
   ) {}
 
   public async execute({ workspaceId, path }: Args): Promise<Item> {
@@ -26,9 +26,11 @@ export default class ShowItem {
 
     if (!item) throw new ItemNotFound(workspaceId, path)
 
-    const config = await this.configRepository.findByName(workspace, item.path)
+    const metas = await this.metasRepository.index(workspace, {
+      paths: [path],
+    })
 
-    item.config = config || {}
+    item.metas = metas[path] || {}
 
     return item
   }
