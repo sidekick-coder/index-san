@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { useCase } from '@/composables/use-case'
-import { Item, Workspace } from '@/types'
+import { Item } from '@/types'
 import { ref } from 'vue'
 
 const props = defineProps({
-  workspace: {
-    type: Object as () => Workspace,
-    required: true,
-  },
   item: {
     type: Object as () => Item,
     required: true,
@@ -18,7 +14,7 @@ const src = ref()
 
 async function setImage() {
   await useCase<ArrayBuffer>('show-item-file', {
-    workspaceId: props.workspace.id,
+    workspaceId: props.item.workspaceId,
     path: props.item.path,
   })
     .then((data) => {

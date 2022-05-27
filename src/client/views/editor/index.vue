@@ -28,7 +28,7 @@ const saveTitle = throttle(async () => {
 }, 1000)
 
 function setTitle() {
-  displayName.value = props.item.config.displayName || props.item.name
+  displayName.value = props.item.metas?.displayName || props.item.name
   // const { path, workspace } = props.file
   // await api
   //   .get<ItemOption>(`/options/${workspace.name}/${path}`)
@@ -81,7 +81,7 @@ async function setContent() {
 }
 
 async function load() {
-  displayName.value = props.item.config.displayName || props.item.name
+  displayName.value = props.item.metas?.displayName || props.item.name
 
   await setContent()
 }

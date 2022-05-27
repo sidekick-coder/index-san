@@ -9,7 +9,7 @@ export interface Item {
   name: string
   path: string
   workspaceId: string
-  config?: any
+  metas?: Record<string, any>
   type: 'file' | 'folder'
 }
 

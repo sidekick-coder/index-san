@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
 
 import { Item } from '@/types'
 import { useCase } from '@/composables/use-case'
 
-import Toolbar from './toolbar.vue'
-import Drawer from './drawer.vue'
-import { useWorkspaceStore } from '@/stores/workspace'
+import { useLayoutStore } from '@/stores/layout'
 
 const props = defineProps({
   workspaceId: {
@@ -24,40 +22,55 @@ const loading = ref({
   view: false,
 })
 
-const store = useWorkspaceStore()
+const layoutStore = useLayoutStore()
 
 const item = ref<Item>()
-const view = shallowRef<any>()
+const tabId = ref<string>()
+const viewId = ref<string>()
 
-const workspace = computed(() =>
-  store.workspaces.find((workspace) => workspace.id === props.workspaceId)
-)
+const currentView = computed(() => views.find((view) => view.id === viewId.value))
 
 const views = [
   {
-    name: 'default',
+    id: 'default',
+    label: 'Default',
     component: defineAsyncComponent(() => import('@/views/default.vue')),
-    test: () => false,
   },
   {
-    name: 'folder',
-    component: defineAsyncComponent(() => import('@/views/folder.vue')),
-    test: () => item.value?.type === 'folder',
+    id: 'folder',
+    label: 'Folder',
+    component: 's-directory-list',
   },
   {
-    name: 'editor',
+    id: 'editor',
+    label: 'Editor',
     component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
-    test: (filename: string) => /md/.test(filename),
   },
   {
-    name: 'image',
+    id: 'image',
+    label: 'Image',
     component: defineAsyncComponent(() => import('@/views/image.vue')),
-    test: (filename: string) => /(png|jpg|jpeg|gif|svg)/.test(filename),
+  },
+]
+
+const tabs = [
+  {
+    id: 'views',
+    icon: 'eye',
+  },
+  {
+    id: 'directory',
+    icon: 'folder',
+  },
+  {
+    id: 'metas',
+    icon: 'cog',
   },
 ]
 
 async function load() {
   loading.value.item = true
+  viewId.value = 'default'
 
   useCase<Item>('show-item', {
     workspaceId: props.workspaceId,
@@ -68,27 +81,61 @@ async function load() {
     .finally(() => setTimeout(() => (loading.value.item = false), 500))
 }
 
-async function setView() {
+async function setView(id: string) {
   loading.value.view = true
 
-  const search = views.find((view) => view.test(props.path))
-
-  const defaultView = views.find((view) => view.name === 'default')
-
-  view.value = search || defaultView
+  viewId.value = id
 
   setTimeout(() => (loading.value.view = false), 500)
+}
+
+function setTab(id?: string) {
+  const tab = tabs.find((tab) => tab.id === id)
+
+  if (id === tabId.value && layoutStore.right) {
+    tabId.value = undefined
+    layoutStore.right = false
+    return
+  }
+
+  if (!tab) return
+
+  tabId.value = tab.id
+  layoutStore.right = true
 }
 
 watch(props, load, {
   immediate: true,
 })
-
-watch(item, setView)
 </script>
 <template>
   <w-layout use-percentage>
-    <Toolbar :item="item" :layout-ignore="['right']" />
+    <w-toolbar
+      class="toolbar border-b h-[50px] flex justify-end z-10"
+      color="white"
+      :layout-ignore="['right']"
+    >
+      <button
+        class="h-full w-[60px] hover:bg-gray-100 justify-self-start"
+        @click="layoutStore.toggleLeft"
+      >
+        <fa-icon class="text-lg" icon="bars" />
+      </button>
+
+      <div class="justify-self-start mr-auto font-bold">
+        {{ item ? item.name : 'No items selected' }}
+      </div>
+
+      <button
+        v-for="tab in tabs"
+        :key="tab.id"
+        class="h-full w-[60px] hover:bg-gray-100"
+        :class="[tab.id === tabId ? 'bg-gray-100' : 'bg-white']"
+        @click="setTab(tab.id)"
+      >
+        <fa-icon class="text-lg" :icon="tab.icon" />
+      </button>
+    </w-toolbar>
 
     <div
       v-if="loading.item"
@@ -115,15 +162,35 @@ watch(item, setView)
         </div>
       </w-content>
 
-      <w-content v-if="item && workspace" v-show="!loading.view">
+      <w-content v-if="currentView" v-show="!loading.view">
         <div class="h-full w-full overflow-auto">
-          <component :is="view.component" :workspace="workspace" :item="item" />
+          <component :is="currentView.component" :item="item" />
         </div>
       </w-content>
 
       <w-content v-else class="flex items-center justify-center"> Error </w-content>
     </template>
 
-    <Drawer :item="item" right layout-id="right" />
+    <w-drawer
+      v-model="layoutStore.right"
+      layout-id="right"
+      class="border-l bg-white"
+      width="[300px]"
+      right
+    >
+      <s-directory-list v-if="tabId === 'directory'" :item="item" />
+
+      <div v-if="tabId === 'views'">
+        <div
+          v-for="v in views"
+          :key="v.id"
+          class="list-item clickable"
+          :class="[v.id === viewId ? 'bg-gray-100' : 'bg-white']"
+          @click="setView(v.id)"
+        >
+          {{ v.label }}
+        </div>
+      </div>
+    </w-drawer>
   </w-layout>
 </template>
