@@ -1,8 +1,6 @@
 import { createApp } from 'vue'
 import { orderBy } from 'lodash'
 
-import './styles/index.css'
-
 import App from './app.vue'
 import createRouter from './router'
 

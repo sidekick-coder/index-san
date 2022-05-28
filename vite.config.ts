@@ -18,4 +18,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(root, '..', 'public'),
   },
+  optimizeDeps: {
+    exclude: ['vue-wind'],
+  },
 })

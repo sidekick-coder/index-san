@@ -1,7 +1,6 @@
 const { resolve } = require('path')
-
-const colors = require('tailwindcss/colors')
 const { transformer } = require('vue-wind')
+const colors = require('tailwindcss/colors')
 
 module.exports = {
   theme: {
@@ -10,24 +9,17 @@ module.exports = {
       white: colors.white,
       black: colors.black,
       gray: colors.gray,
+      slate: colors.slate,
       red: colors.red,
     },
   },
   content: {
-    files: [
-      resolve(__dirname, 'index.html'),
-      resolve(__dirname, 'app.vue'),
-      resolve(__dirname, 'components/*.vue'),
-      resolve(__dirname, 'pages/**/*.vue'),
-      resolve(__dirname, 'views/**/*.vue'),
-      resolve(__dirname, 'views/**/**/**/*.ts'),
-      resolve(__dirname, 'styles/*.css'),
-    ],
+    files: ['src/client/**/*.vue'],
     transform: {
       vue: (content) => {
         const vWindSafeList = transformer(content)
 
-        return [vWindSafeList, content].join('\n\n')
+        return [vWindSafeList, content].join('\n\n\n')
       },
     },
   },
