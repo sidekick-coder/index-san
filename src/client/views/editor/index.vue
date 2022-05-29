@@ -18,27 +18,16 @@ const saving = ref(false)
 const displayName = ref('')
 
 const saveTitle = throttle(async () => {
-  // const { path, workspace } = props.file
-  // await api
-  //   .patch(`/options/${workspace.name}/${path}`, {
-  //     displayName: displayName.value,
-  //   })
-  //   .catch(console.error)
-  //   .then(console.log)
+  await useCase('save-item-metadata', {
+    workspaceId: props.item.workspaceId,
+    path: props.item.path,
+    data: {
+      displayName: displayName.value,
+    },
+  })
+    .then(console.log)
+    .catch(console.error)
 }, 1000)
-
-function setTitle() {
-  displayName.value = props.item.metas?.displayName || props.item.name
-  // const { path, workspace } = props.file
-  // await api
-  //   .get<ItemOption>(`/options/${workspace.name}/${path}`)
-  //   .then(({ data }) => {
-  //     console.log(data, path)
-  //     if (!data.displayName) return
-  //     displayName.value = data.displayName
-  //   })
-  //   .catch(() => (displayName.value = props.file.name))
-}
 
 async function save(data: EditorJS.OutputData) {
   const text = await parseBlocks(props.item, data.blocks)

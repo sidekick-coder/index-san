@@ -30,6 +30,14 @@ const viewId = ref<string>()
 
 const currentView = computed(() => views.find((view) => view.id === viewId.value))
 
+const title = computed(() => {
+  if (!item.value) return 'No items selected'
+
+  const { name, metas } = item.value
+
+  return metas?.displayName || name
+})
+
 const views = [
   {
     id: 'default',
@@ -130,7 +138,7 @@ watch(props, load, {
       </button>
 
       <div class="justify-self-start mr-auto font-bold">
-        {{ item ? item.name : 'No items selected' }}
+        {{ title }}
       </div>
 
       <button

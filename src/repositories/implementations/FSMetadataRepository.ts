@@ -1,13 +1,15 @@
 import Metadata from 'Entities/Metadata'
 import fg from 'fast-glob'
-import path from 'path'
-import { readFile } from 'fs/promises'
-import { parse } from 'yaml'
+import path, { basename, resolve } from 'path'
+import { readFile, writeFile } from 'fs/promises'
+import YAML from 'yaml'
 
 import { pathToArray } from 'Utils/paths'
 
 import IMetadataRepository, { IndexFilters } from 'Repositories/IMetadataRepository'
 import Workspace from 'Entities/Workspace'
+import Item from 'Entities/Item'
+import { mkdirIfNotExist } from 'Utils/filesystem'
 
 export default class FSMetadataRepository implements IMetadataRepository {
   public async index(workspace: Workspace, filters?: IndexFilters) {
@@ -34,9 +36,32 @@ export default class FSMetadataRepository implements IMetadataRepository {
 
       const text = await readFile(systemPath, 'utf8')
 
-      metas.set(itemPath, parse(text))
+      metas.set(itemPath, YAML.parse(text))
     }
 
     return Object.fromEntries(metas)
+  }
+
+  public async save(workspace: Workspace, item: Item, metadata: Metadata) {
+    const systemFilename = resolve(workspace.path, pathToArray(item.path).join('/'))
+
+    const metaFilename = item.type === 'folder' ? '_root_.yml' : `${basename(systemFilename)}.yml`
+    const metaFolder = item.type === 'folder' ? systemFilename : path.dirname(systemFilename)
+
+    const metaPath = resolve(metaFolder, '.metas', metaFilename)
+
+    const metaText = YAML.stringify({
+      ...item.metas,
+      ...metadata,
+    })
+
+    await mkdirIfNotExist(path.dirname(metaPath))
+
+    await writeFile(metaPath, metaText)
+
+    return {
+      ...item.metas,
+      ...metadata,
+    }
   }
 }

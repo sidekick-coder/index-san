@@ -18,6 +18,7 @@ import ShowItemFile from 'UseCases/show-item-file'
 import UpdateItemFile from 'UseCases/update-item-file'
 import FSMetadataRepository from 'Repositories/implementations/FSMetadataRepository'
 import ShowDataView from 'UseCases/show-data-view'
+import SaveItemMetadata from 'UseCases/save-item-metadata'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
@@ -38,6 +39,12 @@ const createItem = new CreateItem(workspacesRepository, itemsRepository)
 const showItemFile = new ShowItemFile(workspacesRepository, itemsRepository, drive)
 const updateItemFile = new UpdateItemFile(workspacesRepository, itemsRepository, drive)
 
+const saveItemMetadata = new SaveItemMetadata(
+  workspacesRepository,
+  itemsRepository,
+  metadataRepository
+)
+
 const showDataView = new ShowDataView(
   workspacesRepository,
   itemsRepository,
@@ -55,6 +62,7 @@ const useCases = [
   { name: 'show-item-file', useCase: showItemFile },
   { name: 'update-item-file', useCase: updateItemFile },
   { name: 'show-item-data-view', useCase: showDataView },
+  { name: 'save-item-metadata', useCase: saveItemMetadata },
 ]
 
 useCases.forEach(({ name, useCase }) => {

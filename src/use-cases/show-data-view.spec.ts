@@ -53,6 +53,6 @@ test.group('use-case: show-data-view', () => {
       path: item.path,
     })
 
-    expect(result).toEqual({ head, items })
+    expect(result).toEqual({ columns: head, items })
   })
 })
