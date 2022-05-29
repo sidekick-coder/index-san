@@ -51,6 +51,11 @@ const views = [
     label: 'Image',
     component: defineAsyncComponent(() => import('@/views/image.vue')),
   },
+  {
+    id: 'data-view',
+    label: 'Data-view',
+    component: defineAsyncComponent(() => import('@/views/data-view/data-view.vue')),
+  },
 ]
 
 const tabs = [
@@ -86,6 +91,8 @@ async function setView(id: string) {
 
   viewId.value = id
 
+  layoutStore.right = false
+
   setTimeout(() => (loading.value.view = false), 500)
 }
 
@@ -111,7 +118,7 @@ watch(props, load, {
 <template>
   <w-layout use-percentage>
     <w-toolbar
-      class="toolbar border-b h-[50px] flex justify-end z-10"
+      class="border-b h-[50px] flex justify-end z-10"
       color="white"
       :layout-ignore="['right']"
     >

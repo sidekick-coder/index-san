@@ -32,7 +32,9 @@ export default class ItemFactory {
     const items = []
 
     for (let i = 0; i < count; i++) {
-      const item = await this.create(workspace, data)
+      const formatted = JSON.stringify(data ?? {}).replace(/%i/g, String(i))
+
+      const item = await this.create(workspace, JSON.parse(formatted))
 
       items.push(item)
     }

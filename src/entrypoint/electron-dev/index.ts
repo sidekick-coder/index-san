@@ -7,7 +7,7 @@ import { resolve } from 'path'
 
 import ElectronApplication from '../electron'
 
-const port = process.env.PORT || 3333
+const port = process.env.PORT || 3000
 const host = process.env.HOST || 'localhost'
 
 export default class ElectronDevApplication extends ElectronApplication {
@@ -21,6 +21,8 @@ export default class ElectronDevApplication extends ElectronApplication {
     this.window = await this.createWindow()
 
     await this.window.loadURL(`http://${host}:${port}`)
+
+    await this.window.webContents.session.clearCache()
 
     await installExtension(VUEJS_DEVTOOLS)
       .then(() => console.log(colorize('Vue Devtools installed', 'blue')))

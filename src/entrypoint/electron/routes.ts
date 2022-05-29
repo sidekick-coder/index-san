@@ -5,6 +5,7 @@ import FSWorkspacesRepository from 'Repositories/implementations/FSWorkspacesRep
 import FsItemsRepository from 'Repositories/implementations/FSItemsRepository'
 
 import FSDrive from 'Providers/implementations/FSDrive'
+import FSFolderDataView from 'Providers/implementations/FSFolderDataView'
 
 import CreateWorkspace from 'UseCases/create-workspace'
 import DeleteWorkspace from 'UseCases/delete-workspace'
@@ -16,6 +17,7 @@ import ShowItem from 'UseCases/show-item'
 import ShowItemFile from 'UseCases/show-item-file'
 import UpdateItemFile from 'UseCases/update-item-file'
 import FSMetadataRepository from 'Repositories/implementations/FSMetadataRepository'
+import ShowItemDataView from 'UseCases/show-item-data-view'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
@@ -36,6 +38,13 @@ const createItem = new CreateItem(workspacesRepository, itemsRepository)
 const showItemFile = new ShowItemFile(workspacesRepository, itemsRepository, drive)
 const updateItemFile = new UpdateItemFile(workspacesRepository, itemsRepository, drive)
 
+const showItemDataView = new ShowItemDataView(
+  workspacesRepository,
+  itemsRepository,
+  metadataRepository,
+  FSFolderDataView
+)
+
 const useCases = [
   { name: 'create-workspace', useCase: createWorkspace },
   { name: 'list-workspaces', useCase: listWorkspaces },
@@ -45,11 +54,12 @@ const useCases = [
   { name: 'show-item', useCase: showItem },
   { name: 'show-item-file', useCase: showItemFile },
   { name: 'update-item-file', useCase: updateItemFile },
+  { name: 'show-item-data-view', useCase: showItemDataView },
 ]
 
 useCases.forEach(({ name, useCase }) => {
   ipcMain.removeHandler(`use-case:${name}`)
-  ipcMain.handle(`use-case:${name}`, (_, data) => useCase.execute(data))
+  ipcMain.handle(`use-case:${name}`, (_, data) => useCase.execute.bind(useCase)(data))
 })
 
 ipcMain.removeHandler('electron:show-dialog')
