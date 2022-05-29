@@ -6,7 +6,7 @@ import { IDataView, UseCase } from 'Providers/IDataView'
 export default class FolderDataViewFake implements IDataView {
   constructor(public item: Item, public workspace: Workspace, public useCase: UseCase) {}
 
-  public async head() {
+  public async columns() {
     return this.item.metas.head || []
   }
 

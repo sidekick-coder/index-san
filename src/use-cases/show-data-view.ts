@@ -11,7 +11,7 @@ interface Args {
   path: string
 }
 
-export default class ShowItemDataView {
+export default class ShowDataView {
   constructor(
     public workspacesRepository: IWorkspacesRepository,
     public itemsRepository: IItemsRepository,
@@ -50,12 +50,12 @@ export default class ShowItemDataView {
 
     const dataView = new this.DataView(item, workspace, this.useCase)
 
-    const head = await dataView.head()
+    const columns = await dataView.columns()
 
     const items = await dataView.index()
 
     return {
-      head,
+      columns,
       items,
     }
   }

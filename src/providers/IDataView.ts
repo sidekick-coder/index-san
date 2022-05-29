@@ -1,10 +1,15 @@
 import Item from 'Entities/Item'
 import Workspace from 'Entities/Workspace'
 
-export interface IDataViewHead {
-  name: string
+export interface IDataViewColumnAction {
+  name: 'open-path'
+  icon: string
+}
+
+export interface IDataViewColumn {
   label: string
   field: string
+  action?: IDataViewColumnAction
 }
 
 export interface UseCase<T = any> {
@@ -12,7 +17,7 @@ export interface UseCase<T = any> {
 }
 
 export interface IDataView {
-  head(): Promise<IDataViewHead[]>
+  columns(): Promise<IDataViewColumn[]>
   index(): Promise<Record<string, any>>
 }
 
