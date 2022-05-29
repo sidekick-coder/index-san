@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import lodash from 'lodash'
+
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
 
 import { Item } from '@/types'
@@ -29,6 +31,23 @@ const tabId = ref<string>()
 const viewId = ref<string>()
 
 const currentView = computed(() => views.find((view) => view.id === viewId.value))
+const defaultViewId = computed(() => item.value?.metas?.view)
+
+const suggestedViewId = computed(() => {
+  if (item.value?.type === 'folder') {
+    return 'folder'
+  }
+
+  if (item.value?.path.endsWith('.md')) {
+    return 'editor'
+  }
+
+  if (/(.png|jpg)/.test(item.value?.path || '')) {
+    return 'image'
+  }
+
+  return 'default'
+})
 
 const title = computed(() => {
   if (!item.value) return 'No items selected'
@@ -41,7 +60,7 @@ const title = computed(() => {
 const views = [
   {
     id: 'default',
-    label: 'Default',
+    label: 'Details',
     component: defineAsyncComponent(() => import('@/views/default.vue')),
   },
   {
@@ -83,16 +102,23 @@ const tabs = [
 
 async function load() {
   loading.value.item = true
-  viewId.value = 'default'
 
-  useCase<Item>('show-item', {
+  await useCase<Item>('show-item', {
     workspaceId: props.workspaceId,
     path: props.path === 'root' ? '' : props.path,
   })
     .then((data) => (item.value = data))
     .catch(console.error)
-    .finally(() => setTimeout(() => (loading.value.item = false), 500))
+    .finally(() => {
+      viewId.value = lodash.get(item.value, 'metas.view', suggestedViewId.value)
+
+      setTimeout(() => (loading.value.item = false), 500)
+    })
 }
+
+watch(props, load, {
+  immediate: true,
+})
 
 async function setView(id: string) {
   loading.value.view = true
@@ -119,9 +145,19 @@ function setTab(id?: string) {
   layoutStore.right = true
 }
 
-watch(props, load, {
-  immediate: true,
-})
+async function setDefaultView(id: string) {
+  await useCase('save-item-metadata', {
+    workspaceId: props.workspaceId,
+    path: props.path,
+    data: {
+      view: id,
+    },
+  })
+    .then(() => {
+      lodash.set(item, 'value.metas.view', id)
+    })
+    .catch(console.error)
+}
 </script>
 <template>
   <w-layout use-percentage>
@@ -203,7 +239,21 @@ watch(props, load, {
           :class="[v.id === viewId ? 'bg-gray-100' : 'bg-white']"
           @click="setView(v.id)"
         >
-          {{ v.label }}
+          <div>{{ v.label }}</div>
+          <div
+            v-if="v.id === defaultViewId"
+            class="ml-auto bg-accent px-2 py-1 rounded text-white text-xs"
+          >
+            Default
+          </div>
+
+          <div
+            v-else
+            class="ml-auto bg-gray-200 px-2 py-1 rounded actions text-xs"
+            @click.stop="setDefaultView(v.id)"
+          >
+            Make default
+          </div>
         </div>
       </div>
     </w-drawer>

@@ -42,6 +42,12 @@ export default class FSMetadataRepository implements IMetadataRepository {
     return Object.fromEntries(metas)
   }
 
+  public async find(workspace: Workspace, item: Item) {
+    const old = await this.index(workspace, { paths: [item.path] })
+
+    return old[item.path] || {}
+  }
+
   public async save(workspace: Workspace, item: Item, metadata: Metadata) {
     const systemFilename = resolve(workspace.path, pathToArray(item.path).join('/'))
 
@@ -50,8 +56,10 @@ export default class FSMetadataRepository implements IMetadataRepository {
 
     const metaPath = resolve(metaFolder, '.metas', metaFilename)
 
+    const old = await this.find(workspace, item)
+
     const metaText = YAML.stringify({
-      ...item.metas,
+      ...old,
       ...metadata,
     })
 
