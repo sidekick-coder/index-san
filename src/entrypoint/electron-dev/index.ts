@@ -75,7 +75,7 @@ export default class ElectronDevApplication extends ElectronApplication {
     const filepath = resolve(process.cwd(), 'src')
 
     watch(filepath, this.reload.bind(this), {
-      ignore: ['client', 'entrypoint', 'tests'],
+      ignore: ['client', 'entrypoint', 'tests', 'plugins'],
     })
   }
 }

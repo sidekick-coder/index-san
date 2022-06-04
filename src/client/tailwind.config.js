@@ -23,6 +23,6 @@ module.exports = {
       },
     },
   },
-  safelist: ['right-0', 'w-[300px]'],
+  safelist: ['right-0', 'w-[300px]', 'text-left'],
   plugins: [],
 }

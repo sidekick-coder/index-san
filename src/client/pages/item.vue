@@ -7,6 +7,7 @@ import { Item } from '@/types'
 import { useCase } from '@/composables/use-case'
 
 import { useLayoutStore } from '@/stores/layout'
+import { useIndexSanPlugins } from '@/composables/use-index-san-plugins'
 
 const props = defineProps({
   workspaceId: {
@@ -102,6 +103,14 @@ const tabs = [
 
 async function load() {
   loading.value.item = true
+
+  useIndexSanPlugins().then((component) =>
+    views.push({
+      id: 'custom',
+      label: 'Custom',
+      component,
+    })
+  )
 
   await useCase<Item>('show-item', {
     workspaceId: props.workspaceId,
