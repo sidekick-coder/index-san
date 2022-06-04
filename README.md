@@ -5,6 +5,8 @@ A Filesystem based notes app
 
 </div>
 
+![](./screenshots/screenshot-01.png)
+
 The project is very in early development so basic features do not exists yet
 
 ## Requirements
