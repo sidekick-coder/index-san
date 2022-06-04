@@ -122,7 +122,7 @@ async function deleteItem() {
       No items
     </div>
 
-    <is-drawer-item
+    <s-drawer-item
       v-for="item in children"
       :key="item.path"
       :to="`/${workspaceId}/${item.path}`"

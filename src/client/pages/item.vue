@@ -265,6 +265,10 @@ async function setDefaultView(id: string) {
           </div>
         </div>
       </div>
+
+      <div v-if="tabId === 'metas'">
+        <s-meta-editor :item="item" />
+      </div>
     </w-drawer>
   </w-layout>
 </template>

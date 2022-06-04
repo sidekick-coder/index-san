@@ -45,7 +45,7 @@ store.setWorkspaces()
 
     <div v-if="!store.workspaces.length" class="list-item">No items</div>
 
-    <is-drawer-item
+    <s-drawer-item
       v-for="workspace in store.workspaces"
       :key="workspace.id"
       :workspace-id="workspace.id"

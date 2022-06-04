@@ -1,6 +1,6 @@
 <template>
   <w-layout>
-    <is-drawer />
+    <s-drawer />
 
     <w-content>
       <router-view />

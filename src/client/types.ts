@@ -4,12 +4,22 @@ export interface Workspace {
   displayName: string
   path: string
 }
+export interface MetaRelation {
+  name: string
+  type: 'belongsTo' | 'hasMany'
+  value: string
+}
+
+interface ItemMeta {
+  [key: string]: any
+  relations?: MetaRelation[]
+}
 
 export interface Item {
   name: string
   path: string
   workspaceId: string
-  metas?: Record<string, any>
+  metas?: ItemMeta
   type: 'file' | 'folder'
 }
 
