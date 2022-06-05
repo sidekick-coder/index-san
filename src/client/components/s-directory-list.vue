@@ -15,11 +15,11 @@ const props = defineProps({
 const subitems = ref<Item[]>([])
 
 function dirname(path: string) {
-  const args = path.split('\\|/')
+  const args = path.split('/')
 
   args.pop()
 
-  return args[0]
+  return args.join('/')
 }
 
 async function setItems() {
