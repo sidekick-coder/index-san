@@ -4,28 +4,14 @@ import { Builder } from 'vue-wind/types/composable/tailwind'
 
 import { useCase } from '@/composables/use-case'
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-
-interface ColumnAction {
-  name: 'open-path'
-  icon: string
-  label: string
-}
+import { throttle } from 'lodash'
 
 interface Column {
   name: string
   field: string
   label: string
   style?: string
-  action?: ColumnAction
 }
-
-interface UseStateResult {
-  items: any[]
-  columns: Column[]
-}
-
-const router = useRouter()
 
 const props = defineProps({
   item: {
@@ -35,53 +21,41 @@ const props = defineProps({
 })
 
 const items = ref<any[]>([])
-const columns = ref<Column[]>([])
 
-const columnsComputed = computed<Column[]>(() => {
-  const actions = columns.value.filter((column) => column.action)
-  const normal = columns.value.filter((column) => !column.action)
-  const data = items.value[0]
+const actions = [
+  {
+    name: 'open',
+    style: 'width: 100px',
+  },
+]
 
-  if (normal.length || !data) return columns.value
-
-  const keys = Object.keys(data).map((key) => ({
-    name: key,
-    field: key,
-    label: key,
-  }))
-
-  return keys.concat(actions)
+const columns = computed<Column[]>(() => {
+  return [{ name: 'name', field: 'displayName', label: 'Name' }]
 })
 
-function load() {
-  useCase<UseStateResult>('show-item-data-view', {
+async function load() {
+  await useCase<Item[]>('list-items', {
     workspaceId: props.item.workspaceId,
     path: props.item.path,
+    filters: {
+      parentPath: props.item.path,
+    },
+  }).then((result) => {
+    items.value = result.map((i) => ({ ...i, ...i.metas }))
   })
-    .then((data) => {
-      items.value = data.items
-      columns.value = data.columns.map((c) => ({
-        ...c,
-        style: c.action ? 'width:50px;' : '',
-      }))
-    })
+}
+
+const update = throttle(async (item: Item, key: string, value: string) => {
+  return await useCase('save-item-metadata', {
+    workspaceId: item.workspaceId,
+    path: item.path,
+    data: {
+      [key]: value,
+    },
+  })
+    .then(console.log)
     .catch(console.error)
-}
-
-async function handleAction(action: ColumnAction, data: any) {
-  const actions = {
-    'open-path': () => router.push(`/${data.workspaceId}/${data.path}`),
-  }
-
-  const method = actions[action.name]
-
-  if (!method) {
-    console.error(`Unknown action: ${action}`)
-    return
-  }
-
-  method().catch(console.error)
-}
+}, 1000)
 
 onMounted(load)
 
@@ -92,7 +66,7 @@ function modify(b: Builder) {
 </script>
 <template>
   <w-data-table
-    :columns="columnsComputed"
+    :columns="[...columns, ...actions]"
     :items="items"
     class="data-view"
     enable-navigation
@@ -103,23 +77,23 @@ function modify(b: Builder) {
       <input :value="i.name" />
     </template>
 
-    <template v-for="c in columnsComputed" :key="c.name" #[`item-${c.name}`]="{ item: i }">
-      <i
-        v-if="c.action"
-        class="icon-action mr-4 cell"
-        tabindex="0"
-        @click.stop="handleAction(c.action!, i)"
-        @keydown.enter="handleAction(c.action!, i)"
-      >
-        <fa-icon :icon="c.action.icon" />
-      </i>
-
+    <template v-for="c in columns" :key="c.name" #[`item-${c.name}`]="{ item: i }">
       <input
-        v-else
         :value="i[c.field]"
-        class="cell px-4 bg-white h-full w-full outline-none focus:bg-accent/10 focus:border-accent border-[transparent] border border-b-gray-200"
+        class="cell px-4"
         type="text"
+        @change="e => update(i, c.field,(e.target as any).value)"
+        @keydown.stop=""
       />
+    </template>
+
+    <template #item-open="{ item: i }">
+      <router-link
+        :to="`/${i.workspaceId}/${i.path}`"
+        class="cell flex items-center justify-center"
+      >
+        <fa-icon icon="eye" />
+      </router-link>
     </template>
   </w-data-table>
 </template>

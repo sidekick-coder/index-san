@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useCase } from '@/composables/use-case'
-import { Item, MetaRelation } from '@/types'
+import { Item } from '@/types'
 import { throttle } from 'lodash'
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import YAML from 'yaml'
 
 const props = defineProps({
   item: {
@@ -15,7 +16,7 @@ const metas = ref('')
 
 function load() {
   const item = props.item
-  metas.value = JSON.stringify(
+  metas.value = YAML.stringify(
     {
       displayName: item.metas?.displayName ?? item.name,
       relations: item.metas?.relations ?? [],
@@ -32,14 +33,14 @@ const update = throttle(async () => {
   return await useCase('save-item-metadata', {
     workspaceId: props.item.workspaceId,
     path: props.item.path,
-    data: JSON.parse(metas.value),
+    data: YAML.parse(metas.value),
   })
     .then(console.log)
     .catch(console.error)
 }, 1000)
 </script>
 <template>
-  <div class="py-4">
+  <div>
     <w-textarea v-model="metas" class="h-[500px]" @change="update" />
   </div>
 </template>
