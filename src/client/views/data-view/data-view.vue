@@ -30,7 +30,13 @@ const actions = [
 ]
 
 const columns = computed<Column[]>(() => {
-  return [{ name: 'name', field: 'displayName', label: 'Name' }]
+  const head = props.item.metas?.head
+
+  if (!head) {
+    return [{ name: 'name', field: 'displayName', label: 'Name' }]
+  }
+
+  return head
 })
 
 async function load() {
@@ -83,7 +89,8 @@ function modify(b: Builder) {
         class="cell px-4"
         type="text"
         @change="e => update(i, c.field,(e.target as any).value)"
-        @keydown.stop=""
+        @keydown.right.stop=""
+        @keydown.left.stop=""
       />
     </template>
 
