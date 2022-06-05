@@ -2,7 +2,7 @@
 import { useCase } from '@/composables/use-case'
 import { Item, MetaRelation } from '@/types'
 import { throttle } from 'lodash'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   item: {
@@ -11,28 +11,28 @@ const props = defineProps({
   },
 })
 
-const itemMetas = ref({
-  displayName: '',
-  relations: [] as MetaRelation[],
-})
+const metas = ref('')
 
 function load() {
-  if (props.item.metas?.displayName) {
-    itemMetas.value.displayName = props.item.metas.displayName
-  }
-
-  if (props.item.metas?.relations) {
-    itemMetas.value.relations = props.item.metas.relations
-  }
+  const item = props.item
+  metas.value = JSON.stringify(
+    {
+      displayName: item.metas?.displayName ?? item.name,
+      relations: item.metas?.relations ?? [],
+      ...item.metas,
+    },
+    null,
+    2
+  )
 }
 
-watch(props.item, load, { immediate: true })
+watch(() => props.item.path, load, { immediate: true })
 
 const update = throttle(async () => {
-  await useCase('save-item-metadata', {
+  return await useCase('save-item-metadata', {
     workspaceId: props.item.workspaceId,
     path: props.item.path,
-    data: itemMetas.value,
+    data: JSON.parse(metas.value),
   })
     .then(console.log)
     .catch(console.error)
@@ -40,18 +40,6 @@ const update = throttle(async () => {
 </script>
 <template>
   <div class="py-4">
-    <div class="mb-4 px-4">
-      <w-input v-model="itemMetas.displayName" label="Display Name" @change="update" />
-    </div>
-    <hr class="mb-4" />
-    <div class="px-4">
-      <w-input
-        v-for="relation in itemMetas.relations"
-        :key="relation.name"
-        v-model="relation.value"
-        :label="`${relation.name} (${relation.type})`"
-        @change="update"
-      />
-    </div>
+    <w-textarea v-model="metas" class="h-[500px]" @change="update" />
   </div>
 </template>
