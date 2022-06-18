@@ -16,7 +16,7 @@ import ListItems from 'UseCases/list-items'
 import ShowItem from 'UseCases/show-item'
 import ShowItemFile from 'UseCases/show-item-file'
 import UpdateItemFile from 'UseCases/update-item-file'
-import FSMetadataRepository from 'Repositories/implementations/FSMetadataRepository'
+import FSMetadataRepository from 'Repositories/implementations/FSMetasRepository'
 import SaveItemMetadata from 'UseCases/save-item-metadata'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')

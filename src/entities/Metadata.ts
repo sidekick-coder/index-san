@@ -5,5 +5,7 @@ export interface MetaRelation {
 }
 export default class Metadata {
   [key: string]: any
+  public itemId: string
+  public workspaceId: string
   public relations?: MetaRelation[] = []
 }

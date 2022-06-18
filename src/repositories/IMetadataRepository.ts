@@ -1,14 +1,12 @@
-import Item from 'Entities/Item'
 import Metadata from 'Entities/Metadata'
-import Workspace from 'Entities/Workspace'
-
-export interface IndexFilters {
-  paths?: string[]
+export interface Filters {
+  where: {
+    itemId?: string[]
+  }
 }
 
-type IndexResult = Record<string, Metadata>
-
 export default interface IMetadataRepository {
-  index(workspace: Workspace, filters?: IndexFilters): Promise<IndexResult>
-  save(workspace: Workspace, item: Item, metadata: Metadata): Promise<Metadata>
+  index(filters?: Filters): Promise<Metadata[]>
+  findOne(filters?: Filters): Promise<Metadata | null>
+  create(metadata: Metadata): Promise<Metadata>
 }

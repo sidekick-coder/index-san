@@ -25,3 +25,19 @@ export async function exists(path: string) {
     .then(() => true)
     .catch(() => false)
 }
+
+export async function readdirIfExist(arg: string) {
+  const folderExist = await exists(arg)
+
+  if (!folderExist) return []
+
+  return fs.readdir(arg, { withFileTypes: true })
+}
+
+export async function readFileIfExist(arg: string) {
+  const fileExist = await exists(arg)
+
+  if (!fileExist) return ''
+
+  return fs.readFile(arg, 'utf8')
+}

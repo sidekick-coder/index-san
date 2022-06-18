@@ -32,8 +32,8 @@
             "Utils/*": [
                 "src/utils/*"
             ],
-            "TestRepositories/*": [
-                "src/__tests__/repositories/*"
+            "Tests/*": [
+                "src/__tests__/*"
             ]
         }
     },
