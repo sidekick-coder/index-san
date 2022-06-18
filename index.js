@@ -1,5 +1,3 @@
-
-
 const distExist = require('fs').existsSync('./dist');
 
 if (!distExist) {

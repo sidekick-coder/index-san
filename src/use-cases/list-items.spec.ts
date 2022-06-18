@@ -62,4 +62,83 @@ test.group('use-case: list-items', () => {
 
     expect(result).toEqual([child])
   })
+
+  test('should load item belongs to relation', async ({ expect }) => {
+    const workspace = await workspaceFactory.create()
+
+    const project = await itemFactory.create(workspace, {
+      name: 'project-01',
+      path: '/projects/project-01',
+    })
+
+    const task = await itemFactory.create(workspace, {
+      name: 'task-01',
+      path: '/tasks/task-01',
+    })
+
+    metadataRepository.metas.set(task.path, {
+      relations: [
+        {
+          name: 'project',
+          type: 'belongs-to',
+          where: { path: '/projects/project-01' },
+        },
+      ],
+    })
+
+    const [result] = await listItems.execute({
+      workspaceId: workspace.id,
+      relations: ['project'],
+      filters: {
+        parentPath: '/tasks',
+      },
+    })
+
+    expect(result.project).toEqual(project)
+  })
+
+  test('should load item has many relation', async ({ expect }) => {
+    const workspace = await workspaceFactory.create()
+
+    const project = await itemFactory.create(workspace, {
+      name: 'project-01',
+      path: '/projects/project-01',
+    })
+
+    await itemFactory.createMany(workspace, {
+      name: 'task-%i',
+      path: '/tasks/task-%i',
+    })
+
+    const task = await itemFactory.create(workspace, {
+      name: 'task-01',
+      path: '/tasks/task-01',
+    })
+
+    metadataRepository.metas.set(task.path, {
+      project: project.path,
+    })
+
+    metadataRepository.metas.set(project.path, {
+      relations: [
+        {
+          name: 'tasks',
+          type: 'has-many',
+          where: { parent_path: '/tasks', project: '/projects/project-01' },
+        },
+      ],
+    })
+
+    const [result] = await listItems.execute({
+      workspaceId: workspace.id,
+      relations: ['tasks'],
+      filters: {
+        parentPath: '/projects',
+      },
+    })
+
+    expect(result.tasks).toHaveLength(1)
+
+    expect(result.tasks).toEqual([task])
+  })
 })

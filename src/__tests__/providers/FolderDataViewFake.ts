@@ -7,7 +7,7 @@ export default class FolderDataViewFake implements IDataView {
   constructor(public item: Item, public workspace: Workspace, public useCase: UseCase) {}
 
   public async columns() {
-    return this.item.metas.head || []
+    return this.item.metas?.head || []
   }
 
   public async index() {
@@ -18,7 +18,7 @@ export default class FolderDataViewFake implements IDataView {
       },
     })
 
-    const keys = (this.item.metas.head || []).map((head: any) => head.name)
+    const keys = (this.item.metas?.head || []).map((head: any) => head.name)
 
     return items.map((item) => pick(item, keys))
   }
