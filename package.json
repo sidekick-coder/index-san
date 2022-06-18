@@ -12,7 +12,8 @@
         "start": "electron .",
         "preview": "cross-env NODE_ENV=production electron -r ./bin/ts-register.ts bin/preview.ts",
         "dev": "cross-env NODE_ENV=development electron -r ./bin/ts-register.ts bin/dev.ts",
-        "test": "nodemon  -r ./bin/ts-register.ts bin/test.ts",
+        "test": "node  -r ./bin/ts-register.ts bin/test.ts",
+        "test:watch": "nodemon  -r ./bin/ts-register.ts bin/test.ts",
         "lint": "eslint . --ext=.ts,.vue --max-warnings=0"
     },
     "keywords": [
