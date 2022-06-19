@@ -2,6 +2,7 @@ import Metadata from 'Entities/Metadata'
 export interface Filters {
   where: {
     itemId?: string[]
+    workspaceId?: string
   }
 }
 

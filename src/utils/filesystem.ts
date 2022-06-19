@@ -27,17 +27,15 @@ export async function exists(path: string) {
 }
 
 export async function readdirIfExist(arg: string) {
-  const folderExist = await exists(arg)
-
-  if (!folderExist) return []
-
-  return fs.readdir(arg, { withFileTypes: true })
+  return fs
+    .readdir(arg, { withFileTypes: true })
+    .then((data) => data)
+    .catch(() => [])
 }
 
-export async function readFileIfExist(arg: string) {
-  const fileExist = await exists(arg)
-
-  if (!fileExist) return ''
-
-  return fs.readFile(arg, 'utf8')
+export async function readFileIfExist(arg: string, encoding?: BufferEncoding) {
+  return fs
+    .readFile(arg, encoding)
+    .then((data) => data)
+    .catch(() => '')
 }

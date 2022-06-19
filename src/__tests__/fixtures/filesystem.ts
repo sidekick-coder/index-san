@@ -23,13 +23,22 @@ export async function createFile(path: string, content = '') {
   return filepath
 }
 
-export async function createManyFiles(folderPath: string, length = 5) {
+interface Options {
+  content?: string
+  pattern?: string
+}
+
+export async function createManyFiles(folderPath: string, length = 5, options?: Options) {
   const files = []
 
   await createFolder(folderPath)
 
   for (let i = 0; i < length; i++) {
-    const filepath = await createFile(`/${folderPath}/file-${i}`)
+    const pattern = options?.pattern || 'file-%1.txt'
+    const filepath = await createFile(
+      `/${folderPath}/${pattern.replace('%1', i.toString())}`,
+      options?.content
+    )
 
     files.push(filepath)
   }

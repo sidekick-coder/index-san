@@ -1,144 +1,30 @@
 import { test } from '@japa/runner'
-import ItemFactory from 'src/__tests__/factories/ItemFactory'
-import WorkspaceFactory from 'src/__tests__/factories/WorkspaceFactory'
-import InMemoryItemsRepository from 'TestRepositories/InMemoryItemsRepository'
-import InMemoryMetadataRepository from 'TestRepositories/InMemoryMetadataRepository'
-import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
+import { ItemFactory, WorkspaceFactory } from 'src/__tests__/factories'
+import InMemoryItemsRepository from 'Repositories/implementations/InMemoryItemsRepository'
 
 import ListItems from './list-items'
+import Workspace from 'Entities/Workspace'
 
-test.group('use-case: list-items', () => {
-  const workspaceRepository = new InMemoryWorkspacesRepository()
-  const itemRepository = new InMemoryItemsRepository()
-  const metadataRepository = new InMemoryMetadataRepository()
+test.group('use-case: list-items', (group) => {
+  const repository = new InMemoryItemsRepository()
 
-  const workspaceFactory = new WorkspaceFactory(workspaceRepository)
-  const itemFactory = new ItemFactory(itemRepository)
+  const workspaceFactory = new WorkspaceFactory(repository._workspacesRepository)
+  const itemFactory = new ItemFactory(repository)
 
-  const listItems = new ListItems(workspaceRepository, itemRepository, metadataRepository)
+  const listItems = new ListItems(repository)
+  let workspace: Workspace
 
-  test('should list all items in a workspace', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-    const items = await itemFactory.createMany(workspace)
+  group.each.setup(async () => {
+    workspace = await workspaceFactory.create()
+  })
 
-    const result = await listItems.execute({
+  test('should return a list of items', async ({ expect }) => {
+    const items = await itemFactory.createMany({
       workspaceId: workspace.id,
     })
+
+    const result = await listItems.execute()
 
     expect(result).toEqual(items)
-  })
-
-  test('should return items with metadata', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-    const items = await itemFactory.createMany(workspace)
-
-    metadataRepository.metas.set(items[0].path, {
-      displayName: 'foo',
-    })
-
-    const [result] = await listItems.execute({
-      workspaceId: workspace.id,
-    })
-
-    expect(result.metas).toEqual({ displayName: 'foo' })
-  })
-
-  test('should filter items by parent path', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-    const parent = await itemFactory.create(workspace, { name: 'parent' })
-    const child = await itemFactory.create(workspace, {
-      name: 'child',
-      path: parent.path + '/child',
-    })
-
-    const result = await listItems.execute({
-      workspaceId: workspace.id,
-      filters: {
-        parentPath: parent.path,
-      },
-    })
-
-    expect(result).toHaveLength(1)
-
-    expect(result).toEqual([child])
-  })
-
-  test('should load item belongs to relation', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
-    const project = await itemFactory.create(workspace, {
-      name: 'project-01',
-      path: '/projects/project-01',
-    })
-
-    const task = await itemFactory.create(workspace, {
-      name: 'task-01',
-      path: '/tasks/task-01',
-    })
-
-    metadataRepository.metas.set(task.path, {
-      relations: [
-        {
-          name: 'project',
-          type: 'belongs-to',
-          where: { path: '/projects/project-01' },
-        },
-      ],
-    })
-
-    const [result] = await listItems.execute({
-      workspaceId: workspace.id,
-      relations: ['project'],
-      filters: {
-        parentPath: '/tasks',
-      },
-    })
-
-    expect(result.project).toEqual(project)
-  })
-
-  test('should load item has many relation', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
-    const project = await itemFactory.create(workspace, {
-      name: 'project-01',
-      path: '/projects/project-01',
-    })
-
-    await itemFactory.createMany(workspace, {
-      name: 'task-%i',
-      path: '/tasks/task-%i',
-    })
-
-    const task = await itemFactory.create(workspace, {
-      name: 'task-01',
-      path: '/tasks/task-01',
-    })
-
-    metadataRepository.metas.set(task.path, {
-      project: project.path,
-    })
-
-    metadataRepository.metas.set(project.path, {
-      relations: [
-        {
-          name: 'tasks',
-          type: 'has-many',
-          where: { parent_path: '/tasks', project: '/projects/project-01' },
-        },
-      ],
-    })
-
-    const [result] = await listItems.execute({
-      workspaceId: workspace.id,
-      relations: ['tasks'],
-      filters: {
-        parentPath: '/projects',
-      },
-    })
-
-    expect(result.tasks).toHaveLength(1)
-
-    expect(result.tasks).toEqual([task])
   })
 })

@@ -1,64 +1,71 @@
-import fs from 'fs/promises'
-import { basename, resolve } from 'path'
+import lodash from 'lodash'
+import { resolve } from 'path'
 
 import { pathToArray } from 'Utils/paths'
-
+import { readdirIfExist } from 'Utils/filesystem'
 import Item from 'Entities/Item'
-import Workspace from 'Entities/Workspace'
-import IItemsRepository, { IndexFilters } from 'Repositories/IItemsRepository'
+import IItemsRepository, { Filters } from 'Repositories/IItemsRepository'
+import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
+import IMetadataRepository from 'Repositories/IMetadataRepository'
+import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
 
 export default class FsItemsRepository implements IItemsRepository {
-  public async index(workspace: Workspace, filters?: IndexFilters): Promise<Item[]> {
-    let folderPath = resolve(workspace.path)
+  constructor(
+    public readonly _workspacesRepository: IWorkspacesRepository,
+    public readonly _metasRepository: IMetadataRepository
+  ) {}
 
-    if (filters?.parentPath) {
-      folderPath = resolve(workspace.path, ...pathToArray(filters.parentPath))
-    }
+  public async index(filters?: Filters) {
+    const workspaceId = filters?.where?.workspaceId
 
-    const result = await fs.readdir(folderPath, { withFileTypes: true })
+    if (!workspaceId) throw new WorkspaceNotFound()
 
-    const items = result
-      .filter((f) => f.name !== '.metas')
-      .map((f) => {
-        const path = pathToArray(folderPath.replace(workspace.path, ''))
-          .filter((p) => p !== '')
-          .concat(f.name)
-          .join('/')
+    const workspace = await this._workspacesRepository.findById(workspaceId)
 
-        return new Item({
-          path: path,
-          workspaceId: workspace.id,
-          name: f.name,
-          type: f.isFile() ? 'file' : 'folder',
-        })
-      })
+    if (!workspace) throw new WorkspaceNotFound()
 
-    return items
-  }
+    const items: Item[] = []
 
-  public async findByPath(workspace: Workspace, path: string) {
-    const filename = resolve(workspace.path, ...pathToArray(path))
+    const { parentId, ...where } = filters?.where ?? {}
 
-    const stats = await fs
-      .stat(filename)
-      .then((s) => s)
-      .catch(() => null)
+    const filepath = parentId ? resolve(workspace.path, ...pathToArray(parentId)) : workspace.path
 
-    if (!stats) return null
+    const files = await readdirIfExist(filepath)
 
-    return new Item({
-      path,
-      workspaceId: workspace.id,
-      name: basename(filename),
-      type: stats.isFile() ? 'file' : 'folder',
+    files
+      .filter((file) => !file.name.includes('.metas'))
+      .forEach((file) =>
+        items.push(
+          new Item({
+            _repository: this,
+            workspaceId: workspace.id,
+            id: pathToArray(file.name).join('/'),
+            name: file.name,
+            type: file.isFile() ? 'file' : 'folder',
+          })
+        )
+      )
+
+    const metas = await this._metasRepository.index({
+      where: {
+        workspaceId,
+        itemId: items.map((item) => item.id),
+      },
     })
+
+    return lodash(items)
+      .map((i) => i.merge(metas.find((m) => m.itemId === i.id)))
+      .filter(where)
+      .value()
   }
 
-  public async create(workspace: Workspace, item: Item) {
-    const folderPath = resolve(workspace.path, item.path)
+  public async findOne(filters?: Filters | undefined) {
+    const [item] = await this.index(filters)
 
-    await fs.mkdir(folderPath, { recursive: true })
+    return item ?? null
+  }
 
+  public async create(item: Item) {
     return item
   }
 }

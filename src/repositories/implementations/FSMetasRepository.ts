@@ -18,23 +18,26 @@ export default class FSMetadataRepository implements IMetadataRepository {
   constructor(public readonly _workspacesRepository: IWorkspacesRepository) {}
 
   public async index(filters?: Filters) {
-    const workspaces = await this._workspacesRepository.index()
-    const filenames: string[][] = []
+    const workspaceId = filters?.where?.workspaceId
+
+    if (!workspaceId) throw new WorkspaceNotFound()
+
+    const workspace = await this._workspacesRepository.findById(workspaceId)
+
+    if (!workspace) throw new WorkspaceNotFound()
+
+    const filenames: string[] = []
     const metas: Metadata[] = []
 
-    for (const workspace of workspaces) {
-      const pattern = pathToArray(workspace.path).join('/') + '/**/*.yml'
+    const pattern = pathToArray(workspace.path).join('/') + '/**/*.yml'
 
-      const files = await fg(pattern, { dot: true })
-
-      files.filter((f) => f.includes('.metas')).forEach((f) => filenames.push([workspace.path, f]))
-    }
+    filenames.push(...(await fg(pattern, { dot: true })))
 
     filenames.sort((a, b) => a[1].length - b[1].length)
 
-    for (const [workspacePath, filename] of filenames) {
+    for (const filename of filenames) {
       const itemId = pathToArray(filename.replace(path.extname(filename), ''))
-        .slice(pathToArray(workspacePath).length)
+        .slice(pathToArray(workspace.path).length)
         .filter((p) => !['.metas', '_root_'].includes(p))
         .filter((p) => !['.metas', '_root_'].includes(p))
         .join('/')
@@ -44,7 +47,7 @@ export default class FSMetadataRepository implements IMetadataRepository {
       const content = await readFileIfExist(filename)
 
       metas.push({
-        ...YAML.parse(content),
+        ...YAML.parse(content.toString()),
         itemId,
       })
     }
