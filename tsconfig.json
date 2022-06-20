@@ -46,6 +46,7 @@
         "src/repositories/**/*.ts",
         "src/__tests__/**/*.ts",
         "src/use-cases/*.ts",
-        "src/@types/*.ts"
+        "src/@types/*.ts",
+        "src/app.ts"
     ]
 }

@@ -1,7 +1,7 @@
 const { ipcRenderer, contextBridge } = require('electron')
 
 function useCase(name, args) {
-  return ipcRenderer.invoke(`use-case:${name}`, args)
+  return ipcRenderer.invoke('use-case', name, args)
 }
 
 const electron = {
