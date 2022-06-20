@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
+import InMemoryWorkspacesRepository from 'Repositories/implementations/InMemoryWorkspacesRepository'
 import ListWorkspaces from './list-workspaces'
 
 test.group('use-case: list-workspaces', () => {

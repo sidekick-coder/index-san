@@ -2,35 +2,28 @@ import Item from 'Entities/Item'
 import ItemNotFound from 'Errors/ItemNotFound'
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
 import IItemsRepository from 'Repositories/IItemsRepository'
-import IMetadataRepository from 'Repositories/IMetadataRepository'
-import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
 interface Args {
   workspaceId: string
-  path: string
+  id: string
 }
 
 export default class ShowItem {
-  constructor(
-    private workspacesRepository: IWorkspacesRepository,
-    private itemsRepository: IItemsRepository,
-    private metasRepository: IMetadataRepository
-  ) {}
+  constructor(private repository: IItemsRepository) {}
 
-  public async execute({ workspaceId, path }: Args): Promise<Item> {
-    const workspace = await this.workspacesRepository.findById(workspaceId)
+  public async execute({ workspaceId, id }: Args): Promise<Item> {
+    const workspace = await this.repository._workspacesRepository.findById(workspaceId)
 
-    if (!workspace) throw new WorkspaceNotFound(workspaceId)
+    if (!workspace) throw new WorkspaceNotFound()
 
-    const item = await this.itemsRepository.findByPath(workspace, path)
-
-    if (!item) throw new ItemNotFound(workspaceId, path)
-
-    const metas = await this.metasRepository.index(workspace, {
-      paths: [path],
+    const item = await this.repository.findOne({
+      where: {
+        workspaceId,
+        id,
+      },
     })
 
-    item.metas = metas[path] || {}
+    if (!item) throw new ItemNotFound()
 
     return item
   }

@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
-import { MetadataFactory, WorkspaceFactory } from 'Tests/factories'
-import { clean, createFile, createFolder, createManyFiles } from 'Tests/fixtures/filesystem'
+import { WorkspaceFactory } from 'Tests/factories'
+import { clean, createFile, createFolder } from 'Tests/fixtures/filesystem'
 import { readFileIfExist } from 'Utils/filesystem'
 import FSMetasRepository from './FSMetasRepository'
 import FSWorkspacesRepository from './FSWorkspacesRepository'
@@ -25,7 +25,7 @@ test.group('FSMetasRepository', (group) => {
   })
 
   test('should return list of a metas', async ({ expect }) => {
-    await workspaceFactory.create({
+    const workspace = await workspaceFactory.create({
       path: await createFolder('workspace'),
     })
 
@@ -33,7 +33,11 @@ test.group('FSMetasRepository', (group) => {
     await createFile('workspace/deep-1/.metas/_root_.yml', 'displayName: deep-1-root')
     await createFile('workspace/deep-1/.metas/index.md.yml', 'displayName: index.md name')
 
-    const metas = await repository.index()
+    const metas = await repository.index({
+      where: {
+        workspaceId: workspace.id,
+      },
+    })
 
     expect(metas).toHaveLength(3)
 
@@ -43,7 +47,7 @@ test.group('FSMetasRepository', (group) => {
   })
 
   test('should return list of a metas filtered by itemId', async ({ expect }) => {
-    await workspaceFactory.create({
+    const workspace = await workspaceFactory.create({
       path: await createFolder('workspace'),
     })
 
@@ -52,7 +56,7 @@ test.group('FSMetasRepository', (group) => {
     await createFile('workspace/deep-1/.metas/index.md.yml', 'displayName: index.md name')
 
     const metas = await repository.index({
-      where: { itemId: ['deep-1', 'deep-1/index.md'] },
+      where: { itemId: ['deep-1', 'deep-1/index.md'], workspaceId: workspace.id },
     })
 
     expect(metas).toHaveLength(2)
@@ -74,13 +78,16 @@ test.group('FSMetasRepository', (group) => {
       displayName: 'My Hello world',
     })
 
-    const content = await readFileIfExist(filename.replace('index.md', '.metas/index.md.yml'))
+    const content = await readFileIfExist(
+      filename.replace('index.md', '.metas/index.md.yml'),
+      'utf8'
+    )
 
     expect(content).toBe('displayName: My Hello world\n')
   })
 
   test('should return a metadata by itemId', async ({ expect }) => {
-    await workspaceFactory.create({
+    const workspace = await workspaceFactory.create({
       path: await createFolder('workspace'),
     })
 
@@ -91,6 +98,7 @@ test.group('FSMetasRepository', (group) => {
     const meta = await repository.findOne({
       where: {
         itemId: ['deep-1'],
+        workspaceId: workspace.id,
       },
     })
 

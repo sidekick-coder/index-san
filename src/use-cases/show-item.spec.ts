@@ -1,32 +1,29 @@
 import { test } from '@japa/runner'
 import ItemNotFound from 'Errors/ItemNotFound'
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
-import ItemFactory from 'src/__tests__/factories/ItemFactory'
-import WorkspaceFactory from 'src/__tests__/factories/WorkspaceFactory'
-import InMemoryItemsRepository from 'TestRepositories/InMemoryItemsRepository'
-import InMemoryMetadataRepository from 'TestRepositories/InMemoryMetadataRepository'
-import InMemoryWorkspacesRepository from 'TestRepositories/InMemoryWorkspacesRepository'
+import { ItemFactory, WorkspaceFactory } from 'Tests/factories'
+import InMemoryItemsRepository from 'Repositories/implementations/InMemoryItemsRepository'
 import ShowItem from './show-item'
 
 test.group('use-case: show-item', () => {
-  const workspaceRepository = new InMemoryWorkspacesRepository()
-  const itemsRepository = new InMemoryItemsRepository()
-  const metadataRepository = new InMemoryMetadataRepository()
+  const repository = new InMemoryItemsRepository()
 
-  const workspaceFactory = new WorkspaceFactory(workspaceRepository)
-  const itemFactory = new ItemFactory(itemsRepository)
+  const workspaceFactory = new WorkspaceFactory(repository._workspacesRepository)
+  const itemFactory = new ItemFactory(repository)
 
-  const showItem = new ShowItem(workspaceRepository, itemsRepository, metadataRepository)
+  const showItem = new ShowItem(repository)
 
-  test('show return item by path', async ({ expect }) => {
+  test('show return item by id', async ({ expect }) => {
     const workspace = await workspaceFactory.create()
-    const item = await itemFactory.create(workspace, {
-      path: workspace.path + '/foo',
+
+    const item = await itemFactory.create({
+      id: workspace.id + '/foo',
+      workspaceId: workspace.id,
     })
 
     const result = await showItem.execute({
       workspaceId: workspace.id,
-      path: item.path,
+      id: item.id,
     })
 
     expect(result).toBe(item)
@@ -34,29 +31,33 @@ test.group('use-case: show-item', () => {
 
   test('should item be returned with metadata', async ({ expect }) => {
     const workspace = await workspaceFactory.create()
-    const item = await itemFactory.create(workspace, {
-      path: workspace.path + '/foo',
+
+    const item = await itemFactory.create({
+      id: workspace.id + '/foo',
+      workspaceId: workspace.id,
     })
 
-    metadataRepository.metas.set(item.path, {
+    await repository._metasRepository.create({
+      workspaceId: workspace.id,
+      itemId: item.id,
       foo: 'bar',
     })
 
     const result = await showItem.execute({
       workspaceId: workspace.id,
-      path: item.path,
+      id: item.id,
     })
 
-    expect(result.metas).toEqual({ foo: 'bar' })
+    expect(result.foo).toBe('bar')
   })
 
   test('should throw an error if the workspace does not exist', async ({ expect }) => {
     await expect(
       showItem.execute({
         workspaceId: 'non-existing',
-        path: 'foo',
+        id: 'foo',
       })
-    ).rejects.toThrow(new WorkspaceNotFound('non-existing'))
+    ).rejects.toThrow(new WorkspaceNotFound())
   })
 
   test('should throw an error if the item does not exist', async ({ expect }) => {
@@ -64,8 +65,8 @@ test.group('use-case: show-item', () => {
     await expect(
       showItem.execute({
         workspaceId: workspace.id,
-        path: 'foo',
+        id: 'foo',
       })
-    ).rejects.toThrow(new ItemNotFound(workspace.id, 'foo'))
+    ).rejects.toThrow(new ItemNotFound())
   })
 })

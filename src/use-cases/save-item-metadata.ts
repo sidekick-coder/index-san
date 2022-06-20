@@ -6,25 +6,17 @@ import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
 interface Args {
   workspaceId: string
-  path: string
+  itemId: string
   data: any
 }
 export default class SaveItemMetadata {
-  constructor(
-    private workspaceRepository: IWorkspacesRepository,
-    private itemsRepository: IItemsRepository,
-    private metadataRepository: IMetadataRepository
-  ) {}
+  constructor(private metadataRepository: IMetadataRepository) {}
 
-  public async execute({ workspaceId, path, data }: Args) {
-    const workspace = await this.workspaceRepository.findById(workspaceId)
-
-    if (!workspace) throw new WorkspaceNotFound(workspaceId)
-
-    const item = await this.itemsRepository.findByPath(workspace, path)
-
-    if (!item) throw new ItemNotFound(workspaceId, path)
-
-    return await this.metadataRepository.save(workspace, item, data)
+  public async execute({ workspaceId, itemId, data }: Args) {
+    return await this.metadataRepository.create({
+      ...data,
+      workspaceId,
+      itemId,
+    })
   }
 }

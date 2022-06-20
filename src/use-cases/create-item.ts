@@ -10,21 +10,26 @@ export default class CreateItem {
     private readonly itemsRepository: IItemsRepository
   ) {}
 
-  public async execute(data: Item) {
+  public async execute(data: Omit<Item, 'merge'>) {
     const workspace = await this.workspaceRepository.findById(data.workspaceId)
 
     if (!workspace) {
-      throw new WorkspaceNotFound(data.workspaceId)
+      throw new WorkspaceNotFound()
     }
 
-    let item = await this.itemsRepository.findByPath(workspace, data.path)
+    let item = await this.itemsRepository.findOne({
+      where: {
+        workspaceId: data.workspaceId,
+        id: data.id,
+      },
+    })
 
     if (item) {
-      throw new ItemAlreadyExists(data.path)
+      throw new ItemAlreadyExists()
     }
 
     item = new Item(data)
 
-    return this.itemsRepository.create(workspace, item)
+    return this.itemsRepository.create(item)
   }
 }

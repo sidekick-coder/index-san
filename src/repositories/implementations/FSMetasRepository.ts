@@ -33,7 +33,7 @@ export default class FSMetadataRepository implements IMetadataRepository {
 
     filenames.push(...(await fg(pattern, { dot: true })))
 
-    filenames.sort((a, b) => a[1].length - b[1].length)
+    filenames.sort((a, b) => a.length - b.length)
 
     for (const filename of filenames) {
       const itemId = pathToArray(filename.replace(path.extname(filename), ''))

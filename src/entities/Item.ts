@@ -1,10 +1,5 @@
-import IItemsRepository from 'Repositories/IItemsRepository'
-
 export default class Item {
   [key: string]: any
-
-  public readonly _repository: IItemsRepository
-
   // id = relative-path in workspace
   public id: string
   public workspaceId: string
