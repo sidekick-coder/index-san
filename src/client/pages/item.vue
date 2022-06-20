@@ -13,7 +13,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  path: {
+  itemId: {
     type: String,
     required: true,
   },
@@ -38,11 +38,11 @@ const suggestedViewId = computed(() => {
     return 'folder'
   }
 
-  if (item.value?.path.endsWith('.md')) {
+  if (item.value?.id.endsWith('.md')) {
     return 'editor'
   }
 
-  if (/(.png|jpg)/.test(item.value?.path || '')) {
+  if (/(.png|jpg)/.test(item.value?.id || '')) {
     return 'image'
   }
 
@@ -105,7 +105,7 @@ async function load() {
 
   await useCase<Item>('show-item', {
     workspaceId: props.workspaceId,
-    path: props.path === 'root' ? '' : props.path,
+    id: props.itemId === 'root' ? undefined : props.itemId,
   })
     .then((data) => (item.value = data))
     .catch(console.error)
@@ -148,7 +148,7 @@ function setTab(id?: string) {
 async function setDefaultView(id: string) {
   await useCase('save-item-metadata', {
     workspaceId: props.workspaceId,
-    path: props.path,
+    id: props.id,
     data: {
       view: id,
     },

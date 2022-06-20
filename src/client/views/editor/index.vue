@@ -20,7 +20,7 @@ const displayName = ref('')
 const saveTitle = throttle(async () => {
   await useCase('save-item-metadata', {
     workspaceId: props.item.workspaceId,
-    path: props.item.path,
+    id: props.item.id,
     data: {
       displayName: displayName.value,
     },
@@ -34,7 +34,7 @@ async function save(data: EditorJS.OutputData) {
 
   await useCase('update-item-file', {
     workspaceId: props.item.workspaceId,
-    path: props.item.path,
+    id: props.item.id,
     content: text,
   })
     .catch(console.error)
@@ -53,7 +53,7 @@ async function setContent() {
 
   const buffer = await useCase<ArrayBuffer | null>('show-item-file', {
     workspaceId: props.item.workspaceId,
-    path: props.item.path,
+    path: props.item.id,
   })
 
   if (!buffer) return

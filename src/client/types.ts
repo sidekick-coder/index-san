@@ -16,8 +16,8 @@ interface ItemMeta {
 }
 
 export interface Item {
+  id: string
   name: string
-  path: string
   workspaceId: string
   metas?: ItemMeta
   type: 'file' | 'folder'

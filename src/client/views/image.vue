@@ -15,7 +15,7 @@ const src = ref()
 async function setImage() {
   await useCase<ArrayBuffer>('show-item-file', {
     workspaceId: props.item.workspaceId,
-    path: props.item.path,
+    path: props.item.id,
   })
     .then((data) => {
       const base64 = btoa(

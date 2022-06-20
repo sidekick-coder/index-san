@@ -5,13 +5,13 @@ import { Item } from '@/types'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
-  workspaceId: {
+  itemId: {
     type: String,
     required: true,
   },
-  path: {
+  workspaceId: {
     type: String,
-    default: '',
+    required: true,
   },
   to: {
     type: String,
@@ -43,9 +43,9 @@ async function setChildren() {
   loading.value = true
 
   useCase<Item[]>('list-items', {
-    workspaceId: props.workspaceId,
-    filters: {
-      parentPath: props.path,
+    where: {
+      workspaceId: props.workspaceId,
+      parentId: props.itemId,
     },
   })
     .then((data) => {
@@ -71,7 +71,6 @@ async function addItem() {
 
   await useCase('create-item', {
     workspaceId: props.workspaceId,
-    path: name.value,
     name: name.value,
     displayName: basename,
   })
@@ -82,7 +81,7 @@ async function addItem() {
 async function deleteItem() {
   // await api
   //   .invoke('item:destroy', {
-  //     path: props.path,
+  //     id: props.id,
   //     name: name.value,
   //   })
   //   .then(() => alert('item deleted'))
@@ -124,10 +123,10 @@ async function deleteItem() {
 
     <s-drawer-item
       v-for="item in children"
-      :key="item.path"
-      :to="`/${workspaceId}/${item.path}`"
+      :key="item.id"
+      :to="`/${workspaceId}/${item.id}`"
+      :item-id="item.id"
       :workspace-id="workspaceId"
-      :path="item.path"
       :label="item.name"
       :deep="deep + 1"
     />

@@ -8,7 +8,7 @@ const routes = [
   },
   {
     name: 'item',
-    path: '/:workspaceId/:path(.*)',
+    path: '/:workspaceId/:itemId(.*)',
     props: true,
     component: () => import('@/pages/item.vue'),
   },

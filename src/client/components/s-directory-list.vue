@@ -30,12 +30,10 @@ async function setItems() {
 
   const { item } = props
 
-  const path = item.type === 'folder' ? item.path : dirname(item.path)
-
   useCase('list-items', {
-    workspaceId: item.workspaceId,
-    filters: {
-      parentPath: path,
+    where: {
+      workspaceId: item.workspaceId,
+      parentId: item.type === 'folder' ? item.id : dirname(item.id),
     },
   })
     .then((data) => (subitems.value = data))
@@ -52,7 +50,7 @@ watch(() => props.item?.path, setItems, {
     v-for="child in orderBy(subitems, ['type', 'name'], ['desc', 'asc'])"
     :key="child.name"
     class="w-full list-item clickable border-b"
-    :to="`/${child.workspaceId}/${child.path}`"
+    :to="`/${child.workspaceId}/${child.id}`"
   >
     <i :class="child.type === 'file' ? 'text-gray-400' : ''" class="px-5">
       <fa-icon :icon="child.type === 'file' ? 'file' : 'folder'" />

@@ -38,6 +38,6 @@ export default class Application {
       throw new Error(`Use case ${name} not found`)
     }
 
-    return useCase.execute(payload) as Promise<T>
+    return useCase.execute.bind(useCase)(payload) as Promise<T>
   }
 }

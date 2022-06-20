@@ -16,7 +16,7 @@ export default class FsItemsRepository implements IItemsRepository {
   ) {}
 
   public async index(filters?: Filters) {
-    const workspaceId = filters?.where?.workspaceId
+    const { parentId, workspaceId, id, ...where } = filters?.where ?? {}
 
     if (!workspaceId) throw new WorkspaceNotFound()
 
@@ -26,9 +26,15 @@ export default class FsItemsRepository implements IItemsRepository {
 
     const items: Item[] = []
 
-    const { parentId, ...where } = filters?.where ?? {}
+    let filepath = workspace.path
 
-    const filepath = parentId ? resolve(workspace.path, ...pathToArray(parentId)) : workspace.path
+    if (parentId) {
+      filepath = resolve(workspace.path, ...pathToArray(parentId))
+    }
+
+    if (id) {
+      filepath = resolve(workspace.path, ...pathToArray(id))
+    }
 
     const files = await readdirIfExist(filepath)
 
@@ -37,9 +43,11 @@ export default class FsItemsRepository implements IItemsRepository {
       .forEach((file) =>
         items.push(
           new Item({
-            _repository: this,
+            id: pathToArray(filepath, file.name)
+              .slice(pathToArray(workspace.path).length)
+              .join('/'),
             workspaceId: workspace.id,
-            id: pathToArray(file.name).join('/'),
+            parentId,
             name: file.name,
             type: file.isFile() ? 'file' : 'folder',
           })
@@ -59,7 +67,7 @@ export default class FsItemsRepository implements IItemsRepository {
       .value()
   }
 
-  public async findOne(filters?: Filters | undefined) {
+  public async findOne(filters?: Filters) {
     const [item] = await this.index(filters)
 
     return item ?? null

@@ -42,9 +42,9 @@ const columns = computed<Column[]>(() => {
 async function load() {
   await useCase<Item[]>('list-items', {
     workspaceId: props.item.workspaceId,
-    path: props.item.path,
+    id: props.item.id,
     filters: {
-      parentPath: props.item.path,
+      parentPath: props.item.id,
     },
   }).then((result) => {
     items.value = result.map((i) => ({ ...i, ...i.metas }))
@@ -54,7 +54,7 @@ async function load() {
 const update = throttle(async (item: Item, key: string, value: string) => {
   return await useCase('save-item-metadata', {
     workspaceId: item.workspaceId,
-    path: item.path,
+    id: item.id,
     data: {
       [key]: value,
     },
@@ -95,10 +95,7 @@ function modify(b: Builder) {
     </template>
 
     <template #item-open="{ item: i }">
-      <router-link
-        :to="`/${i.workspaceId}/${i.path}`"
-        class="cell flex items-center justify-center"
-      >
+      <router-link :to="`/${i.workspaceId}/${i.id}`" class="cell flex items-center justify-center">
         <fa-icon icon="eye" />
       </router-link>
     </template>
