@@ -1,5 +1,6 @@
 import lodash from 'lodash'
-import { dirname, resolve } from 'path'
+import { basename, dirname, resolve } from 'path'
+import fg from 'fast-glob'
 
 import { pathToArray } from 'Utils/paths'
 import { readdirIfExist } from 'Utils/filesystem'
@@ -7,62 +8,131 @@ import Item from 'Entities/Item'
 import IItemsRepository, { Filters } from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 import WorkspaceNotFound from 'Errors/WorkspaceNotFound'
+import IDrive from 'Providers/IDrive'
+import FSDrive from 'Providers/implementations/FSDrive'
+import ItemNotFound from 'Errors/ItemNotFound'
 
 export default class FsItemsRepository implements IItemsRepository {
-  constructor(public readonly _workspacesRepository: IWorkspacesRepository) {}
+  constructor(
+    public readonly workspacesRepository: IWorkspacesRepository,
+    public readonly drive: FSDrive
+  ) {}
 
   public async index(filters?: Filters) {
-    const { parentId, workspaceId, id, ...where } = filters?.where ?? {}
+    const { workspaceId, parentId } = filters?.where || {}
 
-    if (!workspaceId) throw new WorkspaceNotFound()
+    if (!workspaceId) throw new Error('workspaceId required')
 
-    const workspace = await this._workspacesRepository.findById(workspaceId)
+    const workspace = await this.workspacesRepository.findById(workspaceId)
 
     if (!workspace) throw new WorkspaceNotFound()
 
+    const filepath = pathToArray(workspace.path, '**').join('/')
+
     const items: Item[] = []
 
-    let filepath = workspace.path
-
-    if (parentId) {
-      filepath = resolve(workspace.path, ...pathToArray(parentId))
-    }
-
-    if (id) {
-      filepath = resolve(workspace.path, ...pathToArray(dirname(id)))
-    }
-
-    const files = await readdirIfExist(filepath)
+    const folders = await fg(filepath, { dot: true, onlyDirectories: true })
+    const files = await fg(filepath, { dot: true, onlyFiles: true })
 
     files
-      .filter((file) => !file.name.includes('.metas'))
-      .forEach((file) =>
+      .concat(folders)
+      .filter((f) => {
+        if (!parentId) return true
+
+        const relativePath = pathToArray(f).slice(pathToArray(workspace.path).length).join('/')
+
+        if (Array.isArray(parentId)) {
+          return parentId.includes(dirname(relativePath))
+        }
+
+        return dirname(relativePath) === pathToArray(parentId).join('/')
+      })
+      .map((filename) => {
+        const relativePath = pathToArray(filename)
+          .slice(pathToArray(workspace.path).length)
+          .join('/')
+
         items.push(
-          new Item({
-            id: pathToArray(filepath, file.name)
-              .slice(pathToArray(workspace.path).length)
-              .join('/'),
+          Item.mount({
+            id: `/${workspace.id}/${relativePath}`,
+            filepath: relativePath,
+            name: basename(filename),
             workspaceId: workspace.id,
-            parentId,
-            name: file.name,
-            type: file.isFile() ? 'file' : 'folder',
+            type: folders.includes(filename) ? 'folder' : 'file',
           })
         )
-      )
+      })
 
-    return lodash(items)
-      .filter(where)
-      .filter((i) => !id || i.id === id)
-      .value()
+    return items
   }
 
-  public async findOne(filters?: Filters) {
-    const items = await this.index(filters)
+  public async find(id: string) {
+    const [workspaceId, ...filepath] = pathToArray(id)
 
-    return items[0] ?? null
+    const workspace = await this.workspacesRepository.findById(workspaceId)
+
+    if (!workspace) return null
+
+    this.drive.use(workspace.path)
+
+    const stats = await this.drive.stat(filepath.join('/'))
+
+    if (!stats) return null
+
+    return Item.mount({
+      id: id,
+      filepath: filepath.join('/'),
+      name: basename(filepath.join('/')),
+      workspaceId: workspace.id,
+      type: stats.isDirectory() ? 'folder' : 'file',
+    })
   }
 
-  public async create(item: Item) {
-    return item
+  public async create(data: Omit<Item, 'id'>, buffer?: Buffer) {
+    const workspaceId = data.workspaceId
+
+    const workspace = await this.workspacesRepository.findById(workspaceId)
+
+    if (!workspace) throw new WorkspaceNotFound()
+
+    this.drive.use(workspace.path)
+
+    if (data.type === 'folder') {
+      await this.drive.mkDir(data.filepath)
+    }
+
+    if (data.type === 'file') {
+      await this.drive.put(data.filepath, buffer || Buffer.from(''))
+    }
+
+    return Item.mount({
+      id: `/${workspace.id}/${data.filepath}`,
+      filepath: data.filepath,
+      name: basename(data.filepath),
+      workspaceId: workspace.id,
+      type: data.type,
+    })
+  }
+
+  public async update(id: string, data: Partial<Item>, buffer?: Buffer | undefined) {
+    const item = await this.find(id)
+
+    if (!item) throw new ItemNotFound()
+
+    if (item.type === 'file' && buffer) {
+      await this.drive.put(item.filepath, buffer)
+    }
+
+    if (data.filepath) {
+      await this.drive.move(item.filepath, data.filepath)
+    }
+  }
+
+  public async delete(id: string) {
+    const item = await this.find(id)
+
+    if (!item) throw new ItemNotFound()
+
+    await this.drive.delete(item.filepath)
   }
 }

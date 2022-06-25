@@ -10,4 +10,8 @@ export default class Item {
   constructor(data: Item) {
     Object.assign(this, data)
   }
+
+  public static mount(data: Item) {
+    return new Item(data)
+  }
 }
