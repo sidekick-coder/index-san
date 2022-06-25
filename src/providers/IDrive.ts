@@ -1,6 +1,7 @@
-import Workspace from 'Entities/Workspace'
+import Item from 'Entities/Item'
 
 export default interface IDrive {
-  get: (workspace: Workspace, path: string) => Promise<Buffer | null>
-  update: (workspace: Workspace, path: string, content: Buffer | string) => Promise<void>
+  get: (item: Item) => Promise<Buffer | null>
+  put: (item: Item, content: Buffer) => Promise<void>
+  delete: (item: Item) => Promise<void>
 }

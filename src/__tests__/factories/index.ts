@@ -16,6 +16,17 @@ export class WorkspaceFactory extends BaseFactory<Workspace> {
   }
 }
 
-export class ItemFactory extends BaseFactory<Item> {}
+export class ItemFactory extends BaseFactory<Item> {
+  public make(data?: Partial<Item> | undefined): Item {
+    const id = uuid()
+    return new Item({
+      id,
+      name: id,
+      type: 'folder',
+      workspaceId: uuid(),
+      ...data,
+    })
+  }
+}
 
 export class MetadataFactory extends BaseFactory<Metadata> {}

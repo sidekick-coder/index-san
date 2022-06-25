@@ -1,4 +1,5 @@
 import Item from 'Entities/Item'
+import IDrive from 'Providers/IDrive'
 import IWorkspacesRepository from './IWorkspacesRepository'
 
 interface Where {
@@ -15,7 +16,10 @@ export interface Filters {
 
 export default interface IItemsRepository {
   workspacesRepository: IWorkspacesRepository
+  drive: IDrive
   index(filters?: Filters): Promise<Item[]>
   findOne(filters?: Filters): Promise<Item | null>
-  create(item: Item): Promise<Item>
+  create(item: Item, buffer?: Buffer): Promise<Item>
+  update(item: Item, buffer?: Buffer): Promise<void>
+  delete(item: Item): Promise<void>
 }
