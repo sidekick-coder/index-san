@@ -1,7 +1,5 @@
-import Item from 'Entities/Item'
-
 export default interface IDrive {
-  get: (item: Item) => Promise<Buffer | null>
-  put: (item: Item, content: Buffer) => Promise<void>
-  delete: (item: Item) => Promise<void>
+  get: (filename: string) => Promise<Buffer | null>
+  put: (filename: string, content: Buffer) => Promise<void>
+  delete: (filename: string) => Promise<void>
 }

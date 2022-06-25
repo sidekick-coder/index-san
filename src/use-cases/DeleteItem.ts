@@ -3,19 +3,16 @@ import IItemsRepository from 'Repositories/IItemsRepository'
 
 interface Params {
   id: string
-  workspaceId: string
 }
 
 export default class DeleteItem {
   constructor(public repository: IItemsRepository) {}
 
-  public async execute({ id, workspaceId }: Params) {
-    const item = await this.repository.findOne({
-      where: { id, workspaceId },
-    })
+  public async execute({ id }: Params) {
+    const item = await this.repository.find(id)
 
     if (!item) throw new ItemNotFound()
 
-    await this.repository.delete(item)
+    await this.repository.delete(item.id)
   }
 }

@@ -1,49 +1,19 @@
-import Item from 'Entities/Item'
 import IDrive from 'Providers/IDrive'
 
-interface MemoryFile {
-  id: string
-  workspaceId: string
-  content: Buffer
-}
-
 export default class InMemoryDrive implements IDrive {
-  public files: MemoryFile[] = []
+  public files = new Map<string, Buffer>()
 
-  public async get(item: Item) {
-    const file = this.files.find((i) => i.id === item.id && i.workspaceId === item.workspaceId)
+  public async get(filename: string) {
+    const file = this.files.get(filename)
 
-    return file?.content || null
+    return file || null
   }
 
-  public async put(item: Item, content: Buffer) {
-    const data = {
-      id: item.id,
-      workspaceId: item.workspaceId,
-      content,
-    }
-
-    const index = this.files.findIndex(
-      (f) => f.id === item.id && f.workspaceId === item.workspaceId
-    )
-
-    if (index === -1) {
-      this.files.push(data)
-      return
-    }
-
-    this.files[index] = data
+  public async put(filename: string, content: Buffer) {
+    this.files.set(filename, content)
   }
 
-  public async delete(item: Item) {
-    const index = this.files.findIndex(
-      (f) => f.id === item.id && f.workspaceId === item.workspaceId
-    )
-
-    if (index === -1) {
-      return
-    }
-
-    this.files.splice(index, 1)
+  public async delete(filename: string) {
+    this.files.delete(filename)
   }
 }

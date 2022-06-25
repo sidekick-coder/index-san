@@ -1,5 +1,4 @@
 import Item from 'Entities/Item'
-import Metadata from 'Entities/Metadata'
 import Workspace from 'Entities/Workspace'
 import { BaseFactory } from './BaseFactory'
 import { v4 as uuid } from 'uuid'
@@ -24,9 +23,8 @@ export class ItemFactory extends BaseFactory<Item> {
       name: id,
       type: 'folder',
       workspaceId: uuid(),
+      filepath: `/${id}`,
       ...data,
     })
   }
 }
-
-export class MetadataFactory extends BaseFactory<Metadata> {}

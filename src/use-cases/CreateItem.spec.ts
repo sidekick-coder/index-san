@@ -16,7 +16,7 @@ test.group('CreateItem (unit)', (group) => {
     const workspace = await workspaceFactory.create()
 
     const data = {
-      id: '/new-item',
+      filepath: '/new-item',
       name: 'new-item',
       workspaceId: workspace.id,
       type: 'folder',
@@ -33,7 +33,7 @@ test.group('CreateItem (unit)', (group) => {
     const workspace = await workspaceFactory.create()
 
     const data = {
-      id: '/new-item',
+      filepath: '/new-item',
       name: 'new-item',
       workspaceId: workspace.id,
       type: 'file',
@@ -43,15 +43,18 @@ test.group('CreateItem (unit)', (group) => {
     await useCase.execute(data)
 
     const item = repository.items[0]
+    const file = await repository.drive.get(item.filepath)
 
-    expect(item).toEqual(data)
+    expect(item.filepath).toEqual(data.filepath)
+
+    expect(file).toEqual(data.content)
   })
 
   test('should throw an error when use invalid type', async ({ expect }) => {
     const workspace = await workspaceFactory.create()
 
     const data = {
-      id: '/new-item',
+      filepath: '/new-item',
       name: 'new-item',
       workspaceId: workspace.id,
       type: 'invalid',
@@ -64,7 +67,7 @@ test.group('CreateItem (unit)', (group) => {
     const workspace = await workspaceFactory.create()
 
     const data = {
-      id: '/new-item',
+      filepath: '/new-item',
       name: 'new-item',
       workspaceId: workspace.id,
       type: 'folder',

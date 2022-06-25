@@ -20,7 +20,6 @@ test.group('UpdateItem (unit)', (group) => {
     const item = await itemFactory.create({ workspaceId: workspace.id })
 
     await useCase.execute({
-      workspaceId: workspace.id,
       id: item.id,
       name: 'update-name',
     })
@@ -37,19 +36,18 @@ test.group('UpdateItem (unit)', (group) => {
     )
 
     await useCase.execute({
-      workspaceId: workspace.id,
       id: item.id,
       name: 'update-name',
       content: Buffer.from('update buffer'),
     })
 
-    const content = await repository.drive.get(repository.items[0])
+    const content = await repository.drive.get(repository.items[0].filepath)
 
     expect(content).toEqual(Buffer.from('update buffer'))
   })
 
   test('should throw an error when item is not found', async ({ expect }) => {
-    await expect(useCase.execute({ id: '', workspaceId: '' })).rejects.toThrow(new ItemNotFound())
+    await expect(useCase.execute({ id: '' })).rejects.toThrow(new ItemNotFound())
   })
 
   test('should throw an error when try update a folder with content', async ({ expect }) => {

@@ -20,7 +20,6 @@ test.group('ShowItem (unit)', (group) => {
 
     const result = await useCase.execute({
       id: item.id,
-      workspaceId: workspace.id,
     })
 
     expect(result).toEqual(item)
@@ -36,7 +35,6 @@ test.group('ShowItem (unit)', (group) => {
 
     const result = await useCase.execute({
       id: item.id,
-      workspaceId: workspace.id,
       responseType: 'buffer',
     })
 
@@ -44,7 +42,7 @@ test.group('ShowItem (unit)', (group) => {
   })
 
   test('should throw an error when item is not found', async ({ expect }) => {
-    await expect(useCase.execute({ id: '', workspaceId: '' })).rejects.toThrow(new ItemNotFound())
+    await expect(useCase.execute({ id: '' })).rejects.toThrow(new ItemNotFound())
   })
 
   test('should throw an error when try use buffer with folders', async ({ expect }) => {
@@ -57,7 +55,6 @@ test.group('ShowItem (unit)', (group) => {
     const promise = () =>
       useCase.execute({
         id: item.id,
-        workspaceId: workspace.id,
         responseType: 'buffer',
       })
 

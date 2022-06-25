@@ -3,20 +3,14 @@ import IItemsRepository from 'Repositories/IItemsRepository'
 
 interface Params {
   id: string
-  workspaceId: string
   responseType?: 'object' | 'buffer'
 }
 
 export default class ShowItem {
   constructor(public repository: IItemsRepository) {}
 
-  public async execute({ id, workspaceId, responseType }: Params) {
-    const item = await this.repository.findOne({
-      where: {
-        id,
-        workspaceId,
-      },
-    })
+  public async execute({ id, responseType }: Params) {
+    const item = await this.repository.find(id)
 
     if (!item) throw new ItemNotFound()
 
@@ -25,7 +19,7 @@ export default class ShowItem {
     }
 
     if (responseType === 'buffer') {
-      return this.repository.drive.get(item)
+      return this.repository.drive.get(item.filepath)
     }
 
     return item

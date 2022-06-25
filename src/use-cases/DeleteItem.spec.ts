@@ -20,7 +20,7 @@ test.group('DeleteItem (unit)', (group) => {
     const workspace = await workspaceFactory.create()
     const item = await itemFactory.create({ workspaceId: workspace.id })
 
-    await useCase.execute({ id: item.id, workspaceId: workspace.id })
+    await useCase.execute({ id: item.id })
 
     expect(repository.items).toHaveLength(0)
   })
@@ -33,12 +33,12 @@ test.group('DeleteItem (unit)', (group) => {
       Buffer.from('hello word')
     )
 
-    await useCase.execute({ id: item.id, workspaceId: workspace.id })
+    await useCase.execute({ id: item.id })
 
-    expect(drive.files).toHaveLength(0)
+    expect(drive.files.get(item.filepath)).toBeUndefined()
   })
 
   test('should throw an error when item is not found', async ({ expect }) => {
-    await expect(useCase.execute({ id: '', workspaceId: '' })).rejects.toThrow(new ItemNotFound())
+    await expect(useCase.execute({ id: '' })).rejects.toThrow(new ItemNotFound())
   })
 })

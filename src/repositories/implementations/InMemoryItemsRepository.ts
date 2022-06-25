@@ -24,8 +24,8 @@ export default class InMemoryItemsRepository implements IItemsRepository {
       .value()
   }
 
-  public async findOne(filters: Filters) {
-    const [item] = await this.index(filters)
+  public async find(id: string) {
+    const item = this.items.find((i) => i.id === id)
 
     return item || null
   }
@@ -40,18 +40,16 @@ export default class InMemoryItemsRepository implements IItemsRepository {
     this.items.push(item)
 
     if (item.type === 'file') {
-      this.drive.put(item, buffer || Buffer.from(''))
+      this.drive.put(item.filepath, buffer || Buffer.from(''))
     }
 
     return item
   }
 
-  public async update(data: Item, buffer?: Buffer | undefined) {
-    const index = this.items.findIndex(
-      (i) => i.id === data.id && i.workspaceId === data.workspaceId
-    )
+  public async update(id: string, data: Item, buffer?: Buffer | undefined) {
+    const index = this.items.findIndex((i) => i.id === id)
 
-    const item = this.items.find((i) => i.id === data.id && i.workspaceId === data.workspaceId)
+    const item = this.items.find((i) => i.id === id)
 
     if (!item) return
 
@@ -60,21 +58,21 @@ export default class InMemoryItemsRepository implements IItemsRepository {
     this.items[index] = item
 
     if (item.type === 'file' && buffer) {
-      this.drive.put(item, buffer)
+      this.drive.put(item.filepath, buffer)
     }
   }
 
-  public async delete(item: Item): Promise<void> {
-    const index = this.items.findIndex(
-      (i) => i.id === item.id && item.workspaceId === i.workspaceId
-    )
+  public async delete(id: string): Promise<void> {
+    const index = this.items.findIndex((i) => i.id === id)
 
-    if (index == -1) return
+    const item = this.items[index]
+
+    if (!item) return
 
     this.items.splice(index, 1)
 
     if (item.type === 'file') {
-      await this.drive.delete(item)
+      await this.drive.delete(item.filepath)
     }
   }
 }

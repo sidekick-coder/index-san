@@ -1,7 +1,7 @@
 import IItemsRepository from 'Repositories/IItemsRepository'
 
 interface Params {
-  id: string
+  filepath: string
   workspaceId: string
   name: string
   type: string
@@ -11,14 +11,14 @@ interface Params {
 export default class CreateItem {
   constructor(public itemsRepository: IItemsRepository) {}
 
-  public async execute({ workspaceId, id, name, type, content }: Params) {
+  public async execute({ workspaceId, filepath, name, type, content }: Params) {
     if (type !== 'folder' && type !== 'file') throw new Error('invalid type')
 
     if (type === 'folder' && content) throw new Error('content is only allowed for type file')
 
     const item = await this.itemsRepository.create(
       {
-        id,
+        filepath,
         workspaceId,
         name,
         type,

@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { MetadataFactory, WorkspaceFactory } from 'Tests/factories'
+import { WorkspaceFactory } from 'Tests/factories'
 import { clean, createFile, createFolder, createManyFiles } from 'Tests/fixtures/filesystem'
 import FsItemsRepository from './FSItemsRepository'
 import FSWorkspacesRepository from './FSWorkspacesRepository'
