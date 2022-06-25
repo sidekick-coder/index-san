@@ -11,12 +11,11 @@ export interface MetaRelation {
 }
 
 export interface Item {
-  [key: string]: any
   id: string
   name: string
   workspaceId: string
   type: 'file' | 'folder'
-  relations?: MetaRelation[]
+  filepath: string
 }
 
 export interface ItemOption {

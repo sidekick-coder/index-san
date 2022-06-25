@@ -39,10 +39,6 @@ store.setWorkspaces()
     layout
     class="flex flex-wrap flex-col justify-start border-r"
   >
-    <div class="list-item flex justify-between">
-      <h1 class="text-2xl font-bold">Index-san</h1>
-    </div>
-
     <div v-if="!store.workspaces.length" class="list-item">No items</div>
 
     <s-drawer-item
@@ -50,8 +46,9 @@ store.setWorkspaces()
       :key="workspace.id"
       :workspace-id="workspace.id"
       item-id="/"
-      :to="`/${workspace.id}/root`"
+      :to="`/${workspace.id}`"
       :label="workspace.displayName"
+      filepath="/"
       :is-workspace="true"
     />
 

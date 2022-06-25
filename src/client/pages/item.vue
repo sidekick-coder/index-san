@@ -9,10 +9,6 @@ import { useCase } from '@/composables/use-case'
 import { useLayoutStore } from '@/stores/layout'
 
 const props = defineProps({
-  workspaceId: {
-    type: String,
-    required: true,
-  },
   itemId: {
     type: String,
     required: true,
@@ -31,7 +27,6 @@ const tabId = ref<string>()
 const viewId = ref<string>()
 
 const currentView = computed(() => views.find((view) => view.id === viewId.value))
-const defaultViewId = computed(() => item.value?.metas?.view)
 
 const suggestedViewId = computed(() => {
   if (item.value?.type === 'folder') {
@@ -52,9 +47,9 @@ const suggestedViewId = computed(() => {
 const title = computed(() => {
   if (!item.value) return 'No items selected'
 
-  const { name, metas } = item.value
+  const { name } = item.value
 
-  return metas?.displayName || name
+  return name
 })
 
 const views = [
@@ -104,8 +99,7 @@ async function load() {
   loading.value.item = true
 
   await useCase<Item>('show-item', {
-    workspaceId: props.workspaceId,
-    id: props.itemId === 'root' ? undefined : props.itemId,
+    id: props.itemId,
   })
     .then((data) => (item.value = data))
     .catch(console.error)
@@ -143,20 +137,6 @@ function setTab(id?: string) {
 
   tabId.value = tab.id
   layoutStore.right = true
-}
-
-async function setDefaultView(id: string) {
-  await useCase('save-item-metadata', {
-    workspaceId: props.workspaceId,
-    id: props.itemId,
-    data: {
-      view: id,
-    },
-  })
-    .then(() => {
-      lodash.set(item, 'value.metas.view', id)
-    })
-    .catch(console.error)
 }
 </script>
 <template>
@@ -240,20 +220,6 @@ async function setDefaultView(id: string) {
           @click="setView(v.id)"
         >
           <div>{{ v.label }}</div>
-          <div
-            v-if="v.id === defaultViewId"
-            class="ml-auto bg-accent px-2 py-1 rounded text-white text-xs"
-          >
-            Default
-          </div>
-
-          <div
-            v-else
-            class="ml-auto bg-gray-200 px-2 py-1 rounded actions text-xs"
-            @click.stop="setDefaultView(v.id)"
-          >
-            Make default
-          </div>
         </div>
       </div>
 

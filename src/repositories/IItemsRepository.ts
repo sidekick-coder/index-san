@@ -4,8 +4,8 @@ import IWorkspacesRepository from './IWorkspacesRepository'
 
 interface Where {
   workspaceId?: string
-  parentId?: string | string[]
-  id?: string | string[]
+  parentId?: string
+  id?: string
 }
 
 export interface Filters {

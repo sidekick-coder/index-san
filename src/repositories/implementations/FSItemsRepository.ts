@@ -41,9 +41,7 @@ export default class FsItemsRepository implements IItemsRepository {
 
         const relativePath = pathToArray(f).slice(pathToArray(workspace.path).length).join('/')
 
-        if (Array.isArray(parentId)) {
-          return parentId.includes(dirname(relativePath))
-        }
+        if (parentId === '/') return pathToArray(relativePath).length === 1
 
         return dirname(relativePath) === pathToArray(parentId).join('/')
       })

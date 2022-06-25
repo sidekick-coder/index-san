@@ -13,6 +13,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  filepath: {
+    type: String,
+    required: true,
+  },
   to: {
     type: String,
     required: true,
@@ -45,14 +49,14 @@ async function setChildren() {
   useCase<Item[]>('list-items', {
     where: {
       workspaceId: props.workspaceId,
-      parentId: props.itemId,
+      parentId: props.filepath,
     },
   })
     .then((data) => {
       children.value = data.filter((item) => item.type === 'folder')
     })
     .catch(console.error)
-    .finally(() => setTimeout(() => (loading.value = false), 500))
+    .finally(() => setTimeout(() => (loading.value = false), 300))
 }
 
 watch(
@@ -92,7 +96,7 @@ async function deleteItem() {
 <template>
   <router-link class="list-item clickable" :style="`padding-left: ${deep}rem`" :to="to">
     <div class="w-2/12 justify-start">
-      <i class="icon" @click.stop="expand = !expand">
+      <i class="icon" @mousedown.stop="expand = !expand">
         <fa-icon v-if="loading" icon="spinner" class="animate-spin" />
         <fa-icon v-else :icon="expand ? 'chevron-down' : 'chevron-right'" />
       </i>
@@ -106,12 +110,14 @@ async function deleteItem() {
     </div>
 
     <div class="w-4/12 text-xs actions justify-end opacity-0">
-      <i class="mr-2 icon">
-        <fa-icon icon="plus" @click.stop="dialog = true" />
+      <i class="mr-2 icon" @click.stop="dialog = true">
+        <fa-icon icon="plus" />
       </i>
-      <i class="icon">
-        <fa-icon v-if="isWorkspace" icon="link-slash" @click.stop="deleteWorkspace" />
-        <fa-icon v-else icon="trash" @click.stop="deleteItem" />
+      <i v-if="isWorkspace" class="icon" @click.stop="deleteWorkspace">
+        <fa-icon icon="link-slash" />
+      </i>
+      <i v-else class="icon" @click.stop="deleteItem">
+        <fa-icon icon="trash" />
       </i>
     </div>
   </router-link>
@@ -124,11 +130,12 @@ async function deleteItem() {
     <s-drawer-item
       v-for="item in children"
       :key="item.id"
-      :to="`/${workspaceId}/${item.id}`"
+      :to="item.id"
       :item-id="item.id"
       :workspace-id="workspaceId"
       :label="item.name"
       :deep="deep + 1"
+      :filepath="item.filepath"
     />
   </div>
 

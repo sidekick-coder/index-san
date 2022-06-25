@@ -1,11 +1,15 @@
 import IItemsRepository from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
-import CreateItem from 'UseCases/CreateItem'
+
 import CreateWorkspace from 'UseCases/CreateWorkspace'
 import DeleteWorkspace from 'UseCases/DeleteWorkspace'
-import ListItems from 'UseCases/list-items'
 import ListWorkspaces from 'UseCases/ListWorkspaces'
-import ShowItem from 'UseCases/show-item'
+
+import ListItems from 'UseCases/ListItems'
+import ShowItem from 'UseCases/ShowItem'
+import CreateItem from 'UseCases/CreateItem'
+import UpdateItem from 'UseCases/UpdateItem'
+import DeleteItem from 'UseCases/DeleteItem'
 
 interface UseCaseExecute {
   execute(payload: any): Promise<any>
@@ -22,9 +26,11 @@ export default class Application {
     this._useCases.set('list-workspaces', new ListWorkspaces(workspaceRepository))
     this._useCases.set('delete-workspace', new DeleteWorkspace(workspaceRepository))
 
-    this._useCases.set('create-item', new CreateItem(workspaceRepository, itemsRepository))
     this._useCases.set('list-items', new ListItems(itemsRepository))
     this._useCases.set('show-item', new ShowItem(itemsRepository))
+    this._useCases.set('create-item', new CreateItem(itemsRepository))
+    this._useCases.set('update-item', new UpdateItem(itemsRepository))
+    this._useCases.set('delete-item', new DeleteItem(itemsRepository))
   }
 
   public useCase<T>(name: string, payload: any) {

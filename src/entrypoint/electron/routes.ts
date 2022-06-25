@@ -5,11 +5,13 @@ import FSWorkspacesRepository from 'Repositories/implementations/FSWorkspacesRep
 import FsItemsRepository from 'Repositories/implementations/FSItemsRepository'
 
 import Application from 'src/app'
+import FSDrive from 'Providers/implementations/FSDrive'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
 const workspacesRepository = new FSWorkspacesRepository(filename)
-const itemsRepository = new FsItemsRepository(workspacesRepository)
+const drive = new FSDrive()
+const itemsRepository = new FsItemsRepository(workspacesRepository, drive)
 
 const IndexSanApp = new Application(workspacesRepository, itemsRepository)
 
