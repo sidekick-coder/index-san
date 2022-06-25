@@ -66,7 +66,7 @@ const views = [
   {
     id: 'editor',
     label: 'Editor',
-    component: defineAsyncComponent(() => import('@/views/editor/index.vue')),
+    component: defineAsyncComponent(() => import('@/views/simple-editor.vue')),
   },
   {
     id: 'image',
