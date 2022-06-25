@@ -22,18 +22,11 @@ const props = defineProps({
 
 const items = ref<any[]>([])
 
-const actions = [
-  {
-    name: 'open',
-    style: 'width: 100px',
-  },
-]
-
 const columns = computed<Column[]>(() => {
-  const head = props.item.metas?.head
+  const head = props.item.head
 
   if (!head) {
-    return [{ name: 'name', field: 'displayName', label: 'Name' }]
+    return [{ name: 'name', field: 'name', label: 'Name' }]
   }
 
   return head
@@ -41,10 +34,9 @@ const columns = computed<Column[]>(() => {
 
 async function load() {
   await useCase<Item[]>('list-items', {
-    workspaceId: props.item.workspaceId,
-    id: props.item.id,
-    filters: {
-      parentPath: props.item.id,
+    where: {
+      workspaceId: props.item.workspaceId,
+      parentId: props.item.id,
     },
   }).then((result) => {
     items.value = result.map((i) => ({ ...i, ...i.metas }))
@@ -54,7 +46,7 @@ async function load() {
 const update = throttle(async (item: Item, key: string, value: string) => {
   return await useCase('save-item-metadata', {
     workspaceId: item.workspaceId,
-    id: item.id,
+    itemId: item.id,
     data: {
       [key]: value,
     },
@@ -72,7 +64,7 @@ function modify(b: Builder) {
 </script>
 <template>
   <w-data-table
-    :columns="[...columns, ...actions]"
+    :columns="columns"
     :items="items"
     class="data-view"
     enable-navigation

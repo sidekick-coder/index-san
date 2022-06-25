@@ -110,7 +110,7 @@ async function load() {
     .then((data) => (item.value = data))
     .catch(console.error)
     .finally(() => {
-      viewId.value = lodash.get(item.value, 'metas.view', suggestedViewId.value)
+      viewId.value = lodash.get(item.value, 'view', suggestedViewId.value)
 
       setTimeout(() => (loading.value.item = false), 500)
     })
@@ -148,7 +148,7 @@ function setTab(id?: string) {
 async function setDefaultView(id: string) {
   await useCase('save-item-metadata', {
     workspaceId: props.workspaceId,
-    id: props.id,
+    id: props.itemId,
     data: {
       view: id,
     },

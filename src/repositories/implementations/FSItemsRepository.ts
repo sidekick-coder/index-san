@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { resolve } from 'path'
+import { dirname, resolve } from 'path'
 
 import { pathToArray } from 'Utils/paths'
 import { readdirIfExist } from 'Utils/filesystem'
@@ -33,7 +33,7 @@ export default class FsItemsRepository implements IItemsRepository {
     }
 
     if (id) {
-      filepath = resolve(workspace.path, ...pathToArray(id))
+      filepath = resolve(workspace.path, ...pathToArray(dirname(id)))
     }
 
     const files = await readdirIfExist(filepath)
@@ -68,9 +68,9 @@ export default class FsItemsRepository implements IItemsRepository {
   }
 
   public async findOne(filters?: Filters) {
-    const [item] = await this.index(filters)
+    const items = await this.index(filters)
 
-    return item ?? null
+    return items[0] ?? null
   }
 
   public async create(item: Item) {

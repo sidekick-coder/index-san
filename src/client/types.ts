@@ -10,17 +10,13 @@ export interface MetaRelation {
   value: string
 }
 
-interface ItemMeta {
-  [key: string]: any
-  relations?: MetaRelation[]
-}
-
 export interface Item {
+  [key: string]: any
   id: string
   name: string
   workspaceId: string
-  metas?: ItemMeta
   type: 'file' | 'folder'
+  relations?: MetaRelation[]
 }
 
 export interface ItemOption {
