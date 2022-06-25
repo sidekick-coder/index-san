@@ -1,5 +1,4 @@
 import { test } from '@japa/runner'
-import Workspace from 'Entities/Workspace'
 import { ItemFactory, WorkspaceFactory } from 'Tests/factories'
 import InMemoryItemsRepository from 'Repositories/implementations/InMemoryItemsRepository'
 import InMemoryWorkspacesRepository from 'Repositories/implementations/InMemoryWorkspacesRepository'

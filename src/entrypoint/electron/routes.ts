@@ -4,16 +4,14 @@ import { resolve } from 'path'
 import FSWorkspacesRepository from 'Repositories/implementations/FSWorkspacesRepository'
 import FsItemsRepository from 'Repositories/implementations/FSItemsRepository'
 
-import FSMetadataRepository from 'Repositories/implementations/FSMetasRepository'
 import Application from 'src/app'
 
 const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
 const workspacesRepository = new FSWorkspacesRepository(filename)
-const metadataRepository = new FSMetadataRepository(workspacesRepository)
-const itemsRepository = new FsItemsRepository(workspacesRepository, metadataRepository)
+const itemsRepository = new FsItemsRepository(workspacesRepository)
 
-const IndexSanApp = new Application(workspacesRepository, itemsRepository, metadataRepository)
+const IndexSanApp = new Application(workspacesRepository, itemsRepository)
 
 ipcMain.removeHandler('use-case')
 

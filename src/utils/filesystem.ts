@@ -10,10 +10,6 @@ export async function mkdirIfNotExist(arg: string) {
 }
 
 export async function writeFileIfNotExist(arg: string, defaultData = '') {
-  const fileExist = await exists(arg)
-
-  if (fileExist) return
-
   await mkdirIfNotExist(path.dirname(arg))
 
   await fs.writeFile(arg, defaultData)

@@ -12,7 +12,7 @@ export default class ShowItem {
   constructor(private repository: IItemsRepository) {}
 
   public async execute({ workspaceId, id }: Args): Promise<Item> {
-    const workspace = await this.repository._workspacesRepository.findById(workspaceId)
+    const workspace = await this.repository.workspacesRepository.findById(workspaceId)
 
     if (!workspace) throw new WorkspaceNotFound()
 

@@ -8,7 +8,7 @@ import Workspace from 'Entities/Workspace'
 test.group('use-case: list-items', (group) => {
   const repository = new InMemoryItemsRepository()
 
-  const workspaceFactory = new WorkspaceFactory(repository._workspacesRepository)
+  const workspaceFactory = new WorkspaceFactory(repository.workspacesRepository)
   const itemFactory = new ItemFactory(repository)
 
   const listItems = new ListItems(repository)

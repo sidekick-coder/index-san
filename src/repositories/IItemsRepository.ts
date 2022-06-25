@@ -1,5 +1,4 @@
 import Item from 'Entities/Item'
-import IMetadataRepository from './IMetadataRepository'
 import IWorkspacesRepository from './IWorkspacesRepository'
 
 interface Where {
@@ -15,8 +14,7 @@ export interface Filters {
 }
 
 export default interface IItemsRepository {
-  _workspacesRepository: IWorkspacesRepository
-  _metasRepository: IMetadataRepository
+  workspacesRepository: IWorkspacesRepository
   index(filters?: Filters): Promise<Item[]>
   findOne(filters?: Filters): Promise<Item | null>
   create(item: Item): Promise<Item>
