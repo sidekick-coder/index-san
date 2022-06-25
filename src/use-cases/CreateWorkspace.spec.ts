@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import InMemoryWorkspacesRepository from 'Repositories/implementations/InMemoryWorkspacesRepository'
-import CreateWorkspace from './create-workspace'
+import CreateWorkspace from './CreateWorkspace'
 
 test.group('use-case: create-workspace', () => {
   const repository = new InMemoryWorkspacesRepository()

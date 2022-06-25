@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 import InMemoryWorkspacesRepository from 'Repositories/implementations/InMemoryWorkspacesRepository'
-import DeleteWorkspace from './delete-workspace'
+import DeleteWorkspace from './DeleteWorkspace'
 
 test.group('use-case: delete-workspaces', () => {
   const repository = new InMemoryWorkspacesRepository()

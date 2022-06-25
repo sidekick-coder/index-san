@@ -1,10 +1,10 @@
 import IItemsRepository from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
-import CreateItem from 'UseCases/create-item'
-import CreateWorkspace from 'UseCases/create-workspace'
-import DeleteWorkspace from 'UseCases/delete-workspace'
+import CreateItem from 'UseCases/CreateItem'
+import CreateWorkspace from 'UseCases/CreateWorkspace'
+import DeleteWorkspace from 'UseCases/DeleteWorkspace'
 import ListItems from 'UseCases/list-items'
-import ListWorkspaces from 'UseCases/list-workspaces'
+import ListWorkspaces from 'UseCases/ListWorkspaces'
 import ShowItem from 'UseCases/show-item'
 
 interface UseCaseExecute {
