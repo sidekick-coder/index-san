@@ -6,8 +6,6 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { Item } from '@/types'
 import { useCase } from '@/composables/use-case'
 
-import { useLayoutStore } from '@/stores/layout'
-
 const props = defineProps({
   itemId: {
     type: String,
@@ -20,10 +18,7 @@ const loading = ref({
   view: false,
 })
 
-const layoutStore = useLayoutStore()
-
 const item = ref<Item>()
-const tabId = ref<string>()
 const viewId = ref<string>()
 
 const currentView = computed(() => views.find((view) => view.id === viewId.value))
@@ -33,23 +28,15 @@ const suggestedViewId = computed(() => {
     return 'folder'
   }
 
-  if (item.value?.id.endsWith('.md')) {
+  if (/(.md|yml)/.test(item.value?.filepath || '')) {
     return 'editor'
   }
 
-  if (/(.png|jpg)/.test(item.value?.id || '')) {
+  if (/(.png|jpg)/.test(item.value?.filepath || '')) {
     return 'image'
   }
 
   return 'default'
-})
-
-const title = computed(() => {
-  if (!item.value) return 'No items selected'
-
-  const { name } = item.value
-
-  return name
 })
 
 const views = [
@@ -80,21 +67,6 @@ const views = [
   },
 ]
 
-const tabs = [
-  {
-    id: 'views',
-    icon: 'eye',
-  },
-  {
-    id: 'directory',
-    icon: 'folder',
-  },
-  {
-    id: 'metas',
-    icon: 'cog',
-  },
-]
-
 async function load() {
   loading.value.item = true
 
@@ -106,68 +78,16 @@ async function load() {
     .finally(() => {
       viewId.value = lodash.get(item.value, 'view', suggestedViewId.value)
 
-      setTimeout(() => (loading.value.item = false), 500)
+      setTimeout(() => (loading.value.item = false), 200)
     })
 }
 
 watch(props, load, {
   immediate: true,
 })
-
-async function setView(id: string) {
-  loading.value.view = true
-
-  viewId.value = id
-
-  layoutStore.right = false
-
-  setTimeout(() => (loading.value.view = false), 500)
-}
-
-function setTab(id?: string) {
-  const tab = tabs.find((tab) => tab.id === id)
-
-  if (id === tabId.value && layoutStore.right) {
-    tabId.value = undefined
-    layoutStore.right = false
-    return
-  }
-
-  if (!tab) return
-
-  tabId.value = tab.id
-  layoutStore.right = true
-}
 </script>
 <template>
   <w-layout use-percentage>
-    <w-toolbar
-      class="border-b h-[50px] flex justify-end z-10"
-      color="white"
-      :layout-ignore="['right']"
-    >
-      <button
-        class="h-full w-[60px] hover:bg-gray-100 justify-self-start"
-        @click="layoutStore.toggleLeft"
-      >
-        <fa-icon class="text-lg" icon="bars" />
-      </button>
-
-      <div class="justify-self-start mr-auto font-bold">
-        {{ title }}
-      </div>
-
-      <button
-        v-for="tab in tabs"
-        :key="tab.id"
-        class="h-full w-[60px] hover:bg-gray-100"
-        :class="[tab.id === tabId ? 'bg-gray-100' : 'bg-white']"
-        @click="setTab(tab.id)"
-      >
-        <fa-icon class="text-lg" :icon="tab.icon" />
-      </button>
-    </w-toolbar>
-
     <div
       v-if="loading.item"
       class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
@@ -201,31 +121,5 @@ function setTab(id?: string) {
 
       <w-content v-else class="flex items-center justify-center"> Error </w-content>
     </template>
-
-    <w-drawer
-      v-model="layoutStore.right"
-      layout-id="right"
-      class="border-l bg-white"
-      width="[300px]"
-      right
-    >
-      <s-directory-list v-if="tabId === 'directory'" :item="item" />
-
-      <div v-if="tabId === 'views'">
-        <div
-          v-for="v in views"
-          :key="v.id"
-          class="list-item clickable"
-          :class="[v.id === viewId ? 'bg-gray-100' : 'bg-white']"
-          @click="setView(v.id)"
-        >
-          <div>{{ v.label }}</div>
-        </div>
-      </div>
-
-      <div v-if="tabId === 'metas'">
-        <s-meta-editor :item="item" />
-      </div>
-    </w-drawer>
   </w-layout>
 </template>

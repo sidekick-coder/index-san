@@ -8,7 +8,7 @@ body {
 }
 
 .list-item {
-    @apply px-[1rem] h-[50px] flex flex-wrap items-center transition-all text-sm;
+    @apply px-[1rem] h-[40px] flex flex-wrap items-center transition-all text-xs;
 }
 
 .list-item.clickable {
@@ -16,7 +16,7 @@ body {
 }
 
 .list-item .icon {
-    @apply w-8 h-8 flex items-center justify-center;
+    @apply w-6 h-6 flex items-center justify-center;
     @apply rounded-full hover:bg-gray-200;
 }
 
