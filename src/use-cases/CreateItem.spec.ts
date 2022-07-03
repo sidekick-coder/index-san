@@ -1,24 +1,18 @@
 import { test } from '@japa/runner'
 import InMemoryItemsRepository from 'Repositories/implementations/InMemoryItemsRepository'
-import { WorkspaceFactory } from 'Tests/factories'
 import CreateItem from './CreateItem'
 
 test.group('CreateItem (unit)', (group) => {
   const repository = new InMemoryItemsRepository()
-
-  const workspaceFactory = new WorkspaceFactory(repository.workspacesRepository)
 
   const useCase = new CreateItem(repository)
 
   group.each.setup(() => (repository.items = []))
 
   test('should create a folder', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
     const data = {
       filepath: '/new-item',
       name: 'new-item',
-      workspaceId: workspace.id,
       type: 'folder',
     }
 
@@ -30,12 +24,9 @@ test.group('CreateItem (unit)', (group) => {
   })
 
   test('should create a file', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
     const data = {
       filepath: '/new-item',
       name: 'new-item',
-      workspaceId: workspace.id,
       type: 'file',
       content: Buffer.from('zzz'),
     }
@@ -51,12 +42,9 @@ test.group('CreateItem (unit)', (group) => {
   })
 
   test('should throw an error when use invalid type', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
     const data = {
       filepath: '/new-item',
       name: 'new-item',
-      workspaceId: workspace.id,
       type: 'invalid',
     }
 
@@ -64,12 +52,9 @@ test.group('CreateItem (unit)', (group) => {
   })
 
   test('should throw an error when try create a folder with content', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
     const data = {
       filepath: '/new-item',
       name: 'new-item',
-      workspaceId: workspace.id,
       type: 'folder',
       content: Buffer.from('hello word'),
     }

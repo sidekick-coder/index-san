@@ -21,7 +21,7 @@ export default class FSDrive implements IDrive {
   }
 
   public getFullPath(filepath: string) {
-    return path.resolve(this.basePath, ...pathToArray(filepath))
+    return pathToArray(this.basePath, filepath).join(path.sep)
   }
 
   public async put(filepath: string, content: Buffer) {

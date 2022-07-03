@@ -10,10 +10,7 @@ import InMemoryDrive from 'Providers/implementations/InMemoryDrive'
 export default class InMemoryItemsRepository implements IItemsRepository {
   public items: Item[] = []
 
-  constructor(
-    public readonly workspacesRepository: IWorkspacesRepository = new InMemoryWorkspacesRepository(),
-    public readonly drive: IDrive = new InMemoryDrive()
-  ) {}
+  constructor(public readonly drive: IDrive = new InMemoryDrive()) {}
 
   public async index(filters: Filters) {
     const { parentId, ...where } = filters?.where ?? {}
@@ -31,10 +28,6 @@ export default class InMemoryItemsRepository implements IItemsRepository {
   }
 
   public async create(data: Item, buffer?: Buffer) {
-    const workspace = await this.workspacesRepository.findById(data.workspaceId)
-
-    if (!workspace) throw new WorkspaceNotFound()
-
     const item = new Item(data)
 
     this.items.push(item)

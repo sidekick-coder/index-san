@@ -6,8 +6,6 @@ import ShowItem from './ShowItem'
 
 test.group('ShowItem (unit)', (group) => {
   const repository = new InMemoryItemsRepository()
-
-  const workspaceFactory = new WorkspaceFactory(repository.workspacesRepository)
   const itemFactory = new ItemFactory(repository)
 
   const useCase = new ShowItem(repository)
@@ -15,8 +13,7 @@ test.group('ShowItem (unit)', (group) => {
   group.each.setup(() => (repository.items = []))
 
   test('should return item object', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-    const item = await itemFactory.create({ workspaceId: workspace.id })
+    const item = await itemFactory.create()
 
     const result = await useCase.execute({
       id: item.id,
@@ -26,10 +23,8 @@ test.group('ShowItem (unit)', (group) => {
   })
 
   test('should return item file buffer', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
     const item = await repository.create(
-      itemFactory.make({ type: 'file', workspaceId: workspace.id }),
+      itemFactory.make({ type: 'file' }),
       Buffer.from('hello word')
     )
 
@@ -46,11 +41,7 @@ test.group('ShowItem (unit)', (group) => {
   })
 
   test('should throw an error when try use buffer with folders', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
-    const item = await repository.create(
-      itemFactory.make({ type: 'folder', workspaceId: workspace.id })
-    )
+    const item = await repository.create(itemFactory.make({ type: 'folder' }))
 
     const promise = () =>
       useCase.execute({

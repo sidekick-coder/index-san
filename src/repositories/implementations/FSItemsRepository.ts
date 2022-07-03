@@ -1,3 +1,4 @@
+import path from 'path'
 import lodash from 'lodash'
 import { basename, dirname, resolve } from 'path'
 import fg from 'fast-glob'
@@ -13,88 +14,48 @@ import FSDrive from 'Providers/implementations/FSDrive'
 import ItemNotFound from 'Errors/ItemNotFound'
 
 export default class FsItemsRepository implements IItemsRepository {
-  constructor(
-    public readonly workspacesRepository: IWorkspacesRepository,
-    public readonly drive: FSDrive
-  ) {}
+  constructor(public readonly drive: FSDrive) {}
 
   public async index(filters?: Filters) {
-    const { workspaceId, parentId } = filters?.where || {}
+    const { parentId } = filters?.where || {}
 
-    if (!workspaceId) throw new Error('workspaceId required')
-
-    const workspace = await this.workspacesRepository.findById(workspaceId)
-
-    if (!workspace) throw new WorkspaceNotFound()
-
-    const filepath = pathToArray(workspace.path, '**').join('/')
+    if (!parentId) return []
 
     const items: Item[] = []
+
+    const filepath = pathToArray(parentId).join('/') + '/**'
 
     const folders = await fg(filepath, { dot: true, onlyDirectories: true })
     const files = await fg(filepath, { dot: true, onlyFiles: true })
 
-    files
-      .concat(folders)
-      .filter((f) => {
-        if (!parentId) return true
-
-        const relativePath = pathToArray(f).slice(pathToArray(workspace.path).length).join('/')
-
-        if (parentId === '/') return pathToArray(relativePath).length === 1
-
-        return dirname(relativePath) === pathToArray(parentId).join('/')
-      })
-      .map((filename) => {
-        const relativePath = pathToArray(filename)
-          .slice(pathToArray(workspace.path).length)
-          .join('/')
-
-        items.push(
-          Item.mount({
-            id: `/${workspace.id}/${relativePath}`,
-            filepath: relativePath,
-            name: basename(filename),
-            workspaceId: workspace.id,
-            type: folders.includes(filename) ? 'folder' : 'file',
-          })
-        )
-      })
+    files.concat(folders).map((filename) => {
+      items.push(
+        Item.mount({
+          id: filename,
+          filepath: filename,
+          name: basename(filename),
+          type: folders.includes(filename) ? 'folder' : 'file',
+        })
+      )
+    })
 
     return items
   }
 
   public async find(id: string) {
-    const [workspaceId, ...filepath] = pathToArray(id)
+    const filepath = fg.escapePath(id)
 
-    const workspace = await this.workspacesRepository.findById(workspaceId)
-
-    if (!workspace) return null
-
-    this.drive.use(workspace.path)
-
-    const stats = await this.drive.stat(filepath.join('/'))
-
-    if (!stats) return null
-
-    return Item.mount({
-      id: id,
-      filepath: filepath.join('/'),
-      name: basename(filepath.join('/')),
-      workspaceId: workspace.id,
-      type: stats.isDirectory() ? 'folder' : 'file',
+    const [item] = await this.index({
+      where: {
+        id,
+        parentId: dirname(filepath),
+      },
     })
+
+    return item || null
   }
 
   public async create(data: Omit<Item, 'id'>, buffer?: Buffer) {
-    const workspaceId = data.workspaceId
-
-    const workspace = await this.workspacesRepository.findById(workspaceId)
-
-    if (!workspace) throw new WorkspaceNotFound()
-
-    this.drive.use(workspace.path)
-
     if (data.type === 'folder') {
       await this.drive.mkDir(data.filepath)
     }
@@ -104,10 +65,9 @@ export default class FsItemsRepository implements IItemsRepository {
     }
 
     return Item.mount({
-      id: `/${workspace.id}/${data.filepath}`,
+      id: data.filepath,
       filepath: data.filepath,
       name: basename(data.filepath),
-      workspaceId: workspace.id,
       type: data.type,
     })
   }

@@ -6,7 +6,6 @@ import ListItems from './ListItems'
 test.group('ListItems (unit)', (group) => {
   const repository = new InMemoryItemsRepository()
 
-  const workspaceFactory = new WorkspaceFactory(repository.workspacesRepository)
   const itemFactory = new ItemFactory(repository)
 
   const useCase = new ListItems(repository)
@@ -14,9 +13,7 @@ test.group('ListItems (unit)', (group) => {
   group.each.setup(() => (repository.items = []))
 
   test('should return list of items', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
-    await itemFactory.createMany({ workspaceId: workspace.id }, 20)
+    await itemFactory.createMany({}, 20)
 
     const result = await useCase.execute()
 

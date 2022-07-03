@@ -5,6 +5,10 @@ import { pathToArray } from 'Utils/paths'
 
 const tmpDir = resolve(process.cwd(), 'tmp', '__tests__')
 
+export function makePath(...args: string[]) {
+  return resolve(tmpDir, ...pathToArray(...args))
+}
+
 export async function createFolder(path: string) {
   const filepath = resolve(tmpDir, ...pathToArray(path))
 

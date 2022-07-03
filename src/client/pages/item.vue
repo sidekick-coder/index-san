@@ -13,21 +13,12 @@ const props = defineProps({
   },
 })
 
-const loading = ref({
-  item: false,
-  view: false,
-})
-
 const item = ref<Item>()
 const viewId = ref<string>()
 
 const currentView = computed(() => views.find((view) => view.id === viewId.value))
 
 const suggestedViewId = computed(() => {
-  if (item.value?.type === 'folder') {
-    return 'folder'
-  }
-
   if (/(.md|yml)/.test(item.value?.filepath || '')) {
     return 'editor'
   }
@@ -42,13 +33,8 @@ const suggestedViewId = computed(() => {
 const views = [
   {
     id: 'default',
-    label: 'Details',
-    component: defineAsyncComponent(() => import('@/views/default.vue')),
-  },
-  {
-    id: 'folder',
-    label: 'Folder',
-    component: 's-directory-list',
+    label: 'Default',
+    component: defineAsyncComponent(() => import('@/views/file-explorer.vue')),
   },
   {
     id: 'editor',
@@ -68,8 +54,6 @@ const views = [
 ]
 
 async function load() {
-  loading.value.item = true
-
   await useCase<Item>('show-item', {
     id: props.itemId,
   })
@@ -77,8 +61,6 @@ async function load() {
     .catch(console.error)
     .finally(() => {
       viewId.value = lodash.get(item.value, 'view', suggestedViewId.value)
-
-      setTimeout(() => (loading.value.item = false), 200)
     })
 }
 
@@ -88,38 +70,12 @@ watch(props, load, {
 </script>
 <template>
   <w-layout use-percentage>
-    <div
-      v-if="loading.item"
-      class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
-    >
-      <div class="text-center">
-        <fa-icon icon="spinner" class="animate-spin text-2xl" />
-        <h2 class="font-bold">Loading...</h2>
+    <w-content v-if="currentView && item">
+      <div class="h-full w-full overflow-auto">
+        <component :is="currentView.component" :item="item" />
       </div>
-    </div>
-
-    <w-content v-else-if="!item" class="flex items-center justify-center">
-      Error loading item
     </w-content>
 
-    <template v-else>
-      <w-content
-        v-if="loading.view"
-        class="h-full w-full flex items-center justify-center absolute bg-white inset-0"
-      >
-        <div class="text-center">
-          <fa-icon icon="spinner" class="animate-spin text-2xl" />
-          <h2 class="font-bold">Loading...</h2>
-        </div>
-      </w-content>
-
-      <w-content v-if="currentView" v-show="!loading.view">
-        <div class="h-full w-full overflow-auto">
-          <component :is="currentView.component" :item="item" />
-        </div>
-      </w-content>
-
-      <w-content v-else class="flex items-center justify-center"> Error </w-content>
-    </template>
+    <w-content v-else class="flex items-center justify-center"> Error </w-content>
   </w-layout>
 </template>

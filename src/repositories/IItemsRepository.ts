@@ -13,7 +13,6 @@ export interface Filters {
 }
 
 export default interface IItemsRepository {
-  workspacesRepository: IWorkspacesRepository
   drive: IDrive
   index(filters?: Filters): Promise<Item[]>
   find(id: string): Promise<Item | null>

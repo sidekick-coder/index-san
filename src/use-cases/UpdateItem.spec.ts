@@ -1,13 +1,11 @@
 import { test } from '@japa/runner'
 import ItemNotFound from 'Errors/ItemNotFound'
 import InMemoryItemsRepository from 'Repositories/implementations/InMemoryItemsRepository'
-import { ItemFactory, WorkspaceFactory } from 'Tests/factories'
+import { ItemFactory } from 'Tests/factories'
 import UpdateItem from './UpdateItem'
 
 test.group('UpdateItem (unit)', (group) => {
   const repository = new InMemoryItemsRepository()
-
-  const workspaceFactory = new WorkspaceFactory(repository.workspacesRepository)
   const itemFactory = new ItemFactory(repository)
 
   const useCase = new UpdateItem(repository)
@@ -15,9 +13,7 @@ test.group('UpdateItem (unit)', (group) => {
   group.each.setup(() => (repository.items = []))
 
   test('should update an item', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
-    const item = await itemFactory.create({ workspaceId: workspace.id })
+    const item = await itemFactory.create()
 
     await useCase.execute({
       id: item.id,
@@ -28,10 +24,8 @@ test.group('UpdateItem (unit)', (group) => {
   })
 
   test('should update file content when buffer is sended', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
-
     const item = await repository.create(
-      itemFactory.make({ workspaceId: workspace.id, type: 'file' }),
+      itemFactory.make({ type: 'file' }),
       Buffer.from('hello word')
     )
 
@@ -51,15 +45,12 @@ test.group('UpdateItem (unit)', (group) => {
   })
 
   test('should throw an error when try update a folder with content', async ({ expect }) => {
-    const workspace = await workspaceFactory.create()
     const item = await itemFactory.create({
-      workspaceId: workspace.id,
       type: 'folder',
     })
 
     const data = {
       id: item.id,
-      workspaceId: workspace.id,
       content: Buffer.from('hello word'),
     }
 

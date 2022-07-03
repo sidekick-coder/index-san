@@ -1,9 +1,9 @@
 import fs from 'fs/promises'
 import path from 'path'
 
-export async function exists(path: string) {
+export async function exists(filepath: string) {
   return fs
-    .stat(path)
+    .stat(filepath)
     .then(() => true)
     .catch(() => false)
 }
