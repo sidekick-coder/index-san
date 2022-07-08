@@ -22,7 +22,6 @@ export class ItemFactory extends BaseFactory<Item> {
       id,
       name: id,
       type: 'folder',
-      workspaceId: uuid(),
       filepath: `/${id}`,
       ...data,
     })

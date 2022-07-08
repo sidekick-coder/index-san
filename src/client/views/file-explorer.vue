@@ -79,20 +79,23 @@ function showDialog(type: 'folder' | 'file') {
         <w-menu>
           <template #activator>
             <button
-              class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
+              class="px-4 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25 flex items-center"
             >
-              <fa-icon class="text-sm" icon="plus" />
+              <fa-icon class="text-sm mr-2" icon="plus" />
+              <span class="text-sm"> add new </span>
             </button>
           </template>
 
-          <div class="list-item clickable" @click="showDialog('folder')">
-            <fa-icon class="text-sm mr-4" icon="folder-plus" />
-            <span> Folder </span>
-          </div>
+          <div class="border bg-white">
+            <div class="list-item clickable" @click="showDialog('folder')">
+              <fa-icon class="text-sm mr-4" icon="folder-plus" />
+              <span> Folder </span>
+            </div>
 
-          <div class="list-item clickable" @click="showDialog('file')">
-            <fa-icon class="text-sm mr-4" icon="file-circle-plus" />
-            <span> File </span>
+            <div class="list-item clickable" @click="showDialog('file')">
+              <fa-icon class="text-sm mr-4" icon="file-circle-plus" />
+              <span> File </span>
+            </div>
           </div>
         </w-menu>
 
@@ -126,13 +129,14 @@ function showDialog(type: 'folder' | 'file') {
       <div v-if="!subitems.length" class="list-item">No Items found</div>
       <div
         v-for="child in orderBy(subitems, ['type', 'name'], ['desc', 'asc'])"
-        :key="child.name"
+        :key="child.id"
         class="w-full list-item clickable border-b"
-        @dblclick="$router.push(child.id)"
+        @click="$router.push(`/${child.id}`)"
       >
         <i :class="child.type === 'file' ? 'text-gray-400' : ''" class="px-5">
           <fa-icon :icon="child.type === 'file' ? 'file' : 'folder'" />
         </i>
+
         <p class="truncate max-w-[80%]">{{ child.name }}</p>
 
         <div class="actions ml-auto">

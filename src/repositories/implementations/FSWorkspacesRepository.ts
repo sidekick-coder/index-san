@@ -1,6 +1,7 @@
 import { Query } from '@code-pieces/db-json'
 import Workspace from 'Entities/Workspace'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
+import { pathToArray } from 'Utils/paths'
 
 export default class FSWorkspacesRepository implements IWorkspacesRepository {
   constructor(private readonly filename: string) {}
@@ -22,6 +23,8 @@ export default class FSWorkspacesRepository implements IWorkspacesRepository {
   }
 
   public async create(data: Workspace) {
+    data.path = pathToArray(data.path).join('/')
+
     await this.query().insert(data)
 
     return data

@@ -17,7 +17,7 @@ export default class FsItemsRepository implements IItemsRepository {
   constructor(public readonly drive: FSDrive) {}
 
   public async index(filters?: Filters) {
-    const { parentId } = filters?.where || {}
+    const { parentId, ...where } = filters?.where || {}
 
     if (!parentId) return []
 
@@ -25,8 +25,8 @@ export default class FsItemsRepository implements IItemsRepository {
 
     const filepath = pathToArray(parentId).join('/') + '/**'
 
-    const folders = await fg(filepath, { dot: true, onlyDirectories: true })
-    const files = await fg(filepath, { dot: true, onlyFiles: true })
+    const folders = await fg(filepath, { dot: true, onlyDirectories: true, deep: 1 })
+    const files = await fg(filepath, { dot: true, onlyFiles: true, deep: 1 })
 
     files.concat(folders).map((filename) => {
       items.push(
@@ -39,7 +39,7 @@ export default class FsItemsRepository implements IItemsRepository {
       )
     })
 
-    return items
+    return lodash(items).filter(where).value()
   }
 
   public async find(id: string) {
@@ -47,7 +47,7 @@ export default class FsItemsRepository implements IItemsRepository {
 
     const [item] = await this.index({
       where: {
-        id,
+        id: pathToArray(id).join('/'),
         parentId: dirname(filepath),
       },
     })

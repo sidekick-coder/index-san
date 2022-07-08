@@ -11,7 +11,7 @@ const filename = resolve(app.getPath('userData'), 'workspaces.json')
 
 const workspacesRepository = new FSWorkspacesRepository(filename)
 const drive = new FSDrive()
-const itemsRepository = new FsItemsRepository(workspacesRepository, drive)
+const itemsRepository = new FsItemsRepository(drive)
 
 const IndexSanApp = new Application(workspacesRepository, itemsRepository)
 

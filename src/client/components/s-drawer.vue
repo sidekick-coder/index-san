@@ -45,11 +45,11 @@ store.setWorkspaces()
       v-for="workspace in store.workspaces"
       :key="workspace.id"
       :workspace-id="workspace.id"
-      item-id="/"
-      :to="`/${workspace.id}`"
+      :to="`/${workspace.path}`"
       :label="workspace.displayName"
-      filepath="/"
       :is-workspace="true"
+      :item-id="workspace.path"
+      :filepath="workspace.path"
     />
 
     <div
