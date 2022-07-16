@@ -10,6 +10,13 @@ import ShowItem from 'UseCases/ShowItem'
 import CreateItem from 'UseCases/CreateItem'
 import UpdateItem from 'UseCases/UpdateItem'
 import DeleteItem from 'UseCases/DeleteItem'
+import IDatabaseTableRepository from 'Repositories/IDatabaseTableRepository'
+
+import ListDatabaseTables from 'UseCases/ListDatabaseTables'
+import ShowDatabaseTable from 'UseCases/ShowDatabaseTable'
+import CreateDatabaseTable from 'UseCases/CreateDatabaseTable'
+import UpdateDatabaseTable from 'UseCases/UpdateDatabaseTable'
+import DeleteDatabaseTable from 'UseCases/DeleteDatabaseTable'
 
 interface UseCaseExecute {
   execute(payload: any): Promise<any>
@@ -20,7 +27,8 @@ export default class Application {
 
   constructor(
     public workspaceRepository: IWorkspacesRepository,
-    public itemsRepository: IItemsRepository
+    public itemsRepository: IItemsRepository,
+    public databaseTableRepository: IDatabaseTableRepository
   ) {
     this._useCases.set('create-workspace', new CreateWorkspace(workspaceRepository))
     this._useCases.set('list-workspaces', new ListWorkspaces(workspaceRepository))
@@ -31,6 +39,12 @@ export default class Application {
     this._useCases.set('create-item', new CreateItem(itemsRepository))
     this._useCases.set('update-item', new UpdateItem(itemsRepository))
     this._useCases.set('delete-item', new DeleteItem(itemsRepository))
+
+    this._useCases.set('list-database-tables', new ListDatabaseTables(databaseTableRepository))
+    this._useCases.set('show-database-table', new ShowDatabaseTable(databaseTableRepository))
+    this._useCases.set('create-database-table', new CreateDatabaseTable(databaseTableRepository))
+    this._useCases.set('update-database-table', new UpdateDatabaseTable(databaseTableRepository))
+    this._useCases.set('delete-database-table', new DeleteDatabaseTable(databaseTableRepository))
   }
 
   public useCase<T>(name: string, payload: any) {

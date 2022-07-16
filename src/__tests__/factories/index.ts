@@ -2,6 +2,7 @@ import Item from 'Entities/Item'
 import Workspace from 'Entities/Workspace'
 import { BaseFactory } from './BaseFactory'
 import { v4 as uuid } from 'uuid'
+import DatabaseTable from 'Entities/DatabaseTable'
 
 export class WorkspaceFactory extends BaseFactory<Workspace> {
   public make(data?: Partial<Workspace> | undefined): Workspace {
@@ -23,6 +24,20 @@ export class ItemFactory extends BaseFactory<Item> {
       name: id,
       type: 'folder',
       filepath: `/${id}`,
+      ...data,
+    })
+  }
+}
+
+export class DatabaseTableFactory extends BaseFactory<DatabaseTable> {
+  public make(data?: Partial<DatabaseTable> | undefined): DatabaseTable {
+    const id = uuid()
+    return new DatabaseTable({
+      id,
+      name: id,
+      type: 'folder',
+      config: {},
+      columns: [],
       ...data,
     })
   }

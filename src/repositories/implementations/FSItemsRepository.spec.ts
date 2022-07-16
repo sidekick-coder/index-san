@@ -1,5 +1,4 @@
 import { test } from '@japa/runner'
-import path from 'path'
 
 import FSDrive from 'Providers/implementations/FSDrive'
 import {
@@ -124,6 +123,7 @@ test.group('FSItemsRepository', (group) => {
   })
 
   test('should read big quantity of files')
+    .skip()
     .timeout(20000)
     .run(async ({ expect }) => {
       const length = 10000
