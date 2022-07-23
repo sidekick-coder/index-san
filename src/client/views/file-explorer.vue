@@ -15,7 +15,7 @@ const props = defineProps({
 
 const database = useDatabaseStore()
 
-const subitems = ref<Item[]>([])
+const items = ref<Item[]>([])
 
 function dirname(path: string) {
   const args = path.split('/')
@@ -31,7 +31,7 @@ async function load() {
   }
 
   if (!props.item) {
-    subitems.value = []
+    items.value = []
     return
   }
 
@@ -45,7 +45,7 @@ async function load() {
       workspaceId: item.workspaceId,
     },
   })
-    .then((data) => (subitems.value = data))
+    .then((data) => (items.value = data))
     .catch(console.error)
 }
 
@@ -56,12 +56,12 @@ async function deleteItem(item: Item) {
 }
 
 function getToPath(item: Item) {
-  if (item.type === 'folder') {
-    return `/${item.id}?view=file-explorer`
+  if (database.tables.find((t) => t.id === item.id)) {
+    return `/${item.id}?view=database-table`
   }
 
-  if (database.tables.find((table) => table.id === item.id)) {
-    return `/${item.id}?view=database-table`
+  if (item.type === 'folder') {
+    return `/${item.id}?view=file-explorer`
   }
 
   return `/${item.id}`
@@ -70,9 +70,9 @@ function getToPath(item: Item) {
 <template>
   <w-layout use-percentage>
     <w-content>
-      <div v-if="!subitems.length" class="list-item">No Items found</div>
+      <div v-if="!items.length" class="list-item">No Items found</div>
       <div
-        v-for="child in orderBy(subitems, ['type', 'name'], ['desc', 'asc'])"
+        v-for="child in orderBy(items, ['type', 'name'], ['desc', 'asc'])"
         :key="child.id"
         class="w-full list-item clickable border-b"
         @click="$router.push(getToPath(child))"

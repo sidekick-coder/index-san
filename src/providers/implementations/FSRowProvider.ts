@@ -58,27 +58,23 @@ export default class FSRowProvider implements IRowProvider {
   public async index() {
     const filepath = pathToArray(this.table.id).join('/') + '/**'
 
-    const folders = await fg(filepath, { dot: true, onlyDirectories: true, deep: 1 })
-    const files = await fg(filepath, { dot: true, onlyFiles: true, deep: 1 })
+    const folders = await fg(filepath, { onlyDirectories: true, deep: 1 })
 
     const metas = await this.metas()
 
-    const items = folders
-      .concat(files)
-      .filter((item) => !item.includes('.index-san'))
-      .map((filename) => {
-        const item = {
-          id: pathToArray(filename).pop() as string,
-        }
+    const items = folders.map((filename) => {
+      const item = {
+        id: pathToArray(filename).pop() as string,
+      }
 
-        const meta = metas.find((meta) => meta.name === item.id)
+      const meta = metas.find((meta) => meta.name === item.id)
 
-        if (meta) {
-          Object.assign(item, meta.value)
-        }
+      if (meta) {
+        Object.assign(item, meta.value)
+      }
 
-        return item
-      })
+      return item
+    })
 
     return items
   }
