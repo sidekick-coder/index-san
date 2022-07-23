@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import InMemoryDatabaseTableRepository from 'Repositories/implementations/InMemoyDatabaseTableRepository'
+import InMemoryDatabaseTableRepository from 'Repositories/implementations/InMemoryDatabaseTableRepository'
 import { DatabaseTableFactory } from 'Tests/factories'
 import ShowDatabaseTable from './ShowDatabaseTable'
 
