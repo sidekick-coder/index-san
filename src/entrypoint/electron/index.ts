@@ -5,6 +5,7 @@ import { BrowserWindow, app } from 'electron'
 import { createBuilder } from 'Utils/builder'
 import { Query } from '@code-pieces/db-json'
 import { debounce } from 'lodash'
+import { exists, writeFileIfNotExist } from 'Utils/filesystem'
 
 export default class ElectronApplication {
   constructor(
@@ -63,6 +64,17 @@ export default class ElectronApplication {
 
   public async boot() {
     await app.whenReady()
+
+    const workspacesJSON = resolve(app.getPath('userData'), 'workspaces.json')
+    const tablesJSON = resolve(app.getPath('userData'), 'tables.json')
+
+    if (!(await exists(workspacesJSON))) {
+      writeFileIfNotExist(workspacesJSON, '[]')
+    }
+
+    if (!(await exists(tablesJSON))) {
+      writeFileIfNotExist(tablesJSON, '[]')
+    }
 
     await import('./routes')
   }

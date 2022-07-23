@@ -3,8 +3,9 @@ import lodash from 'lodash'
 
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
 
-import { Item } from '@/types'
-import { useCase } from '@/composables/use-case'
+import { Item } from '../types'
+import { useCase } from '../composables/use-case'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   itemId: {
@@ -12,6 +13,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const route = useRoute()
 
 const item = ref<Item>()
 const viewId = ref<string>()
@@ -27,29 +30,29 @@ const suggestedViewId = computed(() => {
     return 'image'
   }
 
-  return 'default'
+  return 'file-explorer'
 })
 
 const views = [
   {
-    id: 'default',
-    label: 'Default',
+    id: 'file-explorer',
     component: defineAsyncComponent(() => import('@/views/file-explorer.vue')),
   },
   {
+    id: 'details',
+    component: defineAsyncComponent(() => import('@/views/details.vue')),
+  },
+  {
     id: 'editor',
-    label: 'Editor',
     component: defineAsyncComponent(() => import('@/views/simple-editor.vue')),
   },
   {
     id: 'image',
-    label: 'Image',
     component: defineAsyncComponent(() => import('@/views/image.vue')),
   },
   {
-    id: 'data-view',
-    label: 'Data-view',
-    component: defineAsyncComponent(() => import('@/views/data-view/data-view.vue')),
+    id: 'database-table',
+    component: defineAsyncComponent(() => import('@/views/database-table.vue')),
   },
 ]
 
@@ -60,7 +63,9 @@ async function load() {
     .then((data) => (item.value = data))
     .catch(console.error)
     .finally(() => {
-      viewId.value = lodash.get(item.value, 'view', suggestedViewId.value)
+      const id = route.query.view || suggestedViewId.value
+
+      viewId.value = lodash.get(item.value, 'view', id)
     })
 }
 

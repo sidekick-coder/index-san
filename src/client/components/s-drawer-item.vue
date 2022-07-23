@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCase } from '@/composables/use-case'
-import { useWorkspaceStore } from '@/stores/workspace'
+import { useWorkspaceStore } from '@/stories/workspace'
 import { Item } from '@/types'
 import { ref, watch } from 'vue'
 

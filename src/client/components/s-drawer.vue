@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useWorkspaceStore } from '../stores/workspace'
-import { useLayoutStore } from '../stores/layout'
+import { useWorkspaceStore } from '@/stories/workspace'
+import { useLayoutStore } from '@/stories/layout'
 import { useElectron } from '@/composables/use-electron'
 import { useCase } from '@/composables/use-case'
 
@@ -52,12 +52,14 @@ store.setWorkspaces()
       :filepath="workspace.path"
     />
 
-    <div
-      class="list-item justify-self-end mt-auto cursor-pointer flex justify-between border-t hover:bg-gray-200"
-      @click="addWorkspace"
-    >
-      Add workspace
-      <fa-icon icon="plus" />
+    <div class="justify-self-end mt-auto">
+      <div
+        class="list-item cursor-pointer flex justify-between border-t hover:bg-gray-200"
+        @click="addWorkspace"
+      >
+        Add workspace
+        <fa-icon icon="plus" />
+      </div>
     </div>
   </w-drawer>
 </template>

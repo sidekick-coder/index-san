@@ -6,14 +6,18 @@ import FsItemsRepository from 'Repositories/implementations/FSItemsRepository'
 
 import Application from 'src/app'
 import FSDrive from 'Providers/implementations/FSDrive'
+import FSDatabaseTableRepository from 'Repositories/implementations/FSDatabaseTableRepository'
 
-const filename = resolve(app.getPath('userData'), 'workspaces.json')
+const workspacesJSON = resolve(app.getPath('userData'), 'workspaces.json')
+const tablesJSON = resolve(app.getPath('userData'), 'tables.json')
 
-const workspacesRepository = new FSWorkspacesRepository(filename)
 const drive = new FSDrive()
-const itemsRepository = new FsItemsRepository(drive)
 
-const IndexSanApp = new Application(workspacesRepository, itemsRepository)
+const workspacesRepository = new FSWorkspacesRepository(workspacesJSON)
+const itemsRepository = new FsItemsRepository(drive)
+const databaseTableRepository = new FSDatabaseTableRepository(tablesJSON)
+
+const IndexSanApp = new Application(workspacesRepository, itemsRepository, databaseTableRepository)
 
 ipcMain.removeHandler('use-case')
 

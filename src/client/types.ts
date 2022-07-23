@@ -4,11 +4,6 @@ export interface Workspace {
   displayName: string
   path: string
 }
-export interface MetaRelation {
-  name: string
-  type: 'belongsTo' | 'hasMany'
-  value: string
-}
 
 export interface Item {
   id: string
@@ -18,15 +13,14 @@ export interface Item {
   filepath: string
 }
 
-export interface ItemOption {
-  displayName?: string
-}
-
-export interface File {
+export interface DatabaseTableColumn {
   name: string
-  displayName: string
-  path: string
-  systemPath: string
-  workspace: Workspace
-  item: Item
+  type: string
+}
+export interface DatabaseTable {
+  id: string
+  name: string
+  type: 'folder'
+  config: any
+  columns: DatabaseTableColumn[]
 }

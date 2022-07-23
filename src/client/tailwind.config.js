@@ -11,6 +11,7 @@ module.exports = {
       gray: colors.gray,
       slate: colors.slate,
       red: colors.red,
+      teal: colors.teal,
     },
   },
   content: {
@@ -23,6 +24,30 @@ module.exports = {
       },
     },
   },
-  safelist: ['right-0', 'w-[300px]', 'text-left'],
   plugins: [],
+  safelist: [
+    'right-0',
+    'w-[300px]',
+    'text-left',
+    {
+      pattern: /bg-*/,
+      variants: ['focus', 'placeholder-shown', 'hover'],
+    },
+    {
+      pattern: /text-*/,
+      variants: ['focus', 'placeholder-shown', 'hover'],
+    },
+    {
+      pattern: /border-*/,
+      variants: ['focus', 'placeholder-shown', 'hover'],
+    },
+    {
+      pattern: /fill-*/,
+      variants: ['focus', 'placeholder-shown', 'hover'],
+    },
+    {
+      pattern: /opacity-*/,
+      variants: ['focus', 'placeholder-shown', 'hover'],
+    },
+  ],
 }

@@ -2,8 +2,9 @@
 import { orderBy } from 'lodash'
 import { ref, PropType, watch } from 'vue'
 
-import { Item } from '@/types'
-import { useCase } from '@/composables/use-case'
+import { Item } from '../types'
+import { useCase } from '../composables/use-case'
+import { useDatabaseStore } from '../stories/database'
 
 const props = defineProps({
   item: {
@@ -12,13 +13,11 @@ const props = defineProps({
   },
 })
 
+const database = useDatabaseStore()
+
 const subitems = ref<Item[]>([])
 const dialog = ref(false)
-const newItem = ref({
-  type: 'file',
-  filepath: '',
-  workspaceId: props.item.workspaceId,
-})
+const databaseDialog = ref(false)
 
 function dirname(path: string) {
   const args = path.split('/')
@@ -28,7 +27,11 @@ function dirname(path: string) {
   return args.join('/')
 }
 
-async function setItems() {
+async function load() {
+  if (!database.tables.length) {
+    await database.load()
+  }
+
   if (!props.item) {
     subitems.value = []
     return
@@ -48,60 +51,44 @@ async function setItems() {
     .catch(console.error)
 }
 
-watch(() => props.item.id, setItems, { immediate: true })
-
-async function submit() {
-  await useCase('create-item', {
-    type: newItem.value.type,
-    workspaceId: newItem.value.workspaceId,
-    filepath: `${props.item.filepath}/${newItem.value.filepath}`,
-  }).then(() => {
-    dialog.value = false
-    setItems()
-  })
-}
+watch(() => props.item.id, load, { immediate: true })
 
 async function deleteItem(item: Item) {
-  await useCase('delete-item', {
-    id: item.id,
-  }).then(setItems)
+  await useCase('delete-item', { id: item.id }).then(load)
 }
 
-function showDialog(type: 'folder' | 'file') {
-  newItem.value.type = type
-  dialog.value = true
+function getToPath(item: Item) {
+  let view = 'details'
+
+  if (item.type === 'folder') {
+    view = 'file-explorer'
+  }
+
+  if (database.tables.find((table) => table.id === item.id)) {
+    view = 'database-table'
+  }
+
+  return `/${item.id}?view=${view}`
 }
 </script>
 <template>
   <w-layout use-percentage>
     <w-toolbar color="white" class="border-b" height="[40px]">
       <div class="px-4 flex items-center">
-        <w-menu>
-          <template #activator>
-            <button
-              class="px-4 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25 flex items-center"
-            >
-              <fa-icon class="text-sm mr-2" icon="plus" />
-              <span class="text-sm"> add new </span>
-            </button>
-          </template>
+        <button
+          class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
+          @click="dialog = true"
+        >
+          <fa-icon class="text-sm" icon="plus" />
+        </button>
 
-          <div class="border bg-white">
-            <div class="list-item clickable" @click="showDialog('folder')">
-              <fa-icon class="text-sm mr-4" icon="folder-plus" />
-              <span> Folder </span>
-            </div>
-
-            <div class="list-item clickable" @click="showDialog('file')">
-              <fa-icon class="text-sm mr-4" icon="file-circle-plus" />
-              <span> File </span>
-            </div>
-          </div>
-        </w-menu>
+        <button class="w-8 h-8 rounded-full hover:bg-gray-100" @click="databaseDialog = true">
+          <fa-icon class="text-sm" icon="database" />
+        </button>
 
         <button
           class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
-          @click="setItems"
+          @click="load"
         >
           <fa-icon class="text-sm" icon="refresh" />
         </button>
@@ -131,7 +118,7 @@ function showDialog(type: 'folder' | 'file') {
         v-for="child in orderBy(subitems, ['type', 'name'], ['desc', 'asc'])"
         :key="child.id"
         class="w-full list-item clickable border-b"
-        @click="$router.push(`/${child.id}`)"
+        @click="$router.push(getToPath(child))"
       >
         <i :class="child.type === 'file' ? 'text-gray-400' : ''" class="px-5">
           <fa-icon :icon="child.type === 'file' ? 'file' : 'folder'" />
@@ -147,15 +134,7 @@ function showDialog(type: 'folder' | 'file') {
       </div>
     </w-content>
 
-    <w-dialog v-model="dialog">
-      <w-form @submit="submit">
-        <w-card class="p-5">
-          <w-input v-model="newItem.filepath" label="Name" class="mb-4" />
-          <w-btn>Submit</w-btn>
-        </w-card>
-      </w-form>
-    </w-dialog>
-
-    <!-- <w-drawer right class="border-l"> details </w-drawer> -->
+    <s-item-dialog v-model="dialog" :parent-filepath="item.filepath" @submit="load" />
+    <s-database-table-dialog v-model="databaseDialog" :filepath="item.filepath" />
   </w-layout>
 </template>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Item } from '@/types'
+import { DatabaseTable, Item } from '../types'
 import { Builder } from 'vue-wind/types/composable/tailwind'
 
-import { useCase } from '@/composables/use-case'
+import { useCase } from '../composables/use-case'
 import { ref, onMounted, computed } from 'vue'
 import { throttle } from 'lodash'
+import { useDatabaseStore } from '../stories/database'
 
 interface Column {
   name: string
@@ -20,26 +21,38 @@ const props = defineProps({
   },
 })
 
+const database = useDatabaseStore()
+
+const table = computed<DatabaseTable | undefined>(() =>
+  database.tables.find((table) => table.id === props.item.id)
+)
+
 const items = ref<any[]>([])
 
 const columns = computed<Column[]>(() => {
-  const head = props.item.head
-
-  if (!head) {
+  if (!table.value) {
     return [{ name: 'name', field: 'name', label: 'Name' }]
   }
 
-  return head
+  return table.value.columns.map((column) => ({
+    name: column.name,
+    field: column.name,
+    label: column.name,
+  }))
 })
 
 async function load() {
+  if (!database.tables.length) {
+    await database.load()
+  }
+
   await useCase<Item[]>('list-items', {
     where: {
       workspaceId: props.item.workspaceId,
       parentId: props.item.id,
     },
   }).then((result) => {
-    items.value = result.map((i) => ({ ...i, ...i.metas }))
+    items.value = result
   })
 }
 
