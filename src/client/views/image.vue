@@ -14,7 +14,6 @@ const src = ref()
 
 async function setImage() {
   await useCase<ArrayBuffer>('show-item', {
-    workspaceId: props.item.workspaceId,
     id: props.item.id,
     responseType: 'buffer',
   })
@@ -32,7 +31,7 @@ setImage()
 </script>
 <template>
   <div class="flex h-full w-full items-center justify-center">
-    <w-card color="white" class="drop-shadow-md mx-auto max-w-[70%]">
+    <w-card color="white" class="drop-shadow-md mx-auto max-h-full max-w-full">
       <img v-if="src" :src="src" class="w-full object-cover" />
     </w-card>
   </div>

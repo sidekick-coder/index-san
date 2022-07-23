@@ -25,8 +25,8 @@ export default class FsItemsRepository implements IItemsRepository {
 
     const filepath = pathToArray(parentId).join('/') + '/**'
 
-    const folders = await fg(filepath, { dot: true, onlyDirectories: true, deep: 1 })
-    const files = await fg(filepath, { dot: true, onlyFiles: true, deep: 1 })
+    const folders = await fg(filepath, { onlyDirectories: true, deep: 1 })
+    const files = await fg(filepath, { onlyFiles: true, deep: 1 })
 
     files.concat(folders).map((filename) => {
       items.push(
@@ -43,12 +43,10 @@ export default class FsItemsRepository implements IItemsRepository {
   }
 
   public async find(id: string) {
-    const filepath = fg.escapePath(id)
-
     const [item] = await this.index({
       where: {
         id: pathToArray(id).join('/'),
-        parentId: dirname(filepath),
+        parentId: pathToArray(id).slice(0, -1).join('/'),
       },
     })
 

@@ -56,17 +56,15 @@ async function deleteItem(item: Item) {
 }
 
 function getToPath(item: Item) {
-  let view = 'details'
-
   if (item.type === 'folder') {
-    view = 'file-explorer'
+    return `/${item.id}?view=file-explorer`
   }
 
   if (database.tables.find((table) => table.id === item.id)) {
-    view = 'database-table'
+    return `/${item.id}?view=database-table`
   }
 
-  return `/${item.id}?view=${view}`
+  return `/${item.id}`
 }
 </script>
 <template>
