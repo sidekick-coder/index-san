@@ -1,33 +1,58 @@
 import { Query } from '@code-pieces/db-json'
 import DatabaseTable from 'Entities/DatabaseTable'
 import fg from 'fast-glob'
-import { resolve } from 'path'
-import IDrive from 'Providers/IDrive'
+import path, { resolve } from 'path'
 import IRowProvider from 'Providers/IRowProvider'
-import { writeFileIfNotExist } from 'Utils/filesystem'
+import { exists, writeFileIfNotExist } from 'Utils/filesystem'
 import { pathToArray } from 'Utils/paths'
 import FSDrive from './FSDrive'
 
 interface Meta {
   name: string
-  value: string
+  value: Record<string, any>
 }
 
 export default class FSRowProvider implements IRowProvider {
   private table: DatabaseTable
-  constructor(private drive: IDrive) {}
+  constructor(private drive: FSDrive) {}
 
   public use(table: DatabaseTable) {
     this.table = table
     return this
   }
 
-  public async metas() {
+  public metas() {
     const filepath = resolve(this.table.id, '.index-san', 'metas.json')
 
     writeFileIfNotExist(filepath, '[]')
 
     return Query.from<Meta[]>(filepath)
+  }
+
+  public async updateOrCreateMeta(id: string, data: any) {
+    const metas = await this.metas()
+
+    const meta = metas.find((meta) => meta.name === id)
+
+    if (meta) {
+      return await this.metas()
+        .where('name', id)
+        .update({
+          name: id,
+          value: {
+            ...meta.value,
+            ...data,
+          },
+        })
+    }
+
+    return await this.metas().insert({ name: id, value: data })
+  }
+
+  public exists(id: string) {
+    const filepath = pathToArray(this.table.id, id).join(path.sep)
+
+    return exists(filepath)
   }
 
   public async index() {
@@ -42,19 +67,27 @@ export default class FSRowProvider implements IRowProvider {
       .concat(files)
       .filter((item) => !item.includes('.index-san'))
       .map((filename) => {
-        const metaName = pathToArray(filename)
-          .slice(pathToArray(filepath).length - 1)
-          .join('/')
-
-        const meta = metas.find((m) => m.name === metaName)
-
-        return {
-          id: filename,
-          basename: pathToArray(filename).pop(),
-          ...(meta ? { meta } : {}),
+        const item = {
+          id: pathToArray(filename).pop() as string,
         }
+
+        const meta = metas.find((meta) => meta.name === item.id)
+
+        if (meta) {
+          Object.assign(item, meta.value)
+        }
+
+        return item
       })
 
     return items
+  }
+
+  public async update(id: string, data: any): Promise<any> {
+    const exist = await this.exists(id)
+
+    if (!exist) return
+
+    await this.updateOrCreateMeta(id, data)
   }
 }

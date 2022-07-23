@@ -21,6 +21,7 @@ import UpdateDatabaseTable from 'UseCases/UpdateDatabaseTable'
 import DeleteDatabaseTable from 'UseCases/DeleteDatabaseTable'
 
 import ListTableRows from 'UseCases/ListTableRows'
+import UpdateTableRow from 'UseCases/UpdateTableRow'
 
 interface UseCaseExecute {
   execute(payload: any): Promise<any>
@@ -53,6 +54,7 @@ export default class Application {
     this._useCases.set('delete-database-table', new DeleteDatabaseTable(databaseTableRepository))
 
     this._useCases.set('list-table-rows', new ListTableRows(databaseTableRepository, rowProvider))
+    this._useCases.set('update-table-row', new UpdateTableRow(databaseTableRepository, rowProvider))
   }
 
   public useCase<T>(name: string, payload: any) {

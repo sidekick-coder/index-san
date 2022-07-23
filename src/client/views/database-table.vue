@@ -54,9 +54,9 @@ async function load() {
 }
 
 const update = throttle(async (item: Item, key: string, value: string) => {
-  return await useCase('save-item-metadata', {
-    workspaceId: item.workspaceId,
-    itemId: item.id,
+  return await useCase('update-table-row', {
+    tableId: table.value?.id,
+    id: item.id,
     data: {
       [key]: value,
     },
