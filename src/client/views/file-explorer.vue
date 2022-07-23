@@ -16,8 +16,6 @@ const props = defineProps({
 const database = useDatabaseStore()
 
 const subitems = ref<Item[]>([])
-const dialog = ref(false)
-const databaseDialog = ref(false)
 
 function dirname(path: string) {
   const args = path.split('/')
@@ -73,45 +71,6 @@ function getToPath(item: Item) {
 </script>
 <template>
   <w-layout use-percentage>
-    <w-toolbar color="white" class="border-b" height="[40px]">
-      <div class="px-4 flex items-center">
-        <button
-          class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
-          @click="dialog = true"
-        >
-          <fa-icon class="text-sm" icon="plus" />
-        </button>
-
-        <button class="w-8 h-8 rounded-full hover:bg-gray-100" @click="databaseDialog = true">
-          <fa-icon class="text-sm" icon="database" />
-        </button>
-
-        <button
-          class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
-          @click="load"
-        >
-          <fa-icon class="text-sm" icon="refresh" />
-        </button>
-
-        <button
-          class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
-          :disabled="!$router.options.history.state.back"
-          @click="$router.back"
-        >
-          <fa-icon class="text-sm" icon="chevron-left" />
-        </button>
-
-        <button
-          class="w-8 h-8 rounded-full hover:bg-gray-100 justify-self-start disabled:opacity-25"
-          :disabled="!$router.options.history.state.forward"
-          @click="$router.forward"
-        >
-          <fa-icon class="text-sm" icon="chevron-right" />
-        </button>
-
-        <h1 class="ml-4 font-bold text-xs">{{ item?.filepath }}</h1>
-      </div>
-    </w-toolbar>
     <w-content>
       <div v-if="!subitems.length" class="list-item">No Items found</div>
       <div
@@ -133,8 +92,5 @@ function getToPath(item: Item) {
         </div>
       </div>
     </w-content>
-
-    <s-item-dialog v-model="dialog" :parent-filepath="item.filepath" @submit="load" />
-    <s-database-table-dialog v-model="databaseDialog" :filepath="item.filepath" />
   </w-layout>
 </template>
