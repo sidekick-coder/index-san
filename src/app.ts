@@ -1,6 +1,8 @@
 import IItemsRepository from 'Repositories/IItemsRepository'
 import IWorkspacesRepository from 'Repositories/IWorkspacesRepository'
 
+import IRowProvider from 'Providers/IRowProvider'
+
 import CreateWorkspace from 'UseCases/CreateWorkspace'
 import DeleteWorkspace from 'UseCases/DeleteWorkspace'
 import ListWorkspaces from 'UseCases/ListWorkspaces'
@@ -18,6 +20,8 @@ import CreateDatabaseTable from 'UseCases/CreateDatabaseTable'
 import UpdateDatabaseTable from 'UseCases/UpdateDatabaseTable'
 import DeleteDatabaseTable from 'UseCases/DeleteDatabaseTable'
 
+import ListTableRows from 'UseCases/ListTableRows'
+
 interface UseCaseExecute {
   execute(payload: any): Promise<any>
 }
@@ -28,7 +32,9 @@ export default class Application {
   constructor(
     public workspaceRepository: IWorkspacesRepository,
     public itemsRepository: IItemsRepository,
-    public databaseTableRepository: IDatabaseTableRepository
+    public databaseTableRepository: IDatabaseTableRepository,
+
+    public rowProvider: IRowProvider
   ) {
     this._useCases.set('create-workspace', new CreateWorkspace(workspaceRepository))
     this._useCases.set('list-workspaces', new ListWorkspaces(workspaceRepository))
@@ -45,6 +51,8 @@ export default class Application {
     this._useCases.set('create-database-table', new CreateDatabaseTable(databaseTableRepository))
     this._useCases.set('update-database-table', new UpdateDatabaseTable(databaseTableRepository))
     this._useCases.set('delete-database-table', new DeleteDatabaseTable(databaseTableRepository))
+
+    this._useCases.set('list-table-rows', new ListTableRows(databaseTableRepository, rowProvider))
   }
 
   public useCase<T>(name: string, payload: any) {

@@ -68,6 +68,9 @@ export default class ElectronApplication {
     const workspacesJSON = resolve(app.getPath('userData'), 'workspaces.json')
     const tablesJSON = resolve(app.getPath('userData'), 'tables.json')
 
+    console.log('storage: ', workspacesJSON)
+    console.log('storage: ', tablesJSON)
+
     if (!(await exists(workspacesJSON))) {
       writeFileIfNotExist(workspacesJSON, '[]')
     }

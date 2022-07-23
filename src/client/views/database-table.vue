@@ -46,13 +46,10 @@ async function load() {
     await database.load()
   }
 
-  await useCase<Item[]>('list-items', {
-    where: {
-      workspaceId: props.item.workspaceId,
-      parentId: props.item.id,
-    },
-  }).then((result) => {
-    items.value = result
+  useCase('list-table-rows', {
+    tableId: table.value?.id,
+  }).then((response) => {
+    items.value = response
   })
 }
 
