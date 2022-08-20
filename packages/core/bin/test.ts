@@ -1,6 +1,5 @@
 import { expect } from '@japa/expect'
 import { specReporter } from '@japa/spec-reporter'
-import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run } from '@japa/runner'
 
 configure({
@@ -9,6 +8,7 @@ configure({
     files: [
       './gateways/*.spec.ts',
       './entities/*.spec.ts',
+      './use-cases/**/*.spec.ts',
     ],
     plugins: [expect()],
     reporters: [specReporter()],
