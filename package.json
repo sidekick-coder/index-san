@@ -7,5 +7,10 @@
     "author": "Henrique Oliveira",
     "license": "MIT",
     "devDependencies": {},
-    "dependencies": {}
+    "dependencies": {},
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ]
+    }
 }
