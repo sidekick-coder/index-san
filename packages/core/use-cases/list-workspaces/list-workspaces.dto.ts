@@ -1,12 +1,9 @@
-interface DataItem {
-    id: string;
-    name: string;
-    path: string;
-    drive: string;
-}
+import Workspace from "../../entities/workspace";
 
-export interface ListWorkspacesInput { }
+export declare namespace ListWorkspacesDTO {    
+    export interface Input {}
 
-export interface ListWorkspacesOutput {
-    data: DataItem[]
+    export interface Output {
+        data: Pick<Workspace, 'id' | 'drive' | 'name' | 'path' | 'config'>[]
+    }
 }

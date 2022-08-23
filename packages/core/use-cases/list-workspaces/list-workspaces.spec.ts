@@ -1,23 +1,25 @@
 import { test } from "@japa/runner";
 import Workspace from "../../entities/workspace";
-import WorkspaceRepository from "../../repositories/workspace-repository";
+import InMemoryWorkspaceRepository from "../../__tests__/repositories/in-memory-workspace-repository";
 import ListWorkspaces from "./list-workspaces";
 
-const repository: WorkspaceRepository = {
-    index: () => Promise.resolve([]),
-}
 
-test.group("list-workspaces use-case", () => {
-    test('should return a list of workspaces', async ({ expect }) => {
+
+test.group("list-workspaces (use-case)", () => {
+    const repository = new InMemoryWorkspaceRepository()
+    const useCase = new ListWorkspaces(repository);
+
+    test('should return a list of workspaces', async ({ expect }) => {        
+
         const workspace = new Workspace({
             name: 'test',
             path: 'test',
             drive: 'local',
+            config: {}
         })
 
-        repository.index = () => Promise.resolve([workspace])
+        await repository.create(workspace)
 
-        const useCase = new ListWorkspaces(repository);
 
         const result = await useCase.execute({});
 

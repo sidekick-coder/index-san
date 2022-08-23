@@ -5,6 +5,7 @@ export default class Workspace {
     public name: string
     public path: string
     public drive: string
+    public config: Record<string, string>
 
     constructor(props: Omit<Workspace, 'id'>, id?: string) {
         Object.assign(this, props)

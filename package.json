@@ -3,11 +3,8 @@
     "version": "0.0.1",
     "description": "A CRUD maker based in filesystem",
     "scripts": {},
-    "keywords": [],
     "author": "Henrique Oliveira",
     "license": "MIT",
-    "devDependencies": {},
-    "dependencies": {},
     "workspaces": {
         "packages": [
             "packages/*"

@@ -1,18 +1,19 @@
 import WorkspaceRepository from '../../repositories/workspace-repository'
-import { ListWorkspacesInput, ListWorkspacesOutput } from './list-workspaces.dto'
+import { ListWorkspacesDTO } from './list-workspaces.dto'
 
 export default class ListWorkspaces {
     constructor(private readonly repository: WorkspaceRepository) {}
 
-    public async execute(_args: ListWorkspacesInput): Promise<ListWorkspacesOutput> {
+    public async execute(_args?: ListWorkspacesDTO.Input): Promise<ListWorkspacesDTO.Output> {
         
-        const workspaces = await this.repository.index()
+        const workspaces = await this.repository.findAll()
 
         const data = workspaces.map(w => ({
             id: w.id,
             name: w.name,
             drive: w.drive,
-            path: w.path
+            path: w.path,
+            config: w.config,
         }))
 
         return { data }
