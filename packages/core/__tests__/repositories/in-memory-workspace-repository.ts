@@ -2,7 +2,7 @@ import Workspace from "../../entities/workspace";
 import WorkspaceRepository from "../../repositories/workspace-repository";
 
 export default class InMemoryWorkspaceRepository implements WorkspaceRepository {
-    private items: Workspace[] = []
+    public items: Workspace[] = []
 
     public findAll(): Promise<Workspace[]> {
         return Promise.resolve(this.items)
