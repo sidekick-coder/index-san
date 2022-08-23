@@ -20,4 +20,8 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
 
         return Promise.resolve(workspace)
     }
+
+    public clear(){
+        this.items = []
+    }
 }
