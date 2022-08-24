@@ -21,6 +21,14 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
         return Promise.resolve(workspace)
     }
 
+    public async delete(id: string) {
+        const index = this.items.findIndex(i => i.id === id)
+
+        if (index !== -1) {
+            this.items.splice(index, 1)
+        }
+    }
+
     public clear(){
         this.items = []
     }
