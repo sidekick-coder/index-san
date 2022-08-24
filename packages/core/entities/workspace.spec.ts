@@ -7,7 +7,8 @@ test.group('workspace entity', (group) => {
         const workspace = new Workspace({
             name: 'test',
             path: 'test',
-            drive: 'local'
+            drive: 'local',
+            config: {}
         })
 
         expect(workspace.id).toBeDefined()
@@ -17,7 +18,8 @@ test.group('workspace entity', (group) => {
         const workspace = new Workspace({
             name: 'test',
             path: 'test',
-            drive: 'local'
+            drive: 'local',
+            config: {}
         }, 'test')
 
         expect(workspace.id).toBe('test')

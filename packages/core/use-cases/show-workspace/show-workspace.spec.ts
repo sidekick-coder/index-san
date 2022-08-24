@@ -1,6 +1,5 @@
 import { test } from "@japa/runner";
-import Workspace from "../../entities/workspace";
-import WorkspaceFactory from "../../__tests__/repositories/factories/workspace-factory";
+import WorkspaceFactory from "../../__tests__/factories/workspace-factory";
 import InMemoryWorkspaceRepository from "../../__tests__/repositories/in-memory-workspace-repository";
 import ShowWorkspace from "./show-workspace";
 
