@@ -6,6 +6,7 @@ export interface Drive {
     get: (path: string) => Promise<DirectoryEntry | null>;
     exists: (path: string) => Promise<boolean>;
     write: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
+    update: (path: string, newPath: string, newContent?: Buffer) => Promise<void>;
 }
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
@@ -71,11 +72,21 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
 
         drive.config = this._currentConfig
 
-        await drive.write(entry)
+        await drive.write(entry, content)
 
         drive.config = {}
 
         return entry
+    }
+    
+    public async update(path: string, newPath: string, newContent?: Buffer) {
+        const drive = this._drives[this._currentDrive]
+
+        drive.config = this._currentConfig
+
+        await drive.update(path, newPath, newContent)
+
+        drive.config = {}
     }
 
     public async get(path: string) {

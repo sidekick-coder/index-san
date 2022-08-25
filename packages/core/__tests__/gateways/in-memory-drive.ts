@@ -20,6 +20,20 @@ export default class InMemoryDrive implements Drive {
 
         return Promise.resolve(entry)
     }
+    
+    public async update(path: string, newPath: string, newContent?: Buffer): Promise<void> {
+        const index= this.entries.findIndex(e => e.path === path)
+
+        if (index === -1) return
+
+        const oldContent = this.content.get(path) ?? Buffer.from('')
+
+        this.entries[index].path = newPath
+
+        this.content.delete(path)
+
+        this.content.set(newPath, newContent || oldContent)
+    }
 
     public async get(path: string) {
         const entry = this.entries.find(e => e.path === path)
