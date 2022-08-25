@@ -21,6 +21,16 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
         return Promise.resolve(workspace)
     }
 
+    public async updateById(id: string, data: Partial<Workspace>){
+        const index = this.items.findIndex(w => w.id === id)
+
+        if (index === -1) return
+
+
+        this.items[index].name = data.name ?? this.items[index].name
+        this.items[index].config = data.config ?? this.items[index].config
+    }
+
     public async delete(id: string) {
         const index = this.items.findIndex(i => i.id === id)
 
