@@ -64,7 +64,7 @@ test.group('create-directory-entry (use-case)', (group) => {
             type: 'file'
         })
 
-        await drive.write(entry)
+        await drive.create(entry)
 
         await useCase.execute({
             workspaceId: workspace.id,

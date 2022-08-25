@@ -18,7 +18,7 @@ test.group('show-directory-entry (use-case', () => {
             drive: drive.getCurrentDrive()
         }))
 
-        const entry = await drive.write({
+        const entry = await drive.create({
             name: 'test',
             path: 'test.txt',
             type: 'file'

@@ -24,9 +24,9 @@ test.group('list-directory-entry (use-case)', () => {
             type: 'file'
         })
 
-        await drive.write(entry)
-        await drive.write(entry)
-        await drive.write(entry)
+        await drive.create(entry)
+        await drive.create(entry)
+        await drive.create(entry)
 
         const result = await useCase.execute({
             workspaceId: workspace.id

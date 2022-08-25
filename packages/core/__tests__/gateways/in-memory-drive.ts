@@ -11,7 +11,7 @@ export default class InMemoryDrive implements Drive {
         return this.entries
     }
 
-    public write(entry: DirectoryEntry, content?: Buffer): Promise<DirectoryEntry>{
+    public create(entry: DirectoryEntry, content?: Buffer): Promise<DirectoryEntry>{
         this.entries.push(entry)
 
         if (entry.type === 'file') {
@@ -45,5 +45,16 @@ export default class InMemoryDrive implements Drive {
         const entry = this.entries.find(e => e.path === path)
 
         return !!entry
+    }
+    
+    public async delete (path: string) {
+
+        const index = this.entries.findIndex(e => e.path === path)
+
+        if (index === -1) return
+
+        this.content.delete(path)
+
+        this.entries.splice(index, 1)
     }
 }

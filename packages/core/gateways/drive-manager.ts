@@ -2,11 +2,12 @@ import DirectoryEntry from "../entities/directory-entry";
 
 export interface Drive {
     config: Record<string, any>;
+    exists: (path: string) => Promise<boolean>;
     list: (path: string) => Promise<DirectoryEntry[]>;
     get: (path: string) => Promise<DirectoryEntry | null>;
-    exists: (path: string) => Promise<boolean>;
-    write: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
+    create: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
     update: (path: string, newPath: string, newContent?: Buffer) => Promise<void>;
+    delete(path:string): Promise<void>
 }
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
@@ -43,18 +44,6 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         return this
     }
 
-    public async list(path: string) {
-        const drive = this._drives[this._currentDrive]
-
-        drive.config = this._currentConfig
-
-        const files = await drive.list(path)
-
-        drive.config = {}
-
-        return files
-    }
-
     public async exists(path: string) {
         const drive = this._drives[this._currentDrive]
 
@@ -67,12 +56,36 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         return result
     }
 
-    public async write(entry: DirectoryEntry, content?: Buffer) {
+    public async list(path: string) {
         const drive = this._drives[this._currentDrive]
 
         drive.config = this._currentConfig
 
-        await drive.write(entry, content)
+        const files = await drive.list(path)
+
+        drive.config = {}
+
+        return files
+    }    
+
+    public async get(path: string) {
+        const drive = this._drives[this._currentDrive]
+
+        drive.config = this._currentConfig
+
+        const entry = await drive.get(path)
+
+        drive.config = {}
+
+        return entry
+    }
+
+    public async create(entry: DirectoryEntry, content?: Buffer) {
+        const drive = this._drives[this._currentDrive]
+
+        drive.config = this._currentConfig
+
+        await drive.create(entry, content)
 
         drive.config = {}
 
@@ -89,12 +102,14 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         drive.config = {}
     }
 
-    public async get(path: string) {
+    
+    
+    public async delete(path: string) {
         const drive = this._drives[this._currentDrive]
 
         drive.config = this._currentConfig
 
-        const entry = await drive.get(path)
+        const entry = await drive.delete(path)
 
         drive.config = {}
 

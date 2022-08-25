@@ -1,29 +1,24 @@
 import DriveManager from "../../gateways/drive-manager";
 import IWorkspaceRepository from "../../repositories/workspace-repository";
-import CreateDirectoryEntryDTO from "./create-directory-entry.dto";
+import DeleteDirectoryEntryDTO from "./delete-directory-entry.dto";
 
-export default class CreateDirectoryEntry {
-    
+export default class DeleteDirectoryEntry {
     constructor(
         private readonly workspaceRepository: IWorkspaceRepository,
         private readonly drive: DriveManager,
     ){}
 
-    public async execute({ workspaceId, data }: CreateDirectoryEntryDTO.Input): Promise<CreateDirectoryEntryDTO.Output> {
+    public async execute({ workspaceId, path }: DeleteDirectoryEntryDTO.Input) {
         const workspace = await this.workspaceRepository.findById(workspaceId)
 
         if (!workspace) throw new Error('Workspace not found')
 
         this.drive.use(workspace.drive).config(workspace.config)
 
-        const exist = await this.drive.exists(data.path)
+        const exists = await this.drive.exists(path)
 
-        if (exist) throw new Error('DirectoryEntry already exists')
+        if (!exists) throw new Error('DirectoryEntry not exists')
 
-        const entry = await this.drive.create(data)
-
-        return {
-            data: entry
-        }
+        await this.drive.delete(path)
     }
 }

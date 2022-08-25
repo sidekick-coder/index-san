@@ -91,7 +91,7 @@ test.group('drive-manager', (group) => {
     test('should write a new entry', async ({ expect }) => {
         const drive = new DriveManager({ local: localDrive }, 'local')
 
-        await drive.write({
+        await drive.create({
             name: 'new-file',
             path: 'new-file.txt',
             type: 'file'
