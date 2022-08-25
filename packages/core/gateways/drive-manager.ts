@@ -3,6 +3,7 @@ import DirectoryEntry from "../entities/directory-entry";
 export interface Drive {
     config: Record<string, any>;
     list: (path: string) => Promise<DirectoryEntry[]>;
+    write: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
 }
 
 export default class DriveManager<T extends Record<string, Drive>> implements Drive {
@@ -49,5 +50,17 @@ export default class DriveManager<T extends Record<string, Drive>> implements Dr
         drive.config = {}
 
         return files
+    }
+
+    public async write(entry: DirectoryEntry, content?: Buffer) {
+        const drive = this._drives[this._currentDrive]
+
+        drive.config = this._currentConfig
+
+        await drive.write(entry)
+
+        drive.config = {}
+
+        return entry
     }
 }

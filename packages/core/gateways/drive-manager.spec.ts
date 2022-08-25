@@ -1,13 +1,11 @@
 import { test } from '@japa/runner'
 import DirectoryEntry from '../entities/directory-entry'
-import DriveManager, { Drive } from './drive-manager'
+import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
+import DriveManager from './drive-manager'
 
 
 test.group('drive-manager', (group) => {
-    const localDrive: Drive = {
-        config: {},
-        list: async () => []
-    }
+    const localDrive = new InMemoryDrive()
 
     test('should instantiate with drives', async ({ expect }) => {
         const drives = {
@@ -50,13 +48,12 @@ test.group('drive-manager', (group) => {
         const entry = new DirectoryEntry({
             name: 'test.txt',
             path: 'test',
-            type: 'file',                    
+            type: 'file',               
         })
 
-        const local = {
-            config: {},
-            list: async () => [entry]
-        }
+        const local = new InMemoryDrive()
+        
+        local.list = async () => [entry]
 
         const drive = new DriveManager({ local }, 'local')
 
@@ -69,18 +66,17 @@ test.group('drive-manager', (group) => {
         const entry = new DirectoryEntry({
             name: 'test.txt',
             path: 'test',
-            type: 'file',                    
+            type: 'file',                  
         })
 
         let config: Record<string, any> = {}
+        
+        const local = new InMemoryDrive()
+        
+        local.list = async function () {
+            config = this.config
 
-        const local = {
-            config,
-            list: async function () {
-                config = this.config
-
-                return [entry]
-            }
+            return [entry]
         }
 
         const drive = new DriveManager({ local }, 'local')
@@ -90,5 +86,22 @@ test.group('drive-manager', (group) => {
         expect(config).toEqual({ foo: 'bar' })
 
         expect(local.config).toEqual({})
+    })
+
+    test('should write a new entry', async ({ expect }) => {
+        const drive = new DriveManager({ local: localDrive }, 'local')
+
+        await drive.write({
+            name: 'new-file',
+            path: 'new-file.txt',
+            type: 'file'
+        })
+
+        expect(localDrive.entries[0]).toEqual({
+            name: 'new-file',
+            path: 'new-file.txt',
+            type: 'file'
+        })
+
     })
 })
