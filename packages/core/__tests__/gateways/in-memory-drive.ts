@@ -26,4 +26,10 @@ export default class InMemoryDrive implements Drive {
 
         return entry ?? null
     }
+
+    public async exists (path: string) {
+        const entry = this.entries.find(e => e.path === path)
+
+        return !!entry
+    }
 }

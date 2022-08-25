@@ -4,6 +4,7 @@ export interface Drive {
     config: Record<string, any>;
     list: (path: string) => Promise<DirectoryEntry[]>;
     get: (path: string) => Promise<DirectoryEntry | null>;
+    exists: (path: string) => Promise<boolean>;
     write: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
 }
 
@@ -51,6 +52,18 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         drive.config = {}
 
         return files
+    }
+
+    public async exists(path: string) {
+        const drive = this._drives[this._currentDrive]
+
+        drive.config = this._currentConfig
+
+        const result = await drive.exists(path)
+
+        drive.config = {}
+
+        return result
     }
 
     public async write(entry: DirectoryEntry, content?: Buffer) {
