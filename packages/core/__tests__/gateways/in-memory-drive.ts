@@ -20,4 +20,10 @@ export default class InMemoryDrive implements Drive {
 
         return Promise.resolve(entry)
     }
+
+    public async get(path: string) {
+        const entry = this.entries.find(e => e.path === path)
+
+        return entry ?? null
+    }
 }

@@ -3,10 +3,11 @@ import DirectoryEntry from "../entities/directory-entry";
 export interface Drive {
     config: Record<string, any>;
     list: (path: string) => Promise<DirectoryEntry[]>;
+    get: (path: string) => Promise<DirectoryEntry | null>;
     write: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
 }
 
-export default class DriveManager<T extends Record<string, Drive>> implements Drive {
+export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
     private _currentConfig = {}
     private _currentDrive: keyof T
     private _drives: T
@@ -58,6 +59,18 @@ export default class DriveManager<T extends Record<string, Drive>> implements Dr
         drive.config = this._currentConfig
 
         await drive.write(entry)
+
+        drive.config = {}
+
+        return entry
+    }
+
+    public async get(path: string) {
+        const drive = this._drives[this._currentDrive]
+
+        drive.config = this._currentConfig
+
+        const entry = await drive.get(path)
 
         drive.config = {}
 
