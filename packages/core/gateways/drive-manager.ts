@@ -8,6 +8,8 @@ export interface Drive {
     create: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
     update: (path: string, newPath: string, newContent?: Buffer) => Promise<void>;
     delete(path:string): Promise<void>
+    
+    read: (path: string) => Promise<Buffer>;
 }
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
@@ -42,77 +44,45 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         this._currentConfig = config
         
         return this
-    }
+    }    
 
-    public async exists(path: string) {
+    private async execute<T extends (d: Drive) => any>(cb: T): Promise<ReturnType<T>>  {
         const drive = this._drives[this._currentDrive]
 
         drive.config = this._currentConfig
 
-        const result = await drive.exists(path)
+        const result = await cb(drive)
 
         drive.config = {}
 
         return result
     }
 
+    public async exists(path: string) {
+        return this.execute(d => d.exists(path))
+    }
+
     public async list(path: string) {
-        const drive = this._drives[this._currentDrive]
-
-        drive.config = this._currentConfig
-
-        const files = await drive.list(path)
-
-        drive.config = {}
-
-        return files
+        return this.execute(d => d.list(path))
     }    
 
     public async get(path: string) {
-        const drive = this._drives[this._currentDrive]
-
-        drive.config = this._currentConfig
-
-        const entry = await drive.get(path)
-
-        drive.config = {}
-
-        return entry
+        return this.execute(d => d.get(path))
     }
 
     public async create(entry: DirectoryEntry, content?: Buffer) {
-        const drive = this._drives[this._currentDrive]
-
-        drive.config = this._currentConfig
-
-        await drive.create(entry, content)
-
-        drive.config = {}
-
-        return entry
+        return this.execute(d => d.create(entry, content))
     }
     
     public async update(path: string, newPath: string, newContent?: Buffer) {
-        const drive = this._drives[this._currentDrive]
-
-        drive.config = this._currentConfig
-
-        await drive.update(path, newPath, newContent)
-
-        drive.config = {}
-    }
-
-    
+        return this.execute(d => d.update(path, newPath, newContent))
+    }   
     
     public async delete(path: string) {
-        const drive = this._drives[this._currentDrive]
-
-        drive.config = this._currentConfig
-
-        const entry = await drive.delete(path)
-
-        drive.config = {}
-
-        return entry
+        return this.execute(d => d.delete(path))
+    }
+    
+    public async read(path: string) {
+        return this.execute(d => d.read(path))
     }
 }
