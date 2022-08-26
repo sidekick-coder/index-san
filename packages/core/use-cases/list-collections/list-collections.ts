@@ -18,8 +18,9 @@ export default class ListCollections {
 
         this.drive.use(workspace.drive).config(workspace.config)
 
-        const content = await this.drive.read('.index-san/collections.json')
         const collections: Collection[] = []
+        
+        const content = await this.drive.read('.index-san/collections.json')
 
         if (content) {
             const json = JSON.parse(content.toString())
