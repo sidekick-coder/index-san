@@ -6,19 +6,27 @@ import CollectionFactory from '../../__tests__/factories/collections'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
 import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
-import CreateCollection from './create-collection'
+import UpdateCollection from './update-collection'
 
-test.group('create-collection (use-case)', (group) => {
+test.group('update-collection (use-case)', (group) => {
     const repository = new InMemoryWorkspaceRepository()    
     const memoryDrive = new InMemoryDrive()    
     const drive = new DriveManager({ memory: memoryDrive}, 'memory')
 
-    const useCase = new CreateCollection(repository, drive)
+    const useCase = new UpdateCollection(repository, drive)
 
     group.tap(t => t.teardown(() => memoryDrive.clear()))
 
-    test('should create a collection in workspace', async ({ expect }) => {
+    test('should update a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
+
+        const entry = new DirectoryEntry({
+            name: 'collections.json',
+            path: '.index-san/collections.json',
+            type: 'file'
+        })
+
+        await drive.create(entry, Buffer.from(JSON.stringify([collection])))
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()
@@ -26,16 +34,17 @@ test.group('create-collection (use-case)', (group) => {
 
         await useCase.execute({
             workspaceId: workspace.id,
-            data: collection
+            collectionId: collection.id,
+            data: {
+                name: 'update-name'
+            }
         })
 
         const content = memoryDrive.content.get('.index-san/collections.json')
 
         const json = content ? JSON.parse(content.toString()) : []
-
-        expect(json.length).toEqual(1)
         
-        expect(json[0].path).toEqual(collection.path)
+        expect(json[0].name).toEqual('update-name')
 
     })
 
@@ -46,8 +55,23 @@ test.group('create-collection (use-case)', (group) => {
 
         await useCase.execute({
             workspaceId: 'invalid',
-            data: collection,
+            collectionId: collection.id,
+            data: {},
         }).catch(err => expect(err.message).toEqual('Workspace not found'))
+    })
+    
+    test('should trigger an error if collection was not found', async ({expect}) => {
+        expect.assertions(1)
+
+        const workspace = await repository.create(WorkspaceFactory.create({
+            drive: drive.getCurrentDrive()
+        }))
+
+        await useCase.execute({
+            workspaceId: workspace.id,
+            collectionId: 'invalid',
+            data: {},
+        }).catch(err => expect(err.message).toEqual('Collection not found'))
     })
 
 })
