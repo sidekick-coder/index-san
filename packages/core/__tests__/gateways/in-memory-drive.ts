@@ -7,6 +7,11 @@ export default class InMemoryDrive implements Drive {
 
     public config = {}
 
+    public clear(){
+        this.entries = []
+        this.content.clear()
+    }
+
     public async list(path: string): Promise<DirectoryEntry[]>{
         return this.entries
     }
@@ -56,5 +61,9 @@ export default class InMemoryDrive implements Drive {
         this.content.delete(path)
 
         this.entries.splice(index, 1)
+    }
+    
+    public async read (path: string) {
+        return this.content.get(path) ?? null
     }
 }

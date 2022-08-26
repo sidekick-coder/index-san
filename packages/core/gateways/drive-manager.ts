@@ -9,7 +9,7 @@ export interface Drive {
     update: (path: string, newPath: string, newContent?: Buffer) => Promise<void>;
     delete(path:string): Promise<void>
     
-    read: (path: string) => Promise<Buffer>;
+    read: (path: string) => Promise<Buffer | null>;
 }
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
