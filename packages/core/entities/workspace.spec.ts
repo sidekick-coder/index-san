@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import Workspace from './workspace'
 
 
-test.group('workspace entity', (group) => {
+test.group('workspace entity', () => {
     test('should set id when instantiate', async ({ expect }) => {
         const workspace = new Workspace({
             name: 'test',

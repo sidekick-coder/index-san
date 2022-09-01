@@ -1,9 +1,8 @@
 import path from 'path'
-import directoryEntry from "../../entities/directory-entry";
-import Item from "../../entities/item";
-import item from "../../entities/item";
-import { Crud } from "../../gateways/crud-manager";
-import { Drive } from "../../gateways/drive-manager";
+import Item from '../../entities/item'
+import item from '../../entities/item'
+import { Crud } from '../../gateways/crud-manager'
+import { Drive } from '../../gateways/drive-manager'
 
 export default class InMemoryCrud implements Crud {
     public drive: Drive

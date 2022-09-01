@@ -1,6 +1,6 @@
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import ShowDirectoryEntryDTO from "./show-directory-entry.dto";
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import ShowDirectoryEntryDTO from './show-directory-entry.dto'
 
 export default class ShowDirectoryEntry {
     constructor(

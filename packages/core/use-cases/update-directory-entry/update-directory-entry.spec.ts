@@ -1,11 +1,11 @@
-import { test } from "@japa/runner";
-import DirectoryEntry from "../../entities/directory-entry";
-import DriveManager from "../../gateways/drive-manager";
-import WorkspaceFactory from "../../__tests__/factories/workspace-factory";
-import InMemoryDrive from "../../__tests__/gateways/in-memory-drive";
-import InMemoryWorkspaceRepository from "../../__tests__/repositories/in-memory-workspace-repository";
+import { test } from '@japa/runner'
+import DirectoryEntry from '../../entities/directory-entry'
+import DriveManager from '../../gateways/drive-manager'
+import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
+import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 
-import UpdateDirectoryEntry from "./update-directory-entry";
+import UpdateDirectoryEntry from './update-directory-entry'
 
 test.group('update-directory-entry (use-case)', () => {
 

@@ -1,4 +1,4 @@
-import Workspace from "../../entities/workspace"
+import Workspace from '../../entities/workspace'
 
 
 declare namespace ShowWorkspaceDTO {
@@ -7,7 +7,7 @@ declare namespace ShowWorkspaceDTO {
         id: string
     }
 
-    export interface Output extends Workspace {}
+    export type Output = Workspace
 }
 
 export default ShowWorkspaceDTO

@@ -1,4 +1,4 @@
-import Collection from "../../entities/collection"
+import Collection from '../../entities/collection'
 
 declare namespace CreateCollectionDTO {
     export interface Input {

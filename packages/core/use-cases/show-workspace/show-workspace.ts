@@ -1,6 +1,6 @@
 
-import WorkspaceRepository from "../../repositories/workspace-repository";
-import ShowWorkspaceDTO from "./show-workspace.dto";
+import WorkspaceRepository from '../../repositories/workspace-repository'
+import ShowWorkspaceDTO from './show-workspace.dto'
 
 export default class ShowWorkspace {
     constructor(

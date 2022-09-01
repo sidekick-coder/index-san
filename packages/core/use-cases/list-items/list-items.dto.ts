@@ -1,4 +1,4 @@
-import Item from "../../entities/item"
+import Item from '../../entities/item'
 
 interface ItemWithWorkspace extends Item {
     workspaceId: string

@@ -1,5 +1,3 @@
-import DirectoryEntry from "../../entities/directory-entry"
-
 declare namespace DeleteDirectoryEntryDTO {
     export interface Input {
         workspaceId: string

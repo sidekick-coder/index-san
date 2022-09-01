@@ -1,6 +1,6 @@
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import DeleteDirectoryEntryDTO from "./delete-directory-entry.dto";
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import DeleteDirectoryEntryDTO from './delete-directory-entry.dto'
 
 export default class DeleteDirectoryEntry {
     constructor(

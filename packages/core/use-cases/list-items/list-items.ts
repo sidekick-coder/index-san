@@ -1,17 +1,16 @@
-import Collection from "../../entities/collection";
-import DirectoryEntry from "../../entities/directory-entry";
-import CrudManager from "../../gateways/crud-manager";
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import ListItemsDTO from "./list-items.dto";
+import Collection from '../../entities/collection'
+import CrudManager from '../../gateways/crud-manager'
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import ListItemsDTO from './list-items.dto'
 
 export default class ListItems {
     constructor(
         private readonly drive: DriveManager,
         private readonly crud: CrudManager,
-
         private readonly workspaceRepository: IWorkspaceRepository,
     ){}
+
     public async execute({ workspaceId, collectionId  }:ListItemsDTO.Input): Promise<ListItemsDTO.Output> {
         const workspace = await this.workspaceRepository.findById(workspaceId)
 

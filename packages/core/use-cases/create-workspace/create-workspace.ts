@@ -1,7 +1,7 @@
-import Workspace from "../../entities/workspace";
-import DriveManager, { Drive } from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import CreateWorkspaceDTO from "./create-workspace.dto";
+import Workspace from '../../entities/workspace'
+import DriveManager, { Drive } from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import CreateWorkspaceDTO from './create-workspace.dto'
 
 export default class CreateWorkspace<T extends Record<string, Drive>> {
     constructor(

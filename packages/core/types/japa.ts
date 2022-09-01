@@ -5,7 +5,7 @@ declare module '@japa/runner' {
     // notify TypeScript about custom context properties
   }
 
-  interface Test<TestData> {
-    // notify TypeScript about custom test properties
-  }
+  // interface Test<TestData> {
+  //   // notify TypeScript about custom test properties
+  // }
 }

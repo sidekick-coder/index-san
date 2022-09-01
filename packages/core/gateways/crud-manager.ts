@@ -1,6 +1,5 @@
-import DirectoryEntry from "../entities/directory-entry"
-import Item from "../entities/item"
-import { Drive } from "./drive-manager"
+import Item from '../entities/item'
+import { Drive } from './drive-manager'
 
 export interface Crud {
     drive: Drive

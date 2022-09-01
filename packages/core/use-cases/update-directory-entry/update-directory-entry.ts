@@ -1,6 +1,6 @@
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import UpdateDirectoryEntryDTO from "./update-directory-entry.dto";
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import UpdateDirectoryEntryDTO from './update-directory-entry.dto'
 
 export default class UpdateDirectoryEntry {
     constructor(

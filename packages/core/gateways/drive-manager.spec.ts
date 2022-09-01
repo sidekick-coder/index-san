@@ -4,7 +4,7 @@ import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
 import DriveManager from './drive-manager'
 
 
-test.group('drive-manager', (group) => {
+test.group('drive-manager', () => {
     const localDrive = new InMemoryDrive()
 
     test('should instantiate with drives', async ({ expect }) => {

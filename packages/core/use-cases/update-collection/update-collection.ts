@@ -1,7 +1,7 @@
-import Collection from "../../entities/collection";
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import UpdateCollectionsDTO from "./update-collection.dto";
+import Collection from '../../entities/collection'
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import UpdateCollectionsDTO from './update-collection.dto'
 
 export default class UpdateCollection {
     constructor(

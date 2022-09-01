@@ -1,5 +1,5 @@
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import UpdateWorkspaceDTO from "./update-workspace.dto";
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import UpdateWorkspaceDTO from './update-workspace.dto'
 
 export default class UpdateWorkspace {
     constructor(

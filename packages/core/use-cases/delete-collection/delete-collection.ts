@@ -1,7 +1,7 @@
-import Collection from "../../entities/collection";
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import DeleteCollectionsDTO from "./delete-collection.dto";
+import Collection from '../../entities/collection'
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import DeleteCollectionsDTO from './delete-collection.dto'
 
 export default class DeleteCollection {
     constructor(

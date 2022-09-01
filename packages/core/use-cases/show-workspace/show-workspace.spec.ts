@@ -1,7 +1,7 @@
-import { test } from "@japa/runner";
-import WorkspaceFactory from "../../__tests__/factories/workspace-factory";
-import InMemoryWorkspaceRepository from "../../__tests__/repositories/in-memory-workspace-repository";
-import ShowWorkspace from "./show-workspace";
+import { test } from '@japa/runner'
+import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
+import ShowWorkspace from './show-workspace'
 
 test.group('show-workspace (use-case)', (group) => {
 

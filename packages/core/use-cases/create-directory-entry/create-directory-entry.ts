@@ -1,6 +1,6 @@
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import CreateDirectoryEntryDTO from "./create-directory-entry.dto";
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import CreateDirectoryEntryDTO from './create-directory-entry.dto'
 
 export default class CreateDirectoryEntry {
     

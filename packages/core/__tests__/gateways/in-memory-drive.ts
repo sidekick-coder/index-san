@@ -1,5 +1,5 @@
-import DirectoryEntry from "../../entities/directory-entry";
-import { Drive } from "../../gateways/drive-manager";
+import DirectoryEntry from '../../entities/directory-entry'
+import { Drive } from '../../gateways/drive-manager'
 
 export default class InMemoryDrive implements Drive {
     public entries: DirectoryEntry[] = []
@@ -12,7 +12,7 @@ export default class InMemoryDrive implements Drive {
         this.content.clear()
     }
 
-    public async list(path: string): Promise<DirectoryEntry[]>{
+    public async list(): Promise<DirectoryEntry[]>{
         return this.entries
     }
 

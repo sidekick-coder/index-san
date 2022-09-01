@@ -1,4 +1,4 @@
-import DirectoryEntry from "../../entities/directory-entry"
+import DirectoryEntry from '../../entities/directory-entry'
 
 declare namespace ListDirectoryEntryDTO {
     export interface Input {

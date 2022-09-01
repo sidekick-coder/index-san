@@ -1,5 +1,5 @@
-import Workspace from "../../entities/workspace";
-import { Factory } from "./base";
+import Workspace from '../../entities/workspace'
+import { Factory } from './base'
 
 const WorkspaceFactory = new Factory<Workspace>((data) => (new Workspace({
     name: 'fake',

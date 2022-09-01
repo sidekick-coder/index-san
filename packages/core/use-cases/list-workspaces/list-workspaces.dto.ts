@@ -1,4 +1,4 @@
-import Workspace from "../../entities/workspace";
+import Workspace from '../../entities/workspace'
 
 export declare namespace ListWorkspacesDTO {    
     export interface Input {}

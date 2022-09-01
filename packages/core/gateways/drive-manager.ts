@@ -1,4 +1,4 @@
-import DirectoryEntry from "../entities/directory-entry";
+import DirectoryEntry from '../entities/directory-entry'
 
 export interface Drive {
     config: Record<string, any>;

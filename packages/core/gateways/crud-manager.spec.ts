@@ -1,10 +1,8 @@
 import { test } from '@japa/runner'
 import InMemoryCrud from '../__tests__/gateways/in-memory-crud'
-import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
 import CrudManager from './crud-manager'
 
 test.group('crud manager (unit)', () => {
-    const drive = new InMemoryDrive()
     const crud = new InMemoryCrud()
 
     test('should instantiate with cruds', ({expect}) => {

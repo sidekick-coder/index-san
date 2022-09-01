@@ -1,10 +1,8 @@
-import Collection from "../../entities/collection";
-import DirectoryEntry from "../../entities/directory-entry";
-import Item from "../../entities/item";
-import CrudManager from "../../gateways/crud-manager";
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import ShowItemDTO from "./show-item.dto";
+import Collection from '../../entities/collection'
+import CrudManager from '../../gateways/crud-manager'
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import ShowItemDTO from './show-item.dto'
 
 export default class ShowItem {
     constructor(

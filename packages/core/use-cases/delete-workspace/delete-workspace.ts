@@ -1,5 +1,5 @@
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import DeleteWorkspaceDto from "./delete-workspace.dto";
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import DeleteWorkspaceDto from './delete-workspace.dto'
 
 export default class DeleteWorkspace {
     constructor(

@@ -2,12 +2,20 @@
     "name": "index-san",
     "version": "0.0.1",
     "description": "A CRUD maker based in filesystem",
-    "scripts": {},
+    "scripts": {
+        "lint": "npm run lint -ws --if-present"
+    },
     "author": "Henrique Oliveira",
     "license": "MIT",
     "workspaces": {
         "packages": [
             "packages/*"
         ]
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.36.1",
+        "@typescript-eslint/parser": "^5.36.1",
+        "eslint": "^8.23.0",
+        "eslint-plugin-vue": "^9.4.0"
     }
 }

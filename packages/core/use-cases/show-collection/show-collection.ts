@@ -1,7 +1,7 @@
-import Collection from "../../entities/collection";
-import DriveManager from "../../gateways/drive-manager";
-import IWorkspaceRepository from "../../repositories/workspace-repository";
-import ShowCollectionsDTO from "./show-collection.dto";
+import Collection from '../../entities/collection'
+import DriveManager from '../../gateways/drive-manager'
+import IWorkspaceRepository from '../../repositories/workspace-repository'
+import ShowCollectionsDTO from './show-collection.dto'
 
 export default class ShowCollection {
     constructor(

@@ -1,13 +1,13 @@
-import { test } from "@japa/runner";
-import DirectoryEntry from "../../entities/directory-entry";
-import DriveManager from "../../gateways/drive-manager";
-import WorkspaceFactory from "../../__tests__/factories/workspace-factory";
-import InMemoryDrive from "../../__tests__/gateways/in-memory-drive";
-import InMemoryWorkspaceRepository from "../../__tests__/repositories/in-memory-workspace-repository";
+import { test } from '@japa/runner'
+import DirectoryEntry from '../../entities/directory-entry'
+import DriveManager from '../../gateways/drive-manager'
+import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
+import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 
-import CreateDirectoryEntry from "./create-directory-entry";
+import CreateDirectoryEntry from './create-directory-entry'
 
-test.group('create-directory-entry (use-case)', (group) => {
+test.group('create-directory-entry (use-case)', () => {
 
     const repository = new InMemoryWorkspaceRepository()
     
