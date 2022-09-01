@@ -1,18 +1,19 @@
 import Collection from "../../entities/collection";
 import DirectoryEntry from "../../entities/directory-entry";
+import Item from "../../entities/item";
 import CrudManager from "../../gateways/crud-manager";
 import DriveManager from "../../gateways/drive-manager";
 import IWorkspaceRepository from "../../repositories/workspace-repository";
-import ListItemsDTO from "./list-items.dto";
+import ShowItemDTO from "./show-item.dto";
 
-export default class ListItems {
+export default class ShowItem {
     constructor(
         private readonly drive: DriveManager,
         private readonly crud: CrudManager,
-
         private readonly workspaceRepository: IWorkspaceRepository,
     ){}
-    public async execute({ workspaceId, collectionId  }:ListItemsDTO.Input): Promise<ListItemsDTO.Output> {
+
+    public async execute({ workspaceId, collectionId, itemId }:ShowItemDTO.Input): Promise<ShowItemDTO.Output> {
         const workspace = await this.workspaceRepository.findById(workspaceId)
 
         if (!workspace) throw new Error('Workspace not found')
@@ -34,16 +35,18 @@ export default class ListItems {
 
         this.crud.use(collection.crudName).useDrive(this.drive)
 
-        const items = await this.crud.list(collection.path)
+        const item = await this.crud.findById(collection.path, itemId)
 
-        const data = items.map(i => ({
-            ...i,
-            collectionId: collection.id,
-            workspaceId: workspace.id
-        }))
+        if (!item) throw new Error('Item not found')
+
+        const data = {
+            ...item,
+            collectionId,
+            workspaceId,
+        }
 
         return {
-            data: data
+            data
         }
     }
 }

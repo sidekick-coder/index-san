@@ -4,7 +4,8 @@ import { Drive } from "./drive-manager"
 
 export interface Crud {
     drive: Drive
-    list(entry: DirectoryEntry): Promise<Item[]>
+    list(collectionPath: string): Promise<Item[]>
+    findById(collectionPath: string, id: string): Promise<Item | null>
 }
 
 export default class CrudManager<T extends Record<string, Crud> = any> implements Omit<Crud, 'drive'> {
@@ -43,7 +44,11 @@ export default class CrudManager<T extends Record<string, Crud> = any> implement
         return result
     }
 
-    public async list(entry: DirectoryEntry): Promise<Item[]> {
-        return this.execute(c => c.list(entry))
+    public async list(collectionPath: string): Promise<Item[]> {
+        return this.execute(c => c.list(collectionPath))
+    }
+    
+    public async findById(collectionPath: string, id: string): Promise<Item | null> {
+        return this.execute(c => c.findById(collectionPath, id))
     }
 }
