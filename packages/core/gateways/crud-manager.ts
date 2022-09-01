@@ -1,7 +1,10 @@
+import DirectoryEntry from "../entities/directory-entry"
+import Item from "../entities/item"
 import { Drive } from "./drive-manager"
 
 export interface Crud {
     drive: Drive
+    list(entry: DirectoryEntry): Promise<Item[]>
 }
 
 export default class CrudManager<T extends Record<string, Crud> = any> implements Omit<Crud, 'drive'> {
@@ -15,6 +18,7 @@ export default class CrudManager<T extends Record<string, Crud> = any> implement
 
     public use(name: keyof T) {
         this._currentCrud = name
+        return this
     }
     
     public useDrive(drive: Drive) {
@@ -27,5 +31,19 @@ export default class CrudManager<T extends Record<string, Crud> = any> implement
     
     public getCurrent(){
         return this._currentCrud
+    }
+
+    private async execute<T extends (d: Crud) => any>(cb: T): Promise<ReturnType<T>>  {
+        const crud = this._allCruds[this._currentCrud]
+
+        crud.drive = this._drive
+
+        const result = await cb(crud)
+
+        return result
+    }
+
+    public async list(entry: DirectoryEntry): Promise<Item[]> {
+        return this.execute(c => c.list(entry))
     }
 }

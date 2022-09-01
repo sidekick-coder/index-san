@@ -4,6 +4,8 @@ export default class Collection {
     public id: string
     public name: string
     public path: string
+    
+    public crudName: string
 
     constructor(
         props: Omit<Collection, 'id'>,

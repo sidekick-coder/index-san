@@ -26,6 +26,16 @@ export default class InMemoryDrive implements Drive {
         return Promise.resolve(entry)
     }
     
+    public createSync(entry: DirectoryEntry, content?: Buffer): DirectoryEntry{
+        this.entries.push(entry)
+
+        if (entry.type === 'file') {
+            this.content.set(entry.path, content || Buffer.from(''))
+        }
+
+        return entry
+    }
+    
     public async update(path: string, newPath: string, newContent?: Buffer): Promise<void> {
         const index= this.entries.findIndex(e => e.path === path)
 

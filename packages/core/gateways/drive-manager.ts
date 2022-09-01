@@ -17,9 +17,10 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
     private _currentDrive: keyof T
     private _drives: T
    
-    constructor(drives: T, defaultDrive: keyof T) {
+    constructor(drives: T, defaultDrive?: keyof T) {
         this._drives = drives
-        this._currentDrive = defaultDrive
+
+        if (defaultDrive) this._currentDrive = defaultDrive
     }
 
     public use(name: keyof T) {
