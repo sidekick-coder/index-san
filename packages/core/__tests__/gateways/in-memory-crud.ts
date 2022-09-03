@@ -1,13 +1,12 @@
 import path from 'path'
 import Item from '../../entities/item'
-import item from '../../entities/item'
 import { Crud } from '../../gateways/crud-manager'
 import { Drive } from '../../gateways/drive-manager'
 
 export default class InMemoryCrud implements Crud {
     public drive: Drive
 
-    public async list(collectionPath: string): Promise<item[]> {
+    public async list(collectionPath: string): Promise<Item[]> {
         const entries = await this.drive.list(collectionPath)
 
         const items = entries
@@ -23,5 +22,15 @@ export default class InMemoryCrud implements Crud {
         const item = all.find(i => i.id === id)
 
         return item ?? null
+    }
+
+    public async create(collectionPath: string, data: Item): Promise<Item> {
+        await this.drive.create({
+            name: [collectionPath, data.name ?? data.id].join('/'),
+            path: [collectionPath, data.name ?? data.id].join('/'),
+            type: 'file'
+        })
+
+        return data
     }
 }
