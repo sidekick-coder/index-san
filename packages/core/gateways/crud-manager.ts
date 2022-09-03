@@ -6,6 +6,7 @@ export interface Crud {
     list(collectionPath: string): Promise<Item[]>
     findById(collectionPath: string, id: string): Promise<Item | null>
     create(collectionPath: string, data: Item): Promise<Item>
+    updateById(collectionPath: string, itemId: string, data: any): Promise<void>
 }
 
 export default class CrudManager<T extends Record<string, Crud> = any> implements Omit<Crud, 'drive'> {
@@ -24,6 +25,7 @@ export default class CrudManager<T extends Record<string, Crud> = any> implement
     
     public useDrive(drive: Drive) {
         this._drive = drive
+        return this
     }
 
     public getCruds(){
@@ -54,5 +56,9 @@ export default class CrudManager<T extends Record<string, Crud> = any> implement
     
     public async create(collectionPath: string, data: Item) {
         return this.execute(c => c.create(collectionPath, data))
+    }
+    
+    public async updateById(collectionPath: string, itemId: string, data: any): Promise<void> {
+        return this.execute(c => c.updateById(collectionPath, itemId, data))
     }
 }

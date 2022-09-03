@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import DirectoryEntry from '../../entities/directory-entry'
+import Item from '../../entities/item'
 import CrudManager from '../../gateways/crud-manager'
 import DriveManager from '../../gateways/drive-manager'
 import CollectionFactory from '../../__tests__/factories/collections'
@@ -8,18 +9,18 @@ import InMemoryCrud from '../../__tests__/gateways/in-memory-crud'
 import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
 import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 
-import CreateItem from './create-item'
+import UpdateItem from './update-item'
 
-test.group('create-item (use-case)', group => {
+test.group('update-item (use-case)', group => {
     const memoryDrive = new InMemoryDrive()
     const memoryCrud = new InMemoryCrud()
     const drive = new DriveManager({ memory: memoryDrive })    
     const crud = new CrudManager({ memory: memoryCrud  })
-
+    
     const workspaceRepository = new InMemoryWorkspaceRepository()
     
-    const useCase = new CreateItem(drive, crud, workspaceRepository)
-
+    const useCase = new UpdateItem(drive, crud, workspaceRepository)
+    
     const workspace = WorkspaceFactory.create({ drive: 'memory' })    
     const collection = CollectionFactory.create({ crudName: 'memory' })
     
@@ -29,20 +30,33 @@ test.group('create-item (use-case)', group => {
         type: 'file'
     })
     
+    memoryCrud.drive = memoryDrive
+
     group.each.setup(() => {
         memoryDrive.createSync(entry, Buffer.from(JSON.stringify([collection])))
         workspaceRepository.createSync(workspace)
     })
-
+    
     group.each.teardown(() => memoryDrive.clear())
+    
 
-    test('should create an item in collection', async ({ expect }) => {
-        const { data } = await useCase.execute({
+    test('should update an item in collection', async ({ expect }) => {
+        const item = await memoryCrud.create(collection.path, new Item({
+            name: 'test',
+            custom: 'hello word',
+        }))
+
+        await useCase.execute({
             workspaceId: workspace.id,
             collectionId: collection.id,
-            data: {}
+            itemId: item.id,
+            data: {
+                custom: 'update hello'
+            }
         })
 
-        expect(memoryDrive.entries[1].path).toEqual([collection.path, data.id].join('/'))
+        const updated = await memoryCrud.findById(collection.path, item.id)
+
+        expect(updated?.custom).toEqual('update hello')
     })
 })
