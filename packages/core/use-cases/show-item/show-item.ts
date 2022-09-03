@@ -1,7 +1,7 @@
-import Collection from '../../entities/collection'
 import CrudManager from '../../gateways/crud-manager'
 import DriveManager from '../../gateways/drive-manager'
 import IWorkspaceRepository from '../../repositories/workspace-repository'
+import ItemService from '../../services/item-service'
 import ShowItemDTO from './show-item.dto'
 
 export default class ShowItem {
@@ -12,24 +12,9 @@ export default class ShowItem {
     ){}
 
     public async execute({ workspaceId, collectionId, itemId }:ShowItemDTO.Input): Promise<ShowItemDTO.Output> {
-        const workspace = await this.workspaceRepository.findById(workspaceId)
+        const service = new ItemService(this.drive, this.workspaceRepository)
 
-        if (!workspace) throw new Error('Workspace not found')
-
-        this.drive.use(workspace.drive).config(workspace.config)       
-
-        const content = await this.drive.read('.index-san/collections.json')
-        const collections: Collection[] = []
-
-        if (content) {
-            const json = JSON.parse(content.toString())
-
-            collections.push(...json)
-        }
-
-        const collection = collections.find(c => c.id === collectionId)
-
-        if (!collection) throw new Error('Collection not found')
+        const collection = await service.loadCollection(workspaceId, collectionId)
 
         this.crud.use(collection.crudName).useDrive(this.drive)
 
