@@ -1,4 +1,3 @@
-import Collection from '../../entities/collection'
 import CrudManager from '../../gateways/crud-manager'
 import DriveManager from '../../gateways/drive-manager'
 import IWorkspaceRepository from '../../repositories/workspace-repository'

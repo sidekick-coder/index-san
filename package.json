@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
-        "lint": "npm run lint -ws --if-present"
+        "lint": "eslint ."
     },
     "author": "Henrique Oliveira",
     "license": "MIT",
