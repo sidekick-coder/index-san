@@ -61,4 +61,18 @@ export default class InMemoryCrud implements Crud {
 
         this.metas[metaIndex] = Object.assign(item, data)
     }
+    
+    public async deleteById(collectionPath: string, itemId: string): Promise<void> {
+        const item = await this.findById(collectionPath, itemId)   
+
+        if (!item) return
+
+        await this.drive.delete([collectionPath, itemId].join('/'))
+        
+        const metaIndex = this.metas.findIndex(m => m.id === itemId)
+        
+        if (metaIndex === -1) return
+
+        this.metas.splice(metaIndex, 1)
+    }
 }
