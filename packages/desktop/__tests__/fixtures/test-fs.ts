@@ -35,10 +35,16 @@ export default class TestFS {
         await fs.promises.writeFile(systemPath, '')
     }
 
-    public async createManyFiles(length = 5, prefix = 'item-') {
-        const items = Array.from({ length }).map((_, i) => [prefix,i].join(''))
+    public async createManyFiles(length = 5, filename = 'item-') {
+        const items = Array.from({ length }).map((_, i) => [filename, i].join(''))
 
         await Promise.all(items.map((i) => this.createFile(i)))
+    }
+    
+    public async createManyDir(length = 5, filename = 'item-') {
+        const items = Array.from({ length }).map((_, i) => [filename, i].join(''))
+
+        await Promise.all(items.map((i) => this.createDir(i)))
     }
 
     public async exists(filename: string, type?: 'file' | 'directory'){
@@ -46,11 +52,11 @@ export default class TestFS {
             .stat(this.resolve(this.tmpdir, filename))
             .then((e) => e)
             .catch(() => null)
-
-        if (!type) {
+            
+        if (!stats || !type) {
             return !!stats
         }
 
-        return type === 'file' ? stats?.isFile() : stats?.isDirectory()
+        return type === 'file' ? stats.isFile() : stats.isDirectory()
     }
 }

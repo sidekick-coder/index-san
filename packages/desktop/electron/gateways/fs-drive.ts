@@ -36,12 +36,12 @@ export default class FSDrive implements Drive {
         })
     }
     
-    public async get(path: string) {
-        const systemPath = this.resolve([this.config.path, path])
+    public async get(entryPath: string) {
+        const systemPath = this.resolve([this.config.path, entryPath])
 
         return await fs.promises
             .stat(systemPath)
-            .then((e) => e.isDirectory() ? DirectoryEntry.directory(path) : DirectoryEntry.file(path))
+            .then((e) => e.isDirectory() ? DirectoryEntry.directory(entryPath) : DirectoryEntry.file(entryPath))
             .catch(() => null)
     }
 
@@ -51,32 +51,48 @@ export default class FSDrive implements Drive {
         return fs.promises.stat(systemPath).then(() => true).catch(() => false)
     }
 
-    public async create(entry: DirectoryEntry, content?: Buffer): Promise<DirectoryEntry> {
-        const systemPath = this.resolve([this.config.path, entry.path])
-
-        if (entry.type === 'directory') {
-            await fs.promises.mkdir(systemPath, { recursive: true })
-
-            return entry
+    public async move(source: string, target: string) {
+        const systemPath = {
+            source: this.resolve([this.config.path, source]),
+            target: this.resolve([this.config.path, target]),
         }
 
-        await fs.promises.writeFile(systemPath, content || '')
+        await fs.promises.rename(systemPath.source, systemPath.target)
+    }
 
-        return entry
+    public async mkdir(entryPath: string) {
+        const systemPath = this.resolve([this.config.path, entryPath])
+
+        await fs.promises.mkdir(systemPath, { recursive: true })
+
+        return DirectoryEntry.directory(entryPath)
+    }
+
+    public async write(entryPath: string, content: Buffer) {
+        const systemPath = this.resolve([this.config.path, entryPath])
+
+        await fs.promises.mkdir(path.dirname(systemPath), { recursive: true })
+
+        await fs.promises.writeFile(systemPath, content)
     }
     
-    public async update(path: string, newPath: string, newContent?: Buffer): Promise<void> {
-        throw new Error('not implemented')
-    }   
-    
+    public async read (entryPath: string): Promise<Buffer | null> {
+        const systemPath = this.resolve([this.config.path, entryPath])        
+        
+        const isFile = await fs.promises.stat(systemPath)
+            .then(s => s.isFile())
+            .catch(() => false)
+
+        if (!isFile) return null
+
+        return await fs.promises.readFile(systemPath)
+    }
+
     public async delete (path: string) {
         const systemPath = this.resolve([this.config.path, path])
 
         await fs.promises.rm(systemPath, { recursive: true })
     }
     
-    public async read (path: string): Promise<Buffer | null> {
-        throw new Error('not implemented')
-        // return this.content.get(path) ?? null
-    }
+  
 }

@@ -54,7 +54,7 @@ it('should return an entry by filepath', async () => {
 it('should create a file', async () => {
     const entry = DirectoryEntry.file('new-item.txt')
 
-    await drive.create(entry)
+    await drive.write(entry.path, Buffer.from(''))
 
     const exists = await testFs.exists('new-item.txt')
 
@@ -64,7 +64,7 @@ it('should create a file', async () => {
 it('should create a directory', async () => {
     const entry = DirectoryEntry.directory('new-item')
 
-    await drive.create(entry)
+    await drive.mkdir(entry.path)
 
     const exists = await testFs.exists('new-item', 'directory')
 
