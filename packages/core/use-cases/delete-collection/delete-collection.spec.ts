@@ -20,13 +20,9 @@ test.group('delete-collection (use-case)', (group) => {
     test('should delete a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        const entry = new DirectoryEntry({
-            name: 'collections.json',
-            path: '.index-san/collections.json',
-            type: 'file'
-        })
+        const entry = DirectoryEntry.file('.index-san/collections.json')
 
-        await drive.create(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.createFile(entry.path, [collection])
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()

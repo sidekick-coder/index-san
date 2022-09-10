@@ -28,8 +28,7 @@ export default class UpdateCollection {
 
         Object.assign(collection, data)
 
-        await this.drive.update(
-            this.collectionsFilename,
+        await this.drive.write(
             this.collectionsFilename,
             Buffer.from(JSON.stringify(collections))
         )

@@ -20,13 +20,7 @@ test.group('show-collection (use-case)', (group) => {
     test('should return a collection by id', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        const entry = new DirectoryEntry({
-            name: 'collections.json',
-            path: '.index-san/collections.json',
-            type: 'file'
-        })
-
-        await drive.create(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.createFile('.index-san/collections.json', [collection])
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()

@@ -88,20 +88,14 @@ test.group('drive-manager', () => {
         expect(local.config).toEqual({})
     })
 
-    test('should write a new entry', async ({ expect }) => {
+    test('should create a new file', async ({ expect }) => {
         const drive = new DriveManager({ local: localDrive }, 'local')
 
-        await drive.create({
-            name: 'new-file',
-            path: 'new-file.txt',
-            type: 'file'
-        })
+        const entry = DirectoryEntry.file('new-file.txt')
 
-        expect(localDrive.entries[0]).toEqual({
-            name: 'new-file',
-            path: 'new-file.txt',
-            type: 'file'
-        })
+        await drive.write(entry.path, Buffer.from(''))
+
+        expect(localDrive.entries[0]).toEqual(entry)
 
     })
 })

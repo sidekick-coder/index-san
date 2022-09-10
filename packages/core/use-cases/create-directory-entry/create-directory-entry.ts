@@ -1,3 +1,4 @@
+import DirectoryEntry from '../../entities/directory-entry'
 import DriveManager from '../../gateways/drive-manager'
 import IWorkspaceRepository from '../../repositories/workspace-repository'
 import CreateDirectoryEntryDTO from './create-directory-entry.dto'
@@ -20,10 +21,18 @@ export default class CreateDirectoryEntry {
 
         if (exist) throw new Error('DirectoryEntry already exists')
 
-        const entry = await this.drive.create(data)
+        
+        const entry = new DirectoryEntry(data)
 
-        return {
-            data: entry
+        if (data.type === 'directory') {
+            await this.drive.mkdir(data.path)
         }
+
+        if (data.type === 'file') {
+            await this.drive.write(data.path, Buffer.from(''))
+        }
+
+
+        return { data: entry }
     }
 }

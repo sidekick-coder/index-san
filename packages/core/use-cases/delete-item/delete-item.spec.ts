@@ -33,7 +33,7 @@ test.group('delete-item (use-case)', group => {
     memoryCrud.drive = memoryDrive
 
     group.each.setup(() => {
-        memoryDrive.createSync(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.createFile('.index-san/collections.json', [collection])
         workspaceRepository.createSync(workspace)
     })
     

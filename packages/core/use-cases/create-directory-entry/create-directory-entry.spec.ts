@@ -58,13 +58,9 @@ test.group('create-directory-entry (use-case)', () => {
             drive: drive.getCurrentDrive()
         }))        
         
-        const entry = new DirectoryEntry({
-            name: 'text.txt',
-            path: 'text.txt',
-            type: 'file'
-        })
+        const entry = DirectoryEntry.file('text.txt')
 
-        await drive.create(entry)
+        memoryDrive.createFile(entry.path, '')
 
         await useCase.execute({
             workspaceId: workspace.id,

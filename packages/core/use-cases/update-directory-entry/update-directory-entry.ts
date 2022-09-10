@@ -22,7 +22,7 @@ export default class UpdateDirectoryEntry {
 
         if (!exists) throw new Error('DirectoryEntry not exists')
 
-        await this.drive.update(path, newPath)
+        await this.drive.move(path, newPath)
 
     }
 }

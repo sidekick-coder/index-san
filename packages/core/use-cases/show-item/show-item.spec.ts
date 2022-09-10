@@ -19,18 +19,12 @@ test.group('show-item (use-case)', (group) => {
     
     const useCase = new ShowItem(drive, crud, workspaceRepository)
 
-    const entry = new DirectoryEntry({
-        name: 'collections.json',
-        path: '.index-san/collections.json',
-        type: 'file'
-    })
-
     const workspace = WorkspaceFactory.create({ drive: 'memory' })    
     const collection = CollectionFactory.create({ crudName: 'memory' })
     
     
     group.each.setup(() => {
-        memoryDrive.createSync(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.createFile('.index-san/collections.json', JSON.stringify([collection]))
         workspaceRepository.createSync(workspace)
     })
 
@@ -72,11 +66,7 @@ test.group('show-item (use-case)', (group) => {
     test('should return item by id', async ({ expect }) => {
         const item = new Item({})
 
-        memoryDrive.createSync({
-            name: item.id,
-            path: `${collection.path}/${item.id}`,
-            type: 'directory'
-        })
+        memoryDrive.mkdir(`${collection.path}/${item.id}`)
         
         const result = await useCase.execute({
             workspaceId: workspace.id,

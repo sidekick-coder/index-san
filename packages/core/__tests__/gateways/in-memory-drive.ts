@@ -4,7 +4,7 @@ import { Drive } from '../../gateways/drive-manager'
 export default class InMemoryDrive implements Drive {
     public entries: DirectoryEntry[] = []
     public content = new Map<string, Buffer>()
-
+    
     public config = {}
 
     public clear(){
@@ -14,41 +14,8 @@ export default class InMemoryDrive implements Drive {
 
     public async list(): Promise<DirectoryEntry[]>{
         return this.entries
-    }
-
-    public create(entry: DirectoryEntry, content?: Buffer): Promise<DirectoryEntry>{
-        this.entries.push(entry)
-
-        if (entry.type === 'file') {
-            this.content.set(entry.path, content || Buffer.from(''))
-        }
-
-        return Promise.resolve(entry)
-    }
+    }   
     
-    public createSync(entry: DirectoryEntry, content?: Buffer): DirectoryEntry{
-        this.entries.push(entry)
-
-        if (entry.type === 'file') {
-            this.content.set(entry.path, content || Buffer.from(''))
-        }
-
-        return entry
-    }
-    
-    public async update(path: string, newPath: string, newContent?: Buffer): Promise<void> {
-        const index= this.entries.findIndex(e => e.path === path)
-
-        if (index === -1) return
-
-        const oldContent = this.content.get(path) ?? Buffer.from('')
-
-        this.entries[index].path = newPath
-
-        this.content.delete(path)
-
-        this.content.set(newPath, newContent || oldContent)
-    }
 
     public async get(path: string) {
         const entry = this.entries.find(e => e.path === path)
@@ -62,6 +29,32 @@ export default class InMemoryDrive implements Drive {
         return !!entry
     }
     
+    public async move (source: string, target: string) {
+        const entry = this.entries.find(e => e.path === source)
+
+        if (!entry) return
+
+        entry.path = target
+    }
+
+    public async read (path: string) {
+        return this.content.get(path) ?? null
+    }
+
+    public async write(path: string, content: Buffer) {
+        this.content.set(path, content)
+
+        this.entries.push(DirectoryEntry.file(path))
+    }
+
+    public async mkdir(entryPath: string){
+        const entry = DirectoryEntry.directory(entryPath)
+        
+        this.entries.push(entry)
+
+        return entry
+    }
+    
     public async delete (path: string) {
 
         const index = this.entries.findIndex(e => e.path === path)
@@ -72,8 +65,17 @@ export default class InMemoryDrive implements Drive {
 
         this.entries.splice(index, 1)
     }
-    
-    public async read (path: string) {
-        return this.content.get(path) ?? null
+
+
+    public createFile(entryPath: string, content: string | Buffer | any[] = '') {
+        const entry = DirectoryEntry.file(entryPath)
+
+        if (Array.isArray(content)) {
+            content = JSON.stringify(content)
+        }
+
+        this.entries.push(entry)
+        this.content.set(entryPath, Buffer.from(content))
     }
+    
 }

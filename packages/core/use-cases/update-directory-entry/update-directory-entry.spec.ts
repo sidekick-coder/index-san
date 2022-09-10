@@ -22,17 +22,11 @@ test.group('update-directory-entry (use-case)', () => {
             drive: drive.getCurrentDrive()
         }))        
 
-        const entry = new DirectoryEntry({
-            name: 'text.txt',
-            path: 'text.txt',
-            type: 'file'
-        })
-
-        await drive.create(entry)
+        await drive.write('text.txt', Buffer.from(''))
         
         await useCase.execute({
             workspaceId: workspace.id,
-            path: entry.path,
+            path: 'text.txt',
             newPath: 'update.txt'
         })
 

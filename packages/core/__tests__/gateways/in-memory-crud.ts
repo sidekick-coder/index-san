@@ -38,11 +38,9 @@ export default class InMemoryCrud implements Crud {
     }
 
     public async create(collectionPath: string, data: Item): Promise<Item> {
-        await this.drive.create({
-            name: [collectionPath, data.id].join('/'),
-            path: [collectionPath, data.id].join('/'),
-            type: 'directory'
-        })
+        const entryPath = [collectionPath, data.id].join('/')
+        
+        await this.drive.mkdir(entryPath)
 
         this.metas.push(data)
 

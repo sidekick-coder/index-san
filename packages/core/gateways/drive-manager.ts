@@ -2,14 +2,16 @@ import DirectoryEntry from '../entities/directory-entry'
 
 export interface Drive {
     config: Record<string, any>;
-    exists: (path: string) => Promise<boolean>;
-    list: (path: string) => Promise<DirectoryEntry[]>;
-    get: (path: string) => Promise<DirectoryEntry | null>;
-    create: (entry: DirectoryEntry, content?: Buffer) => Promise<DirectoryEntry>;
-    update: (path: string, newPath: string, newContent?: Buffer) => Promise<void>;
-    delete(path:string): Promise<void>
+    exists: (entryPath: string) => Promise<boolean>;
+    list: (entryPath: string) => Promise<DirectoryEntry[]>;
+    get: (entryPath: string) => Promise<DirectoryEntry | null>;
+    mkdir: (entryPath: string) => Promise<DirectoryEntry>;
     
-    read: (path: string) => Promise<Buffer | null>;
+    move: (source: string, target: string) => Promise<void>;
+    read: (entryPath: string) => Promise<Buffer | null>;
+    write: (entryPath: string, content: Buffer) => Promise<void>;
+    
+    delete(entryPath:string): Promise<void>
 }
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
@@ -59,31 +61,36 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         return result
     }
 
-    public async exists(path: string) {
-        return this.execute(d => d.exists(path))
+    public async exists(entryPath: string) {
+        return this.execute(d => d.exists(entryPath))
     }
 
-    public async list(path: string) {
-        return this.execute(d => d.list(path))
+    public async list(entryPath: string) {
+        return this.execute(d => d.list(entryPath))
     }    
 
-    public async get(path: string) {
-        return this.execute(d => d.get(path))
+    public async get(entryPath: string) {
+        return this.execute(d => d.get(entryPath))
+    }
+    
+    public async mkdir(entryPath: string) {
+        return this.execute(d => d.mkdir(entryPath))
+    }
+    
+    public async move(source: string, target: string) {
+        return this.execute(d => d.move(source, target))
     }
 
-    public async create(entry: DirectoryEntry, content?: Buffer) {
-        return this.execute(d => d.create(entry, content))
+    public async read(entryPath: string) {
+        return this.execute(d => d.read(entryPath))
+    }
+
+    public async write(entryPath: string, content: Buffer) {
+        return this.execute(d => d.write(entryPath, content))
     }
     
-    public async update(path: string, newPath: string, newContent?: Buffer) {
-        return this.execute(d => d.update(path, newPath, newContent))
-    }   
-    
-    public async delete(path: string) {
-        return this.execute(d => d.delete(path))
+    public async delete(entryPath: string) {
+        return this.execute(d => d.delete(entryPath))
     }
     
-    public async read(path: string) {
-        return this.execute(d => d.read(path))
-    }
 }

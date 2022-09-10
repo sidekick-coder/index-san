@@ -28,8 +28,7 @@ export default class DeleteCollection {
 
         collections.splice(index, 1)
 
-        await this.drive.update(
-            this.collectionsFilename,
+        await this.drive.write(
             this.collectionsFilename,
             Buffer.from(JSON.stringify(collections))
         )

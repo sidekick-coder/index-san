@@ -24,16 +24,10 @@ test.group('update-item (use-case)', group => {
     const workspace = WorkspaceFactory.create({ drive: 'memory' })    
     const collection = CollectionFactory.create({ crudName: 'memory' })
     
-    const entry = new DirectoryEntry({
-        name: 'collections.json',
-        path: '.index-san/collections.json',
-        type: 'file'
-    })
-    
     memoryCrud.drive = memoryDrive
 
     group.each.setup(() => {
-        memoryDrive.createSync(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.createFile('.index-san/collections.json', JSON.stringify([collection]))
         workspaceRepository.createSync(workspace)
     })
     

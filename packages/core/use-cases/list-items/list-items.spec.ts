@@ -18,18 +18,12 @@ test.group('list-items (use-case)', (group) => {
     
     const useCase = new ListItems(drive, crud, workspaceRepository)
 
-    const entry = new DirectoryEntry({
-        name: 'collections.json',
-        path: '.index-san/collections.json',
-        type: 'file'
-    })
-
     const workspace = WorkspaceFactory.create({ drive: 'memory' })    
     const collection = CollectionFactory.create({ crudName: 'memory' })
     
     
     group.each.setup(() => {
-        memoryDrive.createSync(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.write('.index-san/collections.json', Buffer.from(JSON.stringify([collection])))
         workspaceRepository.createSync(workspace)
     })
 
@@ -58,11 +52,7 @@ test.group('list-items (use-case)', (group) => {
 
     test('should return a list of items', async ({ expect }) => {
         for (let i = 0; i < 20; i++) {
-            memoryDrive.createSync({
-                name: i.toString(),
-                path: `${collection.path}/${i}`,
-                type: 'directory'
-            })
+            memoryDrive.mkdir(`${collection.path}/${i}`)
         }
         
         const result = await useCase.execute({
@@ -77,11 +67,7 @@ test.group('list-items (use-case)', (group) => {
         expect.assertions(40)
 
         for (let i = 0; i < 20; i++) {
-            memoryDrive.createSync({
-                name: i.toString(),
-                path: `${collection.path}/${i}`,
-                type: 'directory'
-            })
+            memoryDrive.mkdir(`${collection.path}/${i}`)
         }
         
         const { data } = await useCase.execute({

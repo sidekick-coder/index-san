@@ -9,7 +9,8 @@ import ListDirectoryEntry from './list-directory-entry'
 test.group('list-directory-entry (use-case)', () => {
 
     const repository = new InMemoryWorkspaceRepository()
-    const drive = new DriveManager({ memory: new InMemoryDrive() }, 'memory')
+    const memoryDrive = new InMemoryDrive()
+    const drive = new DriveManager({ memory: memoryDrive }, 'memory')
 
     const useCase = new ListDirectoryEntry(repository, drive)
 
@@ -18,22 +19,15 @@ test.group('list-directory-entry (use-case)', () => {
             drive: drive.getCurrentDrive()
         }))
 
-        const entry = new DirectoryEntry({
-            name: 'file.txt',
-            path: 'file.txt',
-            type: 'file'
-        })
-
-        await drive.create(entry)
-        await drive.create(entry)
-        await drive.create(entry)
+        memoryDrive.createFile('file-01.txt', '')
+        memoryDrive.createFile('file-02.txt', '')
+        memoryDrive.createFile('file-03.txt', '')
 
         const result = await useCase.execute({
             workspaceId: workspace.id
         })
 
         expect(result.data.length).toEqual(3)
-        expect(result.data[0]).toEqual(entry)
     })
 
     test('should throw an error if workspace was not found', async ({ expect }) => {

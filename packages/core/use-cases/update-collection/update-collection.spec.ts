@@ -20,13 +20,7 @@ test.group('update-collection (use-case)', (group) => {
     test('should update a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        const entry = new DirectoryEntry({
-            name: 'collections.json',
-            path: '.index-san/collections.json',
-            type: 'file'
-        })
-
-        await drive.create(entry, Buffer.from(JSON.stringify([collection])))
+        memoryDrive.createFile('.index-san/collections.json', JSON.stringify([collection]))
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()

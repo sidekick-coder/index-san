@@ -26,11 +26,7 @@ export default class CreateCollection {
         let content = await this.drive.read(this.collectionsFilename)
 
         if (!content) {
-            await this.drive.create({
-                name: 'collections.json',
-                path: this.collectionsFilename,
-                type: 'file'
-            }, Buffer.from(JSON.stringify([])))
+            await this.drive.write(this.collectionsFilename, Buffer.from(JSON.stringify([])))
 
             content = Buffer.from(JSON.stringify([]))
         }
@@ -39,8 +35,7 @@ export default class CreateCollection {
 
         collections.push(...json)        
 
-        await this.drive.update(
-            this.collectionsFilename,
+        await this.drive.write(
             this.collectionsFilename,
             Buffer.from(JSON.stringify(collections))
         )
