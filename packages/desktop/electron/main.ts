@@ -20,8 +20,8 @@ app.whenReady().then(() => {
         title: 'Main window',
         webPreferences: {
             preload: path.join(__dirname, './preload.js'),
-            contextIsolation: true,
-            nodeIntegration: true,
+            // contextIsolation: true,
+            // nodeIntegration: true,
         }
     })
 
@@ -35,6 +35,7 @@ app.whenReady().then(() => {
       
     if (process.env.VITE_DEV_SERVER_URL) {
         win.loadURL(process.env.VITE_DEV_SERVER_URL)
+        process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
     } else {
         win.loadFile('build/index.html')
     }

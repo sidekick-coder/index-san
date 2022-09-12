@@ -10,7 +10,7 @@ import WContent from 'vue-wind/components/w-content/w-content.vue'
 
     <w-content class="bg-zinc-900 text-white">
       <div class="h-full w-full flex items-center justify-center">
-        Content
+        <router-view></router-view>
       </div>
     </w-content>
   </w-layout>
