@@ -1,9 +1,12 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 
 export default defineConfig({
+    test: {
+        watch: false
+    },
     plugins: [
         vue(), 
         electron({

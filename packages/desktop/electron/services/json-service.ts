@@ -7,6 +7,8 @@ export default class JSONService<T = any> {
     constructor(public filename: string) {}
 
     public async  load() {
+        this.items = []
+        
         const exists = await fs.promises
             .stat(this.filename)
             .then(() => true)
@@ -21,5 +23,9 @@ export default class JSONService<T = any> {
         const text = await fs.promises.readFile(this.filename, 'utf-8')
 
         this.items = JSON.parse(text)
+    }
+
+    public async save(){
+        await fs.promises.writeFile(this.filename, JSON.stringify(this.items))
     }
 }

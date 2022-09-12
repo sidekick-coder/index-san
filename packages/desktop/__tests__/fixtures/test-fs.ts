@@ -18,7 +18,17 @@ export default class TestFS {
     }
 
     public async clear(){
-        await fs.promises.rm(this.tmpdir, {recursive: true})
+        const exists = await fs.promises
+            .stat(this.tmpdir)
+            .then(() => true)
+            .catch(() => false)
+
+        if (exists) {
+            fs.rmSync(this.tmpdir, { recursive: true, force: true })
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 100))
+
 
         await fs.promises.mkdir(this.tmpdir, { recursive: true })
     }
@@ -29,10 +39,10 @@ export default class TestFS {
         await fs.promises.mkdir(systemPath, { recursive: true })
     }
 
-    public async createFile(filename: string) {
+    public async createFile(filename: string, content = '') {
         const systemPath = this.resolve(this.tmpdir, filename)
 
-        await fs.promises.writeFile(systemPath, '')
+        await fs.promises.writeFile(systemPath, content)
     }
 
     public async createManyFiles(length = 5, filename = 'item-') {

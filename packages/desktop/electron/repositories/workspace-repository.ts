@@ -16,21 +16,47 @@ export default class WorkspaceRepository implements IWorkspaceRepository {
         return this.json.items
     }
     
-    public findById(id: string): Promise<Workspace> {
-        throw new Error('Not implemented')
+    public async findById(id: string): Promise<Workspace | null> {
+        await this.json.load()
+
+        const item = this.json.items.find(i => i.id === id)
+
+        return item ?? null
     }
 
-    public create(workspace: Workspace): Promise<Workspace> {
-        throw new Error('Not implemented')
+    public async create(workspace: Workspace): Promise<Workspace> {
+        await this.json.load()
+
+        this.json.items.push(workspace)
+
+        await this.json.save()
+
+        return workspace
     }
     
-    public updateById(id: string, data: Partial<Omit<Workspace, 'id'>>): Promise<void> {
-        throw new Error('Not implemented')
+    public async updateById(id: string, data: Partial<Omit<Workspace, 'id'>>): Promise<void> {
+        await this.json.load()
+
+        const workspace = this.json.items.find(i => i.id === id)
+        const index = this.json.items.findIndex(i => i.id === id)
+
+        if (!workspace) return
+
+        this.json.items[index] = Object.assign(workspace, data, { id })
+
+        await this.json.save()        
+    }
+    
+    public async delete(id: string): Promise<void> {
+        await this.json.load()
         
-    }
-    
-    public delete(id: string): Promise<void> {
-        throw new Error('Not implemented')        
+        const index = this.json.items.findIndex(i => i.id === id)
+
+        if (index === -1) return
+
+        this.json.items.splice(index, 1)
+
+        await this.json.save()    
     }
 
 }
