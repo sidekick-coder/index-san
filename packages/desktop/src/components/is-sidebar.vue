@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useCase } from '../composables/use-case'
+import { useWorkspace } from '../stores/workspaces'
 import Workspace from '../../../core/entities/workspace'
 import WDrawer from 'vue-wind/components/w-drawer/w-drawer.vue'
 
@@ -8,10 +9,9 @@ interface Response {
     data: Workspace[]
 }
 
-const items = ref<Workspace[]>([])
+const workspace = useWorkspace()
 
-useCase<Response>('list-workspaces')
-    .then(({ data }) => items.value = data)
+workspace.setAll()
 
 </script>
 
@@ -27,9 +27,21 @@ useCase<Response>('list-workspaces')
             </h2>
         </div>
 
-        <div class="list-item" v-for="item in items" :key="item.id">
+        <router-link
+        v-for="item in workspace.all"
+            class="list-item"
+            :key="item.id"
+            :to="`/workspaces/${item.id}`"
+        >
             {{ item.name }}
-        </div>
+        </router-link>
+        
+        <router-link
+            class="list-item"
+            to="/404"
+        >
+            404
+        </router-link>
 
     </w-drawer>
 </template>
