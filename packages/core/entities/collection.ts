@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid'
+import uuid from 'uuid-random'
 
 export default class Collection {
     public id: string

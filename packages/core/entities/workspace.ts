@@ -1,4 +1,5 @@
-import { v4 as uuid } from 'uuid'
+import uuid from 'uuid-random'
+
 export default class Workspace {
     public id: string
     public name: string
