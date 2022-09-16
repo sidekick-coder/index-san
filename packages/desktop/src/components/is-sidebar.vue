@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useCase } from '../composables/use-case'
-import { useWorkspace } from '../stores/workspaces'
-import Workspace from '../../../core/entities/workspace'
+import { useWorkspace, Workspace } from '../stores/workspaces'
 import WDrawer from 'vue-wind/components/w-drawer/w-drawer.vue'
 
 interface Response {
@@ -17,9 +16,9 @@ workspace.setAll()
 
 <template>
     <w-drawer class="bg-zinc-800 text-white" >
-        <div class="list-item">
+        <router-link to="/" class="list-item">
             <h1 class="text-xl font-bold">Index-san</h1>
-        </div>
+        </router-link>
         
         <div class="list-item">
             <h2 class="text-sm">
@@ -28,7 +27,7 @@ workspace.setAll()
         </div>
 
         <router-link
-        v-for="item in workspace.all"
+            v-for="item in workspace.all"
             class="list-item"
             :key="item.id"
             :to="`/workspaces/${item.id}`"

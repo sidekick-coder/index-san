@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "pinia": "^2.0.22",
     "vue": "^3.2.37",
     "vue-router": "^4.1.5",
     "vue-wind": "^0.1.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.185",
     "@vitejs/plugin-vue": "^3.0.3",
     "autoprefixer": "^10.4.8",
     "electron": "^20.1.1",
