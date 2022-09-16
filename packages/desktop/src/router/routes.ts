@@ -12,12 +12,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/workspaces/list.vue')
     },
     {
-        path: '/workspaces/:id',
-        name: 'workspaces-single',
+        path: '/workspaces/:workspaceId/directory-entries',
+        name: 'directory-entry-default',
         props: true,
-        component: () => import('../pages/workspaces/single.vue')
+        component: () => import('../pages/directory-entries/default.vue')
     },
-
     // keep this section in the end
     {
         path: '/:pathMatch(.*)*',

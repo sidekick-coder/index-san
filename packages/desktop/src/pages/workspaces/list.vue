@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 import { useWorkspace } from '../../stores/workspaces'
 
 const store = useWorkspace()
 
 const columns = [
     {
+        label: 'Name',
         name: 'name',
         field: 'name'
     },
     {
+        label: 'Path',
         name: 'path',
         field: 'path'
     },
@@ -22,11 +24,16 @@ const columns = [
 const payload = ref({
     name: '',
     path: '',
-    drive: 'fs'
 })
 
 async function submit(){
-    await store.create(payload.value)
+    await store.create({
+        name: payload.value.name,
+        drive: 'fs',
+        config: {
+            path: payload.value.path
+        }
+    })
 
     await store.setAll()
 
@@ -45,7 +52,7 @@ async function deleteItem(id: string) {
     <div class="p-10">
         <div class="text-2xl mb-4">Workspace List</div>
 
-        <w-form @submit="submit">
+        <w-form @submit="submit" class="mb-4">
             <div class="mb-4">
                 <w-input v-model="payload.name" label="Name" />
             </div>
@@ -61,6 +68,10 @@ async function deleteItem(id: string) {
             :columns="columns"
             :items="store.all"
         >
+        <template #item-path="{ item }">
+            {{ item.config.path }}
+        </template>
+
         <template #item-actions="{ item }">
             <w-btn @click="deleteItem(item.id)" >Delete</w-btn>
         </template>

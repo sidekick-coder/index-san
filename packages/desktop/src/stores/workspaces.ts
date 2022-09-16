@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia'
 import { useCase } from '../composables/use-case'
-export interface Workspace {
-    id: string
-    name: string
-    path: string
-    drive: string
-}
+import Workspace from '@core/entities/workspace'
 
 interface ListResponse {
     data: Workspace[]

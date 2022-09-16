@@ -1,30 +1,6 @@
 import { BrowserWindow, ipcMain, app } from 'electron'
 import path from 'path'
-
-import DriveManager from '../../core/gateways/drive-manager'
-import ListWorkspaces from '../../core/use-cases/list-workspaces/list-workspaces'
-import CreateWorkspace from '../../core/use-cases/create-workspace/create-workspace'
-import WorkspaceRepository from './repositories/workspace-repository'
-
-import FSDrive from './gateways/fs-drive'
-import DeleteWorkspace from '../../core/use-cases/delete-workspace/delete-workspace'
-
-interface IUseCase {
-    execute(args:any): Promise<any>
-}
-
-const workspaceRepository = new WorkspaceRepository(
-    path.resolve(app.getPath('userData'), 'workspaces.json')
-)
-
-const fsDrive = new FSDrive()
-const driveManager = new DriveManager({ fs: fsDrive })
-
-const options: Record<string, IUseCase> = {
-    'list-workspaces': new ListWorkspaces(workspaceRepository),
-    'create-workspace': new CreateWorkspace(workspaceRepository, driveManager),
-    'delete-workspace': new DeleteWorkspace(workspaceRepository)
-}
+import AllUseCases from './use-cases'
 
 app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -37,7 +13,7 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('use-case', (_, name, args) => {
-        const option = options[name]
+        const option = AllUseCases[name]
 
         if (!option) {
             throw new Error(`use-case "${name}" not found`)

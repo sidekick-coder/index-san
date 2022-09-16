@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useCase } from '../composables/use-case'
-import { useWorkspace, Workspace } from '../stores/workspaces'
+import { useWorkspace } from '../stores/workspaces'
 import WDrawer from 'vue-wind/components/w-drawer/w-drawer.vue'
-
-interface Response {
-    data: Workspace[]
-}
 
 const workspace = useWorkspace()
 
@@ -30,7 +24,7 @@ workspace.setAll()
             v-for="item in workspace.all"
             class="list-item"
             :key="item.id"
-            :to="`/workspaces/${item.id}`"
+            :to="`/workspaces/${item.id}/directory-entries`"
         >
             {{ item.name }}
         </router-link>
