@@ -73,7 +73,9 @@ async function deleteItem(id: string) {
         </template>
 
         <template #item-actions="{ item }">
-            <w-btn @click="deleteItem(item.id)" >Delete</w-btn>
+            <w-btn @click="deleteItem(item.id)" >
+                <fa-icon icon="trash" />
+            </w-btn>
         </template>
     
         </w-data-table>
