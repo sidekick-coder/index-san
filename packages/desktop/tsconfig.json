@@ -10,6 +10,7 @@
     "declaration": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
@@ -21,5 +22,4 @@
       ]
     }
   },
-  "include": ["electron", "src", "vite.config.ts"],
 }

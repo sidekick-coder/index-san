@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-export default class JSONService<T = any> {
+export default class JSONService<T = Record<string, string>> {
     public items: T[] = []
 
     constructor(public filename: string) {}
@@ -27,5 +27,19 @@ export default class JSONService<T = any> {
 
     public async save(){
         await fs.promises.writeFile(this.filename, JSON.stringify(this.items))
+    }
+
+    public findBy(key: string, value: string) {
+        const item = this.items.find(i => i[key] === value)
+
+        return item ?? null
+    }
+    
+    public updateOrCreateBy(key: string, data: any) {
+        const index = this.items.findIndex(i => i[key] === data[key])
+
+        if (index !== -1) this.items[index] = data
+
+        if (index === -1) this.items.push(data)
     }
 }
