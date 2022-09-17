@@ -13,27 +13,16 @@ workspace.setAll()
         <router-link to="/" class="list-item">
             <h1 class="text-xl font-bold">Index-san</h1>
         </router-link>
-        
-        <div class="list-item">
-            <h2 class="text-sm">
-                Workspaces
-            </h2>
-        </div>
 
         <router-link
             v-for="item in workspace.all"
-            class="list-item"
+            class="list-item clickable"
             :key="item.id"
-            :to="`/workspaces/${item.id}/directory-entries`"
+            :to="`/workspaces/${item.id}`"
         >
+            <fa-icon icon="folder" class="mr-2" />
+
             {{ item.name }}
-        </router-link>
-        
-        <router-link
-            class="list-item"
-            to="/404"
-        >
-            404
         </router-link>
 
     </w-drawer>
@@ -41,6 +30,10 @@ workspace.setAll()
 
 <style>
     .list-item {
-        @apply px-4 py-2;
+        @apply px-4 py-2 ;
+    }
+    
+    .list-item.clickable {
+        @apply hover:bg-gray-700
     }
 </style>
