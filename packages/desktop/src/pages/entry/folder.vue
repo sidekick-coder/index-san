@@ -23,14 +23,21 @@ const directoryEntry = useDirectoryEntry(props.workspaceId)
 const entries = ref<DirectoryEntry[]>([])
 const entriesFormatted = computed(() => orderBy(entries.value, ['type', 'name']).map(e => {
     let to = `/workspaces/${props.workspaceId}/entry/${e.path}`
+    let icon = 'file'
 
     if (e.type === 'directory') {
         to = `/workspaces/${props.workspaceId}/entry-folder/${e.path}`
+        icon = 'folder'
+    }
+
+    if (e.name === '.index-san') {
+        icon = 'cog'
     }
 
     return {
         ...e,
-        to
+        to,
+        icon,
     }
 }))
 
@@ -103,11 +110,12 @@ async function deleteEntry(path: string){
                 <router-link
                     v-for="item in entriesFormatted"
                     :key="item.name"
-                    class="flex items-center w-full border-b p-3 text-sm hover:bg-gray-500 cursor-pointer"
                     :to="item.to"
+                    class="flex items-center w-full border-b p-3 text-sm"
+
                 >
                     <fa-icon
-                        :icon="item.type === 'directory' ? 'folder' : 'file'"
+                        :icon="item.icon"
                         class="mr-4 text-gray-400"
                     />
 
