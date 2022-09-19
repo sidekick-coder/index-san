@@ -1,4 +1,8 @@
 
+export interface DataResponse<T> {
+    data: T
+}
+
 export async function useCase<T = void>(name: string, args?: any): Promise<T> {
     
     args = args ? JSON.parse(JSON.stringify(args)) : {}

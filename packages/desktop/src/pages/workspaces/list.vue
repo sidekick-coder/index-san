@@ -54,11 +54,18 @@ async function deleteItem(id: string) {
 
         <w-form @submit="submit" class="mb-4">
             <div class="mb-4">
-                <w-input v-model="payload.name" label="Name" />
+                <w-input
+                    v-model="payload.name" label="Name"
+                    placeholder="My Workspace"
+                />
             </div>
             
             <div class="mb-4">
-                <w-input v-model="payload.path" label="Path" />
+                <w-input
+                    v-model="payload.path"
+                    label="Path"
+                    placeholder="C:\Users\Work\Desktop\My-Workspace"
+                />
             </div>
 
             <w-btn :disabled="!payload.name || !payload.path" class="w-full" >Add</w-btn>

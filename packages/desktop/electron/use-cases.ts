@@ -12,6 +12,10 @@ import ListDirectoryEntry from '@core/use-cases/list-directory-entry/list-direct
 import CreateDirectoryEntry from '@core/use-cases/create-directory-entry/create-directory-entry'
 import DeleteDirectoryEntry from '@core/use-cases/delete-directory-entry/delete-directory-entry'
 
+import ListCollections from '@core/use-cases/list-collections/list-collections'
+import CreateCollection from '@core/use-cases/create-collection/create-collection'
+import DeleteCollection from '@core/use-cases/delete-collection/delete-collection'
+
 import WorkspaceRepository from './repositories/workspace-repository'
 
 import FSDrive from './gateways/fs-drive'
@@ -35,7 +39,11 @@ const options: Record<string, IUseCase> = {
     'list-directory-entry': new ListDirectoryEntry(workspaceRepository, driveManager),    
     'show-directory-entry': new ShowDirectoryEntry(workspaceRepository, driveManager),
     'create-directory-entry': new CreateDirectoryEntry(workspaceRepository, driveManager),
-    'delete-directory-entry': new DeleteDirectoryEntry(workspaceRepository, driveManager)
+    'delete-directory-entry': new DeleteDirectoryEntry(workspaceRepository, driveManager),
+
+    'list-collections': new ListCollections(workspaceRepository, driveManager),
+    'create-collection': new CreateCollection(workspaceRepository, driveManager),
+    'delete-collection': new DeleteCollection(workspaceRepository, driveManager)
 }
 
 export default options

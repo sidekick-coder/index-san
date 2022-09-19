@@ -1,9 +1,5 @@
-import { useCase } from './use-case'
+import { DataResponse, useCase } from './use-case'
 import DirectoryEntry from '@core/entities/directory-entry'
-
-interface DataResponse<T> {
-    data: T
-}
 
 export function useDirectoryEntry(workspaceId: string){
     function show(path: string) {
