@@ -12,6 +12,7 @@ import DeleteDirectoryEntry from '@core/use-cases/delete-directory-entry/delete-
 
 import ListCollections from '@core/use-cases/list-collections/list-collections'
 import ShowCollection from '@core/use-cases/show-collection/show-collection'
+import UpdateCollection from '@core/use-cases/update-collection/update-collection'
 import CreateCollection from '@core/use-cases/create-collection/create-collection'
 import DeleteCollection from '@core/use-cases/delete-collection/delete-collection'
 
@@ -53,6 +54,7 @@ const options: Record<string, IUseCase> = {
     'list-collections': new ListCollections(workspaceRepository, driveManager),
     'show-collection': new ShowCollection(workspaceRepository, driveManager),
     'create-collection': new CreateCollection(workspaceRepository, driveManager),
+    'update-collection': new UpdateCollection(workspaceRepository, driveManager),
     'delete-collection': new DeleteCollection(workspaceRepository, driveManager),
 
     'list-items': new ListItems(driveManager, crudManger, workspaceRepository),

@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import uuid from 'uuid-random'
 
 import Collection from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { useCrud } from '@/composables/crud'
+
+import ColumnDialog from './table-column-dialog.vue'
+import { useCollectionRepository } from '@/composables/collection'
 
 const props = defineProps({
     workspaceId: {
@@ -18,10 +22,11 @@ const props = defineProps({
 })
 
 const crud = useCrud(props.workspaceId, props.collectionId)
+const repository = useCollectionRepository(props.workspaceId)
 
-const active = ref([-1, -1])
 const collection = ref<Partial<Collection>>({})
 const items = ref<Item[]>([])
+const dialog = ref(false)
 
 const columns = computed(() => {
     const collectionColumns: any[] = collection.value?.columns?.slice() || []
@@ -36,27 +41,12 @@ const columns = computed(() => {
 })
 
 async function load(){
-    await crud.getCollection().then(d => collection.value = d.data)    
+    await repository.show(props.collectionId).then(d => collection.value = d.data)    
 
     await crud.list().then(d => items.value = d.data)
 }
 
 load()
-
-function isActive(itemIndex: number, columnIndex: number, ) {
-    return active.value[0] == itemIndex && active.value[1] === columnIndex
-}
-
-function setActive(itemIndex: number, columnIndex: number, ) {
-    active.value[0] = itemIndex
-    active.value[1] = columnIndex
-}
-
-function unsetActive(index: number, columnIndex: number) {
-    setTimeout(() => {
-        if (isActive(index, columnIndex)) active.value = [-1, -1]
-    }, 100)
-}
 
 async function addNew() {
     await crud.create()
@@ -68,9 +58,48 @@ async function updateItem(itemId: string, field: string, value: string) {
     await crud.update(itemId, { [field]: value })
 }
 
+async function createColumn(column: any) {
+    const payload = {
+        ...column,
+        id: uuid(),
+    }
+
+    const allColumns = collection.value.columns?.slice() || []
+
+    allColumns.push(payload)
+
+    await repository.update(props.collectionId, {
+        columns: allColumns
+    })
+    
+    dialog.value = false
+
+    await load()
+}
+
+async function deleteColumn(id: string) {
+    
+    const allColumns = collection.value.columns?.slice() || []
+    
+    const index = allColumns.findIndex(c => c.id === id)
+
+    if (index === -1) return
+
+    allColumns.splice(index, 1)
+
+    await repository.update(props.collectionId, {
+        columns: allColumns
+    })
+
+    await load()
+}
+
 </script>
 <template>
     <div class="p-5">
+
+        <column-dialog v-model="dialog" @submit="createColumn" />
+
         <div class="text-2xl mb-10">
             {{ collection.name ?? 'Collection' }}
         </div>
@@ -82,15 +111,33 @@ async function updateItem(itemId: string, field: string, value: string) {
 
             <template #column="{ column, classes }">
                 <th v-if="column.id !== 'new-column' " :class="classes">
-                        {{ column.label }}
+                    <div class="flex items-center">
+
+                        <div> {{ column.label }}</div>
+
+
+                        <div class="grow"></div>
+
+                        <i
+                            @click="deleteColumn(column.id)"
+                            class="w-5 h-5 hover:bg-gray-600 flex items-center justify-center cursor-pointer">
+                            <fa-icon icon="trash" class="text-xs " />
+                        </i>
+
+                        
+                    </div>
                 </th>
                 
-                <th v-else :class="classes" class="cursor-pointer text-sm">
+                <th
+                    v-else :class="classes"
+                    class="cursor-pointer text-sm"
+                    @click="dialog = true"
+                >
                     <fa-icon icon="plus" />
                 </th>
             </template>
 
-            <template #item="{ item, index, classes }">
+            <template #item="{ item, classes }">
                 <tr :class="classes">
                     <td
                         v-for="(column, cIndex) in columns.filter(c => !c.hide)"
@@ -103,11 +150,8 @@ async function updateItem(itemId: string, field: string, value: string) {
                             v-else
                             v-model="item[column.field]"
                             class="p-2 bg-transparent hover:bg-gray-600 focus:outline focus:outline-2 focus:outline-teal-500 focus:bg-gray-600 w-full"
-                            :class="isActive(index, cIndex) ? 'cursor-auto' : 'cursor-default'"
                             :disabled="column.readonly"
                             @change="(e) => updateItem(item.id, column.field, (e.target as any).value)"
-                            @focus="setActive(index, cIndex)"
-                            @blur="unsetActive(index, cIndex)"
                             @keyup.shift.enter="$emit('items:new')"
                         >
 

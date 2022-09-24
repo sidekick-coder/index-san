@@ -3,6 +3,7 @@ import uuid from 'uuid-random'
 interface Column {
     id: string,
     field: string
+    label: string
     readonly?: boolean
 }
 

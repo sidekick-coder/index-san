@@ -36,10 +36,10 @@ export default class FolderCrud implements Crud {
         const metas = await this.findMetas(collectionPath)
 
         return entries
-            .filter(e => e.type === 'directory')
+            .filter(e => e.type === 'directory' && e.name !== '.is')
             .map(entry => {
                 const data: any = {
-                    name: entry.name
+                    _filename: entry.name
                 }
 
                 const meta = metas.find(m => m.id === entry.path)

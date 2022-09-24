@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Collection from '@core/entities/collection'
 
-import { useCollections } from '@/composables/collection'
+import { useCollectionRepository } from '@/composables/collection'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const collections = useCollections(props.workspaceId)
+const repository = useCollectionRepository(props.workspaceId)
 
 const items = ref<Collection[]>([])
 const columns = [
@@ -44,7 +44,7 @@ const payload = ref({
 })
 
 async function load(){
-    await collections.list().then(({ data }) => (items.value = data))
+    await repository.list().then(({ data }) => (items.value = data))
 }
 
 onMounted(load)
@@ -52,7 +52,19 @@ onMounted(load)
 async function submit(){
     const { name, path } = payload.value
 
-    await collections.create({crudName: 'fsFolder', name, path })
+    await repository.create({
+        crudName: 'fsFolder',
+        name,
+        path,
+        columns: [
+            {
+                id: '1',
+                label: 'filename',
+                field: '_filename',
+                readonly: true
+            }
+        ]
+    })
     
     await load()
     
@@ -61,7 +73,7 @@ async function submit(){
 }
     
 async function deleteItem(id: string) {
-    await collections.destroy(id)
+    await repository.destroy(id)
 
     await load()
 }
