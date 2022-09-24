@@ -1,4 +1,3 @@
-import Collection from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { DataResponse, useCase } from './use-case'
@@ -16,8 +15,8 @@ export function useCrud(workspaceId: string, collectionId: string) {
         return useCase('update-item', { workspaceId, collectionId, itemId, data })
     }
     
-    function destroy(collectionId: string) {
-        // return useCase('delete-collection', { workspaceId, collectionId })
+    async function destroy(itemId: string) {
+        return useCase('delete-item', { workspaceId, collectionId, itemId })
     }
 
     return { list, create, update, destroy }

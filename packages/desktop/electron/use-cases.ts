@@ -19,6 +19,7 @@ import DeleteCollection from '@core/use-cases/delete-collection/delete-collectio
 import ListItems from '@core/use-cases/list-items/list-items'
 import CreateItem from '@core/use-cases/create-item/create-item'
 import UpdateItem from '@core/use-cases/update-item/update-item'
+import DeleteItem from '@core/use-cases/delete-item/delete-item'
 
 import WorkspaceRepository from './repositories/workspace-repository'
 
@@ -59,7 +60,8 @@ const options: Record<string, IUseCase> = {
 
     'list-items': new ListItems(driveManager, crudManger, workspaceRepository),
     'create-item': new CreateItem(driveManager, crudManger ,workspaceRepository),
-    'update-item': new UpdateItem(driveManager,crudManger, workspaceRepository)
+    'update-item': new UpdateItem(driveManager,crudManger, workspaceRepository),
+    'delete-item': new DeleteItem(driveManager, crudManger, workspaceRepository)
 }
 
 export default options

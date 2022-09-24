@@ -94,6 +94,12 @@ async function deleteColumn(id: string) {
     await load()
 }
 
+async function deleteItem(id: string) {
+    await crud.destroy(id)
+
+    await load()
+}
+
 </script>
 <template>
     <div class="p-5">
@@ -157,7 +163,13 @@ async function deleteColumn(id: string) {
 
                     </td>
 
-                    <td class="border p-2"></td>
+                    <td class="border p-2">
+                        <i
+                            @click="deleteItem(item.id)"
+                            class="w-5 h-5 hover:bg-gray-600 flex items-center justify-center cursor-pointer">
+                            <fa-icon icon="trash" class="text-xs " />
+                        </i>
+                    </td>
                 </tr>
             </template>
 

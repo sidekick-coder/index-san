@@ -115,9 +115,17 @@ export default class FolderCrud implements Crud {
     }
     
     public async deleteById(collectionPath: string, itemId: string): Promise<void> {
-        const entry = DirectoryEntry.directory([collectionPath, itemId].join('/'))
+        const entry = DirectoryEntry.directory(itemId)
 
         await this.drive.delete(entry.path)
+
+        const metas = await this.findMetas(collectionPath)
+
+        const index = metas.findIndex(m => m.id === itemId)
+
+        if (index !== -1) metas.splice(index, 1)        
+
+        await this.updateMetas(collectionPath, metas)
 
     }
 
