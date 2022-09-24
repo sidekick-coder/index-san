@@ -33,7 +33,9 @@ export default class CreateCollection {
 
         const json = JSON.parse(content.toString())
 
-        collections.push(...json)        
+        collections.push(...json)
+
+        await this.drive.mkdir(data.path)
 
         await this.drive.write(
             this.collectionsFilename,

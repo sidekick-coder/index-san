@@ -47,6 +47,12 @@ const routes: RouteRecordRaw[] = [
         props: true,
         component: () => import('../pages/collections/list.vue')
     },
+    // items
+    {
+        path: '/workspaces/:workspaceId/collections/:collectionId/items',
+        props: true,
+        component: () => import('../pages/items/table.vue')
+    },
     // 404 - keep this section in the end
     {
         path: '/:pathMatch(.*)*',

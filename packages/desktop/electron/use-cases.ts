@@ -1,8 +1,6 @@
 import { app } from 'electron'
 import path from 'path'
 
-import DriveManager from '@core/gateways/drive-manager'
-
 import ListWorkspaces from '@core/use-cases/list-workspaces/list-workspaces'
 import CreateWorkspace from '@core/use-cases/create-workspace/create-workspace'
 import DeleteWorkspace from '@core/use-cases/delete-workspace/delete-workspace'
@@ -13,12 +11,21 @@ import CreateDirectoryEntry from '@core/use-cases/create-directory-entry/create-
 import DeleteDirectoryEntry from '@core/use-cases/delete-directory-entry/delete-directory-entry'
 
 import ListCollections from '@core/use-cases/list-collections/list-collections'
+import ShowCollection from '@core/use-cases/show-collection/show-collection'
 import CreateCollection from '@core/use-cases/create-collection/create-collection'
 import DeleteCollection from '@core/use-cases/delete-collection/delete-collection'
 
+import ListItems from '@core/use-cases/list-items/list-items'
+import CreateItem from '@core/use-cases/create-item/create-item'
+import UpdateItem from '@core/use-cases/update-item/update-item'
+
 import WorkspaceRepository from './repositories/workspace-repository'
 
+import DriveManager from '@core/gateways/drive-manager'
+import CrudManager from '@core/gateways/crud-manager'
+
 import FSDrive from './gateways/fs-drive'
+import FSCrudFolder from './gateways/fs-crud-folder'
 
 interface IUseCase {
     execute(args:any): Promise<any>
@@ -29,7 +36,9 @@ const workspaceRepository = new WorkspaceRepository(
 )
 
 const fsDrive = new FSDrive()
+const fsCrudFolder = new FSCrudFolder()
 const driveManager = new DriveManager({ fs: fsDrive })
+const crudManger = new CrudManager({ fsFolder: fsCrudFolder })
 
 const options: Record<string, IUseCase> = {
     'list-workspaces': new ListWorkspaces(workspaceRepository),
@@ -42,8 +51,13 @@ const options: Record<string, IUseCase> = {
     'delete-directory-entry': new DeleteDirectoryEntry(workspaceRepository, driveManager),
 
     'list-collections': new ListCollections(workspaceRepository, driveManager),
+    'show-collection': new ShowCollection(workspaceRepository, driveManager),
     'create-collection': new CreateCollection(workspaceRepository, driveManager),
-    'delete-collection': new DeleteCollection(workspaceRepository, driveManager)
+    'delete-collection': new DeleteCollection(workspaceRepository, driveManager),
+
+    'list-items': new ListItems(driveManager, crudManger, workspaceRepository),
+    'create-item': new CreateItem(driveManager, crudManger ,workspaceRepository),
+    'update-item': new UpdateItem(driveManager,crudManger, workspaceRepository)
 }
 
 export default options

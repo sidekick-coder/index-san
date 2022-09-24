@@ -1,6 +1,6 @@
 import { afterEach, expect, it, describe } from 'vitest'
 import TestFS from '../../__tests__/fixtures/test-fs'
-import FolderCrud from './folder-crud'
+import FolderCrud from './fs-crud-folder'
 import FSDrive from './fs-drive'
 
 const crud = new FolderCrud()
@@ -11,7 +11,7 @@ drive.config.path = testFS.tmpdir
 
 crud.drive = drive
 
-describe('folder-crud.ts', () => {
+describe('fs-crud-folder.ts', () => {
     afterEach(() => testFS.clear())
     
     it('should list directory-entries as items', async () => {

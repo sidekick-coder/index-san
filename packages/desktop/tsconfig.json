@@ -7,7 +7,7 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "allowJs": true,
-    "declaration": true,
+    "declaration": false,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,

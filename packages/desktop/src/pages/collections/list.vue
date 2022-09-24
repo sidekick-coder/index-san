@@ -3,7 +3,7 @@ import Collection from '@core/entities/collection'
 
 import { useCollections } from '@/composables/collection'
 import { onMounted, ref } from 'vue'
-import { useWorkspace } from '../../stores/workspaces'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
     workspaceId: {
@@ -12,6 +12,7 @@ const props = defineProps({
     }
 })
 
+const router = useRouter()
 const collections = useCollections(props.workspaceId)
 
 const items = ref<Collection[]>([])
@@ -51,7 +52,7 @@ onMounted(load)
 async function submit(){
     const { name, path } = payload.value
 
-    await collections.create({crudName: 'fs-folder', name, path })
+    await collections.create({crudName: 'fsFolder', name, path })
     
     await load()
     
@@ -63,6 +64,12 @@ async function deleteItem(id: string) {
     await collections.destroy(id)
 
     await load()
+}
+
+async function viewItem(collectionId: string){
+    const { workspaceId } = props
+
+    await router.push(`/workspaces/${workspaceId}/collections/${collectionId}/items`)
 }
     
 </script>
@@ -96,9 +103,15 @@ async function deleteItem(id: string) {
             >
     
             <template #item-actions="{ item }">
-                <w-btn @click="deleteItem(item.id)" >
-                    <fa-icon icon="trash" />
-                </w-btn>
+                <div class="flex gap-x-4">
+                    <w-btn @click="viewItem(item.id)" >
+                        <fa-icon icon="eye" />
+                    </w-btn>
+    
+                    <w-btn @click="deleteItem(item.id)" >
+                        <fa-icon icon="trash" />
+                    </w-btn>
+                </div>
             </template>
         
             </w-data-table>

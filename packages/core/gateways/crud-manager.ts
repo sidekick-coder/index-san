@@ -40,6 +40,8 @@ export default class CrudManager<T extends Record<string, Crud> = any> implement
     private async execute<T extends (d: Crud) => any>(cb: T): Promise<ReturnType<T>>  {
         const crud = this._allCruds[this._currentCrud]
 
+        if (!crud) throw new Error('Crud implementation not found')
+
         crud.drive = this._drive
 
         const result = await cb(crud)

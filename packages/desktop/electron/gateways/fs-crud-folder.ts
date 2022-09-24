@@ -5,7 +5,7 @@ import { Crud } from '../../../core/gateways/crud-manager'
 import { Drive } from '../../../core/gateways/drive-manager'
 
 interface ItemMeta {
-    itemId: string
+    id: string
     [props: string]: any
 }
 
@@ -33,10 +33,26 @@ export default class FolderCrud implements Crud {
 
     public async list(collectionPath: string): Promise<item[]> {
         const entries = await this.drive.list(collectionPath)
+        const metas = await this.findMetas(collectionPath)
 
         return entries
             .filter(e => e.type === 'directory')
-            .map(entry => new Item(entry, entry.path))
+            .map(entry => {
+                const data: any = {
+                    name: entry.name
+                }
+
+                const meta = metas.find(m => m.id === entry.path)
+
+                
+                if (meta) {
+                    Object.assign(data, meta)
+                }
+
+                return new Item(data, entry.path)
+            })
+
+        
     }
     
     public async findById(collectionPath: string, id: string): Promise<item | null> {
@@ -74,7 +90,7 @@ export default class FolderCrud implements Crud {
     }
     
     public async updateById(collectionPath: string, itemId: string, data: any): Promise<void> {
-        const entry = DirectoryEntry.directory([collectionPath, itemId].join('/'))
+        const entry = DirectoryEntry.directory(itemId)
 
         const isValid = await this.drive.exists(entry.path)
 
@@ -82,10 +98,14 @@ export default class FolderCrud implements Crud {
 
         const metas = await this.findMetas(collectionPath)
         
-        const oldMeta = metas.find(m => m.itemId === itemId)
-        const newMeta = Object.assign(oldMeta ?? {}, data, { itemId })
+        const oldMeta = metas.find(m => m.id === itemId)
+        const newMeta = {
+            ...oldMeta,
+            ...data,
+            id: itemId
+        }
         
-        const index = metas.findIndex(m => m.itemId === itemId)
+        const index = metas.findIndex(m => m.id === itemId)
 
         if (index === -1) metas.push(newMeta)
 

@@ -1,11 +1,18 @@
 import uuid from 'uuid-random'
 
+interface Column {
+    id: string,
+    field: string
+    readonly?: boolean
+}
+
 export default class Collection {
     public id: string
     public name: string
     public path: string
     
     public crudName: string
+    public columns = [] as Column[]
 
     constructor(
         props: Omit<Collection, 'id'>,
