@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/entry/folder.vue'),
         children: [
             {
-                path: '/',
+                path: '/:workspaceId',
                 props: true,
                 component: () => import('../pages/entry/folder.vue'),
             },
@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/workspaces/:workspaceId/collections/:collectionId/items',
         props: true,
-        component: () => import('../pages/items/table.vue')
+        component: () => import('../pages/items/items.vue')
     },
     // 404 - keep this section in the end
     {

@@ -21,10 +21,9 @@ defineProps({
 
 const builder = useBuilder()
 
-builder.add('drop-shadow w-full')
+builder.add('w-full')
 
-builder.createChild('th')
-    .add('border text-left font-bold p-2')
+builder.createChild('th').add('text-left p-2')
 
 builder.createChild('tr')
 
@@ -38,22 +37,24 @@ const classes = computed(() => ({
 <template>
     <table :class="classes.main">
         <thead>
-            <tr :class="classes.tr">
-                <slot
-                    v-for="(column, index) in columns"
-                    :column="column"
-                    :classes="classes.th"
-                    name="column"
-                >
-                    <th
-                        
-                        :key="index"
-                        :class="classes.th"
+            <slot name="columns" :classes="classes">
+                <tr :class="classes.tr">
+                    <slot
+                        v-for="(column, index) in columns"
+                        :column="column"
+                        :classes="classes.th"
+                        name="column"
                     >
-                        {{ column.field }}
-                    </th>
-                </slot>
-            </tr>
+                        <th
+                            
+                            :key="index"
+                            :class="classes.th"
+                        >
+                            {{ column.field }}
+                        </th>
+                    </slot>
+                </tr>
+            </slot>
         </thead>
 
         <slot

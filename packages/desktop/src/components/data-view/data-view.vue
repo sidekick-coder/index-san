@@ -1,0 +1,65 @@
+<script setup lang="ts">
+// data-view manager
+
+import { computed, defineAsyncComponent, ref } from 'vue'
+
+defineProps({
+    items: {
+        type: Array,
+        default: () => []
+    },
+    columns: {
+        type: Array,
+        default: () => []
+    },
+})
+
+const current = ref(0)
+const currentView = computed(() => allViews[current.value])
+
+const allViews = [
+    {
+        label: 'Table',
+        component: defineAsyncComponent(() => import('./data-view-table.vue'))
+    },
+    {
+        label: 'Table 2',
+        component: defineAsyncComponent(() => import('./data-view-table.vue'))
+    },
+]
+
+</script>
+
+<template>
+    <div class="w-full">
+        <div class="border-b border-gray-600 flex w-full">
+            <div
+                v-for="(view, index) in allViews"
+                :key="index"
+                class="text-sm px-4 py-2 border-b-2 cursor-pointer hover:bg-gray-800 rounded-t"
+                :class="current === index ? 'border-teal-500' : 'border-transparent' "
+                @click="current = index"
+            >
+                {{view.label}}
+            </div>
+        </div>
+        
+        
+            <component
+                :is="currentView.component"
+                :items="items"
+                :columns="columns"
+
+                @column:new="$emit('column:new', $event)"
+                @column:update="$emit('column:update', $event)"
+
+                @item:new="$emit('item:new', $event)"
+                @item:update="$emit('item:update', $event)"
+                @item:delete="$emit('item:delete', $event)"
+            >
+                {{ currentView.label }}
+            </component>
+        
+
+    </div>
+</template>
