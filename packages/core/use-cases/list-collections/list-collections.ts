@@ -20,7 +20,7 @@ export default class ListCollections {
 
         const collections: Collection[] = []
         
-        const content = await this.drive.read('.index-san/collections.json')
+        const content = await this.drive.read('.is/collections.json')
 
         if (content) {
             const json = JSON.parse(content.toString())

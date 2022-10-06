@@ -9,7 +9,7 @@ export default class CreateCollection {
         private readonly drive: DriveManager
     ){}
 
-    public collectionsFilename = '.index-san/collections.json'
+    public collectionsFilename = '.is/collections.json'
 
 
     public async execute({ workspaceId, data }: CreateCollectionDTO.Input): Promise<CreateCollectionDTO.Output> {

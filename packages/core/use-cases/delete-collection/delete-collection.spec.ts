@@ -20,7 +20,7 @@ test.group('delete-collection (use-case)', (group) => {
     test('should delete a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        const entry = DirectoryEntry.file('.index-san/collections.json')
+        const entry = DirectoryEntry.file('.is/collections.json')
 
         memoryDrive.createFile(entry.path, [collection])
 
@@ -33,7 +33,7 @@ test.group('delete-collection (use-case)', (group) => {
             collectionId: collection.id,
         })
 
-        const content = memoryDrive.content.get('.index-san/collections.json')
+        const content = memoryDrive.content.get('.is/collections.json')
 
         const json = content ? JSON.parse(content.toString()) : []
         

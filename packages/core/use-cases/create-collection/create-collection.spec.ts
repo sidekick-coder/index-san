@@ -28,7 +28,7 @@ test.group('create-collection (use-case)', (group) => {
             data: collection
         })
 
-        const content = memoryDrive.content.get('.index-san/collections.json')
+        const content = memoryDrive.content.get('.is/collections.json')
 
         const json = content ? JSON.parse(content.toString()) : []
 

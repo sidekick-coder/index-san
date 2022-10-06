@@ -17,7 +17,7 @@ export default class ItemService {
 
         this.drive.use(workspace.drive).config(workspace.config)       
 
-        const content = await this.drive.read('.index-san/collections.json')
+        const content = await this.drive.read('.is/collections.json')
         const collections: Collection[] = []
 
         if (content) {

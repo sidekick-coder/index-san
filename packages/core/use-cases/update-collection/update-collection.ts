@@ -9,7 +9,7 @@ export default class UpdateCollection {
         private readonly drive: DriveManager
     ){}
 
-    public collectionsFilename = '.index-san/collections.json'
+    public collectionsFilename = '.is/collections.json'
 
     public async execute({ workspaceId, collectionId, data }: UpdateCollectionsDTO.Input){
         const workspace = await this.workspaceRepository.findById(workspaceId)

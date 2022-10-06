@@ -30,7 +30,7 @@ const entriesFormatted = computed(() => orderBy(entries.value, ['type', 'name'])
         icon = 'folder'
     }
 
-    if (e.name === '.index-san') {
+    if (e.name === '.is') {
         icon = 'cog'
     }
 

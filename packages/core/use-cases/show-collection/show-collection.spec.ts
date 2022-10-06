@@ -1,6 +1,5 @@
 import { test } from '@japa/runner'
 
-import DirectoryEntry from '../../entities/directory-entry'
 import DriveManager from '../../gateways/drive-manager'
 import CollectionFactory from '../../__tests__/factories/collections'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
@@ -20,7 +19,7 @@ test.group('show-collection (use-case)', (group) => {
     test('should return a collection by id', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        memoryDrive.createFile('.index-san/collections.json', [collection])
+        memoryDrive.createFile('.is/collections.json', [collection])
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()

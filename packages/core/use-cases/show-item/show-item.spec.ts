@@ -24,7 +24,7 @@ test.group('show-item (use-case)', (group) => {
     
     
     group.each.setup(() => {
-        memoryDrive.createFile('.index-san/collections.json', JSON.stringify([collection]))
+        memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
         workspaceRepository.createSync(workspace)
     })
 

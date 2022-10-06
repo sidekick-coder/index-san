@@ -23,7 +23,7 @@ test.group('list-items (use-case)', (group) => {
     
     
     group.each.setup(() => {
-        memoryDrive.write('.index-san/collections.json', Buffer.from(JSON.stringify([collection])))
+        memoryDrive.write('.is/collections.json', Buffer.from(JSON.stringify([collection])))
         workspaceRepository.createSync(workspace)
     })
 

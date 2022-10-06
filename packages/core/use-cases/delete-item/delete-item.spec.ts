@@ -26,14 +26,14 @@ test.group('delete-item (use-case)', group => {
     
     const entry = new DirectoryEntry({
         name: 'collections.json',
-        path: '.index-san/collections.json',
+        path: '.is/collections.json',
         type: 'file'
     })
     
     memoryCrud.drive = memoryDrive
 
     group.each.setup(() => {
-        memoryDrive.createFile('.index-san/collections.json', [collection])
+        memoryDrive.createFile('.is/collections.json', [collection])
         workspaceRepository.createSync(workspace)
     })
     

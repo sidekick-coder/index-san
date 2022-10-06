@@ -27,7 +27,7 @@ test.group('update-item (use-case)', group => {
     memoryCrud.drive = memoryDrive
 
     group.each.setup(() => {
-        memoryDrive.createFile('.index-san/collections.json', JSON.stringify([collection]))
+        memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
         workspaceRepository.createSync(workspace)
     })
     

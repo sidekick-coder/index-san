@@ -20,7 +20,7 @@ test.group('update-collection (use-case)', (group) => {
     test('should update a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        memoryDrive.createFile('.index-san/collections.json', JSON.stringify([collection]))
+        memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()
@@ -34,7 +34,7 @@ test.group('update-collection (use-case)', (group) => {
             }
         })
 
-        const content = memoryDrive.content.get('.index-san/collections.json')
+        const content = memoryDrive.content.get('.is/collections.json')
 
         const json = content ? JSON.parse(content.toString()) : []
         

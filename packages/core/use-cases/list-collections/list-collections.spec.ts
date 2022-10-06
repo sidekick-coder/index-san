@@ -20,7 +20,7 @@ test.group('list-collections (use-case)', (group) => {
     test('should return a list of collections of the workspace', async ({ expect }) => {
         const collections = CollectionFactory.createMany()
 
-        memoryDrive.createFile('.index-san/collections.json', collections)
+        memoryDrive.createFile('.is/collections.json', collections)
 
         const workspace = await repository.create(WorkspaceFactory.create({
             drive: drive.getCurrentDrive()
