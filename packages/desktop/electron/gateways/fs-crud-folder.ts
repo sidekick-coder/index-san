@@ -27,7 +27,7 @@ export default class FolderCrud implements Crud {
 
         await this.drive.write(
             metasFilename,
-            Buffer.from(JSON.stringify(newMetas))
+            Buffer.from(JSON.stringify(newMetas, undefined, 4))
         )
     }
 
@@ -42,14 +42,14 @@ export default class FolderCrud implements Crud {
                     _filename: entry.name
                 }
 
-                const meta = metas.find(m => m.id === entry.path)
+                const meta = metas.find(m => m.id === entry.name)
 
                 
                 if (meta) {
                     Object.assign(data, meta)
                 }
 
-                return new Item(data, entry.path)
+                return new Item(data, entry.name)
             })
 
         
@@ -64,7 +64,7 @@ export default class FolderCrud implements Crud {
 
         const metas = await this.findMetas(collectionPath)
 
-        const itemMeta = metas.find(m => m.itemId === entry.name)
+        const itemMeta = metas.find(m => m.id === entry.name)
 
         const data = Object.assign(entry, itemMeta)
 
@@ -81,7 +81,7 @@ export default class FolderCrud implements Crud {
 
         metas.push({
             ...data,
-            itemId: data.id,
+            id: data.id,
         })
 
         await this.updateMetas(collectionPath, metas)
@@ -90,7 +90,7 @@ export default class FolderCrud implements Crud {
     }
     
     public async updateById(collectionPath: string, itemId: string, data: any): Promise<void> {
-        const entry = DirectoryEntry.directory(itemId)
+        const entry = DirectoryEntry.directory(`${collectionPath}/${itemId}`)
 
         const isValid = await this.drive.exists(entry.path)
 
@@ -115,7 +115,7 @@ export default class FolderCrud implements Crud {
     }
     
     public async deleteById(collectionPath: string, itemId: string): Promise<void> {
-        const entry = DirectoryEntry.directory(itemId)
+        const entry = DirectoryEntry.directory(`${collectionPath}/${itemId}`)
 
         await this.drive.delete(entry.path)
 
