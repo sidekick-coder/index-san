@@ -67,10 +67,14 @@ export default class InMemoryDrive implements Drive {
     }
 
 
-    public createFile(entryPath: string, content: string | Buffer | any[] = '') {
+    public createFile(entryPath: string, content: any = '') {
         const entry = DirectoryEntry.file(entryPath)
 
         if (Array.isArray(content)) {
+            content = JSON.stringify(content)
+        }
+
+        if (typeof content === 'object') {
             content = JSON.stringify(content)
         }
 
