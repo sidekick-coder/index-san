@@ -14,7 +14,7 @@ defineProps({
     },
 })
 
-const current = ref(0)
+const current = ref(1)
 const currentView = computed(() => allViews[current.value])
 
 const allViews = [
@@ -23,8 +23,8 @@ const allViews = [
         component: defineAsyncComponent(() => import('./data-view-table.vue'))
     },
     {
-        label: 'Table 2',
-        component: defineAsyncComponent(() => import('./data-view-table.vue'))
+        label: 'Grid',
+        component: defineAsyncComponent(() => import('./data-view-grid.vue'))
     },
 ]
 
@@ -54,8 +54,10 @@ const allViews = [
                 @column:update="$emit('column:update', $event)"
 
                 @item:new="$emit('item:new', $event)"
+                @item:show="$emit('item:show', $event)"
                 @item:update="$emit('item:update', $event)"
                 @item:delete="$emit('item:delete', $event)"
+                @item:refresh="$emit('item:refresh', $event)"
             >
                 {{ currentView.label }}
             </component>

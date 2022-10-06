@@ -104,10 +104,10 @@ async function updateItem(itemId: string, field: string, value: string) {
 
             <template #item="{ item, classes }">
                 <tr :class="classes">
-                    <td class="cell-border border-b  p-0 px-2" @click="$emit('item:delete', item.id)">
+                    <td class="cell-border border-b  p-0 px-2" @click="$emit('item:show', item)">
                         <i
                             class="flex items-center justify-center cursor-pointer text-gray-500">
-                            <fa-icon icon="times" />
+                            <fa-icon icon="bars" />
                         </i>
                     </td>
 

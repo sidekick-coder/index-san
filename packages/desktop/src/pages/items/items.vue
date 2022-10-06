@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import uuid from 'uuid-random'
 
 import Collection from '@core/entities/collection'
@@ -8,6 +8,7 @@ import Item from '@core/entities/item'
 import { useCrud } from '@/composables/crud'
 
 import ColumnDialog from './table-column-dialog.vue'
+
 import { useCollectionRepository } from '@/composables/collection'
 
 const props = defineProps({
@@ -26,7 +27,11 @@ const repository = useCollectionRepository(props.workspaceId)
 
 const collection = ref<Partial<Collection>>({})
 const items = ref<Item[]>([])
-const dialog = ref(false)
+const dialog = ref({
+    column: false,
+    item: false
+})
+const editedItem = ref<Partial<Item>>({})
 
 const columns = computed(() => collection.value?.columns?.slice() || [])
 
@@ -62,7 +67,7 @@ async function createColumn(column: any) {
         columns: allColumns
     })
     
-    dialog.value = false
+    dialog.value.column = false
 
     await load()
 }
@@ -92,13 +97,34 @@ async function deleteItem(id: string) {
     await crud.destroy(id)
 
     await load()
+
+    dialog.value.item = false
+}
+
+async function edit(item: Item) {
+    editedItem.value = item
+    dialog.value.item = true
+}
+
+async function saveEditedItem(data: any){
+    await updateItem({ id: editedItem.value.id!, data })
+
+    await load()
 }
 
 </script>
 <template>
     <div class="p-5">
 
-        <column-dialog v-model="dialog" @submit="createColumn" />
+        <item-dialog
+            v-model="dialog.item"
+            :columns="columns"
+            :item="editedItem"
+            @save="saveEditedItem"
+            @delete="deleteItem(editedItem.id)"
+        />
+
+        <column-dialog v-model="dialog.column" @submit="createColumn" />
 
         <div class="text-2xl mb-5">
             {{ collection.name ?? 'Collection' }}
@@ -107,10 +133,14 @@ async function deleteItem(id: string) {
         <data-view
             :items="items"
             :columns="columns"
+            
             @item:new="addNew"
+            @item:show="edit"
             @item:update="updateItem"
             @item:delete="deleteItem"
-            @column:new="dialog = true"
+            @item:refresh="load"
+
+            @column:new="dialog.column = true"
             @column:update="deleteColumn"
         />
 

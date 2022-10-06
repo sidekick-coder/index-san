@@ -3,6 +3,7 @@ import Item from '../../../core/entities/item'
 import item from '../../../core/entities/item'
 import { Crud } from '../../../core/gateways/crud-manager'
 import { Drive } from '../../../core/gateways/drive-manager'
+import orderBy from 'lodash/orderBy'
 
 interface ItemMeta {
     id: string
@@ -35,7 +36,7 @@ export default class FolderCrud implements Crud {
         const entries = await this.drive.list(collectionPath)
         const metas = await this.findMetas(collectionPath)
 
-        return entries
+        const items = entries
             .filter(e => e.type === 'directory' && e.name !== '.is')
             .map(entry => {
                 const data: any = {
@@ -51,6 +52,8 @@ export default class FolderCrud implements Crud {
 
                 return new Item(data, entry.name)
             })
+
+        return orderBy(items, 'createdAt')
 
         
     }
@@ -82,6 +85,7 @@ export default class FolderCrud implements Crud {
         metas.push({
             ...data,
             id: data.id,
+            createdAt: Date.now()
         })
 
         await this.updateMetas(collectionPath, metas)
