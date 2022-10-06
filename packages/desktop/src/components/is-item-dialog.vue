@@ -17,7 +17,7 @@ const props = defineProps({
     }
 
 })
-const emit = defineEmits(['update:modelValue', 'save'])
+const emit = defineEmits(['update:modelValue', 'save', 'delete'])
 
 const model = useVModel(props, 'modelValue', emit)
 const payload = ref({})
@@ -45,8 +45,8 @@ watch(model, (value) => {
                 @click.stop=""
             >
 
-            <div class="flex items-center">
-                <div class="text-xl mb-5 text-gray-500">
+            <div class="flex items-center mb-5 ">
+                <div class="text-xl text-gray-500">
                     Edit item
                 </div>
 
@@ -55,7 +55,6 @@ watch(model, (value) => {
                         <fa-icon icon="trash" />
                     </i>
                 </div>
-
             </div>
 
                 <div v-for="column in columns" :key="column.id" class="mb-4 last:mb-0" >

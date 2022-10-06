@@ -1,6 +1,6 @@
 import uuid from 'uuid-random'
 
-interface Column {
+export interface CollectionColumn {
     id: string,
     field: string
     label: string
@@ -13,7 +13,7 @@ export default class Collection {
     public path: string
     
     public crudName: string
-    public columns = [] as Column[]
+    public columns = [] as CollectionColumn[]
 
     constructor(
         props: Omit<Collection, 'id'>,

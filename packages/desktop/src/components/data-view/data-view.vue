@@ -14,7 +14,7 @@ defineProps({
     },
 })
 
-const current = ref(1)
+const current = ref(0)
 const currentView = computed(() => allViews[current.value])
 
 const allViews = [

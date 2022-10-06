@@ -1,9 +1,5 @@
-<script lang="ts" setup>
-import { ref } from 'vue'
-    
-// import ColumnDialog from './table-column-dialog.vue'
-    
-const props = defineProps({
+<script lang="ts" setup>    
+defineProps({
     items: {
         type: Array as () => any[],
         default: () => []
@@ -14,9 +10,7 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['item:new', 'item:update'])
-
-const dialog = ref(false)
+const emit = defineEmits(['item:new', 'item:update', 'column:update'])
     
 async function updateItem(itemId: string, field: string, value: string) {
     emit('item:update', {
@@ -25,44 +19,7 @@ async function updateItem(itemId: string, field: string, value: string) {
             [field]: value
         }
     })
-    // await crud.update(itemId, { [field]: value })
 }
-    
-// async function createColumn(column: any) {
-//     const payload = {
-//         ...column,
-//         id: uuid(),
-//     }
-    
-//     const allColumns = collection.value.columns?.slice() || []
-    
-//     allColumns.push(payload)
-    
-//     await repository.update(props.collectionId, {
-//         columns: allColumns
-//     })
-        
-//     dialog.value = false
-    
-//     await load()
-// }
-    
-// async function deleteColumn(id: string) {
-        
-//     const allColumns = collection.value.columns?.slice() || []
-        
-//     const index = allColumns.findIndex(c => c.id === id)
-    
-//     if (index === -1) return
-    
-//     allColumns.splice(index, 1)
-    
-//     await repository.update(props.collectionId, {
-//         columns: allColumns
-//     })
-    
-//     await load()
-// }
     
 </script>
 <template>   
@@ -87,7 +44,7 @@ async function updateItem(itemId: string, field: string, value: string) {
                         :key="column.id"
                         class="border-b border-r cell-border p-0 cursor-pointer"
                         :class="classes.th"
-                        @click="$emit('column:update', column.id)"
+                        @click="$emit('column:update', column)"
                     >
                         <div class="text-gray-500"> {{ column.label }}</div>
                     </th>                       
