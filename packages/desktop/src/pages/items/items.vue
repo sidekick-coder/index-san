@@ -116,12 +116,12 @@ async function saveEditedItem(data: any){
 <template>
     <div class="p-5">
 
-        <item-dialog
+        <is-item-dialog
             v-model="dialog.item"
             :columns="columns"
             :item="editedItem"
             @save="saveEditedItem"
-            @delete="deleteItem(editedItem.id)"
+            @delete="deleteItem(editedItem.id!)"
         />
 
         <column-dialog v-model="dialog.column" @submit="createColumn" />
