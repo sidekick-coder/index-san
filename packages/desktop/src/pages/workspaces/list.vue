@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useWorkspace } from '../../stores/workspaces'
 
 const store = useWorkspace()
+const router = useRouter()
 
 const columns = [
     {
@@ -26,6 +28,12 @@ const payload = ref({
     path: '',
 })
 
+function load(){
+    store.setAll()
+}
+
+load()
+
 async function submit(){
     await store.create({
         name: payload.value.name,
@@ -35,7 +43,7 @@ async function submit(){
         }
     })
 
-    await store.setAll()
+    load()
 
     payload.value.name = ''
     payload.value.path = ''
@@ -44,7 +52,11 @@ async function submit(){
 async function deleteItem(id: string) {
     await store.delete(id)
 
-    await store.setAll()
+    load()
+}
+
+async function showItem(workspaceId: string){
+    await router.push(`/workspaces/${workspaceId}`)
 }
 
 </script>
@@ -80,9 +92,15 @@ async function deleteItem(id: string) {
         </template>
 
         <template #item-actions="{ item }">
-            <w-btn @click="deleteItem(item.id)" >
-                <fa-icon icon="trash" />
-            </w-btn>
+            <div class="flex">
+                <w-btn @click="showItem(item.id)" class="mr-2" >
+                    <fa-icon icon="eye" />
+                </w-btn>
+    
+                <w-btn @click="deleteItem(item.id)" >
+                    <fa-icon icon="trash" />
+                </w-btn>
+            </div>
         </template>
     
         </w-data-table>

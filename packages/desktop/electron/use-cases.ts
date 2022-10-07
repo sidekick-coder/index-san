@@ -5,6 +5,9 @@ import ListWorkspaces from '@core/use-cases/list-workspaces/list-workspaces'
 import CreateWorkspace from '@core/use-cases/create-workspace/create-workspace'
 import DeleteWorkspace from '@core/use-cases/delete-workspace/delete-workspace'
 
+import ShowWorkspaceOptions from '@core/use-cases/show-workspace-options/show-workspace-options'
+import UpdateWorkspaceOptions from '@core/use-cases/update-workspace-options/update-workspace-options'
+
 import ShowDirectoryEntry from '@core/use-cases/show-directory-entry/show-directory-entry'
 import ListDirectoryEntry from '@core/use-cases/list-directory-entry/list-directory-entry'
 import CreateDirectoryEntry from '@core/use-cases/create-directory-entry/create-directory-entry'
@@ -46,6 +49,9 @@ const options: Record<string, IUseCase> = {
     'list-workspaces': new ListWorkspaces(workspaceRepository),
     'create-workspace': new CreateWorkspace(workspaceRepository, driveManager),
     'delete-workspace': new DeleteWorkspace(workspaceRepository),
+
+    'show-workspace-options': new ShowWorkspaceOptions(workspaceRepository, driveManager),
+    'update-workspace-options': new UpdateWorkspaceOptions(workspaceRepository, driveManager),
 
     'list-directory-entry': new ListDirectoryEntry(workspaceRepository, driveManager),    
     'show-directory-entry': new ShowDirectoryEntry(workspaceRepository, driveManager),

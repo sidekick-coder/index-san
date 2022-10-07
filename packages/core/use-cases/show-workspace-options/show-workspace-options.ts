@@ -12,6 +12,8 @@ export default class ShowWorkspaceOptions {
 
         if (!workspace) throw new Error('Workspace not found')
 
+        this.drive.use(workspace.drive).config(workspace.config)
+
         let data = {}
 
         const contents = await this.drive.read('.is/options.json')

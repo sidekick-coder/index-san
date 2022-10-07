@@ -1,5 +1,4 @@
 import Collection, { CollectionColumn } from '@core/entities/collection'
-import { ref } from 'vue'
 import uuid from 'uuid-random'
 
 import { DataResponse, useCase } from './use-case'
