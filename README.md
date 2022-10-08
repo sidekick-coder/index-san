@@ -69,5 +69,3 @@ Also you will notice that the interface is not very polish yet. this is because 
 ## Project structure
 
 The project use `SOLID` pattern to build the `core` of the system, and the client is an electron app.
-
-There are divider in the ./packages/core and ./packages/desktop folder
