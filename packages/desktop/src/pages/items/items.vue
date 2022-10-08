@@ -7,6 +7,7 @@ import Item from '@core/entities/item'
 import { useCrud } from '@/composables/crud'
 
 import { useCollection } from '@/composables/collection'
+import { definePageMeta } from '@/composables/page-meta'
 
 const props = defineProps({
     workspaceId: {
@@ -19,10 +20,9 @@ const props = defineProps({
     }
 })
 
+const meta = definePageMeta({ layout: 'workspace' })
 const crud = useCrud(props.workspaceId, props.collectionId)
 const collection = useCollection(props.workspaceId, props.collectionId)
-
-const title = ref('Collection')
 
 const items = ref<Item[]>([])
 const dialog = ref({
@@ -36,8 +36,7 @@ const columns = ref<CollectionColumn[]>([])
 
 async function load(){
     const response = await collection.show()
-    
-    title.value = response.name
+    meta.value.title = response.name
     columns.value = response.columns
 
     await crud.list().then(d => items.value = d.data)
@@ -95,10 +94,6 @@ watch(editedColumn, v => v ? (dialog.value.column = true) : null)
             :collection-id="collectionId"
             @save="load"
         />
-
-        <div class="text-2xl mb-5">
-            {{ title }}
-        </div>
 
         <data-view
             :items="items"

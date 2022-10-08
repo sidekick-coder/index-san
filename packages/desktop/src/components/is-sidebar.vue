@@ -24,7 +24,7 @@ store.load()
 </script>
 
 <template>
-    <w-drawer class="bg-zinc-800 text-white" >
+    <w-drawer class="bg-zinc-800 text-white border-r border-zinc-700" >
         
         <div class="flex flex-wrap items-start">
             <router-link to="/" class="sidebar-list-item">
@@ -45,8 +45,8 @@ store.load()
             </div>
 
             <router-link
-                v-for="item in items"
-                :key="item.id"
+                v-for="(item, index) in store.menuItems"
+                :key="index"
                 :to="item.to"
                 class="sidebar-list-item clickable text-sm"
             >
