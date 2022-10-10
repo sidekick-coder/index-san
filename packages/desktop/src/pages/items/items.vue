@@ -73,28 +73,27 @@ watch(editedColumn, v => v ? (dialog.value.column = true) : null)
 <template>
     <div class="p-5">
 
-        <is-dialog
-            v-model="dialog.item"
-           
-        >
-            
-            <div>
-                <is-item-form
+        <is-dialog v-model="dialog.item">
+
+            <template v-if="dialog.item">            
+                <div>
+                    <is-item-form
+                        :workspace-id="workspaceId"
+                        :collection-id="collectionId"
+                        :item-id="editedItem?.id"
+                        @save="load"
+                    />
+                </div>
+                
+                <div class="my-4 bg-gray-600 h-[1px] w-full"></div>
+    
+                <is-item-content
                     :workspace-id="workspaceId"
                     :collection-id="collectionId"
                     :item-id="editedItem?.id"
-                    @save="load"
+                    class="h-[40vh]" 
                 />
-            </div>
-            
-            <div class="my-4 bg-gray-600 h-[1px] w-full"></div>
-
-            <is-item-content
-                :workspace-id="workspaceId"
-                :collection-id="collectionId"
-                :item-id="editedItem?.id"
-                class="h-[40vh]" 
-            />
+            </template>            
 
         </is-dialog>
 
