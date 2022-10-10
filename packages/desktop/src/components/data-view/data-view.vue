@@ -14,6 +14,16 @@ defineProps({
     },
 })
 
+defineEmits([
+    'column:new',
+    'column:update',
+    'item:show',
+    'item:new',
+    'item:update',
+    'item:delete',
+    'item:refresh'
+])
+
 const current = ref(0)
 const currentView = computed(() => allViews[current.value])
 
@@ -53,8 +63,8 @@ const allViews = [
                 @column:new="$emit('column:new', $event)"
                 @column:update="$emit('column:update', $event)"
 
-                @item:new="$emit('item:new', $event)"
                 @item:show="$emit('item:show', $event)"
+                @item:new="$emit('item:new', $event)"
                 @item:update="$emit('item:update', $event)"
                 @item:delete="$emit('item:delete', $event)"
                 @item:refresh="$emit('item:refresh', $event)"

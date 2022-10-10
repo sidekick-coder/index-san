@@ -7,7 +7,12 @@ export default class DirectoryEntry {
         Object.assign(this, props)
     }
 
-    public static directory(path: string) {
+    public static directory(...paths: string[]) {
+        const path = paths
+            .map(p => p.split('/'))
+            .reduce((all, p) => all.concat(p), [])
+            .join('/')
+
         const basename = path.split('/').pop()
 
         return new DirectoryEntry({
@@ -17,7 +22,12 @@ export default class DirectoryEntry {
         })
     }
 
-    public static file(path: string) {
+    public static file(...paths: string[]) {
+        const path = paths
+            .map(p => p.split('/'))
+            .reduce((all, p) => all.concat(p), [])
+            .join('/')
+
         const basename = path.split('/').pop()
 
         return new DirectoryEntry({

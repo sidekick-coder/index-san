@@ -10,7 +10,15 @@ defineProps({
     },
 })
 
-const emit = defineEmits(['item:new', 'item:update', 'column:update'])
+const emit = defineEmits([
+    'column:new',
+    'column:update',
+    'item:show',
+    'item:new',
+    'item:update',
+    'item:delete',
+    'item:refresh'
+])
     
 async function updateItem(itemId: string, field: string, value: string) {
     emit('item:update', {

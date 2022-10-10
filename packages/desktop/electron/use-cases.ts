@@ -20,6 +20,7 @@ import CreateCollection from '@core/use-cases/create-collection/create-collectio
 import DeleteCollection from '@core/use-cases/delete-collection/delete-collection'
 
 import ListItems from '@core/use-cases/list-items/list-items'
+import ShowItem from '@core/use-cases/show-item/show-item'
 import CreateItem from '@core/use-cases/create-item/create-item'
 import UpdateItem from '@core/use-cases/update-item/update-item'
 import DeleteItem from '@core/use-cases/delete-item/delete-item'
@@ -65,6 +66,7 @@ const options: Record<string, IUseCase> = {
     'delete-collection': new DeleteCollection(workspaceRepository, driveManager),
 
     'list-items': new ListItems(driveManager, crudManger, workspaceRepository),
+    'show-item': new ShowItem(driveManager, crudManger, workspaceRepository),
     'create-item': new CreateItem(driveManager, crudManger ,workspaceRepository),
     'update-item': new UpdateItem(driveManager,crudManger, workspaceRepository),
     'delete-item': new DeleteItem(driveManager, crudManger, workspaceRepository)

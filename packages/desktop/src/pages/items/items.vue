@@ -29,7 +29,7 @@ const dialog = ref({
     column: false,
     item: false
 })
-const editedItem = ref<Partial<Item>>({})
+const editedItem = ref<Item>()
 const editedColumn = ref<CollectionColumn | null>(null)
 
 const columns = ref<CollectionColumn[]>([])
@@ -62,15 +62,9 @@ async function deleteItem(id: string) {
     dialog.value.item = false
 }
 
-async function edit(item: Item) {
+async function show(item: Item) {
     editedItem.value = item
     dialog.value.item = true
-}
-
-async function saveEditedItem(data: any){
-    await updateItem({ id: editedItem.value.id!, data })
-
-    await load()
 }
 
 watch(editedColumn, v => v ? (dialog.value.column = true) : null)
@@ -79,13 +73,30 @@ watch(editedColumn, v => v ? (dialog.value.column = true) : null)
 <template>
     <div class="p-5">
 
-        <is-item-dialog
+        <is-dialog
             v-model="dialog.item"
-            :columns="columns"
-            :item="editedItem"
-            @save="saveEditedItem"
-            @delete="deleteItem(editedItem.id!)"
-        />
+           
+        >
+            
+            <div>
+                <is-item-form
+                    :workspace-id="workspaceId"
+                    :collection-id="collectionId"
+                    :item-id="editedItem?.id"
+                    @save="load"
+                />
+            </div>
+            
+            <div class="my-4 bg-gray-600 h-[1px] w-full"></div>
+
+            <is-item-content
+                :workspace-id="workspaceId"
+                :collection-id="collectionId"
+                :item-id="editedItem?.id"
+                class="h-[40vh]" 
+            />
+
+        </is-dialog>
 
         <is-column-dialog
             v-model="dialog.column"
@@ -100,7 +111,7 @@ watch(editedColumn, v => v ? (dialog.value.column = true) : null)
             :columns="columns"
             
             @item:new="addNew"
-            @item:show="edit"
+            @item:show="show"
             @item:update="updateItem"
             @item:delete="deleteItem"
             @item:refresh="load"
