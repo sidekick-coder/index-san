@@ -105,7 +105,7 @@ watch(editedColumn, v => v ? (dialog.value.column = true) : null)
             @save="load"
         />
 
-        <data-view
+        <is-data-view
             :items="items"
             :columns="columns"
             

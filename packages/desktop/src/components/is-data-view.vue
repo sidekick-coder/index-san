@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// data-view manager
-
 import { computed, defineAsyncComponent, ref } from 'vue'
 
 defineProps({
@@ -30,11 +28,11 @@ const currentView = computed(() => allViews[current.value])
 const allViews = [
     {
         label: 'Table',
-        component: defineAsyncComponent(() => import('./data-view-table.vue'))
+        component: defineAsyncComponent(() => import('./is-data-view-table.vue'))
     },
     {
         label: 'Grid',
-        component: defineAsyncComponent(() => import('./data-view-grid.vue'))
+        component: defineAsyncComponent(() => import('./is-data-view-grid.vue'))
     },
 ]
 
