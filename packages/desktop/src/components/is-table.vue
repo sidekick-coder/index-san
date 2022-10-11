@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useBuilder } from 'vue-wind/composables/builder'
 
 interface Column {
+    label?: string
     field?: string
     type?: string,
     options?: string[]
@@ -50,7 +51,7 @@ const classes = computed(() => ({
                             :key="index"
                             :class="classes.th"
                         >
-                            {{ column.field }}
+                            {{ column.label ?? column.field }}
                         </th>
                     </slot>
                 </tr>

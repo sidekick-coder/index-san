@@ -2,11 +2,13 @@ import { DataResponse, useCase } from './use-case'
 import DirectoryEntry from '@core/entities/directory-entry'
 
 export function useDirectoryEntry(workspaceId: string){
-    function show(path: string) {
-        return useCase<DataResponse<DirectoryEntry>>('show-directory-entry', { 
+    async function show(path: string) {
+        const { data } = await  useCase<DataResponse<DirectoryEntry>>('show-directory-entry', { 
             workspaceId,
             path
         })
+
+        return data
     }
    
     function list(path: string) {

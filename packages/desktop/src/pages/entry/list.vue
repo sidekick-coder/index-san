@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import orderBy from 'lodash/orderBy'
     
 import { useDirectoryEntry } from '@/composables/directory-entry'
 import DirectoryEntry from '@core/entities/directory-entry'
+import { definePageMeta } from '@/composables/page-meta'
+import { useWorkspace } from '@/stores/workspaces'
     
 const props = defineProps({
     workspaceId: {
@@ -16,17 +18,23 @@ const props = defineProps({
         default: '/',
     },
 })
+
+
     
 const router = useRouter()    
+const store = useWorkspace()
+
+const meta = definePageMeta({ layout: 'workspace' })
 const directoryEntry = useDirectoryEntry(props.workspaceId)
 
 const entries = ref<DirectoryEntry[]>([])
+const workspace = computed(() => store.all.find(w => w.id === props.workspaceId))
 const entriesFormatted = computed(() => orderBy(entries.value, ['type', 'name']).map(e => {
-    let to = `/workspaces/${props.workspaceId}/entry/${e.path}`
+    let to = `/workspaces/${props.workspaceId}/entries/${e.path}`
     let icon = 'file'
 
     if (e.type === 'directory') {
-        to = `/workspaces/${props.workspaceId}/entry-folder/${e.path}`
+        // to = `/workspaces/${props.workspaceId}/entry-folder/${e.path}`
         icon = 'folder'
     }
 
@@ -48,13 +56,15 @@ const payload = ref({
 
     
 async function load(){
+    meta.value.title = (workspace.value?.name || 'workspace') + ' (entries)'
+
     await directoryEntry
         .list(props.entryId)
         .then(({ data }) => entries.value = data)
         .catch(() => router.push('/404'))
 }
     
-watch(props, load, { immediate: true })
+watch(props, load, { immediate: true, deep: true })
 
 
 async function submit(){

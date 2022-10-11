@@ -48,7 +48,7 @@ watch(() => props.workspaceId, load, { immediate: true })
 
                 <router-link
                     class="w-full max-w-[500px] bg-gray-700 p-5 rounded"
-                    :to="`/workspaces/${workspaceId}/entry-folder`"
+                    :to="`/workspaces/${workspaceId}/entries`"
                 >
                     Entries
                 </router-link>

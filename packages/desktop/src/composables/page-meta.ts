@@ -1,14 +1,15 @@
 import { ref, inject, provide, InjectionKey, Ref } from 'vue'
 
+
 interface PageMeta {
-    layout: string
+    layout: 'default' | 'workspace'
     title: string
 }
 
 export const key = Symbol('app:page-meta') as InjectionKey<Ref<PageMeta>>
 
 const getState = () => ref<PageMeta>({
-    layout: '',
+    layout: 'default',
     title: ''
 })
 

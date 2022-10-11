@@ -3,6 +3,7 @@ import { useCase, DataResponse } from '@/composables/use-case'
 import { useWorkspace } from './workspaces'
 import get from 'lodash/get'
 import set from 'lodash/set'
+import uniqBy from 'lodash/uniqBy'
 import uuid from 'uuid-random'
 
 export interface Option {
@@ -34,7 +35,7 @@ export const useOptionStore = defineStore('workspace-options', {
                 }))
             })
 
-            return menuItems
+            return uniqBy(menuItems, 'id')
         }
     },
     actions: {

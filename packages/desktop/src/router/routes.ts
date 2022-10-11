@@ -22,27 +22,14 @@ const routes: RouteRecordRaw[] = [
 
     // directory-entries
     {
-        path: '/workspaces/:workspaceId/entry-folder',
+        path: '/workspaces/:workspaceId/entries',
         props: true,
-        component: () => import('../pages/entry/folder.vue'),
-        children: [
-            {
-                path: '/:workspaceId',
-                props: true,
-                component: () => import('../pages/entry/folder.vue'),
-            },
-            {
-                path: ':entryId(.*)',
-                props: true,
-                component: () => import('../pages/entry/folder.vue'),
-            },
-        ]
+        component: () => import('../pages/entry/list.vue'),
     },
-
     {
-        path: '/workspaces/:workspaceId/entry/:entryId(.*)',
+        path: '/workspaces/:workspaceId/entries/:entryId(.*)',
         props: true,
-        component: () => import('../pages/entry/default.vue')
+        component: () => import('../pages/entry/single.vue')
     },
     // collections
     {
