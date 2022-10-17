@@ -25,6 +25,21 @@ export function useDirectoryEntry(workspaceId: string){
         })
     }
     
+    function read(path: string) {
+        return useCase<Buffer>('read-directory-entry', { 
+            workspaceId,
+            path
+        })
+    }
+    
+    function write(path: string, data: any) {
+        return useCase<Buffer>('write-directory-entry', { 
+            workspaceId,
+            path,
+            data
+        })
+    }
+    
     function deleteEntry(path: string) {
         return useCase<DataResponse<DirectoryEntry[]>>('delete-directory-entry', { 
             workspaceId,
@@ -32,5 +47,5 @@ export function useDirectoryEntry(workspaceId: string){
         })
     }
 
-    return { show, list, create, deleteEntry }
+    return { show, list, read, create, write, deleteEntry }
 }

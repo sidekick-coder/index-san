@@ -22,12 +22,24 @@ const repository = useDirectoryEntry(props.workspaceId)
 
 const views = {
     default: 'is-entry-view-default',
-    folder: 'is-entry-view-folder'
+    folder: 'is-entry-view-folder',
+    text: 'is-entry-view-text'
 }
 
 const entry = ref<DirectoryEntry>()
 const current = ref<keyof typeof views>('default')
 
+function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views {
+    if (/.txt/.test(path)) {
+        return 'text'
+    }
+
+    if (type === 'directory') {
+        return 'folder'
+    }
+
+    return 'default'
+}
 
 async function load(){
     const data = await repository.show(props.entryId)
@@ -35,9 +47,9 @@ async function load(){
     entry.value = data
     meta.value.title = data.name ?? 'Entry'
 
-    if (data.type === 'directory') {
-        current.value = 'folder'
-    }
+    current.value = getRecommendedView(data)
+
+    
 }
 
 load()

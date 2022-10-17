@@ -1,6 +1,5 @@
 <script setup lang='ts'>
 import { useDirectoryEntry } from '@/composables/directory-entry'
-import { definePageMeta } from '@/composables/page-meta'
 import DirectoryEntry from '@core/entities/directory-entry'
 import { ref } from 'vue'
 
@@ -16,14 +15,11 @@ const props = defineProps({
 })
 
 const entry = ref<DirectoryEntry>()
-const meta = definePageMeta({ layout: 'workspace' })
 const repository = useDirectoryEntry(props.workspaceId)
 
 async function load(){
     
     const data = await repository.show(props.path)
-
-    meta.value.title = data.name
 
     entry.value = data
 }
