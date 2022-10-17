@@ -8,7 +8,7 @@ import ShowWorkspaceOptions from './show-workspace-options'
 
 test.group('show-workspace-options (use-case)', () => {
     const memoryDrive = new InMemoryDrive()    
-    const drive = new DriveManager({ memory: memoryDrive}, 'memory')
+    const drive = new DriveManager({ memory: memoryDrive }, 'memory')
     const repository = new InMemoryWorkspaceRepository()
 
     const useCase = new ShowWorkspaceOptions(repository, drive)
@@ -23,7 +23,7 @@ test.group('show-workspace-options (use-case)', () => {
 
     })
 
-    test('should return array of workspace options', async ({ expect }) => {
+    test('should return workspace options', async ({ expect }) => {
         const options = {
             theme: {
                 accent: '#000',
@@ -33,7 +33,9 @@ test.group('show-workspace-options (use-case)', () => {
 
         memoryDrive.createFile('.is/options.json', options)
 
-        const workspace = await repository.create(WorkspaceFactory.create())
+        const workspace = await repository.create(WorkspaceFactory.create({
+            drive: 'memory'
+        }))
 
         const result = await useCase.execute({ workspaceId: workspace.id })
 
