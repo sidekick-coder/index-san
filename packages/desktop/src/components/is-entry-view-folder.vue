@@ -101,7 +101,7 @@ async function deleteEntry(path: string){
 </script>
     
 <template>
-    <div class="h-full w-full overflow-auto flex items-baseline">
+    <div class="h-full w-full flex items-baseline">
         <div class="flex flex-wrap w-full">
             <w-form class="w-full mb-4" @submit="submit">
                 <div class="mb-4">

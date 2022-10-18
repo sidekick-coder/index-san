@@ -24,7 +24,8 @@ const views = {
     default: 'is-entry-view-default',
     folder: 'is-entry-view-folder',
     text: 'is-entry-view-text',
-    image: 'is-entry-view-image'
+    image: 'is-entry-view-image',
+    blockEditor: 'is-entry-view-block-editor'
 }
 
 const entry = ref<DirectoryEntry>()
@@ -38,6 +39,11 @@ function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views 
     if (/.(jpeg|jpg|png)/.test(path)) {
         return 'image'
     }
+    
+    if (/.(is)/.test(path)) {
+        return 'blockEditor'
+    }
+    
 
     if (type === 'directory') {
         return 'folder'
@@ -61,12 +67,10 @@ load()
 
 </script>
 <template>
-    <div class="h-full w-full">
-        <component
-            v-if="entry"
-            :workspace-id="workspaceId"
-            :path="entry.path"
-            :is="views[current]" 
-        />
-    </div>
+    <component
+        v-if="entry"
+        :workspace-id="workspaceId"
+        :path="entry.path"
+        :is="views[current]" 
+    />
 </template>

@@ -38,8 +38,9 @@ watch(content, onChange)
 <template>
     <textarea
         v-model="content"
-        class="h-full w-full bg-transparent outline-none"
+        class="h-[calc(100%_-_10px)] w-full bg-transparent outline-none"
         autofocus
+        spellcheck
     >
 
     </textarea>

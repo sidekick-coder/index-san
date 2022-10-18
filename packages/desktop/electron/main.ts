@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, app } from 'electron'
+import { BrowserWindow, ipcMain, app, Menu, MenuItem } from 'electron'
 import path from 'path'
 import debounce from 'lodash/debounce'
 
@@ -27,6 +27,7 @@ app.whenReady().then(async () => {
             preload: path.join(__dirname, './preload.js'),
             contextIsolation: true,
             nodeIntegration: true,
+            spellcheck: true
         }
     })
 
@@ -54,6 +55,30 @@ app.whenReady().then(async () => {
         }
 
         return option.execute(args)
+    })
+
+    window.webContents.on('context-menu', (event, params) => {
+        const menu = new Menu()
+      
+        // Add each spelling suggestion
+        for (const suggestion of params.dictionarySuggestions) {
+            menu.append(new MenuItem({
+                label: suggestion,
+                click: () => window.webContents.replaceMisspelling(suggestion)
+            }))
+        }
+      
+        // Allow users to add the misspelled word to the dictionary
+        if (params.misspelledWord) {
+            menu.append(
+                new MenuItem({
+                    label: 'Add to dictionary',
+                    click: () => window.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
+                })
+            )
+        }
+      
+        menu.popup()
     })
       
     if (process.env.VITE_DEV_SERVER_URL) {
