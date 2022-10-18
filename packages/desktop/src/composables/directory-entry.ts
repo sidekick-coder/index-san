@@ -26,14 +26,14 @@ export function useDirectoryEntry(workspaceId: string){
     }
     
     function read(path: string) {
-        return useCase<Buffer>('read-directory-entry', { 
+        return useCase<Uint8Array>('read-directory-entry', { 
             workspaceId,
             path
         })
     }
     
     function write(path: string, data: any) {
-        return useCase<Buffer>('write-directory-entry', { 
+        return useCase<void>('write-directory-entry', { 
             workspaceId,
             path,
             data

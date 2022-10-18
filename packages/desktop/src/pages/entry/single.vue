@@ -23,7 +23,8 @@ const repository = useDirectoryEntry(props.workspaceId)
 const views = {
     default: 'is-entry-view-default',
     folder: 'is-entry-view-folder',
-    text: 'is-entry-view-text'
+    text: 'is-entry-view-text',
+    image: 'is-entry-view-image'
 }
 
 const entry = ref<DirectoryEntry>()
@@ -32,6 +33,10 @@ const current = ref<keyof typeof views>('default')
 function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views {
     if (/.txt/.test(path)) {
         return 'text'
+    }
+    
+    if (/.(jpeg|jpg|png)/.test(path)) {
+        return 'image'
     }
 
     if (type === 'directory') {
