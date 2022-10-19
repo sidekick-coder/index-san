@@ -10,6 +10,12 @@ module.exports = {
         'plugin:@typescript-eslint/recommended'
     ],
     'overrides': [
+        {
+            'files': ['*.js'],
+            'rules': {
+                '@typescript-eslint/no-var-requires': 'off'
+            }
+        }
     ],
     'parser': '@typescript-eslint/parser',
     'parserOptions': {
