@@ -15,10 +15,12 @@ const props = defineProps({
 })
 
 const repository = useDirectoryEntry(props.workspaceId)
+const root = ref<HTMLTextAreaElement>()
 
 const decoder = new TextDecoder('utf-8')
 
 const content = ref('')
+const indentation = '    '
 
 async function load(){
     const contentBuffer = await repository.read(props.path)
@@ -34,13 +36,53 @@ const onChange = debounce(async () => {
 
 watch(content, onChange)
 
+function onTabPress (event: KeyboardEvent) {
+    const textarea = event.target as HTMLTextAreaElement
+
+    if (!textarea) return
+
+    const index = textarea.selectionStart
+
+    const startText = content.value.slice(0, index)
+    const endText = content.value.slice(index)
+
+    textarea.value = [startText, indentation, endText].join('')
+    content.value = [startText, indentation, endText].join('')
+
+    textarea.selectionEnd = index + indentation.length
+    textarea.selectionStart = index + indentation.length
+}
+
+function onShiftTabPress (event: KeyboardEvent) {
+    const textarea = event.target as HTMLTextAreaElement
+
+    if (!textarea) return
+
+    const index = textarea.selectionStart
+    const isIndentation = content.value.slice(index - indentation.length, index) === indentation
+
+    const startText = content.value.slice(0, index - indentation.length)
+    const endText = content.value.slice(index)
+
+    if (!isIndentation) return
+
+    textarea.value = [startText, endText].join('')
+    content.value = [startText, endText].join('')
+
+    textarea.selectionEnd = index - indentation.length
+    textarea.selectionStart = index - indentation.length
+}
+
 </script>
 <template>
     <textarea
+        ref="root"
         v-model="content"
         class="h-[calc(100%_-_10px)] w-full bg-transparent outline-none"
         autofocus
         spellcheck
+        @keydown.exact.tab.prevent="onTabPress"
+        @keydown.shift.tab.prevent="onShiftTabPress"
     >
 
     </textarea>

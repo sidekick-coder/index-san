@@ -32,7 +32,7 @@ const entry = ref<DirectoryEntry>()
 const current = ref<keyof typeof views>('default')
 
 function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views {
-    if (/.txt/.test(path)) {
+    if (/.(txt|md)/.test(path)) {
         return 'text'
     }
     

@@ -71,7 +71,7 @@ watch(editedColumn, v => v ? (dialog.value.column = true) : null)
 
 </script>
 <template>
-    <div class="p-5">
+    <div>
 
         <is-dialog v-model="dialog.item">
 

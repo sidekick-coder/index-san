@@ -41,7 +41,7 @@ async function toggleFavorite() {
 </script>
 
 <template>
-    <w-toolbar class="px-20" :height="60">
+    <w-toolbar class="px-10" :height="60">
         <div class="text-2xl"> {{ label }} </div>
 
         <i class="ml-auto cursor-pointer" @click="toggleFavorite">

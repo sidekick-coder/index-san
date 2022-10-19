@@ -1,14 +1,21 @@
-<script lang="ts" setup>    
-defineProps({
+<script lang="ts" setup>
+import { useAggregation } from '@/composables/aggregations'
+import { CollectionColumn } from '@core/entities/collection'
+import { computed } from 'vue'
+
+    
+const props = defineProps({
     items: {
         type: Array as () => any[],
         default: () => []
     },
     columns: {
-        type: Array as () => any[],
+        type: Array as () => CollectionColumn[],
         default: () => []
     },
 })
+
+const aggregation = computed(() => useAggregation(props.items))
 
 const emit = defineEmits([
     'column:new',
@@ -77,7 +84,7 @@ async function updateItem(itemId: string, field: string, value: string) {
                     </td>
 
                     <td
-                        v-for="(column, cIndex) in columns.filter(c => !c.hide)"
+                        v-for="(column, cIndex) in columns"
                         :key="cIndex"
                         class="cell-border border-b border-r p-0"
                     >
@@ -112,6 +119,21 @@ async function updateItem(itemId: string, field: string, value: string) {
 
                     </td>
                 </tr>
+
+                <tr>
+                    <td class="cell-border"></td>
+
+                    <td
+                        v-for="column in columns"
+                        :key="column.id"
+                        class="cell-border p-0 p-2 cursor-pointer hover:bg-gray-700 text-sm text-right"
+                    >
+                        <span class="text-action mr-2">Count:</span>{{ aggregation.count() }}
+                    </td>
+
+                    <td class="cell-border"></td>
+                </tr>
+
             </template>
 
 
