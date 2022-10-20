@@ -1,5 +1,6 @@
 import './styles/tailwind.scss'
 import './styles/main.scss'
+import 'highlight.js/scss/base16/dracula.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

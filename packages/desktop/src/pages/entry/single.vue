@@ -24,6 +24,7 @@ const views = {
     default: 'is-entry-view-default',
     folder: 'is-entry-view-folder',
     text: 'is-entry-view-text',
+    markdown: 'is-entry-view-markdown',
     image: 'is-entry-view-image',
     blockEditor: 'is-entry-view-block-editor'
 }
@@ -32,7 +33,11 @@ const entry = ref<DirectoryEntry>()
 const current = ref<keyof typeof views>('default')
 
 function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views {
-    if (/.(txt|md)/.test(path)) {
+    if (/.(md)/.test(path)) {
+        return 'markdown'
+    }
+
+    if (/.(txt|json)/.test(path)) {
         return 'text'
     }
     
