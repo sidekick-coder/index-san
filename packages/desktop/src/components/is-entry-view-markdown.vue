@@ -2,8 +2,6 @@
 import { useDirectoryEntry } from '@/composables/directory-entry'
 import { ref, watch } from 'vue'
 import debounce from 'lodash/debounce'
-import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
 
 const props = defineProps({
     workspaceId: {
@@ -18,37 +16,31 @@ const props = defineProps({
 
 const repository = useDirectoryEntry(props.workspaceId)
 const root = ref<HTMLTextAreaElement>()
-const md = MarkdownIt({
-    html: true,
-    highlight: (str: string, lang: string) => {
-        if (lang && hljs.getLanguage(lang)) {
-            try {
-                return hljs.highlight(str, { language: lang }).value
-            } catch (__) {
-                console.error('highlight error')
-            }
-        }
 
-        return ''
-    }
-})
 
 const decoder = new TextDecoder('utf-8')
 
 const content = ref('')
-const preview = ref('mark')
+const loading = ref(false)
 
 async function load(){
+    loading.value = true
+    
     const contentBuffer = await repository.read(props.path)
-
+    
+    
     content.value = decoder.decode(contentBuffer)
+    
+    loading.value = false
+}
+
+async function setPreview(){
+    loading.value = true
+
+    setTimeout(() => loading.value = false, 500)
 }
 
 load()
-
-function setPreview(){
-    preview.value = md.render(content.value)
-}
 
 const onChange = debounce(async () => {
     await repository.write(props.path, content.value)
@@ -70,9 +62,7 @@ watch(content, setPreview)
             />
         </div>
         
-        <div class="min-h-full w-6/12 pl-10">
-            <div class="whitespace-pre-line leading-tight" v-html="preview" />
-        </div>
+        <is-markdown class="min-h-full w-6/12 pl-10" v-if="!loading" :content="content" />
 
     </div>
 </template>
