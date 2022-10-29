@@ -1,0 +1,80 @@
+<script lang="ts" setup>
+import { ref, shallowRef, useSlots } from 'vue'
+
+import { CollectionColumn } from '@core/entities/collection'
+import Item from '@core/entities/item'
+
+import { useCrud } from '@/composables/crud'
+
+import { useCollection } from '@/composables/collection'
+import { useRouter } from 'vue-router'
+
+const props = defineProps({
+    workspaceId: {
+        type: String,
+        required: true,
+    },
+    collectionId: {
+        type: String,
+        required: true,
+    }
+})
+
+const slots = useSlots()
+const router = useRouter()
+
+const crud = useCrud(props.workspaceId, props.collectionId)
+const collection = useCollection(props.workspaceId, props.collectionId)
+
+const items = ref<Item[]>([])
+const components = shallowRef<any[]>([])
+
+const columns = ref<CollectionColumn[]>([])
+
+function setViews(){
+    if (!slots.default) return
+
+    const children = slots.default()
+
+    children
+        .filter(c => typeof c.type === 'object')
+        .filter(c => ['IsTable'].includes((c.type as any).name))
+        .forEach(child => {
+            components.value.push(child)
+        })
+
+}
+
+async function load(){
+    const response = await collection.show()
+    
+    columns.value = response.columns
+
+    await crud.list().then(d => items.value = d.data)
+}
+
+setViews()
+load()
+
+async function onItemUpdate(item: any) {
+    await crud.update(item.id, item)
+}
+
+async function onItemShow(item: any) {
+    return router.push(`/workspaces/${props.workspaceId}/entries/${item._filename}`)
+}
+
+</script>
+<template>
+    <div>
+        <component
+            v-for="(c, index) in components"
+            :key="index"
+            :is="c"
+            :items="items"
+            :columns="columns"
+            @item:show="onItemShow"
+            @item:update="onItemUpdate"
+        />
+    </div>
+</template>

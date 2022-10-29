@@ -12,7 +12,7 @@ const props = defineProps({
 
 const md = MarkdownIt({
     html: true,
-    breaks: true,
+    // breaks: true,
     highlight: (str: string, lang: string) => {
         if (lang && hljs.getLanguage(lang)) {
             try {
@@ -59,13 +59,13 @@ const view = {
     h3 {
         @apply text-lg;
     }
-    
+
     p {
         @apply my-2;
     }
 
     pre {
-        @apply bg-zinc-800 text-sm p-4 rounded;
+        @apply bg-zinc-800 text-sm p-4 rounded my-4;
     }
 }
 </style>
