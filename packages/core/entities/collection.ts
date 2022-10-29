@@ -3,8 +3,10 @@ import uuid from 'uuid-random'
 export interface CollectionColumn {
     id: string,
     field: string
+    type: string
     label: string
     readonly?: boolean
+    [key: string]: any
 }
 
 export default class Collection {

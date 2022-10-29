@@ -1,7 +1,7 @@
 import uuid from 'uuid-random'
 import Collection, { CollectionColumn } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
-import { useHooks } from './hooks'
+import { useHooks } from '../plugins/hooks'
 
 
 export function useCollectionRepository(workspaceId: string) {
@@ -40,13 +40,18 @@ export function useCollection(workspaceId: string, collectionId: string) {
 
     async function update(payload: Partial<Collection>){
         await repository.update(collectionId, payload)
+
+        hooks.emit(`collection:${collectionId}:update`)
     }
 
-    async function addColumn(payload: Omit<CollectionColumn, 'id'>) {
+    async function addColumn() {
+        const id = uuid()
+
         const data = {
             id: uuid(),
-            label: payload.label,
-            field: payload.field,
+            label: 'New',
+            field: id,
+            type: 'text'
         }
     
         const collection = await show()
@@ -67,7 +72,11 @@ export function useCollection(workspaceId: string, collectionId: string) {
 
         if (!column) return
 
-        column.label = payload.label
+        Object.keys(payload)
+            .filter(k => !['id'].includes(k))
+            .forEach(key => {
+                column[key] = payload[key]
+            })        
 
         await update({ columns })
     }

@@ -4,6 +4,7 @@
     "description": "A CRUD maker based in filesystem",
     "scripts": {
         "lint": "eslint .",
+        "dev": "npm -w desktop run dev",
         "new-version": "node scripts/version.js"
     },
     "author": "Henrique Oliveira",

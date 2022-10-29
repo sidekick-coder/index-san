@@ -63,8 +63,8 @@ load()
 
 collection.on('update', load)
 
-async function onItemUpdate(item: any) {
-    await crud.update(item.id, item)
+async function onItemNew() {
+    await crud.create()
 }
 
 async function onItemShow(item: any) {
@@ -76,7 +76,19 @@ async function onItemShow(item: any) {
             collectionId: props.collectionId
         }
     })
-    // return router.push(`/workspaces/${props.workspaceId}/entries/${item._filename}`)
+}
+
+async function onItemUpdate(item: any) {
+    await crud.update(item.id, item)
+}
+
+async function onItemDelete(item: any) {
+    await crud.destroy(item.id)
+}
+
+
+async function onColumnNew(){
+    await collection.addColumn()
 }
 
 </script>
@@ -89,7 +101,28 @@ async function onItemShow(item: any) {
             :items="items"
             :columns="columns"
             @item:show="onItemShow"
+            @item:new="onItemNew"
             @item:update="onItemUpdate"
-        />
+            @item:delete="onItemDelete"
+            @column:new="onColumnNew"
+        >
+            <template #column="{ column }">
+                <is-collection-column
+                    :workspace-id="workspaceId"
+                    :collection-id="collectionId"
+                    :column="column"
+                />
+            </template>
+           
+            <template #item="{ column, item }">
+                <is-collection-column-value
+                    :workspace-id="workspaceId"
+                    :collection-id="collectionId"
+                    :column="column"
+                    :item="item"
+                />
+            </template>
+    
+        </component>
     </div>
 </template>

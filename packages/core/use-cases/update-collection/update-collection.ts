@@ -30,7 +30,7 @@ export default class UpdateCollection {
 
         await this.drive.write(
             this.collectionsFilename,
-            Buffer.from(JSON.stringify(collections))
+            Buffer.from(JSON.stringify(collections, null, 4))
         )
     }
 }

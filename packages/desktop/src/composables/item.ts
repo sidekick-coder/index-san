@@ -1,5 +1,5 @@
 import Item from '@core/entities/item'
-import { useHooks } from './hooks'
+import { useHooks } from '../plugins/hooks'
 import { DataResponse, useCase } from './use-case'
 
 export interface CollectionFolderItem extends Item {
@@ -22,15 +22,20 @@ export function useItemRepository(workspaceId: string, collectionId: string) {
     }
     
     async function create(){
+        hooks.emit(`collection:${collectionId}:update`)
+
         return useCase('create-item', { workspaceId, collectionId, data: {} })
-    }
+    } 
     
     async function update(itemId: string, data: any){
         hooks.emit(`collection:${collectionId}:update`)
+
         return useCase('update-item', { workspaceId, collectionId, itemId, data })
     }
     
     async function destroy(itemId: string) {
+        hooks.emit(`collection:${collectionId}:update`)
+
         return useCase('delete-item', { workspaceId, collectionId, itemId })
     }
 

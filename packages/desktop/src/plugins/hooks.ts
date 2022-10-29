@@ -1,5 +1,4 @@
-import { ref, inject, provide, InjectionKey, Ref } from 'vue'
-
+import { ref, inject, InjectionKey, Ref, Plugin } from 'vue'
 
 interface EventListener {
     name: string
@@ -14,7 +13,7 @@ interface HooksManager {
 
 export const key = Symbol('app:hooks') as InjectionKey<HooksManager>
 
-export function provideHooks(){
+export function createHookManager(){
     const listeners = ref<EventListener[]>([])
 
     const on: HooksManager['on'] = (listener) => {
@@ -32,11 +31,19 @@ export function provideHooks(){
         emit
     }
 
-    provide(key, state)
-
     return state
 }
 
 export function useHooks(){
-    return inject(key, provideHooks())
+    return inject(key, createHookManager())
+}
+
+const plugin: Plugin = {
+    install(app) {
+        app.provide(key, createHookManager())
+    }
+}
+
+export function createHooks(){
+    return plugin
 }

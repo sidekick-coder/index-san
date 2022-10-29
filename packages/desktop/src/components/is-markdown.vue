@@ -32,7 +32,6 @@ const view = {
     template: md.render(props.content)
 }
 
-
 </script>
 
 <template>

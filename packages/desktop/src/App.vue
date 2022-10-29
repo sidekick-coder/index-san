@@ -3,7 +3,7 @@
 import { computed, defineAsyncComponent, watch } from 'vue'
 import { providePageMeta } from '@/composables/page-meta'
 import { useRoute } from 'vue-router'
-import { useHooks } from './composables/hooks'
+import { useHooks } from './plugins/hooks'
 
 const meta = providePageMeta()
 

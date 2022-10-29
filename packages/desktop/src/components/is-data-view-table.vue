@@ -133,7 +133,6 @@ async function updateItem(itemId: string, field: string, value: string) {
 
                     <td class="cell-border"></td>
                 </tr>
-
             </template>
 
 
