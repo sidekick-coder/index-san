@@ -3,8 +3,12 @@
 import { computed, defineAsyncComponent, watch } from 'vue'
 import { providePageMeta } from '@/composables/page-meta'
 import { useRoute } from 'vue-router'
+import { useHooks } from './composables/hooks'
 
 const meta = providePageMeta()
+
+const hooks = useHooks()
+
 const route = useRoute()
 
 const layouts: Record<string, any> = {
@@ -20,10 +24,13 @@ function load(){
 
 watch(() => route.path, load)
 
+hooks.emit('app:boot')
+
 </script>
 <template>
     <component :is="layouts[currentLayout] || layouts.default">
         <router-view />
     </component>
     
+    <is-item-dialog />
 </template>

@@ -10,7 +10,6 @@ export const useWorkspace = defineStore('workspace', {
     state: () => ({
         all: [] as Workspace[]
     }),
-
     actions: {
         async setAll(){
             return useCase<ListResponse>('list-workspaces')

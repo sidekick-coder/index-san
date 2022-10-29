@@ -1,4 +1,5 @@
 import Item from '@core/entities/item'
+import { useHooks } from './hooks'
 import { DataResponse, useCase } from './use-case'
 
 export interface CollectionFolderItem extends Item {
@@ -7,6 +8,9 @@ export interface CollectionFolderItem extends Item {
 }
 
 export function useItemRepository(workspaceId: string, collectionId: string) {
+    const hooks = useHooks()
+    
+
     async function show(itemId: string){
         const { data } = await useCase<DataResponse<CollectionFolderItem>>('show-item', { workspaceId, collectionId, itemId })
 
@@ -22,6 +26,7 @@ export function useItemRepository(workspaceId: string, collectionId: string) {
     }
     
     async function update(itemId: string, data: any){
+        hooks.emit(`collection:${collectionId}:update`)
         return useCase('update-item', { workspaceId, collectionId, itemId, data })
     }
     

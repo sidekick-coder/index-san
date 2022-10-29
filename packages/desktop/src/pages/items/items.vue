@@ -4,7 +4,7 @@ import { ref, watch } from 'vue'
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
-import { useCrud } from '@/composables/crud'
+import { useItemRepository } from '@/composables/item'
 
 import { useCollection } from '@/composables/collection'
 import { definePageMeta } from '@/composables/page-meta'
@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const meta = definePageMeta({ layout: 'workspace' })
-const crud = useCrud(props.workspaceId, props.collectionId)
+const crud = useItemRepository(props.workspaceId, props.collectionId)
 const collection = useCollection(props.workspaceId, props.collectionId)
 
 const items = ref<Item[]>([])

@@ -26,7 +26,6 @@ async function load(){
     
     await itemRepository.show(props.itemId)
         .then(i => {
-            console.log(i)
             content.value = i._content ? i._content.text : ''
         })
 }

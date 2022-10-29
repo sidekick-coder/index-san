@@ -4,7 +4,7 @@ import { ref, shallowRef, useSlots } from 'vue'
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
-import { useCrud } from '@/composables/crud'
+import { useItemRepository } from '@/composables/item'
 
 import { useCollection } from '@/composables/collection'
 import { useRouter } from 'vue-router'
@@ -23,7 +23,7 @@ const props = defineProps({
 const slots = useSlots()
 const router = useRouter()
 
-const crud = useCrud(props.workspaceId, props.collectionId)
+const crud = useItemRepository(props.workspaceId, props.collectionId)
 const collection = useCollection(props.workspaceId, props.collectionId)
 
 const items = ref<Item[]>([])
@@ -50,18 +50,33 @@ async function load(){
     
     columns.value = response.columns
 
+    await setItems()
+}
+
+async function setItems(){
     await crud.list().then(d => items.value = d.data)
 }
 
 setViews()
+
 load()
+
+collection.on('update', load)
 
 async function onItemUpdate(item: any) {
     await crud.update(item.id, item)
 }
 
 async function onItemShow(item: any) {
-    return router.push(`/workspaces/${props.workspaceId}/entries/${item._filename}`)
+    router.push({
+        query: {
+            showItem: 'true',
+            itemId: item.id,
+            workspaceId: props.workspaceId,
+            collectionId: props.collectionId
+        }
+    })
+    // return router.push(`/workspaces/${props.workspaceId}/entries/${item._filename}`)
 }
 
 </script>

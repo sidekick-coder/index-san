@@ -1,7 +1,8 @@
-import Collection, { CollectionColumn } from '@core/entities/collection'
 import uuid from 'uuid-random'
-
+import Collection, { CollectionColumn } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
+import { useHooks } from './hooks'
+
 
 export function useCollectionRepository(workspaceId: string) {
     function show(collectionId: string){
@@ -28,6 +29,7 @@ export function useCollectionRepository(workspaceId: string) {
 }
 
 export function useCollection(workspaceId: string, collectionId: string) {
+    const hooks = useHooks()
     const repository = useCollectionRepository(workspaceId)
 
     async function show(){
@@ -84,5 +86,12 @@ export function useCollection(workspaceId: string, collectionId: string) {
         await update({ columns })
     }
 
-    return { show, addColumn, updateColumn, deleteColumn }
+    function on(event: 'update', handler: () => any) {
+        hooks.on({
+            name: `collection:${collectionId}:update`,
+            handler,
+        })
+    }
+
+    return { show, addColumn, updateColumn, deleteColumn, on }
 }
