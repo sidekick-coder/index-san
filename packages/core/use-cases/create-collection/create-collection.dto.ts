@@ -3,7 +3,7 @@ import Collection from '../../entities/collection'
 declare namespace CreateCollectionDTO {
     export interface Input {
         workspaceId: string
-        data: Omit<Collection, 'id'>
+        data: Collection
     }
 
     export interface Output {

@@ -42,7 +42,7 @@ function load(){
 }
 
 builder
-    .add('p-2 bg-transparent w-full')
+    .add('p-2 bg-transparent w-full h-[40px]')
     .add('hover:bg-gray-800')
     .add('focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500')
 

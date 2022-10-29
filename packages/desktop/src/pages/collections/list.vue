@@ -18,6 +18,11 @@ const repository = useCollectionRepository(props.workspaceId)
 const items = ref<Collection[]>([])
 const columns = [
     {
+        label: 'ID',
+        name: 'id',
+        field: 'id'
+    },
+    {
         label: 'Name',
         name: 'name',
         field: 'name'
@@ -39,6 +44,7 @@ const columns = [
 ]
     
 const payload = ref({
+    id: '',
     name: '',
     path: '',
 })
@@ -53,23 +59,18 @@ async function submit(){
     const { name, path } = payload.value
 
     await repository.create({
+        id: payload.value.id,
         crudName: 'fsFolder',
         name,
         path,
-        columns: [
-            {
-                id: '1',
-                label: 'filename',
-                field: '_filename',
-                readonly: true
-            }
-        ]
+        columns: []
     })
     
     await load()
     
-    payload.value.name = ''
-    payload.value.path = ''
+    Object.keys(payload.value).forEach(key => {
+        payload.value[key] = ''
+    })
 }
     
 async function deleteItem(id: string) {
@@ -92,9 +93,17 @@ async function viewItem(collectionId: string){
             <w-form @submit="submit" class="mb-4">
                 <div class="mb-4">
                     <w-input
+                        v-model="payload.id"
+                        label="ID"
+                        placeholder="collection-01"
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <w-input
                         v-model="payload.name"
                         label="Name"
-                        placeholder="Collection-01"
+                        placeholder="Collection 01"
                     />
                 </div>
                 

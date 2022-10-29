@@ -19,7 +19,7 @@ export default class CreateWorkspace<T extends Record<string, Drive>> {
             throw new Error('Invalid drive')
         }
 
-        const workspace = new Workspace(args)
+        const workspace = new Workspace(args, args.id)
 
         await this.repository.create(workspace)
 

@@ -46,6 +46,8 @@ function setViews(){
 }
 
 async function load(){
+    if (!props.workspaceId || !props.collectionId) return
+    
     const response = await collection.show()
     
     columns.value = response.columns

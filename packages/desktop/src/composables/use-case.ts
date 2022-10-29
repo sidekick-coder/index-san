@@ -15,7 +15,7 @@ export async function useCase<T = void>(name: string, args?: any): Promise<T> {
 
     await promise()
         .then(r => result  = r)
-        .catch(err => alert(err.message))
+        .catch(err => console.error(err.message))
 
     console.debug(`use-case(${name}): result`, result)
 

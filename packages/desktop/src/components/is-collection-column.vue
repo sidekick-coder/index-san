@@ -132,8 +132,8 @@ async function deleteColumn(){
         </template>
     </w-dialog>
 
-    <div @click="dialog = true" class="cursor-pointer text-gray-500">
-        <fa-icon :icon="icons[column.type] || 'font' " class="text-sm mr-1" />
+    <div @click="dialog = true" class="cursor-pointer text-gray-500 text-sm ">
+        <fa-icon :icon="icons[column.type] || 'font' " class="mr-1 text-xs" />
 
         {{ column.label }}
     </div>

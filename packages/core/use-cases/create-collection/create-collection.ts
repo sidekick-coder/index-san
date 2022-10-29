@@ -19,7 +19,7 @@ export default class CreateCollection {
 
         this.drive.use(workspace.drive).config(workspace.config)
 
-        const collection = new Collection(data)
+        const collection = new Collection(data, data.id)
 
         const collections = [collection]
         

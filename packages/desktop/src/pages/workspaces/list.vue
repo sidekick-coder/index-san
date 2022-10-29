@@ -8,6 +8,11 @@ const router = useRouter()
 
 const columns = [
     {
+        label: 'Id',
+        name: 'id',
+        field: 'id'
+    },
+    {
         label: 'Name',
         name: 'name',
         field: 'name'
@@ -24,6 +29,7 @@ const columns = [
 ]
 
 const payload = ref({
+    id:  '',
     name: '',
     path: '',
 })
@@ -36,6 +42,7 @@ load()
 
 async function submit(){
     await store.create({
+        id: payload.value.id,
         name: payload.value.name,
         drive: 'fs',
         config: {
@@ -45,8 +52,9 @@ async function submit(){
 
     load()
 
-    payload.value.name = ''
-    payload.value.path = ''
+    Object.keys(payload.value).forEach(key => {
+        payload.value[key] = ''
+    })
 }
 
 async function deleteItem(id: string) {
@@ -65,6 +73,13 @@ async function showItem(workspaceId: string){
         <div class="text-2xl mb-4">Workspace List</div>
 
         <w-form @submit="submit" class="mb-4">
+            <div class="mb-4">
+                <w-input
+                    v-model="payload.id" label="Id"
+                    placeholder="my-workspace"
+                />
+            </div>
+
             <div class="mb-4">
                 <w-input
                     v-model="payload.name" label="Name"
