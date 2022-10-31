@@ -1,0 +1,31 @@
+{
+    "menu": {
+        "items": [
+            {
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b058",
+                "label": "Admin Dashboard",
+                "to": "/workspaces/example/entries/dashboards/admin.md"
+            },
+            {
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b057",
+                "label": "Investments Dashboard",
+                "to": "/workspaces/example/entries/dashboards/investments.md"
+            },
+            {
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b04",
+                "label": "Tasks collection",
+                "to": "/workspaces/example/collections/work-tasks/items"
+            },
+            {
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b05",
+                "label": "Projects collection",
+                "to": "/workspaces/example/collections/work-projects/items"
+            },
+            {
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b056",
+                "label": "Investments extract collection",
+                "to": "/workspaces/example/collections/investments-extract/items"
+            }            
+        ]
+    }
+}

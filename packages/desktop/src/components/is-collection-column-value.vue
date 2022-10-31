@@ -57,7 +57,6 @@ watch(props, load, {
     deep: true
 })
 
-watch(payload, onChange)
 
 </script>
 
@@ -67,6 +66,7 @@ watch(payload, onChange)
         v-model="payload"
         :class="classes.input"
         type="number"
+        @change="onChange"
     >
 
     <template v-else-if="column.type === 'entry'">
@@ -75,6 +75,7 @@ watch(payload, onChange)
             v-model="payload"
             :class="classes.input"
             @blur="edit = false"
+            @change="onChange"
         >
 
         <div
@@ -100,6 +101,7 @@ watch(payload, onChange)
         v-else-if="column.type === 'select'"
         v-model="payload"
         :class="classes.input"
+        @change="onChange"
     >
         <option value=""> - </option>
         
@@ -112,5 +114,6 @@ watch(payload, onChange)
         v-else
         v-model="payload"
         :class="classes.input"
+        @change="onChange"
     >
 </template>
