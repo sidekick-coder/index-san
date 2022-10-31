@@ -44,14 +44,15 @@ export function useCollection(workspaceId: string, collectionId: string) {
         hooks.emit(`collection:${collectionId}:update`)
     }
 
-    async function addColumn() {
+    async function addColumn(payload?: Partial<CollectionColumn>) {
         const id = uuid()
 
         const data = {
             id: uuid(),
             label: 'New',
             field: id,
-            type: 'text'
+            type: 'text',
+            ...payload,
         }
     
         const collection = await show()
