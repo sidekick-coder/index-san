@@ -17,17 +17,16 @@ const props = defineProps({
 const repository = useDirectoryEntry(props.workspaceId)
 const root = ref<HTMLTextAreaElement>()
 
-
 const decoder = new TextDecoder('utf-8')
 
 const content = ref('')
+const edit = ref(false)
 const loading = ref(false)
 
 async function load(){
     loading.value = true
     
-    const contentBuffer = await repository.read(props.path)
-    
+    const contentBuffer = await repository.read(props.path)    
     
     content.value = decoder.decode(contentBuffer)
     
@@ -51,8 +50,8 @@ watch(content, setPreview)
 
 </script>
 <template>
-    <div class="flex min-h-full w-full">
-        <div class="min-h-full w-6/12 border-r">
+    <div class="flex min-h-full w-full">    
+        <div class="min-h-[calc(100%_-_40px)] w-6/12 border-r" v-if="edit">
             <is-textarea
                 ref="root"
                 v-model="content"
@@ -61,8 +60,20 @@ watch(content, setPreview)
                 spellcheck
             />
         </div>
-        
-        <is-markdown class="min-h-full w-6/12 pl-10" v-if="!loading" :content="content" />
 
+        <div
+            :class="edit ? 'w-6/12 pl-10' : 'w-full'"
+            class="h-[calc(100%_-_10px)] relative"
+        >
+            <div class="absolute top-0 right-0 cursor-pointer">
+                <i @click="edit = !edit" >
+                    <fa-icon icon="pen" />
+                </i>
+            </div>
+
+            <is-markdown class="min-h-full w-full" v-if="!loading" :content="content" />
+        </div>
+        
+        
     </div>
 </template>
