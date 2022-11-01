@@ -3,7 +3,7 @@ const fs = require('fs')
 const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
 
-
+const { bundle } = require('./bundler')
 
 module.exports = {
     packagerConfig: {
@@ -11,10 +11,9 @@ module.exports = {
     },
     rebuildConfig: {},
     makers: [
-        // {
-        //     name: '@electron-forge/maker-zip',
-        //     platforms: ['win32'],
-        // },
+        {
+            name: '@electron-forge/maker-zip'
+        },
         // {
         //     name: '@electron-forge/maker-squirrel',
         //     config: {
@@ -31,18 +30,16 @@ module.exports = {
         // },
     ],
     hooks: {
-        postPackage: async () => {
-            const outDir = path.resolve(__dirname, 'out', 'index-san-win32-x64', 'resources', 'app')
-            
-            const unnecessaryFiles = fs.readdirSync(outDir).filter(f => !['dist', 'package.json'].includes(f))
-
-            await Promise.all(unnecessaryFiles.map(f => fs.promises.rm(path.resolve(outDir, f), {
-                recursive: true
-            })))
-            
-            await exec(`npm install --production --prefix ${outDir}`)
-                .then(r => console.log(r.stdout))
-                .catch(r => console.log(r.stdout))
+        packageAfterCopy: async (
+            /** @type {any} */ forgeConfig,
+            /** @type {string} */ buildPath,
+            /** @type {string} */ electronVersion,
+            /** @type {string} */ platform,
+            /** @type {string} */ arch,
+        ) => {
+            // this is a workaround until we find a proper solution
+            // for running electron-forge in a mono repository
+            await bundle(__dirname, buildPath)
         },
     }
 }

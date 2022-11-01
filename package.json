@@ -5,7 +5,8 @@
     "scripts": {
         "lint": "eslint .",
         "dev": "npm -w desktop run dev",
-        "new-version": "node scripts/version.js"
+        "new-version": "node scripts/version.js",
+        "build": "node scripts/build.js"
     },
     "author": "Henrique Oliveira",
     "license": "MIT",
