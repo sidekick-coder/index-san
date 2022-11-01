@@ -1,13 +1,24 @@
 {
   "name": "desktop",
+  "productName": "index-san",
+  "description": "Notes app based in filesystem",
   "private": true,
   "version": "0.1.0",
+  "author": {
+    "name": "Henrique",
+    "email": "henriqueoliwork@gmail.com",
+    "url": "https://sidekick-coder.com"
+  },
   "main": "dist/electron/main.js",
   "scripts": {
     "dev": "vite",
     "test": "vitest",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "build:debug": "electron-forge start --inspect-electron"
   },
   "dependencies": {
     "@editorjs/editorjs": "^2.25.0",
@@ -21,6 +32,7 @@
     "@types/mime": "^3.0.1",
     "editorjs-drag-drop": "^1.1.7",
     "editorjs-toggle-block": "^0.3.1",
+    "electron-squirrel-startup": "^1.0.0",
     "highlight.js": "^11.6.0",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
@@ -33,10 +45,16 @@
     "vue-wind": "^0.1.3"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.74",
+    "@electron-forge/maker-deb": "^6.0.0-beta.74",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.74",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.74",
+    "@electron-forge/maker-zip": "^6.0.0-beta.74",
     "@types/lodash": "^4.14.186",
     "@vitejs/plugin-vue": "^3.1.2",
     "autoprefixer": "^10.4.12",
     "electron": "^21.1.1",
+    "keyv": "^4.5.0",
     "postcss": "^8.4.17",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.8.4",

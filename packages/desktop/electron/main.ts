@@ -85,6 +85,6 @@ app.whenReady().then(async () => {
         window.loadURL(process.env.VITE_DEV_SERVER_URL)
         process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
     } else {
-        window.loadFile('../index.html')
+        window.loadFile(path.resolve(__dirname, '..', 'index.html'))
     }
 })
