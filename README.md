@@ -10,8 +10,12 @@ A CRUD maker based in filesystem
 
 ![](./screenshots/data-view-table.jpeg)
 
+## Downloads
 
-## Setup
+Check releases page: https://github.com/sidekick-coder/index-san/releases
+
+
+## Development setup
 
 Install dependencies
 
