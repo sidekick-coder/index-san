@@ -5,7 +5,7 @@
         "path": "/collections/work-projects",
         "crudName": "fsFolder",
         "columns": [
-            {               
+            {
                 "id": "1",
                 "label": "Name",
                 "field": "name"
@@ -18,12 +18,12 @@
         "path": "/collections/work-tasks",
         "crudName": "fsFolder",
         "columns": [
-            {               
+            {
                 "id": "1",
                 "label": "Name",
                 "field": "name"
             },
-            {               
+            {
                 "id": "2",
                 "label": "Project",
                 "field": "project"
@@ -57,6 +57,12 @@
                 "label": "Value",
                 "field": "value",
                 "type": "number"
+            },
+            {
+                "id": "d6e75ffd-02e5-4acb-b03c-c6f873093224",
+                "label": "Portfolio",
+                "field": "portfolio",
+                "type": "text"
             }
         ]
     }
