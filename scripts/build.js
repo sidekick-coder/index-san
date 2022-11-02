@@ -1,6 +1,7 @@
 // build artifacts
 
 const path = require('path')
+const fg = require('fast-glob')
 const fs  = require('fs')
 const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
@@ -32,10 +33,16 @@ async function main(){
 
     console.log('moving artifacts')
 
-    await fs.promises.rename(
-        path.resolve(desktopPath, 'out', 'make', 'zip', 'win32', 'x64',  'index-san-win32-x64-0.1.0.zip'),
-        path.resolve(outputFolder, 'index-san-win32-x64-0.1.0.zip')
+    const pattern = path.resolve(desktopPath, '**/*.zip').split(path.sep).join('/')
+
+    const files = await fg(pattern)
+
+    await Promise.all(
+        files
+            .map(f => f.split('/').join(path.sep))
+            .map(f => fs.promises.rename(f, path.resolve(outputFolder, path.basename(f)) ))
     )
+        
 
     console.log('operation ended')
 
