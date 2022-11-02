@@ -21,10 +21,10 @@ export function useItemRepository(workspaceId: string, collectionId: string) {
         return useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
     }
     
-    async function create(){
+    async function create(data: any = {}){
         hooks.emit(`collection:${collectionId}:update`)
 
-        return useCase('create-item', { workspaceId, collectionId, data: {} })
+        return useCase('create-item', { workspaceId, collectionId, data })
     } 
     
     async function update(itemId: string, data: any){
