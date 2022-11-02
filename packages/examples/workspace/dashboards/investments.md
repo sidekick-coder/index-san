@@ -10,7 +10,7 @@ This shows the lasts entries
     workspace-id="example"
     collection-id="investments-extract"
 >
-    <is-table />
+    <is-table :limit="5"  :aggregations="['count']" />
 </is-collection>
 
 

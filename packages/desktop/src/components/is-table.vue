@@ -6,7 +6,7 @@ export default {
 </script>
 <script setup lang="ts">
 import { useAggregation } from '@/composables/aggregations'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useBuilder } from 'vue-wind/composables/builder'
 
 interface Column {
@@ -29,11 +29,23 @@ const props = defineProps({
     aggregations: {
         type: Array as () => string[],
         default: () => []
+    },
+    limit: {
+        type: Number,
+        default: 10
     }
 })
 
 const builder = useBuilder()
 const aggregation = computed(() => useAggregation(props.items))
+
+const pagination = ref({
+    limit: props.limit,
+})
+
+const visibleItems = computed(() => {    
+    return props.items.slice(0, pagination.value.limit)
+})
 
 const borderColor = 'border-gray-700'
 const actionsColor = 'text-gray-500'
@@ -95,7 +107,7 @@ const classes = computed(() => ({
         </thead>
 
         <tr
-            v-for="item in items"
+            v-for="item in visibleItems"
             :class="classes.tr"
             class="relative"
             :key="item.id"
@@ -141,6 +153,20 @@ const classes = computed(() => ({
         </tr>
 
         
+        <tr v-if="items.length > 10">
+            <td
+                :class="[classes.td, actionsColor]"
+                :colspan="columns.length + 2"
+                class="p-2 cursor-pointer hover:bg-gray-800 text-sm"
+                @click="pagination.limit = pagination.limit + limit"
+            >
+                <fa-icon icon="arrow-down" class="mr-2" />
+
+                <span>Load more {{`(${visibleItems.length}/${items.length})`}}</span>
+
+            </td>
+        </tr>
+
         <tr>
             <td
                 :class="[classes.td, actionsColor]"
