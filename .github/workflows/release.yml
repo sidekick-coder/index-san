@@ -1,23 +1,27 @@
-name: deploy
+name: Release
 
-on:
+on: 
   push:
-    branches:
-      - develop
-      # - main
+    tags:
+    - '*'
+
 jobs:
-  build:
-    name: build
+  ci:
+    name: ci
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: cache
-        uses: actions/cache@v2
-        id: cache
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "16.17.0"
+
+      - name: cache-modules
+        uses: actions/cache@v3
+        id: cache-modules
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: install dependence 
         if: steps.cache.outputs.cache-hit != 'true'
@@ -31,3 +35,38 @@ jobs:
       
       - name: test
         run: npm -w core test
+  
+  build:
+    name: build
+    needs: [ci]
+    runs-on: windows-2022
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "16.17.0"
+
+      - name: cache-modules
+        uses: actions/cache@v3
+        id: cache-modules
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      
+      - name: install dependence 
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        run: |
+          npm install
+          npm -w core install
+          npm -w desktop install
+      
+      - name: build
+        run: npm run build
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*.zip

@@ -18,6 +18,12 @@ async function main(){
 
     fs.mkdirSync(outputFolder, { recursive: true })
 
+    console.log('build desktop app')
+
+    await exec('npm -w desktop run build')
+        .then(r => console.log(r.stdout))
+        .catch(r => console.log(r.stdout))
+
     console.log('making desktop app')
 
     await exec('npm -w desktop run make')
