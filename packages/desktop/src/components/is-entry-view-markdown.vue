@@ -41,12 +41,12 @@ async function setPreview(){
 
 load()
 
-const onChange = debounce(async () => {
+async function save() {
     await repository.write(props.path, content.value)
-}, 1000)
 
-watch(content, onChange)
-watch(content, setPreview)
+    setPreview()
+}
+
 
 </script>
 <template>
@@ -58,6 +58,7 @@ watch(content, setPreview)
                 class="h-[calc(100%_-_10px)] w-full bg-transparent outline-none"
                 autofocus
                 spellcheck
+                @keydown.ctrl.s="save"
             />
         </div>
 

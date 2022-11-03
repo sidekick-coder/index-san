@@ -26,19 +26,23 @@ const router = useRouter()
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 const collection = useCollection(props.workspaceId, props.collectionId)
 
+const loading = ref(false)
 const items = ref<Item[]>([])
+const columns = ref<CollectionColumn[]>([])
+
 const components = shallowRef<any[]>([])
 
-const columns = ref<CollectionColumn[]>([])
 
 function setViews(){
     if (!slots.default) return
 
     const children = slots.default()
 
+    console.log(children)
+
     children
         .filter(c => typeof c.type === 'object')
-        .filter(c => ['IsTable'].includes((c.type as any).name))
+        .filter(c => ['IsTable', 'IsChart'].includes((c.type as any).name))
         .forEach(child => {
             components.value.push(child)
         })
@@ -47,12 +51,16 @@ function setViews(){
 
 async function load(){
     if (!props.workspaceId || !props.collectionId) return
+
+    loading.value = true
     
     const response = await collection.show()
     
     columns.value = response.columns
 
     await setItems()
+
+    loading.value = false
 }
 
 async function setItems(){
@@ -95,7 +103,7 @@ async function onColumnNew(){
 
 </script>
 <template>
-    <div>
+    <div v-if="!loading">
         <component
             v-for="(c, index) in components"
             :key="index"

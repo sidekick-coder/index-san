@@ -29,6 +29,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@mdit-vue/plugin-component": "^0.11.1",
+    "chart.js": "^3.9.1",
     "editorjs-drag-drop": "^1.1.7",
     "editorjs-toggle-block": "^0.3.1",
     "electron-squirrel-startup": "^1.0.0",
