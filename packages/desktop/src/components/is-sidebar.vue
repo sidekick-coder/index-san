@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useOptionStore } from '@/stores/options'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import get from 'lodash/get'
+
+import { useOptionStore } from '@/stores/options'
+import { useState } from '@/composables/state'
 
 interface Item {
     id: string,
@@ -11,6 +13,7 @@ interface Item {
 
 
 const store = useOptionStore()
+const drawer = useState('app:drawer', true)
 
 const items = computed<Item[]>(() => {
     return store.options
@@ -24,12 +27,20 @@ store.load()
 </script>
 
 <template>
-    <w-drawer class="bg-zinc-800 text-white border-r border-zinc-700" >
+    <w-drawer
+        v-model="drawer"
+        class="bg-zinc-800 text-white border-r border-zinc-700 group"
+    >
         
         <div class="flex flex-wrap items-start">
-            <router-link to="/" class="sidebar-list-item">
-                <h1 class="text-lg font-bold">Index-san</h1>
-            </router-link>
+            <div class="flex items-center w-full justify-between">
+                <router-link to="/" class="sidebar-list-item">
+                    <h1 class="text-lg font-bold">Index-san</h1>
+                </router-link>
+
+                <is-icon name="chevron-left" class="px-4 cursor-pointer opacity-0 group-hover:opacity-100" @click="drawer = false" />
+
+            </div>
             
             <router-link to="/workspaces" class="sidebar-list-item clickable text-sm">
                 <i class="mr-2"> <fa-icon icon="cubes" /></i>

@@ -21,8 +21,9 @@ app.whenReady().then(async () => {
     const bounds = boundPreference ? boundPreference.value : {}
 
     const window = new BrowserWindow({
-        title: 'Main window',
         ...bounds,
+        title: 'Main window',
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, './preload.js'),
             contextIsolation: true,

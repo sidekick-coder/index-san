@@ -23,6 +23,6 @@ collection.show().then(c => meta.value.title = c.name)
 </script>
 <template>
     <is-collection :workspace-id="workspaceId" :collection-id="collectionId">
-        <is-table />
+        <is-table :limit="100" />
     </is-collection>
 </template>

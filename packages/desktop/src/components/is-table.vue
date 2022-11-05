@@ -174,7 +174,7 @@ const classes = computed(() => ({
             </td>
         </tr>
 
-        <tr v-if="items.length > 10">
+        <tr v-if="items.length > pagination.limit">
             <td
                 :class="[classes.td, actionsColor]"
                 :colspan="columns.length + 2"
