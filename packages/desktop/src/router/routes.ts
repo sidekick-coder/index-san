@@ -11,11 +11,6 @@ const routes: RouteRecordRaw[] = [
         path: '/workspaces',
         component: () => import('../pages/workspaces/list.vue')
     },
-    {
-        path: '/workspaces/:workspaceId',
-        props: true,
-        component: () => import('../pages/workspaces/single.vue'),
-    },
 
     // directory-entries
     {

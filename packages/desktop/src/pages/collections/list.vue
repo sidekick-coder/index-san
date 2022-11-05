@@ -4,6 +4,11 @@ import Collection from '@core/entities/collection'
 import { useCollectionRepository } from '@/composables/collection'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { definePageMeta } from '@/composables/page-meta'
+
+definePageMeta({
+    title: 'Collection list'
+})
 
 const props = defineProps({
     workspaceId: {
@@ -43,7 +48,7 @@ const columns = [
     },
 ]
     
-const payload = ref({
+const payload = ref<any>({
     id: '',
     name: '',
     path: '',
@@ -87,9 +92,7 @@ async function viewItem(collectionId: string){
     
 </script>
     <template>
-        <div class="p-10">
-            <div class="text-2xl mb-4">Collections List</div>
-    
+        <div class="py-10">    
             <w-form @submit="submit" class="mb-4">
                 <div class="mb-4">
                     <w-input

@@ -111,8 +111,12 @@ async function showItem(workspaceId: string){
 
         <template #item-actions="{ item }">
             <div class="flex">
-                <w-btn @click="showItem(item.id)" class="mr-2" >
-                    <fa-icon icon="eye" />
+                <w-btn @click="$router.push(`/workspaces/${item.id}/collections`)" class="mr-2" >
+                    <is-icon name="database" />
+                </w-btn>
+                
+                <w-btn @click="$router.push(`/workspaces/${item.id}/entries`)" class="mr-2" >
+                    <is-icon name="folder" />
                 </w-btn>
     
                 <w-btn @click="deleteItem(item.id)" >
