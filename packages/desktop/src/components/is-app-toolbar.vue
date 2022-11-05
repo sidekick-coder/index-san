@@ -72,6 +72,7 @@ async function toggleFavorite() {
 
 
         <is-icon
+            v-if="$route.params.workspaceId"
             :name="menuItem ? 'star' : 'fa-regular fa-star'"
             class="ml-auto cursor-pointer"
             @click="toggleFavorite"

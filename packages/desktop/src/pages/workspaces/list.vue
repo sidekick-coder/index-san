@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { definePageMeta } from '@/composables/page-meta'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWorkspace } from '../../stores/workspaces'
+
+definePageMeta({
+    title: 'Workspace list'
+})
 
 const store = useWorkspace()
 const router = useRouter()
@@ -28,7 +33,7 @@ const columns = [
     },
 ]
 
-const payload = ref({
+const payload = ref<any>({
     id:  '',
     name: '',
     path: '',
@@ -69,9 +74,7 @@ async function showItem(workspaceId: string){
 
 </script>
 <template>
-    <div class="p-10">
-        <div class="text-2xl mb-4">Workspace List</div>
-
+    <div class="pt-10">
         <w-form @submit="submit" class="mb-4">
             <div class="mb-4">
                 <w-input

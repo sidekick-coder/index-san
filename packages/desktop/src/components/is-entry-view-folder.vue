@@ -24,7 +24,7 @@ const props = defineProps({
 const router = useRouter()    
 const store = useWorkspace()
 
-const meta = definePageMeta({ layout: 'workspace' })
+const meta = definePageMeta()
 const directoryEntry = useDirectoryEntry(props.workspaceId)
 
 const entries = ref<DirectoryEntry[]>([])

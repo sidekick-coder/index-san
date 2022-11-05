@@ -2,7 +2,7 @@
 import { definePageMeta } from '@/composables/page-meta'
 
 definePageMeta({
-    layout: 'workspace'
+    title: 'Not found'
 })
 </script>
 <template>

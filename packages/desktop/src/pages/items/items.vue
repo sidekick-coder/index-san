@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useCollection } from '@/composables/collection'
-import { definePageMeta } from '@/composables/page-meta'
+import { usePageMeta } from '@/composables/page-meta'
 
 const props = defineProps({
     workspaceId: {
@@ -13,7 +13,7 @@ const props = defineProps({
     }
 })
 
-const meta = definePageMeta({ layout: 'workspace' })
+const meta = usePageMeta()
 const collection = useCollection(props.workspaceId, props.collectionId)
 
 

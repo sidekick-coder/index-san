@@ -17,7 +17,7 @@ const props = defineProps({
     },
 })
 
-const meta = definePageMeta({ layout: 'workspace', title: props.entryId })
+const meta = definePageMeta({ title: props.entryId })
 const repository = useDirectoryEntry(props.workspaceId)
 
 const views = {

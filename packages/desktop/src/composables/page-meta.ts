@@ -2,7 +2,7 @@ import { ref, inject, provide, InjectionKey, Ref } from 'vue'
 
 
 interface PageMeta {
-    layout: 'default' | 'workspace'
+    layout: 'default'
     title: string
 }
 
