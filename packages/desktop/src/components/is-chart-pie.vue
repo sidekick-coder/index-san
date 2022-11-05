@@ -71,7 +71,9 @@ const data = computed(() => {
                 let value: string | number = sumBy(items, props.valueKey)
 
                 if (props.percentage) {
-                    value = (total / value).toFixed(2)
+                    value = (value / total) * 100
+
+                    value = value.toFixed(2)
                 }
 
                 return {
@@ -94,7 +96,7 @@ function load(){
         data: {
             labels: data.value.map(d => d.label),
             datasets: [{
-                data: data.value.map(d => d.value),
+                data: data.value.map(d => Number(d.value)),
                 backgroundColor: theme.chartColors(),
                 borderColor: '#18181b'
             }]

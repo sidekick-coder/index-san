@@ -79,7 +79,7 @@ function load(){
         data: {
             labels: data.value.map(d =>  `${props.labelPrefix}${d.label}`),
             datasets: [{
-                data: data.value.map(d => d.value),
+                data: data.value.map(d => Number( d.value)),
                 backgroundColor: theme.chartColors(),                
             }]
         },

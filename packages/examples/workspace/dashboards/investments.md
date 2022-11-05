@@ -40,7 +40,8 @@ Investments management template
         value-key="value"
         value-suffix="%"
         group-by="portfolio"
-        percentage width="30%"
+        percentage
+        width="30%"
         :show-legend="false"
     />
     <is-chart-bar value-key="value" group-by="portfolio" width="70%" />
@@ -53,10 +54,10 @@ Investments management template
     workspace-id="example"
     collection-id="investments-extract"
    class="flex w-full bg-zinc-800 rounded p-4"
-    style="max-width:1000px"  
+    style="max-width:500px"  
 >
     <is-collection-filter field="portfolio" value="Real state" />
-    <is-chart-bar value-key="value" group-by="asset" width="100%" />
+    <is-chart-pie value-key="value" group-by="asset" width="100%" />
 </is-collection>
 
 ## Crypto
@@ -65,8 +66,9 @@ Investments management template
     workspace-id="example"
     collection-id="investments-extract"
    class="flex w-full bg-zinc-800 rounded p-4"
-    style="max-width:1000px"  
+    style="max-width:500px"  
 >
     <is-collection-filter field="portfolio" value="Crypto" />
-    <is-chart-bar value-key="value" group-by="asset" width="100%" />
+    <is-chart-pie value-key="value" group-by="asset" width="50%" />
+    <is-chart-pie value-key="value" group-by="asset" percentage value-suffix="%" width="50%" />
 </is-collection>
