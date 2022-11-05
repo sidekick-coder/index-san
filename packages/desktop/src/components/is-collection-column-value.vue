@@ -121,8 +121,8 @@ watch(props, load, {
     >
         <option value=""> - </option>
         
-        <option v-for="option in relation" :value="option.id" :key="option.id">
-            {{ option[column.displayField] }}
+        <option v-for="option in column.options.keys()" :value="option" :key="option.id">
+            {{ column.options.get(option) }}
         </option>
     </select>
     

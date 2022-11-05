@@ -131,3 +131,22 @@ export function useCollectionItems(workspaceId: string, collectionId: string){
 
     return items
 }
+
+export async function useCollectionItemsAsync(workspaceId: string, collectionId: string){
+
+    if (!workspaceId || !collectionId) {
+        return ref([])
+    }
+    
+    const loading = useState<boolean>(`workspace:${workspaceId}:collection:${collectionId}:loading`, false)
+    const items = useState<CollectionFolderItem[]>(`workspace:${workspaceId}:collection:${collectionId}:items`, [])
+
+    loading.value = true
+
+    await useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
+        .then(r => items.value = r.data)
+        .catch(() => items.value = [])
+        .finally(() => loading.value = false)
+
+    return items
+}

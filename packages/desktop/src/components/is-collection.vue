@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref, shallowRef, useSlots } from 'vue'
+import { computed, ref, shallowRef, useSlots } from 'vue'
 
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
 
-import { useCollection } from '@/composables/collection'
+import { useCollection, useCollectionItemsAsync } from '@/composables/collection'
 import { useRouter } from 'vue-router'
 import { useChildren } from '@/composables/children'
 
@@ -30,6 +30,19 @@ const collection = useCollection(props.workspaceId, props.collectionId)
 const loading = ref(false)
 const items = ref<Item[]>([])
 const columns = ref<CollectionColumn[]>([])
+const formattedItems = computed(() => items.value.map(item => {
+    const data: any = {}
+
+    columns.value.forEach(column => {
+        data[column.field] = item[column.field]
+
+        if (column.type === 'relation') {
+            data[column.field] = column.options.get(item[column.field])
+        }
+    })
+
+    return data
+}))
 
 const components = shallowRef<any[]>([])
 
@@ -48,13 +61,27 @@ async function load(){
 
     loading.value = true
     
-    const response = await collection.show()
-    
-    columns.value = response.columns
+    await setColumns()   
 
     await setItems()
 
     loading.value = false
+}
+
+async function setColumns(){
+    const response = await collection.show()
+    
+    for await (const column of response.columns) {
+        if (column.type === 'relation') {
+            const relation = await useCollectionItemsAsync(props.workspaceId, column.collectionId)
+
+            column.options = new Map<string, string>()
+            
+            relation.value.forEach(i => column.options.set(i.id, i[column.displayField]))
+        }
+    }
+
+    columns.value = response.columns
 }
 
 async function setItems(){
@@ -129,7 +156,7 @@ async function onColumnNew(){
         
             </component>
             
-            <component v-else :is="c" :items="items" />
+            <component v-else :is="c" :items="formattedItems" />
         </template>
     </div>
 </template>
