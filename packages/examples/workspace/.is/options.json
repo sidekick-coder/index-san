@@ -25,7 +25,12 @@
                 "id": "136941bb-125b-4f07-9af3-2dbf78151b056",
                 "label": "Investments extract collection",
                 "to": "/workspaces/example/collections/investments-extract/items"
-            }            
+            },
+            {
+                "id": "812b483e-baf7-4bda-b956-f7ddfce43d00",
+                "label": "Assets",
+                "to": "/workspaces/example/collections/investments-assets/items"
+            }
         ]
     }
 }

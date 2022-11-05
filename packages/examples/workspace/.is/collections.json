@@ -1,5 +1,19 @@
 [
     {
+        "id": "investments-assets",
+        "name": "Assets",
+        "path": "/collections/investments.assets",
+        "crudName": "fsFolder",
+        "columns": [
+            {
+                "id": "a19c6fc6-ba1a-4a70-aaa5-27ae6e021d6b",
+                "label": "Name",
+                "field": "name",
+                "type": "text"
+            }
+        ]
+    },
+    {
         "id": "work-projects",
         "name": "Projects",
         "path": "/collections/work-projects",
@@ -39,7 +53,10 @@
             {
                 "id": "a2b37f3f-99b5-40a4-8c7d-0441153c8723",
                 "label": "Asset",
-                "field": "asset"
+                "field": "asset",
+                "type": "relation",
+                "collectionId": "investments-assets",
+                "displayField": "name"
             },
             {
                 "id": "11b761d5-e7c2-4ac8-bade-465a336b9253",
@@ -62,7 +79,8 @@
                 "id": "d6e75ffd-02e5-4acb-b03c-c6f873093224",
                 "label": "Portfolio",
                 "field": "portfolio",
-                "type": "text"
+                "type": "select",
+                "options": "Real state,EUA Stocks,BR Stocks,Crypto"
             }
         ]
     }

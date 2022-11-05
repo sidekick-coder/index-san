@@ -4,7 +4,7 @@ export default { name: 'IsChartBar' }
 
 <script setup lang="ts">
 import { Chart, registerables } from 'chart.js'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, onUnmounted } from 'vue'
 
 import groupBy from 'lodash/groupBy'
 import sumBy from 'lodash/sumBy'
@@ -38,6 +38,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    showLegend: {
+        type: Boolean,
+        default: true,
+    },
     width: {
         type: String,
         default: undefined
@@ -52,6 +56,7 @@ const measurement = useMeasurement()
 const theme = useTheme()
 
 const root = ref()
+const chart = ref<Chart>()
 const total = sumBy(props.items, props.valueKey)
 
 const style = {
@@ -84,18 +89,21 @@ const data = computed(() => {
 
 
 function load(){
-    new Chart(root.value, {
+    chart.value = new Chart(root.value, {
         type: 'pie',
         data: {
             labels: data.value.map(d => d.label),
             datasets: [{
                 data: data.value.map(d => d.value),
                 backgroundColor: theme.chartColors(),
-                borderColor: '#6b7280'
+                borderColor: '#18181b'
             }]
         },
         options: {
             plugins: {
+                legend: {
+                    display: props.showLegend
+                },
                 tooltip: {
                     callbacks: {
                         label({ raw, label }) {
@@ -115,6 +123,7 @@ function load(){
 }
 
 onMounted(load)
+onUnmounted(() => chart.value?.destroy())
 
 </script>
 <template>

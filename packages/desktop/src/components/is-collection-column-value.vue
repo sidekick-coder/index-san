@@ -32,6 +32,7 @@ const crud = useItemRepository(props.workspaceId, props.collectionId)
 const edit = ref(false)
 const builder = useBuilder()
 const payload = ref('')
+const relatedItems = ref<any[]>([])
 
 const classes = computed(() => ({
     input: builder.make()
@@ -39,6 +40,12 @@ const classes = computed(() => ({
 
 function load(){
     payload.value = props.item[props.column.field]
+}
+
+if (props.column.type === 'relation') {
+    useItemRepository(props.workspaceId, props.column.collectionId)
+        .list()
+        .then(d => relatedItems.value = d.data)
 }
 
 builder
@@ -107,6 +114,19 @@ watch(props, load, {
         
         <option v-for="o in column.options.split(',')" :value="o" :key="o">
             {{ o }}
+        </option>
+    </select>
+
+    <select
+        v-else-if="column.type === 'relation'"
+        v-model="payload"
+        :class="classes.input"
+        @change="onChange"
+    >
+        <option value=""> - </option>
+        
+        <option v-for="option in relatedItems" :value="option.id" :key="option.id">
+            {{ option[column.displayField] }}
         </option>
     </select>
     

@@ -37,6 +37,10 @@ const types = [
         label:'Entry',
         value: 'entry'
     },
+    {
+        label:'Relation',
+        value: 'relation'
+    },
 ]
 
 const dialog = ref(false)
@@ -44,13 +48,16 @@ const payload = ref({
     label: '',
     field: '',
     type: 'text',
-    options: undefined
+    options: undefined,
+    collectionId: undefined,
+    displayField: undefined,
 })
 
 const icons = {
     text: 'font',
     number: 'hashtag',
-    select: 'fa-regular fa-square-caret-down'
+    select: 'fa-regular fa-square-caret-down',
+    relation: 'arrow-up'
 }
 
 function load(){
@@ -114,12 +121,22 @@ async function deleteColumn(){
                     <w-input
                         v-model="payload.options"
                         label="Options (separate by comma)"
-                        :options="types"
-                        label-key="label"
-                        value-key="value"
                         placeholder="item-01,item-02"
                     />
                 </div>
+
+                <template v-if="payload.type === 'relation'">
+                    
+                    <div class="mb-4" >
+                        <w-input v-model="payload.collectionId" label="Collection id" />
+                    </div>
+                    
+                    <div class="mb-4" >
+                        <w-input v-model="payload.displayField" label="Collection display field" />
+                    </div>
+
+                </template>
+                
 
                 <div class="mb-4">
                     <w-input v-model="payload.field" label="Field" />

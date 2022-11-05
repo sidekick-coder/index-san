@@ -103,6 +103,18 @@ const classes = computed(() => ({
                         <fa-icon icon="plus" />
                     </i>
                 </th>
+               
+                <th 
+                    v-if="!columns.length"                
+                    :class="classes.th"
+                >
+                    <div class="flex cursor-pointer" @click="$emit('column:new')">
+                        Add column
+                        <i class="cursor-pointer ml-2" @click="$emit('column:new')">
+                            <fa-icon icon="plus" />
+                        </i>
+                    </div>
+                </th>
             </tr>
         </thead>
 
@@ -151,8 +163,17 @@ const classes = computed(() => ({
             </td>
 
         </tr>
-
         
+        <tr v-if="!visibleItems.length"  @click="$emit('item:new')">
+            <td
+                :class="[classes.td, actionsColor]"
+                :colspan="columns.length + 2"
+                class="p-2 cursor-pointer hover:bg-gray-800 text-sm text-center"
+            >
+                No items
+            </td>
+        </tr>
+
         <tr v-if="items.length > 10">
             <td
                 :class="[classes.td, actionsColor]"

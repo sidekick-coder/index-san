@@ -3,8 +3,8 @@ export default { name: 'IsChartBar' }
 </script>
 
 <script setup lang="ts">
-import { Chart, registerables, ChartTypeRegistry, ChartData, ChartDataset } from 'chart.js'
-import { onMounted, ref, computed } from 'vue'
+import { Chart, registerables } from 'chart.js'
+import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useMeasurement } from '@/composables/measurement'
 
 import groupBy from 'lodash/groupBy'
@@ -52,6 +52,7 @@ const measurement = useMeasurement()
 const theme = useTheme()
 
 const root = ref()
+const chart = ref<Chart>()
 const style = {
     width: measurement.toSize(props.width),
     height: measurement.toSize(props.height),
@@ -73,7 +74,7 @@ const data = computed(() => {
 })
 
 function load(){
-    new Chart(root.value, {
+    chart.value = new Chart(root.value, {
         type: 'bar',
         data: {
             labels: data.value.map(d =>  `${props.labelPrefix}${d.label}`),
@@ -106,6 +107,7 @@ function load(){
 }
 
 onMounted(load)
+onUnmounted(() => chart.value?.destroy())
 
 </script>
 <template>
