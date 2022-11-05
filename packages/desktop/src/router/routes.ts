@@ -40,6 +40,11 @@ const routes: RouteRecordRaw[] = [
         props: true,
         component: () => import('../pages/items/items.vue')
     },
+    // settings
+    {
+        path: '/settings/menu',
+        component: () => import('../pages/settings/menu.vue')
+    },
     // 404 - keep this section in the end
     {
         path: '/:pathMatch(.*)*',

@@ -4,4 +4,4 @@
 
 2 - Add a new workspace with the id = **example** and the path pointing to this folder
 
-![](./readme-screenshot-01.jpeg)
+<is-entry-view-image workspace-id="example" path="readme-screenshot-01.jpeg" />

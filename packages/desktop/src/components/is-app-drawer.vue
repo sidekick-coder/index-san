@@ -5,22 +5,8 @@ import get from 'lodash/get'
 import { useOptionStore } from '@/stores/options'
 import { useState } from '@/composables/state'
 
-interface Item {
-    id: string,
-    label: string
-    to: string
-}
-
-
 const store = useOptionStore()
 const drawer = useState('app:drawer', true)
-
-const items = computed<Item[]>(() => {
-    return store.options
-        .reduce((result, o) => result.concat(get(o, 'value.menu.items', [])), [])
-})
-
-
 
 store.load()
 
@@ -46,12 +32,16 @@ store.load()
                 <i class="mr-2"> <fa-icon icon="cubes" /></i>
                 <div>Workspaces</div>
             </router-link>
+            <router-link to="/settings/menu" class="sidebar-list-item clickable text-sm">
+                <i class="mr-2"> <fa-icon icon="cog" /></i>
+                <div>Settings</div>
+            </router-link>
         </div>
 
         <div class="flex flex-wrap items-start">
             <div class="sidebar-list-item text-gray-500 text-sm font-bold">Favorites</div>
 
-            <div v-if="!items.length" class="sidebar-list-item text-xs">
+            <div v-if="!store.menuItems.length" class="sidebar-list-item text-xs">
                 No items
             </div>
 
@@ -61,7 +51,7 @@ store.load()
                 :to="item.to"
                 class="sidebar-list-item clickable text-sm"
             >
-                <i class="mr-2 text-[8px] text-teal-500"> <fa-icon icon="circle" /></i>
+                <is-icon :name="item.icon || 'circle' " class="mr-4" />
                 <div>{{item.label}}</div>
             </router-link>
         </div>

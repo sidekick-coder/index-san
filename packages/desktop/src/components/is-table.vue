@@ -10,7 +10,7 @@ import { computed, ref } from 'vue'
 import { useBuilder } from 'vue-wind/composables/builder'
 
 interface Column {
-    id: string
+    name: string
     label?: string
     field?: string
     type?: string,
@@ -33,7 +33,19 @@ const props = defineProps({
     limit: {
         type: Number,
         default: 10
-    }
+    },
+    disableAddColumn: {
+        type: Boolean,
+        default: false
+    },
+    disableViewItem: {
+        type: Boolean,
+        default: false
+    },
+    disableNewItem: {
+        type: Boolean,
+        default: false
+    },
 })
 
 const builder = useBuilder()
@@ -86,7 +98,7 @@ const classes = computed(() => ({
             <tr :class="classes.tr" class="relative">
                 <th
                     v-for="(column, index) in columns"
-                    :key="column.id"
+                    :key="column.name"
                     :class="classes.th"
                     @click="$emit('column:update', column)"
                 >
@@ -97,7 +109,7 @@ const classes = computed(() => ({
                     <i
                         class="absolute cursor-pointer -mr-[25px] right-0 top-0"
                         :class="classes.actions"
-                        v-if="index === columns.length - 1"
+                        v-if="index === columns.length - 1 && !disableAddColumn"
                         @click="$emit('column:new')"
                     >
                         <fa-icon icon="plus" />
@@ -134,7 +146,7 @@ const classes = computed(() => ({
                 <i
                     class="absolute cursor-pointer -ml-[25px]"
                     :class="classes.actions"
-                    v-if="cIndex === 0"
+                    v-if="cIndex === 0 && !disableViewItem"
                     @click="$emit('item:show', item)"
                 >
                     <fa-icon icon="eye" />
@@ -142,7 +154,7 @@ const classes = computed(() => ({
 
                 <div v-if="!column.field" />
 
-                <slot v-else name="item" :item="item" :column="column">
+                <slot v-else :name="`item-${column.name}`" :item="item" :column="column">
                     <input                        
                         v-model="item[column.field]"
                         class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
@@ -150,15 +162,14 @@ const classes = computed(() => ({
                     >
                 </slot>
 
-                    <i
-                        class="absolute cursor-pointer -mr-[25px] right-0 top-0"
-                        :class="classes.actions"
-                        v-if="cIndex === columns.length - 1"
-                        @click="$emit('item:delete', item)"
-                    >
-                        <fa-icon icon="trash" />
-                    </i>
-            
+                <i
+                    class="absolute cursor-pointer -mr-[25px] right-0 top-0"
+                    :class="classes.actions"
+                    v-if="cIndex === columns.length - 1"
+                    @click="$emit('item:delete', item)"
+                >
+                    <fa-icon icon="trash" />
+                </i>        
 
             </td>
 
@@ -188,7 +199,7 @@ const classes = computed(() => ({
             </td>
         </tr>
 
-        <tr>
+        <tr v-if="!disableNewItem">
             <td
                 :class="[classes.td, actionsColor]"
                 :colspan="columns.length + 2"

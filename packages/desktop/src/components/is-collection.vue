@@ -82,6 +82,7 @@ async function setColumns(){
         if (column.type === 'relation') {
             const relation = await useCollectionItemsAsync(props.workspaceId, column.collectionId)
 
+            column.name = column.field
             column.options = new Map<string, string>()
             
             relation.value.forEach(i => column.options.set(i.id, i[column.displayField]))
@@ -239,11 +240,15 @@ async function clearFilters(){
                     />
                 </template>
                
-                <template #item="{ column, item }">
+                <template
+                    v-for="(c, index) in columns"
+                    :key="index"
+                    v-slot:[`item-${c.field}`]="{ item }"
+                >
                     <is-collection-column-value
                         :workspace-id="workspaceId"
                         :collection-id="collectionId"
-                        :column="column"
+                        :column="c"
                         :item="item"
                     />
                 </template>

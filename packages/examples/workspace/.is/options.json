@@ -2,34 +2,46 @@
     "menu": {
         "items": [
             {
-                "id": "136941bb-125b-4f07-9af3-2dbf78151b058",
-                "label": "Admin Dashboard",
-                "to": "/workspaces/example/entries/dashboards/admin.md"
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b057",
+                "label": "Dashboard: Investments ",
+                "to": "/workspaces/example/entries/dashboards/investments.md",
+                "icon": "money-bill",
+                "workspaceId": "example"
             },
             {
-                "id": "136941bb-125b-4f07-9af3-2dbf78151b057",
-                "label": "Investments Dashboard",
-                "to": "/workspaces/example/entries/dashboards/investments.md"
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b058",
+                "label": "Dashboard: Admin",
+                "to": "/workspaces/example/entries/dashboards/admin.md",
+                "icon": "suitcase",
+                "workspaceId": "example"
             },
             {
                 "id": "136941bb-125b-4f07-9af3-2dbf78151b04",
-                "label": "Tasks collection",
-                "to": "/workspaces/example/collections/work-tasks/items"
+                "label": "Collection: Tasks",
+                "to": "/workspaces/example/collections/work-tasks/items",
+                "icon": "flask",
+                "workspaceId": "example"
             },
             {
                 "id": "136941bb-125b-4f07-9af3-2dbf78151b05",
-                "label": "Projects collection",
-                "to": "/workspaces/example/collections/work-projects/items"
+                "label": "Collection: Projects",
+                "to": "/workspaces/example/collections/work-projects/items",
+                "icon": "folder",
+                "workspaceId": "example"
+            },
+            {
+                "id": "8a42a433-ce09-4b42-bae7-9763d263b4f5",
+                "label": "Collection: Assets",
+                "to": "/workspaces/example/collections/investments-assets/items",
+                "workspaceId": "example",
+                "icon": "money-bill"
             },
             {
                 "id": "136941bb-125b-4f07-9af3-2dbf78151b056",
-                "label": "Investments extract collection",
-                "to": "/workspaces/example/collections/investments-extract/items"
-            },
-            {
-                "id": "812b483e-baf7-4bda-b956-f7ddfce43d00",
-                "label": "Assets",
-                "to": "/workspaces/example/collections/investments-assets/items"
+                "label": "Collection: Extract",
+                "to": "/workspaces/example/collections/investments-extract/items",
+                "icon": "money-bill",
+                "workspaceId": "example"
             }
         ]
     }

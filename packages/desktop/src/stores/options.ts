@@ -16,6 +16,7 @@ export interface MenuItem {
     workspaceId: string
     label: string
     to: string
+    icon?: string
 }
 
 export const useOptionStore = defineStore('workspace-options', {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
@@ -58,6 +58,8 @@ function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views 
 }
 
 async function load(){
+    entry.value = undefined
+
     const data = await repository.show(props.entryId)
 
     entry.value = data
@@ -68,7 +70,9 @@ async function load(){
     
 }
 
-load()
+watch(() => props.entryId, load, {
+    immediate: true
+})
 
 </script>
 <template>
