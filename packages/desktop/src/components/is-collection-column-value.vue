@@ -6,6 +6,7 @@ import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
+import { useCollectionItems } from '@/composables/collection'
 import { useBuilder } from 'vue-wind/composables/builder'
 
 
@@ -32,7 +33,8 @@ const crud = useItemRepository(props.workspaceId, props.collectionId)
 const edit = ref(false)
 const builder = useBuilder()
 const payload = ref('')
-const relatedItems = ref<any[]>([])
+
+const relation = useCollectionItems(props.workspaceId, props.column.collectionId)
 
 const classes = computed(() => ({
     input: builder.make()
@@ -40,12 +42,6 @@ const classes = computed(() => ({
 
 function load(){
     payload.value = props.item[props.column.field]
-}
-
-if (props.column.type === 'relation') {
-    useItemRepository(props.workspaceId, props.column.collectionId)
-        .list()
-        .then(d => relatedItems.value = d.data)
 }
 
 builder
@@ -125,7 +121,7 @@ watch(props, load, {
     >
         <option value=""> - </option>
         
-        <option v-for="option in relatedItems" :value="option.id" :key="option.id">
+        <option v-for="option in relation" :value="option.id" :key="option.id">
             {{ option[column.displayField] }}
         </option>
     </select>

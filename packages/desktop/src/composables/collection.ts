@@ -1,7 +1,11 @@
 import uuid from 'uuid-random'
+import { ref } from 'vue'
+
 import Collection, { CollectionColumn } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
 import { useHooks } from '../plugins/hooks'
+import { useState } from './state'
+import { CollectionFolderItem } from './item'
 
 
 export function useCollectionRepository(workspaceId: string) {
@@ -104,4 +108,26 @@ export function useCollection(workspaceId: string, collectionId: string) {
     }
 
     return { show, addColumn, updateColumn, deleteColumn, on }
+}
+
+export function useCollectionItems(workspaceId: string, collectionId: string){
+
+    if (!workspaceId || !collectionId) {
+        return ref([])
+    }
+    
+    const loading = useState<boolean>(`workspace:${workspaceId}:collection:${collectionId}:loading`, false)
+    const items = useState<CollectionFolderItem[]>(`workspace:${workspaceId}:collection:${collectionId}:items`, [])
+
+    if (!items.value.length && !loading.value) {
+        loading.value = true
+
+        useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
+            .then(r => items.value = r.data)
+            .catch(() => items.value = [])
+            .finally(() => loading.value = false)
+    }
+
+
+    return items
 }

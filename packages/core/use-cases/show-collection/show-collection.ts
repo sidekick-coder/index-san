@@ -29,6 +29,8 @@ export default class ShowCollection {
 
         if (!collection) throw new Error('Collection not found')
 
+        collection.workspaceId = workspaceId
+
         return {
             data: collection
         }
