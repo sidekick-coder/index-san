@@ -7,7 +7,10 @@ module.exports = {
         '../../node_modules/vue-wind/components/**/*.{ts,vue}',
     ],
     safelist: [
-        { pattern: /w-*/ }
+        { pattern: /w-*/ },
+        { pattern: /h-*/ },
+        { pattern: /items-*/ },
+        { pattern: /justify-*/ },
     ],
     theme: {},
     plugins: [],

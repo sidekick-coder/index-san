@@ -8,6 +8,7 @@ import { useItemRepository } from '@/composables/item'
 
 import { useCollection } from '@/composables/collection'
 import { useRouter } from 'vue-router'
+import { useChildren } from '@/composables/children'
 
 const props = defineProps({
     workspaceId: {
@@ -20,7 +21,7 @@ const props = defineProps({
     }
 })
 
-const slots = useSlots()
+const children = useChildren(useSlots())
 const router = useRouter()
 
 const crud = useItemRepository(props.workspaceId, props.collectionId)
@@ -34,18 +35,11 @@ const components = shallowRef<any[]>([])
 
 
 function setViews(){
-    if (!slots.default) return
+    children.load()
 
-    const children = slots.default()
-
-    console.log(children)
-
-    children
-        .filter(c => typeof c.type === 'object')
-        .filter(c => ['IsTable', 'IsChart'].includes((c.type as any).name))
-        .forEach(child => {
-            components.value.push(child)
-        })
+    children.findComponent('IsTable', 'IsChartBar').forEach(c => {
+        components.value.push(c)
+    })
 
 }
 
@@ -104,35 +98,38 @@ async function onColumnNew(){
 </script>
 <template>
     <div v-if="!loading">
-        <component
-            v-for="(c, index) in components"
-            :key="index"
-            :is="c"
-            :items="items"
-            :columns="columns"
-            @item:show="onItemShow"
-            @item:new="onItemNew"
-            @item:update="onItemUpdate"
-            @item:delete="onItemDelete"
-            @column:new="onColumnNew"
-        >
-            <template #column="{ column }">
-                <is-collection-column
-                    :workspace-id="workspaceId"
-                    :collection-id="collectionId"
-                    :column="column"
-                />
-            </template>
-           
-            <template #item="{ column, item }">
-                <is-collection-column-value
-                    :workspace-id="workspaceId"
-                    :collection-id="collectionId"
-                    :column="column"
-                    :item="item"
-                />
-            </template>
-    
-        </component>
+        <template v-for="(c, index) in components" :key="index">
+            <component
+                v-if="c.type.name === 'IsTable' "
+                :is="c"
+                :items="items"
+                :columns="columns"
+                @item:show="onItemShow"
+                @item:new="onItemNew"
+                @item:update="onItemUpdate"
+                @item:delete="onItemDelete"
+                @column:new="onColumnNew"
+            >
+                <template #column="{ column }">
+                    <is-collection-column
+                        :workspace-id="workspaceId"
+                        :collection-id="collectionId"
+                        :column="column"
+                    />
+                </template>
+               
+                <template #item="{ column, item }">
+                    <is-collection-column-value
+                        :workspace-id="workspaceId"
+                        :collection-id="collectionId"
+                        :column="column"
+                        :item="item"
+                    />
+                </template>
+        
+            </component>
+            
+            <component v-else :is="c" :items="items" />
+        </template>
     </div>
 </template>

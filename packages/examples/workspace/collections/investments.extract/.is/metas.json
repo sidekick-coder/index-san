@@ -2,7 +2,7 @@
     {
         "id": "9a041163-1212-4839-a100-12042a362cd6",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/29/2022",
         "quantity": 95794,
         "amount": 86518,
@@ -13,7 +13,7 @@
     {
         "id": "848e7cd4-adaa-415c-88c0-d9891b326bc7",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/18/2022",
         "quantity": 40179,
         "amount": 95707,
@@ -24,7 +24,7 @@
     {
         "id": "0066a40c-0729-4103-bddd-fc3f598919fc",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "09/30/2022",
         "quantity": 78082,
         "amount": 95133,
@@ -35,7 +35,7 @@
     {
         "id": "13659127-b34c-4deb-a8c1-7ea0292fcb62",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/23/2022",
         "quantity": 66738,
         "amount": 52443,
@@ -46,7 +46,7 @@
     {
         "id": "0bc2c571-ac8f-4dc4-b66c-bab61ae41c5d",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "10/05/2022",
         "quantity": 44902,
         "amount": 38817,
@@ -57,7 +57,7 @@
     {
         "id": "5ff30521-2445-4e90-8b4b-b39dc76856bd",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "11/26/2021",
         "quantity": 52675,
         "amount": 78292,
@@ -68,7 +68,7 @@
     {
         "id": "f7118a39-b6fb-4fac-8207-b6c3ebadbede",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/26/2022",
         "quantity": 75265,
         "amount": 50393,
@@ -79,7 +79,7 @@
     {
         "id": "0028fb7e-7df8-490c-b12d-11e4445d6dc6",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "03/03/2022",
         "quantity": 86188,
         "amount": 82708,
@@ -90,7 +90,7 @@
     {
         "id": "a996b34a-d587-4a3b-b67f-ec3a84850223",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "07/26/2022",
         "quantity": 90733,
         "amount": 63667,
@@ -101,7 +101,7 @@
     {
         "id": "1cf321fd-7167-4797-b832-0f2bf58d8254",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "08/28/2022",
         "quantity": 12952,
         "amount": 20353,
@@ -112,7 +112,7 @@
     {
         "id": "dbfdc272-001d-459a-86da-123b367f3ecf",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/23/2022",
         "quantity": 30933,
         "amount": 78900,
@@ -123,7 +123,7 @@
     {
         "id": "aa406fc1-fc01-404b-b43b-514dc546d400",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "11/19/2021",
         "quantity": 94192,
         "amount": 61058,
@@ -134,7 +134,7 @@
     {
         "id": "f6b85209-3772-4e42-b3a6-cc600df19f1b",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/16/2022",
         "quantity": 29519,
         "amount": 79442,
@@ -145,7 +145,7 @@
     {
         "id": "4cac4eb4-265c-44ef-9dae-3e7e6d580157",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "08/24/2022",
         "quantity": 35075,
         "amount": 79600,
@@ -156,7 +156,7 @@
     {
         "id": "044561bd-588a-410c-8844-17cbe621463d",
         "asset": "BTCUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "04/10/2022",
         "quantity": 30831,
         "amount": 83515,
@@ -167,7 +167,7 @@
     {
         "id": "6d9a085d-06b0-4d7a-ac1c-98b626981f8d",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "06/02/2022",
         "quantity": 10988,
         "amount": 91985,
@@ -178,7 +178,7 @@
     {
         "id": "951d3c6e-d84f-46ee-b62c-f0add2d56d30",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "09/05/2022",
         "quantity": 32720,
         "amount": 30651,
@@ -189,7 +189,7 @@
     {
         "id": "81d71f2f-9ada-49ce-ae0c-c86e81827de9",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/05/2022",
         "quantity": 99133,
         "amount": 92192,
@@ -200,7 +200,7 @@
     {
         "id": "428e3765-4f44-4467-840c-53eddab07ec2",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "11/10/2021",
         "quantity": 1346,
         "amount": 36785,
@@ -211,7 +211,7 @@
     {
         "id": "7adcd3c5-ab72-430d-b020-a9ac2b0d5f1b",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/01/2022",
         "quantity": 18740,
         "amount": 47891,
@@ -222,7 +222,7 @@
     {
         "id": "da33eccd-d3a2-49cf-848c-085788016e92",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "03/21/2022",
         "quantity": 12486,
         "amount": 72105,
@@ -233,7 +233,7 @@
     {
         "id": "09eba3e8-fcfc-4b3a-b1ad-b5ea866063f8",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "06/10/2022",
         "quantity": 2231,
         "amount": 97572,
@@ -244,7 +244,7 @@
     {
         "id": "bbdeb48f-dd1f-40e7-97e1-a8daa282d815",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "03/05/2022",
         "quantity": 90197,
         "amount": 37400,
@@ -255,7 +255,7 @@
     {
         "id": "285828dd-ca4d-4c4e-b2b5-80b9c085ae18",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "03/04/2022",
         "quantity": 69751,
         "amount": 24682,
@@ -266,7 +266,7 @@
     {
         "id": "37ae52ab-f1d4-490a-a0b8-c310d56f138e",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/10/2022",
         "quantity": 87136,
         "amount": 2419,
@@ -277,7 +277,7 @@
     {
         "id": "973632f4-376e-48dc-b89f-2308d059a652",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "10/01/2022",
         "quantity": 47847,
         "amount": 80620,
@@ -288,7 +288,7 @@
     {
         "id": "470120d9-3b28-47df-a8f8-0ddc93808027",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "02/23/2022",
         "quantity": 25100,
         "amount": 98232,
@@ -299,7 +299,7 @@
     {
         "id": "537b0494-7a6e-4864-bbb1-5bf9853e3ac7",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "11/05/2021",
         "quantity": 85913,
         "amount": 24985,
@@ -310,7 +310,7 @@
     {
         "id": "3df2f84a-7969-40d2-9468-252c3383b1a9",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "03/17/2022",
         "quantity": 38772,
         "amount": 31683,
@@ -321,7 +321,7 @@
     {
         "id": "9d30b358-f6b1-4406-879c-7e9ea26383c1",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "10/12/2022",
         "quantity": 93275,
         "amount": 40927,
@@ -332,7 +332,7 @@
     {
         "id": "000fd3ff-9153-4318-8213-a937abdc5b4a",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "01/15/2022",
         "quantity": 92038,
         "amount": 35461,
@@ -343,7 +343,7 @@
     {
         "id": "1b0c1c9e-cc79-4a1d-ab7e-6c8f2fe980c1",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "12/29/2021",
         "quantity": 97752,
         "amount": 75709,
@@ -354,7 +354,7 @@
     {
         "id": "cd0527eb-806a-421a-8cd0-eb7addd4066b",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "02/25/2022",
         "quantity": 1626,
         "amount": 44110,
@@ -365,7 +365,7 @@
     {
         "id": "5be3b05d-0072-45a0-bdf3-80241b682ae8",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "12/02/2021",
         "quantity": 82652,
         "amount": 27268,
@@ -376,7 +376,7 @@
     {
         "id": "e83a9d58-f89f-4b2a-9504-1ae388547962",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "02/17/2022",
         "quantity": 40562,
         "amount": 50638,
@@ -387,7 +387,7 @@
     {
         "id": "50208e4a-d319-466c-84a6-3f315a54a799",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "04/14/2022",
         "quantity": 79352,
         "amount": 87811,
@@ -398,7 +398,7 @@
     {
         "id": "72155879-de31-4f6f-9440-d77c6e5f736e",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "11/24/2021",
         "quantity": 27990,
         "amount": 55994,
@@ -409,7 +409,7 @@
     {
         "id": "9d2ad86f-b574-434a-87c7-0f9d528ac5e2",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "10/03/2022",
         "quantity": 39121,
         "amount": 40571,
@@ -420,7 +420,7 @@
     {
         "id": "826c4f8f-6d28-42d1-96f0-af8c39fe1125",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "03/26/2022",
         "quantity": 73812,
         "amount": 74072,
@@ -431,7 +431,7 @@
     {
         "id": "7af8256e-d1c8-4cbb-9f38-3e10841e1688",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "10/20/2022",
         "quantity": 87140,
         "amount": 38866,
@@ -442,7 +442,7 @@
     {
         "id": "fa438436-6fcb-4cd1-a111-2eab6096083a",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "09/25/2022",
         "quantity": 50587,
         "amount": 95554,
@@ -453,7 +453,7 @@
     {
         "id": "df44f27e-0756-44df-8f17-06ea95efb42c",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "06/17/2022",
         "quantity": 26029,
         "amount": 30198,
@@ -464,7 +464,7 @@
     {
         "id": "f1dc87a3-cf13-4dce-a70e-8ec468789a14",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/19/2022",
         "quantity": 81592,
         "amount": 2598,
@@ -475,7 +475,7 @@
     {
         "id": "0ae00848-bad9-447a-b17c-0beaf4e24a57",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "07/17/2022",
         "quantity": 18098,
         "amount": 24091,
@@ -486,7 +486,7 @@
     {
         "id": "fc8a882f-30ae-4214-a31e-15a0fb568cc7",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "10/30/2022",
         "quantity": 57062,
         "amount": 90471,
@@ -497,7 +497,7 @@
     {
         "id": "ab7eca1a-a176-4767-836b-b85df3a948bd",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "09/28/2022",
         "quantity": 4103,
         "amount": 96479,
@@ -508,7 +508,7 @@
     {
         "id": "652670b1-c0d6-4858-9a0f-5164260c5ed1",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "06/12/2022",
         "quantity": 38343,
         "amount": 70684,
@@ -519,7 +519,7 @@
     {
         "id": "61704799-314f-447b-b1c0-2c2149286802",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "11/09/2021",
         "quantity": 85353,
         "amount": 25685,
@@ -530,7 +530,7 @@
     {
         "id": "04c0a087-473f-48cc-af97-1f16db145ee1",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "03/06/2022",
         "quantity": 83139,
         "amount": 30452,
@@ -541,7 +541,7 @@
     {
         "id": "3fa7203b-2e1e-41f9-8288-65c6110b41b7",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/10/2022",
         "quantity": 41059,
         "amount": 17208,
@@ -552,7 +552,7 @@
     {
         "id": "840a3488-8159-4935-b926-fe4ad598d11f",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "10/17/2022",
         "quantity": 97796,
         "amount": 69512,
@@ -563,7 +563,7 @@
     {
         "id": "3904f87d-e59c-43c0-8db3-af77637418c8",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "07/26/2022",
         "quantity": 26221,
         "amount": 94003,
@@ -574,7 +574,7 @@
     {
         "id": "e22b2aed-569f-4581-9368-b26f29f8dc37",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "04/24/2022",
         "quantity": 52219,
         "amount": 88785,
@@ -585,7 +585,7 @@
     {
         "id": "adb7b4fb-ac4a-4bb8-b7e7-ae927da05ebe",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "03/21/2022",
         "quantity": 2136,
         "amount": 49803,
@@ -596,7 +596,7 @@
     {
         "id": "0ef10d37-23d2-4f67-a638-2d0405d00cc7",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "07/15/2022",
         "quantity": 35760,
         "amount": 29910,
@@ -607,7 +607,7 @@
     {
         "id": "f270dcfe-23fd-4596-975e-270327ed1ceb",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "06/29/2022",
         "quantity": 44832,
         "amount": 52042,
@@ -618,7 +618,7 @@
     {
         "id": "a34c6de0-d136-4a28-814a-55b94fdf4622",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/20/2022",
         "quantity": 5819,
         "amount": 53577,
@@ -629,7 +629,7 @@
     {
         "id": "d0e3016e-04e7-44b2-b0da-9a778e8cffd2",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "01/03/2022",
         "quantity": 22026,
         "amount": 90871,
@@ -640,7 +640,7 @@
     {
         "id": "22398ba9-03b7-4e77-9033-34854d2d1d6b",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "09/30/2022",
         "quantity": 41618,
         "amount": 92895,
@@ -651,7 +651,7 @@
     {
         "id": "72c8f7e8-712a-409f-80bd-8114bb29b0a1",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "06/16/2022",
         "quantity": 52781,
         "amount": 54005,
@@ -662,7 +662,7 @@
     {
         "id": "a65ab0b6-b980-4ad5-b5d2-742ddebcb04c",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "09/14/2022",
         "quantity": 52678,
         "amount": 86438,
@@ -673,7 +673,7 @@
     {
         "id": "8fe2b546-548d-4298-9e03-4d1f435d823c",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "04/27/2022",
         "quantity": 16647,
         "amount": 26272,
@@ -684,7 +684,7 @@
     {
         "id": "c6cf3cb4-31d9-4c2f-8497-7cb97ab202ba",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "11/02/2022",
         "quantity": 8777,
         "amount": 38276,
@@ -695,7 +695,7 @@
     {
         "id": "fb8eff9e-427a-4cce-95e6-99931a7f4805",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "05/27/2022",
         "quantity": 32146,
         "amount": 57887,
@@ -706,7 +706,7 @@
     {
         "id": "dec6198b-6f57-4818-845c-c7f756ba257b",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "08/13/2022",
         "quantity": 68335,
         "amount": 77447,
@@ -717,7 +717,7 @@
     {
         "id": "fdb9d2c6-2e92-4f41-8658-228a7bb2813b",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "01/09/2022",
         "quantity": 79580,
         "amount": 68220,
@@ -728,7 +728,7 @@
     {
         "id": "f3bd331d-057a-42df-81bd-7b0a7654014c",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "01/27/2022",
         "quantity": 40307,
         "amount": 89031,
@@ -739,7 +739,7 @@
     {
         "id": "4998262d-49c8-403e-b48c-6eaf8fa565fd",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "10/28/2022",
         "quantity": 12765,
         "amount": 50272,
@@ -750,7 +750,7 @@
     {
         "id": "e1252a9a-a7d0-4f0d-9c48-c2455a3ac2cf",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "03/19/2022",
         "quantity": 40371,
         "amount": 41061,
@@ -761,7 +761,7 @@
     {
         "id": "f3a765cb-4229-4ce5-a8a7-7d692914548a",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "10/20/2022",
         "quantity": 87853,
         "amount": 9853,
@@ -772,7 +772,7 @@
     {
         "id": "535e9dc3-7342-46e7-a880-6b551bd87343",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "06/06/2022",
         "quantity": 49479,
         "amount": 5213,
@@ -783,7 +783,7 @@
     {
         "id": "85894822-df0f-4a43-b286-efc614499b81",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/29/2022",
         "quantity": 13740,
         "amount": 36722,
@@ -794,7 +794,7 @@
     {
         "id": "58ffa88d-ec2e-41f6-81b8-9fec6ea45786",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "09/02/2022",
         "quantity": 61886,
         "amount": 80597,
@@ -805,7 +805,7 @@
     {
         "id": "e034b544-17c2-4096-978a-840ae8f3f669",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "09/10/2022",
         "quantity": 27769,
         "amount": 67242,
@@ -816,7 +816,7 @@
     {
         "id": "5adee023-d232-45a9-9815-067090b2309f",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "09/20/2022",
         "quantity": 43480,
         "amount": 83490,
@@ -827,7 +827,7 @@
     {
         "id": "484dbfea-f3fd-4d4a-9b0a-7b131cb05433",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "10/29/2022",
         "quantity": 56064,
         "amount": 31482,
@@ -838,7 +838,7 @@
     {
         "id": "569abbe6-ed1a-4076-aacb-61412282e4e8",
         "asset": "BTCUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "03/02/2022",
         "quantity": 44490,
         "amount": 22698,
@@ -849,7 +849,7 @@
     {
         "id": "4a20b05b-0416-42ec-b72a-aaaac419e8db",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "02/23/2022",
         "quantity": 47128,
         "amount": 48539,
@@ -860,7 +860,7 @@
     {
         "id": "8a9bb11c-551f-46be-aa3b-d5313802df62",
         "asset": "BTCUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "06/23/2022",
         "quantity": 58879,
         "amount": 33016,
@@ -871,7 +871,7 @@
     {
         "id": "e808eda7-6cce-440e-8e9e-f217db49485b",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "08/10/2022",
         "quantity": 62016,
         "amount": 93743,
@@ -882,7 +882,7 @@
     {
         "id": "370d4a88-02da-4125-b582-a95bd8c054b7",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "11/03/2021",
         "quantity": 94867,
         "amount": 54156,
@@ -893,7 +893,7 @@
     {
         "id": "89db784b-73fc-4425-87e0-9b232d72f888",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "01/12/2022",
         "quantity": 98186,
         "amount": 41536,
@@ -904,7 +904,7 @@
     {
         "id": "f43f448f-0a59-4bea-ae96-ddb03e0ee198",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "03/28/2022",
         "quantity": 55446,
         "amount": 20366,
@@ -915,7 +915,7 @@
     {
         "id": "8753716e-08ad-444a-8c46-ca4aea9c1d94",
         "asset": "GOOG",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "03/12/2022",
         "quantity": 65566,
         "amount": 77940,
@@ -926,7 +926,7 @@
     {
         "id": "e1b22b12-49d4-4ec5-bf34-d1f64388e014",
         "asset": "KNRI11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "12/13/2021",
         "quantity": 6497,
         "amount": 51435,
@@ -937,7 +937,7 @@
     {
         "id": "760a2a86-5e68-4a81-b158-7a3c1f82b5f8",
         "asset": "BTCUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "08/04/2022",
         "quantity": 34913,
         "amount": 7646,
@@ -948,7 +948,7 @@
     {
         "id": "b459ccf1-a9bc-48ae-9767-397c10fd41e4",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "02/01/2022",
         "quantity": 52142,
         "amount": 83567,
@@ -959,7 +959,7 @@
     {
         "id": "c02b38cf-eb40-46f4-979c-1343b9fd2f0d",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "05/22/2022",
         "quantity": 74761,
         "amount": 22994,
@@ -970,7 +970,7 @@
     {
         "id": "f7416aa2-38bc-4c08-98d8-6d89ead4af16",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "06/08/2022",
         "quantity": 70855,
         "amount": 94891,
@@ -981,7 +981,7 @@
     {
         "id": "0e018e3f-629f-4a5e-9db9-56de15295ef3",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "01/18/2022",
         "quantity": 17484,
         "amount": 96171,
@@ -992,7 +992,7 @@
     {
         "id": "aa3d927b-df52-4cde-95b2-f65a8fae80ac",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "04/19/2022",
         "quantity": 80233,
         "amount": 81765,
@@ -1003,7 +1003,7 @@
     {
         "id": "02aac317-b5f8-441b-a1ae-8ebf510b07bd",
         "asset": "DISB34",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "01/20/2022",
         "quantity": 24410,
         "amount": 99521,
@@ -1014,7 +1014,7 @@
     {
         "id": "b1952c7c-ae69-49e5-9761-840ad4e4891a",
         "asset": "EGIE3",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "07/12/2022",
         "quantity": 29716,
         "amount": 25462,
@@ -1025,7 +1025,7 @@
     {
         "id": "fce290be-8e35-412d-b4c9-8752a706a954",
         "asset": "BTCUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "09/30/2022",
         "quantity": 29679,
         "amount": 50292,
@@ -1036,7 +1036,7 @@
     {
         "id": "1bb89037-70b4-479f-96c2-36768577cc9b",
         "asset": "AAPL",
-        "portfolio": "eua_stock",
+        "portfolio": "EUA Stocks",
         "date": "07/23/2022",
         "quantity": 97026,
         "amount": 19847,
@@ -1047,7 +1047,7 @@
     {
         "id": "bb0ab4c6-f4f8-458c-bdb7-5d62c449b562",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "12/30/2021",
         "quantity": 17611,
         "amount": 71123,
@@ -1058,7 +1058,7 @@
     {
         "id": "7efbdc15-1e20-42ee-9cb2-0a3906a1e2dd",
         "asset": "PETR4",
-        "portfolio": "br_stock",
+        "portfolio": "BR Stocks",
         "date": "09/19/2022",
         "quantity": 92270,
         "amount": 98452,
@@ -1069,7 +1069,7 @@
     {
         "id": "4a84cbc7-20fd-4a5c-a871-4d840955337c",
         "asset": "ETHUSD",
-        "portfolio": "crypto",
+        "portfolio": "Crypto",
         "date": "06/09/2022",
         "quantity": 55962,
         "amount": 39538,
@@ -1080,7 +1080,7 @@
     {
         "id": "821c6aa0-431e-4847-a435-92b7dd44f032",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "05/26/2022",
         "quantity": 16825,
         "amount": 82143,
@@ -1091,7 +1091,7 @@
     {
         "id": "57a28976-60ac-4f73-80aa-0f2af355f8be",
         "asset": "XPLG11",
-        "portfolio": "real_state",
+        "portfolio": "Real state",
         "date": "06/24/2022",
         "quantity": 60687,
         "amount": 7706,

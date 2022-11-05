@@ -12,7 +12,8 @@ const props = defineProps({
 
 const md = MarkdownIt({
     html: true,
-    // breaks: true,
+    // linkify: true,
+    // typographer: true,
     highlight: (str: string, lang: string) => {
         if (lang && hljs.getLanguage(lang)) {
             try {
@@ -65,6 +66,16 @@ const view = {
 
     pre {
         @apply bg-zinc-800 text-sm p-4 rounded my-4;
+    }
+
+    ul {
+        @apply flex flex-wrap py-4 pl-5;
+
+        li {
+            @apply w-full mb-2;
+            @apply list-disc;
+
+        }
     }
 }
 </style>
