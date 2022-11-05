@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { useCollection } from '@/composables/collection'
+import { useCollection, useCollectionAsync } from '@/composables/collection'
 import { usePageMeta } from '@/composables/page-meta'
+import { watch } from 'vue'
 
 const props = defineProps({
     workspaceId: {
@@ -14,15 +15,21 @@ const props = defineProps({
 })
 
 const meta = usePageMeta()
-const collection = useCollection(props.workspaceId, props.collectionId)
 
+async function load(){
+    const collection = await useCollectionAsync(props.workspaceId, props.collectionId) 
+    
+    meta.value.title = collection.value?.name ?? `collection ${props.collectionId}`
+}
 
-collection.show().then(c => meta.value.title = c.name)
+watch(() => props.collectionId, load, {
+    immediate: true,
+})
 
 
 </script>
 <template>
     <is-collection :workspace-id="workspaceId" :collection-id="collectionId">
-        <is-table :limit="100" />
+        <is-table :limit="20" />
     </is-collection>
 </template>

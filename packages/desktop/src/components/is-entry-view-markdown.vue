@@ -57,7 +57,7 @@ async function save() {
             v-show="edit"
             ref="root"
             v-model="content"
-            class="min-h-full w-6/12 border-r border-zinc-700 bg-transparent outline-none"
+            class="min-h-full w-6/12 border-r border-zinc-700 bg-transparent outline-none pt-10"
             autofocus
             spellcheck
             @keydown.ctrl.s="save"
@@ -65,17 +65,17 @@ async function save() {
 
         <div
             ref="previewRef"
+            class="relative "            
             :class="edit ? 'w-6/12 pl-10' : 'w-full'"
-            class="relative"            
             :style="`min-height: ${previewHeight}px`"
         >
-            <div class="absolute top-0 right-0 cursor-pointer">
+            <div class="absolute top-[20px] right-0 cursor-pointer">
                 <i @click="edit = !edit" >
                     <fa-icon icon="pen" />
                 </i>
             </div>
 
-            <is-markdown  class="w-full  pb-32" v-if="!loading && content" :content="content" />
+            <is-markdown  class="w-full pb-32" v-if="!loading && content" :content="content" />
         </div>
         
         

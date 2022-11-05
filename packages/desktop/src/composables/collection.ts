@@ -132,6 +132,24 @@ export function useCollectionItems(workspaceId: string, collectionId: string){
     return items
 }
 
+export async function useCollectionAsync(workspaceId: string, collectionId: string){
+
+    if (!workspaceId || !collectionId) {
+        return ref(null)
+    }
+    
+    const collection = useState<Collection | null>(`workspace:${workspaceId}:collection:${collectionId}`, null)
+
+    if (!collection.value) {
+        await useCase<DataResponse<Collection>>('show-collection', { workspaceId, collectionId })
+            .then(r => collection.value = r.data)
+            .catch(() => collection.value = null)
+    }
+
+
+    return collection
+}
+
 export async function useCollectionItemsAsync(workspaceId: string, collectionId: string){
 
     if (!workspaceId || !collectionId) {

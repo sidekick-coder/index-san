@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { computed, ref, shallowRef, useSlots } from 'vue'
+import { computed, ref, shallowRef, useSlots, watch } from 'vue'
 
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
 
-import { useCollection, useCollectionItemsAsync } from '@/composables/collection'
+import { useCollection, useCollectionAsync, useCollectionItemsAsync } from '@/composables/collection'
 import { useRouter } from 'vue-router'
 import { useChildren } from '@/composables/children'
+import { useArray } from '@/composables/array'
+import { useHooks } from '@/plugins/hooks'
 
 const props = defineProps({
     workspaceId: {
@@ -23,13 +25,17 @@ const props = defineProps({
 
 const children = useChildren(useSlots())
 const router = useRouter()
+const hooks = useHooks()
 
 const crud = useItemRepository(props.workspaceId, props.collectionId)
-const collection = useCollection(props.workspaceId, props.collectionId)
+
+const { items, filterArray } = useArray<Item>()
 
 const loading = ref(false)
-const items = ref<Item[]>([])
+const filtersDrawer = ref(false)
+const filters = ref<Record<string, string>>({})
 const columns = ref<CollectionColumn[]>([])
+
 const formattedItems = computed(() => items.value.map(item => {
     const data: any = {}
 
@@ -46,7 +52,6 @@ const formattedItems = computed(() => items.value.map(item => {
 
 const components = shallowRef<any[]>([])
 
-
 function setViews(){
     children.load()
 
@@ -54,6 +59,39 @@ function setViews(){
         components.value.push(c)
     })
 
+}
+
+
+async function setColumns(){
+    const collection = await useCollectionAsync(props.workspaceId, props.collectionId) 
+
+    columns.value = collection.value?.columns.slice() ?? []
+    
+    for await (const column of columns.value) {
+        if (column.type === 'relation') {
+            const relation = await useCollectionItemsAsync(props.workspaceId, column.collectionId)
+
+            column.options = new Map<string, string>()
+            
+            relation.value.forEach(i => column.options.set(i.id, i[column.displayField]))
+        }
+    }
+}
+
+async function setItems(){
+    const data = await useCollectionItemsAsync(props.workspaceId, props.collectionId)
+
+    items.value = data.value.slice()
+
+    const params = columns.value
+        .filter(c => !!filters.value[c.field])
+        .map(c => ({
+            type: c.type === 'relation' ? 'string' : c.type,
+            key: c.field,
+            value: filters.value[c.field]
+        }))
+
+    filterArray(...params)
 }
 
 async function load(){
@@ -66,33 +104,19 @@ async function load(){
     await setItems()
 
     loading.value = false
+
+    hooks.on({
+        handler: load,
+        name: `collection:${props.collectionId}:update`,
+    })
 }
 
-async function setColumns(){
-    const response = await collection.show()
-    
-    for await (const column of response.columns) {
-        if (column.type === 'relation') {
-            const relation = await useCollectionItemsAsync(props.workspaceId, column.collectionId)
-
-            column.options = new Map<string, string>()
-            
-            relation.value.forEach(i => column.options.set(i.id, i[column.displayField]))
-        }
-    }
-
-    columns.value = response.columns
-}
-
-async function setItems(){
-    await crud.list().then(d => items.value = d.data)
-}
+watch(() => props.collectionId, load, {
+    immediate: true,
+})
 
 setViews()
 
-load()
-
-collection.on('update', load)
 
 async function onItemNew() {
     await crud.create()
@@ -122,9 +146,66 @@ async function onColumnNew(){
     await collection.addColumn()
 }
 
+async function clearFilters(){
+    Object.keys(filters.value).forEach(key => {
+        filters.value[key] = ''
+    })
+
+    await setItems()
+}
+
 </script>
 <template>
-    <div v-if="!loading">
+    <div v-if="!loading" class="flex flex-wrap">
+        <div class="border-b py-2 border-gray-700 w-full">
+            <is-icon name="filter" class="cursor-pointer text-gray-500" @click="filtersDrawer = !filtersDrawer"  />
+        </div>
+
+        <teleport to="body">
+            <div
+                v-if="filtersDrawer"
+                class="fixed inset-0 flex h-screen w-screen bg-black/50"
+                @click="filtersDrawer = false"
+            >
+                <aside
+                    class="fixed right-0 top-0 h-full border-l border-gray-700 w-[300px] bg-zinc-800"
+                    @click.stop=""
+                >
+                    <w-form class="flex flex-wrap px-4 py-4" @submit="setItems">
+                        <div class="w-full mb-4" v-for="(column, index) in columns" :key="index">
+                            <w-select
+                                v-if="column.type === 'select'"
+                                v-model="filters[column.field]"
+                                :label="column.label"
+                                :options="column.options.split(',')"
+                            />
+    
+                            <w-select
+                                v-else-if="column.type === 'relation'"
+                                v-model="filters[column.field]"
+                                :label="column.label"
+                                :options="Array.from(column.options.entries())"
+                                label-key="1"
+                                value-key="0"
+                            />
+    
+                            <w-input
+                                v-else
+                                v-model="filters[column.field]"
+                                :label="column.label"
+                                class="text-white"
+                            />
+                        </div>
+    
+                        <div class="flex justify-between w-full">
+                            <w-btn type="submit" class="w-5/12" color="teal" >Apply</w-btn>
+                            <w-btn type="button" class="w-5/12" @click="clearFilters" >Clean</w-btn>
+                        </div>
+                    </w-form>
+                </aside>
+            </div>
+        </teleport>
+
         <template v-for="(c, index) in components" :key="index">
             <component
                 v-if="c.type.name === 'IsTable' "
@@ -156,7 +237,7 @@ async function onColumnNew(){
         
             </component>
             
-            <component v-else :is="c" :items="formattedItems" />
+            <component v-else :is="c" :items="formattedItems" class="mt-5" />
         </template>
     </div>
 </template>
