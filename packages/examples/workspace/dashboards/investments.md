@@ -46,3 +46,27 @@ Investments management template
     <is-chart-bar value-key="value" group-by="portfolio" width="70%" />
 </is-collection>
 
+
+## Real state
+
+<is-collection
+    workspace-id="example"
+    collection-id="investments-extract"
+   class="flex w-full bg-zinc-800 rounded p-4"
+    style="max-width:1000px"  
+>
+    <is-collection-filter field="portfolio" value="Real state" />
+    <is-chart-bar value-key="value" group-by="asset" width="100%" />
+</is-collection>
+
+## Crypto
+
+<is-collection
+    workspace-id="example"
+    collection-id="investments-extract"
+   class="flex w-full bg-zinc-800 rounded p-4"
+    style="max-width:1000px"  
+>
+    <is-collection-filter field="portfolio" value="Crypto" />
+    <is-chart-bar value-key="value" group-by="asset" width="100%" />
+</is-collection>

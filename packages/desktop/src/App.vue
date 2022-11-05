@@ -13,7 +13,6 @@ const route = useRoute()
 
 const layouts: Record<string, any> = {
     default: defineAsyncComponent(() => import('@/layouts/default.vue')),
-    workspace: defineAsyncComponent(() => import('@/layouts/workspace.vue')),
 }
 
 const currentLayout = computed(() => meta.value.layout as string || 'default')

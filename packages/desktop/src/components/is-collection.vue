@@ -53,10 +53,21 @@ const formattedItems = computed(() => items.value.map(item => {
 const components = shallowRef<any[]>([])
 
 function setViews(){
+    components.value = []
+
     children.load()
 
     children.findComponent('IsTable', 'IsChartBar').forEach(c => {
         components.value.push(c)
+    })
+    
+    children.findComponent('IsCollectionFilter').forEach(component => {
+        const { field, value } = component.props ?? {}
+
+        if (field && value) {
+            filters.value[field] = value
+        }
+
     })
 
 }
@@ -99,9 +110,13 @@ async function load(){
 
     loading.value = true
     
+    
     await setColumns()   
+    
+    setViews()
 
     await setItems()
+
 
     loading.value = false
 
@@ -114,8 +129,6 @@ async function load(){
 watch(() => props.collectionId, load, {
     immediate: true,
 })
-
-setViews()
 
 
 async function onItemNew() {
@@ -143,7 +156,7 @@ async function onItemDelete(item: any) {
 
 
 async function onColumnNew(){
-    await collection.addColumn()
+    await useCollection(props.workspaceId, props.collectionId).addColumn()
 }
 
 async function clearFilters(){
@@ -164,7 +177,7 @@ async function clearFilters(){
         <teleport to="body">
             <div
                 v-if="filtersDrawer"
-                class="fixed inset-0 flex h-screen w-screen bg-black/50"
+                class="fixed inset-0 flex h-screen w-screen bg-black/30"
                 @click="filtersDrawer = false"
             >
                 <aside
