@@ -2,13 +2,36 @@ import { BrowserWindow, ipcMain, app, Menu, MenuItem } from 'electron'
 import path from 'path'
 import debounce from 'lodash/debounce'
 
-import JSONService from './services/json-service'
-import AllUseCases from './use-cases'
+import IndexSan from '@core/app'
 
+import JSONService from './services/json-service'
 interface Preference {
     name: string
     value: any
 }
+
+import WorkspaceRepository from './repositories/workspace-repository'
+
+import DriveManager from '@core/gateways/drive-manager'
+import CrudManager from '@core/gateways/crud-manager'
+
+import FSDrive from './gateways/fs-drive'
+import FSCrudFolder from './gateways/fs-crud-folder'
+
+const workspaceRepository = new WorkspaceRepository(
+    path.resolve(app.getPath('userData'), 'workspaces.json')
+)
+
+const fsDrive = new FSDrive()
+const fsCrudFolder = new FSCrudFolder()
+const driveManager = new DriveManager({ fs: fsDrive })
+const crudManger = new CrudManager({ fsFolder: fsCrudFolder })
+
+const indexSan = new IndexSan({
+    crudManger,
+    driveManager,
+    workspaceRepository
+})
 
 
 app.whenReady().then(async () => {
@@ -49,7 +72,7 @@ app.whenReady().then(async () => {
     )
 
     ipcMain.handle('use-case', (_, name, args) => {
-        const option = AllUseCases[name]
+        const option = indexSan.cases[name]
 
         if (!option) {
             throw new Error(`use-case "${name}" not found`)

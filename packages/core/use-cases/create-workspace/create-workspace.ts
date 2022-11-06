@@ -1,12 +1,12 @@
 import Workspace from '../../entities/workspace'
-import DriveManager, { Drive } from '../../gateways/drive-manager'
+import DriveManager from '../../gateways/drive-manager'
 import IWorkspaceRepository from '../../repositories/workspace-repository'
 import CreateWorkspaceDTO from './create-workspace.dto'
 
-export default class CreateWorkspace<T extends Record<string, Drive>> {
+export default class CreateWorkspace {
     constructor(
         private readonly repository: IWorkspaceRepository,
-        private readonly drive: DriveManager<T>
+        private readonly drive: DriveManager
     ){
 
     }
