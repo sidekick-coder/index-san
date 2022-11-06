@@ -42,6 +42,20 @@
                 "to": "/workspaces/example/collections/investments-extract/items",
                 "icon": "money-bill",
                 "workspaceId": "example"
+            },
+            {
+                "id": "334b892b-f8d0-4f4c-b678-d1eab79959ac",
+                "label": "Collection view: charts",
+                "to": "/workspaces/example/entries/collection-views/chart.md",
+                "workspaceId": "example",
+                "icon": "square-poll-vertical"
+            },
+            {
+                "id": "41edf15c-0d3d-4893-a858-38cef3bcb034",
+                "label": "Collection view: table",
+                "to": "/workspaces/example/entries/collection-views/table.md",
+                "workspaceId": "example",
+                "icon": "list"
             }
         ]
     }

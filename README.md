@@ -2,13 +2,13 @@
 
 # Index-san
 
-A CRUD maker based in filesystem
+A CRUD maker based in filesystem (under development)
 
-(under development)
+[Download page](https://github.com/sidekick-coder/index-san/releases)
 
 </div>
 
-![](./screenshots/data-view-table.jpeg)
+![](./screenshots/cover.png)
 
 ## Downloads
 
@@ -73,3 +73,28 @@ Also you will notice that the interface is not very polish yet. this is because 
 ## Project structure
 
 The project use `SOLID` pattern to build the `core` of the system, and the client is an electron app.
+
+## Samples
+
+### Table
+
+View your data as a table
+
+![](./screenshots/collecton-table.png)
+
+![](./screenshots/collecton-table-full.png)
+
+### Charts
+
+View your data as a chart
+
+![](./screenshots/collecton-chart.png)
+
+![](./screenshots/collecton-chart-full.png)
+
+
+## Data is saved locally with folders and json files
+
+![](./screenshots/folder-as-collection-table.png)
+
+![](./screenshots/collection-metas.png)

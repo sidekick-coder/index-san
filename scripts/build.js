@@ -33,7 +33,7 @@ async function main(){
 
     console.log('moving artifacts')
 
-    const pattern = path.resolve(desktopPath, '**/*.zip').split(path.sep).join('/')
+    const pattern = path.resolve(desktopPath, 'out', 'make', '**/*').split(path.sep).join('/')
 
     const files = await fg(pattern)
 

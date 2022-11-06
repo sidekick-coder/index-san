@@ -9,12 +9,9 @@ module.exports = {
         {
             name: '@electron-forge/maker-zip'
         },
-        // {
-        //     name: '@electron-forge/maker-squirrel',
-        //     config: {
-        //         name: 'index_san'
-        //     },
-        // },
+        {
+            name: '@electron-forge/maker-squirrel',
+        },
         // {
         //     name: '@electron-forge/maker-deb',
         //     config: {},
