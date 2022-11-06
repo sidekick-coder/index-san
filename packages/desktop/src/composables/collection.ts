@@ -153,7 +153,7 @@ export async function useCollectionAsync(workspaceId: string, collectionId: stri
 export async function useCollectionItemsAsync(workspaceId: string, collectionId: string){
 
     if (!workspaceId || !collectionId) {
-        return ref([])
+        return ref<CollectionFolderItem[]>([])
     }
     
     const loading = useState<boolean>(`workspace:${workspaceId}:collection:${collectionId}:loading`, false)
