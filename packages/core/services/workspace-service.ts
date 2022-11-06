@@ -1,21 +1,20 @@
 import Workspace from '../entities/workspace'
-import DriveManger from '../gateways/drive-manager'
 import AppService from './app-service'
 
 export default class WorkspaceService extends Workspace {
     
-    public driveManager: DriveManger
+    public appService: AppService
 
     public get workspaceDrive(){
-        this.driveManager.use(this.drive).config(this.config)
+        this.appService.managers.drive.use(this.drive).config(this.config)
 
-        return this.driveManager
+        return this.appService.managers.drive
     }
 
-    private constructor(workspace: Workspace, driveManager: DriveManger) {
+    private constructor(workspace: Workspace, appService: AppService) {
         super(workspace, workspace.id)
 
-        this.driveManager = driveManager
+        this.appService = appService
     }
 
     public static async from(service: AppService, id: string){
@@ -25,7 +24,7 @@ export default class WorkspaceService extends Workspace {
             throw new Error('Workspace not found')
         }
 
-        return new WorkspaceService(workspace, service.managers.drive)
+        return new WorkspaceService(workspace, service)
     }
 
     public list(path: string) {

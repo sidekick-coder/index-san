@@ -82,4 +82,12 @@ export default class InMemoryDrive implements Drive {
         this.content.set(entryPath, Buffer.from(content))
     }
     
+    public createDir(entryPath: string) {
+        const entry = DirectoryEntry.directory(entryPath)
+        
+        this.entries.push(entry)
+
+        return entry
+    }
+    
 }
