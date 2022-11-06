@@ -27,22 +27,13 @@ import ShowItem from './use-cases/show-item/show-item'
 import CreateItem from './use-cases/create-item/create-item'
 import UpdateItem from './use-cases/update-item/update-item'
 import DeleteItem from './use-cases/delete-item/delete-item'
+import AppService from './services/app-service'
 
 interface AppArgs {
     workspaceRepository: IWorkspaceRepository
     driveManager: DriveManager
     crudManger: CrudManager
 }
-
-interface AppRepositories {
-    workspace: IWorkspaceRepository
-}
-
-interface AppManagers {
-    drive: DriveManager
-    crud: CrudManager
-}
-
 interface AppUseCases {
     'list-workspaces': ListWorkspaces,
     'create-workspace': CreateWorkspace,
@@ -71,21 +62,13 @@ interface AppUseCases {
     'delete-item': DeleteItem
 }
 
-export default class App {
-    public repositories: AppRepositories
-    public managers: AppManagers
+export default class App extends AppService {
     
     public cases: AppUseCases
 
     constructor({ workspaceRepository, driveManager, crudManger }: AppArgs){
-        this.repositories= {
-            workspace: workspaceRepository
-        }
-
-        this.managers = {
-            drive: driveManager,
-            crud: crudManger
-        }
+        
+        super({ workspaceRepository, driveManager, crudManger })
 
         this.cases = {
             'list-workspaces': new ListWorkspaces(workspaceRepository),

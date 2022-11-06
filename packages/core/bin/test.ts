@@ -8,6 +8,7 @@ configure({
         files: [
             './gateways/*.spec.ts',
             './entities/*.spec.ts',
+            './services/*.spec.ts',
             './use-cases/**/*.spec.ts',
         ],
         plugins: [expect()],
