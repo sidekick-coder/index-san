@@ -1,5 +1,4 @@
 import { test } from '@japa/runner'
-import DirectoryEntry from '../../entities/directory-entry'
 import Item from '../../entities/item'
 import CrudManager from '../../gateways/crud-manager'
 import DriveManager from '../../gateways/drive-manager'
@@ -23,12 +22,6 @@ test.group('delete-item (use-case)', group => {
     
     const workspace = WorkspaceFactory.create({ drive: 'memory' })    
     const collection = CollectionFactory.create({ crudName: 'memory' })
-    
-    const entry = new DirectoryEntry({
-        name: 'collections.json',
-        path: '.is/collections.json',
-        type: 'file'
-    })
     
     memoryCrud.drive = memoryDrive
 

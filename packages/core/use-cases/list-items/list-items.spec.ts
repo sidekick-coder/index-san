@@ -1,5 +1,4 @@
 import { test } from '@japa/runner'
-import DirectoryEntry from '../../entities/directory-entry'
 import CrudManager from '../../gateways/crud-manager'
 import DriveManager from '../../gateways/drive-manager'
 import CollectionFactory from '../../__tests__/factories/collections'

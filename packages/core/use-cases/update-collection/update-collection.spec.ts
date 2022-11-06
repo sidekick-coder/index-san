@@ -1,6 +1,5 @@
 import { test } from '@japa/runner'
 
-import DirectoryEntry from '../../entities/directory-entry'
 import DriveManager from '../../gateways/drive-manager'
 import CollectionFactory from '../../__tests__/factories/collections'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'

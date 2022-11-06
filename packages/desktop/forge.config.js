@@ -23,11 +23,8 @@ module.exports = {
     ],
     hooks: {
         packageAfterCopy: async (
-            /** @type {any} */ forgeConfig,
+            /** @type {any} */ _forgeConfig,
             /** @type {string} */ buildPath,
-            /** @type {string} */ electronVersion,
-            /** @type {string} */ platform,
-            /** @type {string} */ arch,
         ) => {
             // this is a workaround until we find a proper solution
             // for running electron-forge in a mono repository
