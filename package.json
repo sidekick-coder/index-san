@@ -5,8 +5,9 @@
     "scripts": {
         "lint": "eslint .",
         "dev": "npm -w desktop run dev",
-        "new-version": "node scripts/version.js",
-        "build": "node scripts/build.js"
+        "build": "node scripts/build.js",
+        "new:version": "node scripts/version.js",
+        "new:use-case": "node scripts/new-use-case"
     },
     "author": "Henrique Oliveira",
     "license": "MIT",
@@ -19,9 +20,8 @@
         "@typescript-eslint/eslint-plugin": "^5.36.1",
         "@typescript-eslint/parser": "^5.36.1",
         "eslint": "^8.23.0",
-        "eslint-plugin-vue": "^9.4.0"
-    },
-    "dependencies": {
-        "fast-glob": "^3.2.12"
+        "eslint-plugin-vue": "^9.4.0",
+        "fast-glob": "^3.2.12",
+        "lodash": "^4.17.21"
     }
 }
