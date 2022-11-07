@@ -18,7 +18,7 @@ export default class WorkspaceService extends Workspace {
     }
 
     public static async from(service: AppService, id: string){
-        const workspace = await service.repositories.workspace.findById(id)
+        const workspace = await service.repositories.workspace.findById.bind(service.repositories.workspace)(id)
 
         if (!workspace) {
             throw new Error('Workspace not found')

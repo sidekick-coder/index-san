@@ -1,24 +1,17 @@
-import CrudManager from '../../gateways/crud-manager'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
-import ItemService from '../../services/item-service'
+
+import AppService from '../../services/app-service'
+import CollectionService from '../../services/collection-service'
+import WorkspaceService from '../../services/workspace-service'
 import DeleteItemDTO from './delete-item.dto'
 
 export default class UpdateItem {
-    constructor(
-        private readonly drive: DriveManager,
-        private readonly crud: CrudManager,
-        private readonly workspaceRepository: IWorkspaceRepository,
-    ){}
+    constructor(private readonly appService: AppService){}
 
     public async execute({ collectionId, workspaceId, itemId }: DeleteItemDTO.Input): Promise<void> {
-        const service = new ItemService(this.drive, this.workspaceRepository)
+        const workspace = await WorkspaceService.from(this.appService, workspaceId)
 
-        const collection = await service.loadCollection(workspaceId, collectionId)
+        const collection = await CollectionService.from(workspace, collectionId)
 
-        await this.crud
-            .use(collection.crudName)
-            .useDrive(this.drive)
-            .deleteById(collection.path, itemId)
+        await collection.delete(itemId)
     }
 }

@@ -22,7 +22,7 @@ export default class AppService {
     public repositories: Repositories
 
     constructor({ workspaceRepository, driveManager, crudManger }: Args){
-        this.repositories= {
+        this.repositories = {
             workspace: workspaceRepository
         }
 

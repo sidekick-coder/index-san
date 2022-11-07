@@ -55,6 +55,10 @@ export default class CollectionService extends Collection {
     public async show(id: string){
         const item = await this.collectionCrud.findById(this.path, id)
 
+        if (!item) {
+            throw new Error('Item not found')
+        }
+
         const data = {
             ...item,
             workspaceId: this.workspace.id,

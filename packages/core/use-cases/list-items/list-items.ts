@@ -1,34 +1,21 @@
-import CrudManager from '../../gateways/crud-manager'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
-import ItemService from '../../services/item-service'
+import AppService from '../../services/app-service'
+import CollectionService from '../../services/collection-service'
+import WorkspaceService from '../../services/workspace-service'
 import ListItemsDTO from './list-items.dto'
 
 export default class ListItems {
-    constructor(
-        private readonly drive: DriveManager,
-        private readonly crud: CrudManager,
-        private readonly workspaceRepository: IWorkspaceRepository,
-    ){}
+    constructor(private readonly service: AppService){}
 
     public async execute({ workspaceId, collectionId  }:ListItemsDTO.Input): Promise<ListItemsDTO.Output> {
 
-        const service = new ItemService(this.drive, this.workspaceRepository)
+        const workspace = await WorkspaceService.from(this.service, workspaceId)
 
-        const collection = await service.loadCollection(workspaceId, collectionId)
+        const collection = await CollectionService.from(workspace, collectionId)
 
-        this.crud.use(collection.crudName).useDrive(this.drive)
-
-        const items = await this.crud.list(collection.path)
-
-        const data = items.map(i => ({
-            ...i,
-            collectionId: collection.id,
-            workspaceId: workspaceId
-        }))
-
+        const items = await collection.list()
+        
         return {
-            data: data
+            data: items
         }
     }
 }

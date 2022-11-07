@@ -91,11 +91,11 @@ export default class App extends AppService {
             'update-collection': new UpdateCollection(workspaceRepository, driveManager),
             'delete-collection': new DeleteCollection(workspaceRepository, driveManager),
 
-            'list-items': new ListItems(driveManager, crudManger, workspaceRepository),
-            'show-item': new ShowItem(driveManager, crudManger, workspaceRepository),
-            'create-item': new CreateItem(driveManager, crudManger ,workspaceRepository),
-            'update-item': new UpdateItem(driveManager,crudManger, workspaceRepository),
-            'delete-item': new DeleteItem(driveManager, crudManger, workspaceRepository)
+            'list-items': new ListItems(this),
+            'show-item': new ShowItem(this),
+            'create-item': new CreateItem(this),
+            'update-item': new UpdateItem(this),
+            'delete-item': new DeleteItem(this)
         }
     }
 }

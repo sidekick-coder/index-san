@@ -1,35 +1,21 @@
-import CrudManager from '../../gateways/crud-manager'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
-import ItemService from '../../services/item-service'
+import AppService from '../../services/app-service'
+import CollectionService from '../../services/collection-service'
+import WorkspaceService from '../../services/workspace-service'
 import ShowItemDTO from './show-item.dto'
 
 export default class ShowItem {
-    constructor(
-        private readonly drive: DriveManager,
-        private readonly crud: CrudManager,
-        private readonly workspaceRepository: IWorkspaceRepository,
-    ){}
+    constructor(private readonly appService: AppService){}
 
     public async execute({ workspaceId, collectionId, itemId }:ShowItemDTO.Input): Promise<ShowItemDTO.Output> {
-        const service = new ItemService(this.drive, this.workspaceRepository)
 
-        const collection = await service.loadCollection(workspaceId, collectionId)
+        const workspace = await WorkspaceService.from(this.appService, workspaceId)
 
-        this.crud.use(collection.crudName).useDrive(this.drive)
+        const collection = await CollectionService.from(workspace, collectionId)
 
-        const item = await this.crud.findById(collection.path, itemId)
-
-        if (!item) throw new Error('Item not found')
-
-        const data = {
-            ...item,
-            collectionId,
-            workspaceId,
-        }
+        const item = await collection.show(itemId)
 
         return {
-            data
+            data: item
         }
     }
 }

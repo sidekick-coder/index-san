@@ -1,10 +1,5 @@
 import Item from '../../entities/item'
 
-interface ItemWithWorkspace extends Item {
-    workspaceId: string
-    collectionId: string
-}
-
 declare namespace ShowItemDTO {
     export interface Input {
         workspaceId: string
@@ -13,7 +8,7 @@ declare namespace ShowItemDTO {
     }
     
     export interface Output {
-        data: ItemWithWorkspace
+        data: Item
     }
 }
 
