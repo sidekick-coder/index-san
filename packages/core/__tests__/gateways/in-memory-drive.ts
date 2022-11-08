@@ -40,6 +40,12 @@ export default class InMemoryDrive implements Drive {
     public async read (path: string) {
         return this.content.get(path) ?? null
     }
+    
+    public async readArray (path: string): Promise<any[]> {
+        const content = await this.read(path)
+
+        return content ? JSON.parse(content.toString()) : []
+    }
 
     public async write(path: string, content: Buffer) {
         this.content.set(path, content)

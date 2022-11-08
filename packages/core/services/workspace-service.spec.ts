@@ -88,6 +88,38 @@ test.group('workspace-service (service)', (group) => {
         expect(content?.toString()).toBe('Test content')
     })
 
+    test('should toObject() return object keys', async ({expect }) => {
+        const service = await WorkspaceService.from(appService, workspace.id)
+
+        expect(Object.keys(service.toObject()).sort()).toEqual(Object.keys(workspace).sort())
+    })
+    
+    test('should save() update workspace', async ({expect }) => {
+        let service = await WorkspaceService.from(appService, workspace.id)
+
+        service.name = 'update workspace'
+
+        await service.save()
+
+        service = await WorkspaceService.from(appService, workspace.id)
+
+        expect(service.name).toBe('update workspace')
+    })
+    
+    test('should createCollection() create a collection & return collection service', async ({expect }) => {
+        const service = await WorkspaceService.from(appService, workspace.id)
+
+        const data = CollectionFactory.create()
+
+        const collection = await service.createCollection(data)
+
+        const json = await memoryDrive.readArray('.is/collections.json')
+
+        expect(json.find(c => c.id === data.id)).toBeDefined()
+
+        expect(collection).toBeInstanceOf(CollectionService)
+    })
+
     test('should collection() return an collection service instance', async ({ expect }) => {
         const service = await WorkspaceService.from(appService, workspace.id)
 

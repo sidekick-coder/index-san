@@ -85,8 +85,12 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         return this.execute(d => d.read(entryPath))
     }
 
-    public async write(entryPath: string, content: Buffer) {
-        return this.execute(d => d.write(entryPath, content))
+    public async write(entryPath: string, content: Buffer | string) {
+        if (typeof content === 'string') {
+            content = Buffer.from(content)
+        }
+
+        return this.execute(d => d.write(entryPath, content as Buffer))
     }
     
     public async delete(entryPath: string) {
