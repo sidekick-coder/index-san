@@ -24,8 +24,6 @@ test.group('create-item (use-case)', group => {
         crudManger
     })
     
-
-    
     const useCase = new CreateItem(appService)
 
     const workspace = WorkspaceFactory.create({ drive: 'memory' })    

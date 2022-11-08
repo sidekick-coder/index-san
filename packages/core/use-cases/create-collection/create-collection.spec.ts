@@ -1,26 +1,23 @@
 import { test } from '@japa/runner'
 
-import DriveManager from '../../gateways/drive-manager'
+import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
-import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
-import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 import CreateCollection from './create-collection'
 
 test.group('create-collection (use-case)', (group) => {
-    const repository = new InMemoryWorkspaceRepository()    
-    const memoryDrive = new InMemoryDrive()    
-    const drive = new DriveManager({ memory: memoryDrive}, 'memory')
 
-    const useCase = new CreateCollection(repository, drive)
+    const app = new InMemoryApp()
 
-    group.tap(t => t.teardown(() => memoryDrive.clear()))
+    const useCase = new CreateCollection(app)
+
+    group.tap(t => t.teardown(() => app.memoryDrive.clear()))
 
     test('should create a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        const workspace = await repository.create(WorkspaceFactory.create({
-            drive: drive.getCurrentDrive()
+        const workspace = await app.workspaceRepository.create(WorkspaceFactory.create({
+            drive: 'memory'
         }))
 
         await useCase.execute({
@@ -28,7 +25,7 @@ test.group('create-collection (use-case)', (group) => {
             data: collection
         })
 
-        const content = memoryDrive.content.get('.is/collections.json')
+        const content = app.memoryDrive.content.get('.is/collections.json')
 
         const json = content ? JSON.parse(content.toString()) : []
 

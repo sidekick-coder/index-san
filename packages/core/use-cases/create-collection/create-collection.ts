@@ -1,47 +1,17 @@
 import Collection from '../../entities/collection'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import CreateCollectionDTO from './create-collection.dto'
 
 export default class CreateCollection {
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        private readonly drive: DriveManager
-    ){}
-
-    public collectionsFilename = '.is/collections.json'
-
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, data }: CreateCollectionDTO.Input): Promise<CreateCollectionDTO.Output> {
-        const workspace = await this.workspaceRepository.findById(workspaceId)
-
-        if (!workspace) throw new Error('Workspace not found')
-
-        this.drive.use(workspace.drive).config(workspace.config)
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const collection = new Collection(data, data.id)
 
-        const collections = [collection]
-        
-        let content = await this.drive.read(this.collectionsFilename)
-
-        if (!content) {
-            await this.drive.write(this.collectionsFilename, Buffer.from(JSON.stringify([])))
-
-            content = Buffer.from(JSON.stringify([]))
-        }
-
-        const json = JSON.parse(content.toString())
-
-        collections.push(...json)
-
-        await this.drive.mkdir(data.path)
-
-        await this.drive.write(
-            this.collectionsFilename,
-            Buffer.from(JSON.stringify(collections))
-        )
-
+        await workspace.createCollection(collection)
 
         return {
             data: collection

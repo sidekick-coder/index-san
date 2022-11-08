@@ -2,7 +2,7 @@ import CrudManager from '../gateways/crud-manager'
 import DriveManager from '../gateways/drive-manager'
 import IWorkspaceRepository from '../repositories/workspace-repository'
 
-interface Args {
+export interface AppServiceArgs {
     workspaceRepository: IWorkspaceRepository
     driveManager: DriveManager
     crudManger: CrudManager
@@ -21,7 +21,7 @@ export default class AppService {
     public managers: Managers
     public repositories: Repositories
 
-    constructor({ workspaceRepository, driveManager, crudManger }: Args){
+    constructor({ workspaceRepository, driveManager, crudManger }: AppServiceArgs){
         this.repositories = {
             workspace: workspaceRepository
         }
