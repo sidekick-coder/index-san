@@ -46,7 +46,6 @@ export default class WorkspaceService extends Workspace {
         return {
             id: this.id,
             name: this.name,
-            path: this.path,
             driveName: this.driveName,
             config: this.config
         }

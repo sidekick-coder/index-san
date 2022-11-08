@@ -3,7 +3,6 @@ import uuid from 'uuid-random'
 export default class Workspace {
     public id: string
     public name: string
-    public path: string
     public driveName: string
     public config: Record<string, string>
 
@@ -11,9 +10,7 @@ export default class Workspace {
         this.id = id ?? uuid()
         
         this.name = props.name
-        this.path = props.path
         this.driveName = props.driveName
         this.config = props.config
-
     }
 }

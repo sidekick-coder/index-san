@@ -49,7 +49,7 @@ async function submit(){
     await store.create({
         id: payload.value.id,
         name: payload.value.name,
-        drive: 'fs',
+        driveName: 'fs',
         config: {
             path: payload.value.path
         }
@@ -66,10 +66,6 @@ async function deleteItem(id: string) {
     await store.delete(id)
 
     load()
-}
-
-async function showItem(workspaceId: string){
-    await router.push(`/workspaces/${workspaceId}`)
 }
 
 </script>
