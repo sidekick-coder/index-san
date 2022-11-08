@@ -22,21 +22,20 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
         return Promise.resolve(workspace)
     }
     
-    public createFake(payload?: Partial<Workspace>): Promise<Workspace> {
-
-        const workspace = WorkspaceFactory.create(payload)
-        
-        this.items.push(workspace)
-
-        return Promise.resolve(workspace)
-    }
-    
-    public createSync(workspace: Workspace): Workspace {
-        
+    public createSync(workspace: Workspace): Workspace {        
         this.items.push(workspace)
 
         return workspace
     }
+    
+    public createFake(payload?: Partial<Workspace>): Promise<Workspace> {        
+        return this.create(WorkspaceFactory.create(payload))
+    }
+    
+    public createFakeSync(payload?: Partial<Workspace>): Workspace {
+        return this.createSync(WorkspaceFactory.create(payload))
+    }
+    
 
     public async updateById(id: string, data: Partial<Workspace>){
         const index = this.items.findIndex(w => w.id === id)

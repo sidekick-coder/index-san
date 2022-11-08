@@ -9,21 +9,19 @@ export default class CreateDirectoryEntry {
     public async execute({ workspaceId, data }: CreateDirectoryEntryDTO.Input): Promise<CreateDirectoryEntryDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const exist = await workspace.exists(data.path)
+        const exist = await workspace.drive.exists(data.path)
 
         if (exist) throw new Error('DirectoryEntry already exists')
-
         
         const entry = new DirectoryEntry(data)
 
         if (data.type === 'directory') {
-            await workspace.workspaceDrive.mkdir(data.path)
+            await workspace.drive.mkdir(data.path)
         }
 
         if (data.type === 'file') {
-            await workspace.workspaceDrive.write(data.path, Buffer.from(''))
+            await workspace.drive.write(data.path, Buffer.from(''))
         }
-
 
         return { data: entry }
     }

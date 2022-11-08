@@ -15,7 +15,7 @@ export default class CreateWorkspace {
 
         const validDrives = Object.keys(this.drive.listDrives())
 
-        if (!validDrives.includes(args.drive)) {
+        if (!validDrives.includes(args.driveName)) {
             throw new Error('Invalid drive')
         }
 

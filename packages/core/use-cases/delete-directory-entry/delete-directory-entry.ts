@@ -8,10 +8,10 @@ export default class DeleteDirectoryEntry {
     public async execute({ workspaceId, path }: DeleteDirectoryEntryDTO.Input) {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const exists = await workspace.exists(path)
+        const exists = await workspace.drive.exists(path)
 
         if (!exists) throw new Error('DirectoryEntry not exists')
 
-        await workspace.workspaceDrive.delete(path)
+        await workspace.drive.delete(path)
     }
 }

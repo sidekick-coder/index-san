@@ -13,16 +13,14 @@ test.group('create-workspace (use-case)', () => {
     const useCase = new CreateWorkspace(repository, drive)
     
     test('should create a workspace', async ({ expect }) => {
-        const workspace = WorkspaceFactory.create({
-            drive: 'memory'
-        })
+        const workspace = WorkspaceFactory.create()
         
         await useCase.execute(workspace)
 
         const item = repository.items[0]
 
         expect(item.name).toEqual(workspace.name)        
-        expect(item.drive).toEqual(workspace.drive)        
+        expect(item.driveName).toEqual(workspace.driveName)        
         expect(item.path).toEqual(workspace.path)
         
     })
@@ -31,7 +29,7 @@ test.group('create-workspace (use-case)', () => {
         expect.assertions(1)
 
         const workspace = WorkspaceFactory.create({
-            drive: 'invalid'
+            driveName: 'invalid'
         })
 
         await useCase.execute(workspace).catch(err => expect(err.message).toEqual('Invalid drive'))

@@ -9,7 +9,7 @@ export default class ShowDirectoryEntry {
 
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const entry = await workspace.get(path)
+        const entry = await workspace.drive.get(path)
 
         if (!entry) throw new Error('DirectoryEntry not found')
 

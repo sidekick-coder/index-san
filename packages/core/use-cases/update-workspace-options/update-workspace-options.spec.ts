@@ -8,7 +8,7 @@ test.group('update-workspace-options (use-case)', () => {
     const app = new InMemoryApp()
     const useCase = new UpdateWorkspaceOptions(app)
 
-    test('should return array of workspace options', async ({ expect }) => {
+    test('should update workspace options', async ({ expect }) => {
         const options = {
             hello: 'word'
         }

@@ -9,7 +9,7 @@ export default class ListDirectoryEntry {
 
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const entries = await workspace.list(path || '/')
+        const entries = await workspace.drive.list(path || '/')
 
         return {
             data: entries

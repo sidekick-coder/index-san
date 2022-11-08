@@ -7,7 +7,7 @@ test.group('workspace entity', () => {
         const workspace = new Workspace({
             name: 'test',
             path: 'test',
-            drive: 'local',
+            driveName: 'local',
             config: {}
         })
 
@@ -18,7 +18,7 @@ test.group('workspace entity', () => {
         const workspace = new Workspace({
             name: 'test',
             path: 'test',
-            drive: 'local',
+            driveName: 'local',
             config: {}
         }, 'test')
 

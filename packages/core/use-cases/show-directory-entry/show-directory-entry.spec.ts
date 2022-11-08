@@ -6,8 +6,8 @@ import ShowDirectoryEntry from './show-directory-entry'
 
 
 test.group('show-directory-entry (use-case', () => {
+    
     const app =  new InMemoryApp()
-
     const useCase = new ShowDirectoryEntry(app)
 
     test('should show a directory-entry', async ({ expect }) => {

@@ -25,9 +25,8 @@ test.group('show-item (use-case)', (group) => {
     
     const useCase = new ShowItem(appService)
 
-    const workspace = WorkspaceFactory.create({ drive: 'memory' })    
-    const collection = CollectionFactory.create({ crudName: 'memory' })
-    
+    const workspace = WorkspaceFactory.create()    
+    const collection = CollectionFactory.create()    
     
     group.each.setup(() => {
         memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
@@ -35,28 +34,6 @@ test.group('show-item (use-case)', (group) => {
     })
 
     group.each.teardown(() => memoryDrive.clear())
-
-    
-
-    test('should throw an error if workspace was not found', async ({ expect }) => {
-        expect.assertions(1)
-
-        await useCase.execute({
-            workspaceId: 'undefined',
-            collectionId: '',
-            itemId: ''
-        }).catch(err => expect(err.message).toEqual('Workspace not found'))
-    })
-    
-    test('should throw an error if collection was not found', async ({ expect }) => {
-        expect.assertions(1)
-
-        await useCase.execute({
-            workspaceId: workspace.id,
-            collectionId: 'undefined',
-            itemId: ''
-        }).catch(err => expect(err.message).toEqual('Collection not found'))
-    })
     
     test('should throw an error if item was not found', async ({ expect }) => {
         expect.assertions(1)

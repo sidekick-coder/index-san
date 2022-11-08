@@ -11,6 +11,8 @@ const memoryCrud = new InMemoryCrud()
 const driveManager = new DriveManager({ memory: memoryDrive}, 'memory')
 const crudManger = new CrudManager({ memory: memoryCrud  })
 
+memoryCrud.drive = memoryDrive
+
 export default class InMemoryApp extends AppService {
 
     public workspaceRepository = workspaceRepository
@@ -24,6 +26,11 @@ export default class InMemoryApp extends AppService {
             crudManger,
             ...args,
         })
+    }
+
+    public clear(){
+        this.memoryDrive.clear()
+        this.workspaceRepository.clear()
     }
 }
 

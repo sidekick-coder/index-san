@@ -12,10 +12,10 @@ export default class ListImporters {
 
         const importers: Importer[] = []
         
-        const entries = await workspace.list('.is/importers')
+        const entries = await workspace.drive.list('.is/importers')
 
         for await (const entry of entries) {
-            const buffer = await workspace.read(entry.path)
+            const buffer = await workspace.drive.read(entry.path)
 
             const content = buffer?.toString() ?? ''
 

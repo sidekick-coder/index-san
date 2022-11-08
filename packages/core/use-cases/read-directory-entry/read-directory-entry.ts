@@ -8,7 +8,7 @@ export default class ReadDirectoryEntry {
     public async execute({ workspaceId, path }: ReadDirectoryEntryDTO.Input): Promise<Buffer> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const content = await workspace.read(path)
+        const content = await workspace.drive.read(path)
 
         if (!content) throw new Error('DirectoryEntry not found')
 

@@ -13,7 +13,7 @@ export default class ShowWorkspaceOptions {
 
         let data = {}
 
-        const contents = await workspace.read('.is/options.json')
+        const contents = await workspace.drive.read('.is/options.json')
 
         if (contents) {
             data = JSON.parse(contents.toString())

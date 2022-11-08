@@ -5,12 +5,10 @@ import WorkspaceService from './workspace-service'
 export default class CollectionService extends Collection {
     public workspace: WorkspaceService
 
-    public get collectionCrud(){
-        this.workspace.appService.managers.crud
-            .useDrive(this.workspace.workspaceDrive)
+    public get crud(){
+        return this.workspace.app.managers.crud
+            .useDrive(this.workspace.drive)
             .use(this.crudName)
-
-        return this.workspace.appService.managers.crud
     }
 
     private constructor(collection: Collection, workspace: WorkspaceService) {
@@ -20,28 +18,17 @@ export default class CollectionService extends Collection {
     }
 
     public static async from(workspace: WorkspaceService, collectionId: string) {
-        
-        const content = await workspace.workspaceDrive.read('.is/collections.json')
 
-        const collections: Collection[] = []
-
-        if (content) {
-            const json = JSON.parse(content.toString())
-
-            collections.push(...json)
-        }
-
-        const collection = collections.find(c => c.id === collectionId)
+        const collection = workspace.collections.find(c => c.id === collectionId)
 
         if (!collection) throw new Error('Collection not found')
-
 
         return new CollectionService(collection, workspace)
 
     }
 
     public async list(){     
-        const items = await this.collectionCrud.list(this.path)
+        const items = await this.crud.list(this.path)
 
         const data = items.map(i => ({
             ...i,
@@ -53,7 +40,7 @@ export default class CollectionService extends Collection {
     }
     
     public async show(id: string){
-        const item = await this.collectionCrud.findById(this.path, id)
+        const item = await this.crud.findById(this.path, id)
 
         if (!item) {
             throw new Error('Item not found')
@@ -71,15 +58,15 @@ export default class CollectionService extends Collection {
     public async create(data: Item){
         const item = new Item(data, data.id)
 
-        await this.collectionCrud.create(this.path, item)
+        await this.crud.create(this.path, item)
     }
 
     public async update(id: string, data: Omit<Item, 'id'>){
-        await this.collectionCrud.updateById(this.path, id, data)
+        await this.crud.updateById(this.path, id, data)
     }
     
     public async delete(id: string){
-        await this.collectionCrud.deleteById(this.path, id)
+        await this.crud.deleteById(this.path, id)
     }
 
 }

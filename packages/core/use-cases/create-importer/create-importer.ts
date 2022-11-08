@@ -10,7 +10,7 @@ export default class CreateImporter {
 
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        await workspace.write(`.is/importers/${data.id}.js`, Buffer.from(data.content))
+        await workspace.drive.write(`.is/importers/${data.id}.js`, Buffer.from(data.content))
 
         const importer = new Importer({ content: data.content }, data.id)
 

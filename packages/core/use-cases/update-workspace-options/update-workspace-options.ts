@@ -10,7 +10,7 @@ export default class UpdateWorkspaceOptions {
 
         let options = {}
 
-        const contents = await workspace.read('.is/options.json')
+        const contents = await workspace.drive.read('.is/options.json')
 
         if (contents) {
             options = JSON.parse(contents.toString())
@@ -20,6 +20,6 @@ export default class UpdateWorkspaceOptions {
 
         const text = JSON.stringify(options, undefined, 4)
 
-        await workspace.write('.is/options.json', Buffer.from(text))
+        await workspace.drive.write('.is/options.json', Buffer.from(text))
     }
 }

@@ -37,7 +37,7 @@ test.group('write-directory-entry (use-case', () => {
         expect(result).toEqual(Buffer.from('update hello word'))
     })
 
-    test('should update entry with ', async ({ expect }) => {
+    test('should update entry with string', async ({ expect }) => {
         const workspace = await app.workspaceRepository.createFake()
 
 

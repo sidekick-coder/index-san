@@ -9,7 +9,7 @@ export default class WriteDirectoryEntry {
 
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const exists = await workspace.exists(path)
+        const exists = await workspace.drive.exists(path)
 
         if (!exists) throw new Error('DirectoryEntry not found')
 
@@ -17,7 +17,7 @@ export default class WriteDirectoryEntry {
             data = Buffer.from(data)
         }
 
-        await workspace.write(path, data)
+        await workspace.drive.write(path, data)
 
     }
 }

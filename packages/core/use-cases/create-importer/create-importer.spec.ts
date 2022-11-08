@@ -1,18 +1,18 @@
 import { test } from '@japa/runner'
+
 import InMemoryApp from '../../__tests__/app'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 import CreateImporter from './create-importer'
 
-test.group('create-importer (use-case)', () => {
+test.group('create-importer (use-case)', (group) => {
 
     const app = new InMemoryApp()
 
     const useCase = new CreateImporter(app)
 
+    group.each.teardown(() => app.clear())
+
     test('should create a importer', async ({ expect }) => {
-        const workspace = await app.repositories.workspace.create(WorkspaceFactory.create({
-            drive: 'memory'
-        }))
+        const workspace = await app.workspaceRepository.createFake()
 
         await useCase.execute({
             workspaceId: workspace.id,

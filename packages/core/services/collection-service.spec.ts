@@ -23,17 +23,15 @@ test.group('collection-service (service)', (group) => {
     let collection: Collection
 
     group.each.setup(async () => {
-        const data = workspaceRepository.createSync(WorkspaceFactory.create({
-            drive: 'memory'
-        }))
+        
+        collection = CollectionFactory.create()
+        
+        memoryDrive.createFile('.is/collections.json', [collection])
+        
+        const data = workspaceRepository.createSync(WorkspaceFactory.create())
 
         workspace = await WorkspaceService.from(appService, data.id)
 
-        collection = CollectionFactory.create({
-            crudName: 'memory'
-        })
-
-        memoryDrive.createFile('.is/collections.json', [collection])
 
         return () => {
             workspaceRepository.clear()

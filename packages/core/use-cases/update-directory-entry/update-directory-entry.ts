@@ -9,11 +9,11 @@ export default class UpdateDirectoryEntry {
 
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const exists = await workspace.exists(path)
+        const exists = await workspace.drive.exists(path)
 
         if (!exists) throw new Error('DirectoryEntry not exists')
 
-        await workspace.workspaceDrive.move(path, newPath)
+        await workspace.drive.move(path, newPath)
 
     }
 }

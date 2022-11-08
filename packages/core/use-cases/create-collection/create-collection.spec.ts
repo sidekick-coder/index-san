@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 
 import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 import CreateCollection from './create-collection'
 
 test.group('create-collection (use-case)', (group) => {
@@ -16,9 +15,7 @@ test.group('create-collection (use-case)', (group) => {
     test('should create a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        const workspace = await app.workspaceRepository.create(WorkspaceFactory.create({
-            drive: 'memory'
-        }))
+        const workspace = await app.workspaceRepository.createFake()
 
         await useCase.execute({
             workspaceId: workspace.id,

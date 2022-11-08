@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
+
 import DirectoryEntry from '../../entities/directory-entry'
 import InMemoryApp from '../../__tests__/app'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 
 import CreateDirectoryEntry from './create-directory-entry'
 
@@ -15,7 +15,7 @@ test.group('create-directory-entry (use-case)', (group) => {
 
     test('should create a new entry using drive', async ({ expect }) => {
 
-        const workspace = await app.repositories.workspace.create(WorkspaceFactory.create())        
+        const workspace = await app.workspaceRepository.createFake()
 
         const entry = new DirectoryEntry({
             name: 'text.txt',
@@ -34,7 +34,7 @@ test.group('create-directory-entry (use-case)', (group) => {
     test('should trigger an error if the entry filepath already exist', async ({ expect }) => {
         expect.assertions(1)
 
-        const workspace = await app.repositories.workspace.create(WorkspaceFactory.create())      
+        const workspace = await app.workspaceRepository.createFake()
         
         const entry = DirectoryEntry.file('text.txt')
 

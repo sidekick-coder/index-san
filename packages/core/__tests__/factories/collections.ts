@@ -9,7 +9,7 @@ const CollectionFactory = new Factory<Collection>((data) => {
         id,
         name: id,
         path: '/' + id,
-        crudName: 'fake',
+        crudName: 'memory',
         columns: [],
         ...data
     })

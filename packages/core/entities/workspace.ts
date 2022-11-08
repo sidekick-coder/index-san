@@ -4,13 +4,16 @@ export default class Workspace {
     public id: string
     public name: string
     public path: string
-    public drive: string
+    public driveName: string
     public config: Record<string, string>
 
     constructor(props: Omit<Workspace, 'id'>, id?: string) {
-        Object.assign(this, props)
-
         this.id = id ?? uuid()
+        
+        this.name = props.name
+        this.path = props.path
+        this.driveName = props.driveName
+        this.config = props.config
 
     }
 }

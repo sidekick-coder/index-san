@@ -3,7 +3,7 @@ declare namespace CreateWorkspaceDTO {
         id?: string
         name: string
         path: string
-        drive: string
+        driveName: string
         config: Record<string, string>
     }
     
