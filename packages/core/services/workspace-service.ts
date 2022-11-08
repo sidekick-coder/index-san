@@ -1,5 +1,6 @@
 import Workspace from '../entities/workspace'
 import AppService from './app-service'
+import CollectionService from './collection-service'
 
 export default class WorkspaceService extends Workspace {
     
@@ -40,12 +41,17 @@ export default class WorkspaceService extends Workspace {
     public async read(path: string) {
         return this.workspaceDrive.read(path)
     }
+    
     public async write(path: string, content: String | Buffer) {
         if (typeof content === 'string') {
             content = Buffer.from(content)
         }
 
         await this.workspaceDrive.write(path, content as Buffer)
+    }
+
+    public collection(collectionId: string) {
+        return CollectionService.from(this, collectionId)
     }
     
 }

@@ -2,11 +2,13 @@ import { test } from '@japa/runner'
 import DirectoryEntry from '../entities/directory-entry'
 import CrudManager from '../gateways/crud-manager'
 import DriveManager from '../gateways/drive-manager'
+import CollectionFactory from '../__tests__/factories/collections'
 import WorkspaceFactory from '../__tests__/factories/workspace-factory'
 import InMemoryCrud from '../__tests__/gateways/in-memory-crud'
 import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
 import InMemoryWorkspaceRepository from '../__tests__/repositories/in-memory-workspace-repository'
 import AppService from './app-service'
+import CollectionService from './collection-service'
 import WorkspaceService from './workspace-service'
 
 test.group('workspace-service (service)', (group) => {
@@ -84,6 +86,22 @@ test.group('workspace-service (service)', (group) => {
         const content = await service.read('item.txt')
 
         expect(content?.toString()).toBe('Test content')
+    })
+
+    test('should collection() return an collection service instance', async ({ expect }) => {
+        const service = await WorkspaceService.from(appService, workspace.id)
+
+        const collection = CollectionFactory.create({
+            crudName: 'memory'
+        })
+
+        memoryDrive.createFile('.is/collections.json', [collection])
+        
+        const result = await service.collection(collection.id)
+
+        expect(result).toBeInstanceOf(CollectionService)
+
+        expect(result.id).toBe(collection.id)
     })
 
   

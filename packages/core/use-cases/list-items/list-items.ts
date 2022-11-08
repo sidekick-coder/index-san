@@ -1,5 +1,4 @@
 import AppService from '../../services/app-service'
-import CollectionService from '../../services/collection-service'
 import WorkspaceService from '../../services/workspace-service'
 import ListItemsDTO from './list-items.dto'
 
@@ -10,7 +9,7 @@ export default class ListItems {
 
         const workspace = await WorkspaceService.from(this.service, workspaceId)
 
-        const collection = await CollectionService.from(workspace, collectionId)
+        const collection = await workspace.collection(collectionId)
 
         const items = await collection.list()
         
