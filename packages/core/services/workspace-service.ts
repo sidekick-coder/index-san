@@ -44,10 +44,12 @@ export default class WorkspaceService extends Workspace {
         return workspace
     }
 
-    public list(path: string) {
-        const entries = this.workspaceDrive.list(path)
+    public exists(path: string) {
+        return this.workspaceDrive.exists(path)
+    }
 
-        return entries
+    public list(path: string) {
+        return this.workspaceDrive.list(path)
     }
     
     public async get(path: string) {

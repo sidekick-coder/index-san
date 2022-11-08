@@ -1,20 +1,15 @@
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import ListDirectoryEntryDTO from './list-directory.dto'
 
 export default class ListDirectoryEntry {
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        private readonly drive: DriveManager<any>
-    ){}
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, path }: ListDirectoryEntryDTO.Input): Promise<ListDirectoryEntryDTO.Output> {
 
-        const workspace = await this.workspaceRepository.findById(workspaceId)
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        if (!workspace) throw new Error('Workspace not found')
-
-        const entries = await this.drive.use(workspace.drive).config(workspace.config).list(path || '/')
+        const entries = await workspace.list(path || '/')
 
         return {
             data: entries

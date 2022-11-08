@@ -1,29 +1,23 @@
 import { test } from '@japa/runner'
 
-import DriveManager from '../../gateways/drive-manager'
+import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
-import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
-import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 import UpdateCollection from './update-collection'
 
 test.group('update-collection (use-case)', (group) => {
-    const repository = new InMemoryWorkspaceRepository()    
-    const memoryDrive = new InMemoryDrive()    
-    const drive = new DriveManager({ memory: memoryDrive}, 'memory')
 
-    const useCase = new UpdateCollection(repository, drive)
+    const app = new InMemoryApp()
 
-    group.tap(t => t.teardown(() => memoryDrive.clear()))
+    const useCase = new UpdateCollection(app)
+
+    group.tap(t => t.teardown(() => app.memoryDrive.clear()))
 
     test('should update a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
+        app.memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
 
-        const workspace = await repository.create(WorkspaceFactory.create({
-            drive: drive.getCurrentDrive()
-        }))
+        const workspace = await app.workspaceRepository.createFake()
 
         await useCase.execute({
             workspaceId: workspace.id,
@@ -33,32 +27,18 @@ test.group('update-collection (use-case)', (group) => {
             }
         })
 
-        const content = memoryDrive.content.get('.is/collections.json')
+        const content = app.memoryDrive.content.get('.is/collections.json')
 
         const json = content ? JSON.parse(content.toString()) : []
         
         expect(json[0].name).toEqual('update-name')
 
     })
-
-    test('should trigger an error if is an invalid workspace', async ({expect}) => {
-        expect.assertions(1)
-        
-        const collection = CollectionFactory.create()
-
-        await useCase.execute({
-            workspaceId: 'invalid',
-            collectionId: collection.id,
-            data: {},
-        }).catch(err => expect(err.message).toEqual('Workspace not found'))
-    })
     
     test('should trigger an error if collection was not found', async ({expect}) => {
         expect.assertions(1)
 
-        const workspace = await repository.create(WorkspaceFactory.create({
-            drive: drive.getCurrentDrive()
-        }))
+        const workspace = await app.workspaceRepository.createFake()
 
         await useCase.execute({
             workspaceId: workspace.id,

@@ -7,7 +7,7 @@ const WorkspaceFactory = new Factory<Workspace>((data) => {
 
     return new Workspace({
         name: id,
-        drive: 'local',
+        drive: 'memory',
         path: `/${id}`,
         config: {},
         ...data

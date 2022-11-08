@@ -1,27 +1,12 @@
 import { test } from '@japa/runner'
-import DriveManager from '../../gateways/drive-manager'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
-import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
-import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
+import InMemoryApp from '../../__tests__/app'
 import ShowWorkspaceOptions from './show-workspace-options'
 
-
 test.group('show-workspace-options (use-case)', () => {
-    const memoryDrive = new InMemoryDrive()    
-    const drive = new DriveManager({ memory: memoryDrive }, 'memory')
-    const repository = new InMemoryWorkspaceRepository()
 
-    const useCase = new ShowWorkspaceOptions(repository, drive)
+    const app = new InMemoryApp()
 
-    test('should throw an error if workspace was not found', async ({ expect }) => {
-
-        expect.assertions(1)
-        
-        await useCase.execute({ workspaceId: '999' }).catch(err => {
-            expect(err.message).toEqual('Workspace not found')
-        })
-
-    })
+    const useCase = new ShowWorkspaceOptions(app)
 
     test('should return workspace options', async ({ expect }) => {
         const options = {
@@ -31,11 +16,9 @@ test.group('show-workspace-options (use-case)', () => {
             }
         }
 
-        memoryDrive.createFile('.is/options.json', options)
+        app.memoryDrive.createFile('.is/options.json', options)
 
-        const workspace = await repository.create(WorkspaceFactory.create({
-            drive: 'memory'
-        }))
+        const workspace = await app.workspaceRepository.createFake()
 
         const result = await useCase.execute({ workspaceId: workspace.id })
 

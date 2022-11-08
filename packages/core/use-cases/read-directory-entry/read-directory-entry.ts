@@ -1,21 +1,14 @@
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import ReadDirectoryEntryDTO from './read-directory-entry.dto'
 
 export default class ReadDirectoryEntry {
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        public readonly drive: DriveManager
-    ){}
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, path }: ReadDirectoryEntryDTO.Input): Promise<Buffer> {
-        const workspace = await this.workspaceRepository.findById(workspaceId)
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        if (!workspace) throw new Error('Workspace not found')
-
-        this.drive.use(workspace.drive).config(workspace.config)
-
-        const content = await this.drive.read(path)
+        const content = await workspace.read(path)
 
         if (!content) throw new Error('DirectoryEntry not found')
 

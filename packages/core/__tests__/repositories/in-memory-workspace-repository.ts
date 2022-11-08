@@ -1,5 +1,6 @@
 import Workspace from '../../entities/workspace'
 import WorkspaceRepository from '../../repositories/workspace-repository'
+import WorkspaceFactory from '../factories/workspace-factory'
 
 export default class InMemoryWorkspaceRepository implements WorkspaceRepository {
     public items: Workspace[] = []
@@ -15,6 +16,15 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
     }
 
     public create(workspace: Workspace): Promise<Workspace> {
+        
+        this.items.push(workspace)
+
+        return Promise.resolve(workspace)
+    }
+    
+    public createFake(payload?: Partial<Workspace>): Promise<Workspace> {
+
+        const workspace = WorkspaceFactory.create(payload)
         
         this.items.push(workspace)
 

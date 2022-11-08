@@ -1,21 +1,16 @@
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import UpdateWorkspaceOptionsDTO from './update-workspace-options.dto'
 
 export default class UpdateWorkspaceOptions {
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        private readonly drive: DriveManager
-    ){}
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, data }: UpdateWorkspaceOptionsDTO.Input): Promise<void> {
-        const workspace = await this.workspaceRepository.findById(workspaceId)
-
-        if (!workspace) throw new Error('Workspace not found')
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         let options = {}
 
-        const contents = await this.drive.read('.is/options.json')
+        const contents = await workspace.read('.is/options.json')
 
         if (contents) {
             options = JSON.parse(contents.toString())
@@ -25,6 +20,6 @@ export default class UpdateWorkspaceOptions {
 
         const text = JSON.stringify(options, undefined, 4)
 
-        await this.drive.write('.is/options.json', Buffer.from(text))
+        await workspace.write('.is/options.json', Buffer.from(text))
     }
 }

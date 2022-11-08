@@ -6,6 +6,7 @@ configure({
     ...processCliArgs(process.argv.slice(2)),
     ...{
         files: [
+            './app.spec.ts',
             './gateways/*.spec.ts',
             './entities/*.spec.ts',
             './services/*.spec.ts',

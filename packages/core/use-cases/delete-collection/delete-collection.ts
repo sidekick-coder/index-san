@@ -1,36 +1,19 @@
-import Collection from '../../entities/collection'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import DeleteCollectionsDTO from './delete-collection.dto'
 
 export default class DeleteCollection {
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        private readonly drive: DriveManager
-    ){}
-
-    public collectionsFilename = '.is/collections.json'
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, collectionId }: DeleteCollectionsDTO.Input) {
-        const workspace = await this.workspaceRepository.findById(workspaceId)
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        if (!workspace) throw new Error('Workspace not found')
-
-        this.drive.use(workspace.drive).config(workspace.config)
-
-        const content = await this.drive.read(this.collectionsFilename)
-
-        const collections: Collection[] = !content ? [] : JSON.parse(content.toString())
-
-        const index = collections.findIndex(c => c.id === collectionId)
+        const index = workspace.collections.findIndex(c => c.id === collectionId)
 
         if (index === -1) throw new Error('Collection not found')
 
-        collections.splice(index, 1)
+        workspace.collections.splice(index, 1)
 
-        await this.drive.write(
-            this.collectionsFilename,
-            Buffer.from(JSON.stringify(collections))
-        )
+        await workspace.save()
     }
 }

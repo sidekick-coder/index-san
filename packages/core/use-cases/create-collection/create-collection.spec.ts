@@ -35,15 +35,4 @@ test.group('create-collection (use-case)', (group) => {
 
     })
 
-    test('should trigger an error if is an invalid workspace', async ({expect}) => {
-        expect.assertions(1)
-        
-        const collection = CollectionFactory.create()
-
-        await useCase.execute({
-            workspaceId: 'invalid',
-            data: collection,
-        }).catch(err => expect(err.message).toEqual('Workspace not found'))
-    })
-
 })

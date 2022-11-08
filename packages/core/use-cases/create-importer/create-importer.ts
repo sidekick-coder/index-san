@@ -1,27 +1,18 @@
 import Importer from '../../entities/importer'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import CreateImporterDTO from './create-importer.dto'
 
 export default class CreateImporter {
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        private readonly drive: DriveManager<any>
-    ){}
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, data }: CreateImporterDTO.Input): Promise<CreateImporterDTO.Output> {
 
-        const workspace = await this.workspaceRepository.findById(workspaceId)
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        if (!workspace) throw new Error('Workspace not found')
+        await workspace.write(`.is/importers/${data.id}.js`, Buffer.from(data.content))
 
-        this.drive.use(workspace.drive)
-
-        
-        await this.drive.write(`.is/importers/${data.id}.js`, Buffer.from(data.content))
-        
         const importer = new Importer({ content: data.content }, data.id)
-
 
         return {
             data: importer

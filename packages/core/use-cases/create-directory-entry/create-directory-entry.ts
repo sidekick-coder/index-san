@@ -1,23 +1,15 @@
 import DirectoryEntry from '../../entities/directory-entry'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
+import WorkspaceService from '../../services/workspace-service'
 import CreateDirectoryEntryDTO from './create-directory-entry.dto'
 
-export default class CreateDirectoryEntry {
-    
-    constructor(
-        private readonly workspaceRepository: IWorkspaceRepository,
-        private readonly drive: DriveManager,
-    ){}
+export default class CreateDirectoryEntry {    
+    constructor(private readonly app: AppService){}
 
     public async execute({ workspaceId, data }: CreateDirectoryEntryDTO.Input): Promise<CreateDirectoryEntryDTO.Output> {
-        const workspace = await this.workspaceRepository.findById(workspaceId)
+        const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        if (!workspace) throw new Error('Workspace not found')
-
-        this.drive.use(workspace.drive).config(workspace.config)
-
-        const exist = await this.drive.exists(data.path)
+        const exist = await workspace.exists(data.path)
 
         if (exist) throw new Error('DirectoryEntry already exists')
 
@@ -25,11 +17,11 @@ export default class CreateDirectoryEntry {
         const entry = new DirectoryEntry(data)
 
         if (data.type === 'directory') {
-            await this.drive.mkdir(data.path)
+            await workspace.workspaceDrive.mkdir(data.path)
         }
 
         if (data.type === 'file') {
-            await this.drive.write(data.path, Buffer.from(''))
+            await workspace.workspaceDrive.write(data.path, Buffer.from(''))
         }
 
 
