@@ -1,12 +1,12 @@
-import Importer from '../../entities/importer'
+import Importer from '../../entities/script'
 import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
-import ListImportersDTO from './list-importers.dto'
+import ListScriptsDTO from './list-scripts.dto'
 
-export default class ListImporters {
+export default class ListScripts {
     constructor(private readonly app: AppService){}
 
-    public async execute({ workspaceId }: ListImportersDTO.Input): Promise<ListImportersDTO.Output> {
+    public async execute({ workspaceId }: ListScriptsDTO.Input): Promise<ListScriptsDTO.Output> {
 
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
@@ -19,7 +19,7 @@ export default class ListImporters {
 
             const content = buffer?.toString() ?? ''
 
-            importers.push(new Importer({ content }, entry.name))
+            importers.push(new Importer({ content, name: entry.name.replace('.js', '') }, entry.name))
         }
 
 
