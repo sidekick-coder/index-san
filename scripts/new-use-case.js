@@ -17,9 +17,10 @@ if (!name) {
 
 const useCase = `
 import {{camelCaseName}}DTO from './{{kebabCaseName}}.dto'
+import AppService from '../../services/app-service'
 
 export default class {{camelCaseName}} {
-    constructor(){}
+    constructor(private readonly app: AppService){}
 
     public async execute({ data }: {{camelCaseName}}DTO.Input): Promise<{{camelCaseName}}DTO.Output> {
         return {
@@ -44,11 +45,13 @@ export default {{camelCaseName}}DTO
 const spec = `
 import { test } from '@japa/runner'
 
+import InMemoryApp from '../../__tests__/app'
 import {{camelCaseName}} from './{{kebabCaseName}}'
 
 test.group('{{kebabCaseName}} (use-case)', () => {
 
-    const useCase = new {{camelCaseName}}()
+    const app = new InMemoryApp()
+    const useCase = new {{camelCaseName}}(app)
 
     test('should test use-case', async ({ expect }) => {
         expect(1).toEqual(1)
