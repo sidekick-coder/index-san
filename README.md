@@ -2,7 +2,7 @@
 
 # Index-san
 
-A CRUD maker based in filesystem (under development)
+Notes app + files management app (under development)
 
 [Download page](https://github.com/sidekick-coder/index-san/releases)
 

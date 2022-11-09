@@ -26,6 +26,7 @@ watch(() => route.path, load)
 hooks.emit('app:boot')
 
 </script>
+
 <template>
     <component :is="layouts[currentLayout] || layouts.default">
         <router-view />
