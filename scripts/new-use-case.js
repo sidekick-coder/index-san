@@ -48,10 +48,12 @@ import { test } from '@japa/runner'
 import InMemoryApp from '../../__tests__/app'
 import {{camelCaseName}} from './{{kebabCaseName}}'
 
-test.group('{{kebabCaseName}} (use-case)', () => {
+test.group('{{kebabCaseName}} (use-case)', (group) => {
 
     const app = new InMemoryApp()
     const useCase = new {{camelCaseName}}(app)
+
+    group.each.teardown(() => app.memoryDrive.clear())
 
     test('should test use-case', async ({ expect }) => {
         expect(1).toEqual(1)
