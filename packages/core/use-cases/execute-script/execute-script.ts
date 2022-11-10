@@ -8,16 +8,24 @@ import WorkspaceService from '../../services/workspace-service'
 
 interface ScriptSandbox {
     main: (workspace: WorkspaceService) => Promise<string>
+    [key: string]: any
 }
 
 export default class ExecuteScript {
     constructor(private readonly app: AppService){}
 
     public executeScript(content: string, workspace: WorkspaceService) {
-        return new Promise<string>((resolve, reject) => {
+        return new Promise<string>((resolve) => {
+            const lines: string[] = []
+
             try {
                 const script: ScriptSandbox = {
-                    main: () => Promise.reject('Error executing script')
+                    main: () => Promise.reject('Error executing script'),
+                    console: {
+                        log: (...args: string[]) => {
+                            args.forEach(a => lines.push(`[log]: ${a}`))
+                        }
+                    },
                 }
                   
                 const executable = new vm.Script(content.toString())
@@ -25,11 +33,21 @@ export default class ExecuteScript {
         
                 executable.runInContext(context, {})
 
-                script.main(workspace).then(resolve).catch(resolve)
+                script.main(workspace).then(r => {
+                    lines.push(r)
+
+                    resolve(lines.join('\n'))
+                })
+                    .catch(error => {
+                        lines.push(error.message || 'Error executing script')    
+                        resolve(lines.join('\n'))
+                    })
 
                 
             } catch (error: any) {
-                resolve(error.message || 'Error executing script')
+                lines.push(error.message || 'Error executing script')
+
+                resolve(lines.join('\n'))
             }
         })
     }

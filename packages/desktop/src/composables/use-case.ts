@@ -1,9 +1,10 @@
+import App from '@core/app'
 
 export interface DataResponse<T> {
     data: T
 }
 
-export async function useCase<T = void>(name: string, args?: any): Promise<T> {
+export async function useCase<T = any>(name: keyof App['cases'], args?: any): Promise<T> {
     
     args = args ? JSON.parse(JSON.stringify(args)) : {}
 

@@ -107,6 +107,10 @@ async function deleteItem(id: string) {
 
         <template #item-actions="{ item }">
             <div class="flex">
+                <w-btn @click="$router.push(`/workspaces/${item.id}/scripts`)" class="mr-2" >
+                    <is-icon name="code" />
+                </w-btn>
+
                 <w-btn @click="$router.push(`/workspaces/${item.id}/collections`)" class="mr-2" >
                     <is-icon name="database" />
                 </w-btn>

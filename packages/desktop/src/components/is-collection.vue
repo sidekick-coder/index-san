@@ -79,10 +79,11 @@ async function setColumns(){
     columns.value = collection.value?.columns.slice() ?? []
     
     for await (const column of columns.value) {
+        column.name = column.field
+
         if (column.type === 'relation') {
             const relation = await useCollectionItemsAsync(props.workspaceId, column.collectionId)
 
-            column.name = column.field
             column.options = new Map<string, string>()
             
             relation.value.forEach(i => column.options.set(i.id, i[column.displayField]))

@@ -9,7 +9,7 @@
     "email": "henriqueoliwork@gmail.com",
     "url": "https://sidekick-coder.com"
   },
-  "main": "dist/electron/main.js",
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "test": "vitest",

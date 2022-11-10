@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 import { definePageMeta } from '@/composables/page-meta'
 import { useOptionStore, MenuItem } from '@/stores/options'
-import { some } from 'lodash'
-import { ref } from 'vue'
 
 const store = useOptionStore()
 
@@ -99,6 +99,22 @@ async function move(item: MenuItem, count = 1) {
         @item:update="onItemUpdate"
         @item:delete="onItemDelete"
     >
+
+        <template #item-label="{ item, column }">
+            <input                        
+                v-model="item[column.field]"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                @change="onItemUpdate(item)"
+            >
+        </template>
+        
+        <template #item-icon="{ item, column }">
+            <input                        
+                v-model="item[column.field]"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                @change="onItemUpdate(item)"
+            >
+        </template>
 
         <template #item-sort="{ item }">
             <is-icon @click="move(item, -1)" name="arrow-up" class="cursor-pointer text-sm mr-2" />

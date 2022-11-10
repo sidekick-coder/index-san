@@ -21,7 +21,6 @@ const model = useVModel(props, 'modelValue', emit)
                 class="p-5 w-full max-w-[500px] transition  ease-in-out bg-gray-800 text-white rounded"
                 @click.stop=""
             >
-
                <slot />
             </div>
         </template>

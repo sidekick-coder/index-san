@@ -32,6 +32,7 @@ import ListScripts from './use-cases/list-scripts/list-scripts'
 import CreateScript from './use-cases/create-script/create-script'
 import UpdateScript from './use-cases/update-script/update-script'
 import DeleteScript from './use-cases/delete-script/delete-script'
+import ExecuteScript from './use-cases/execute-script/execute-script'
 
 interface AppArgs {
     workspaceRepository: IWorkspaceRepository
@@ -69,6 +70,7 @@ interface AppUseCases {
     'create-script': CreateScript
     'update-script': UpdateScript
     'delete-script': DeleteScript
+    'execute-script': ExecuteScript
 }
 
 export default class App extends AppService {
@@ -110,6 +112,7 @@ export default class App extends AppService {
             'create-script': new CreateScript(this),
             'update-script': new UpdateScript(this),
             'delete-script': new DeleteScript(this),
+            'execute-script': new ExecuteScript(this)
         }
     }
 }

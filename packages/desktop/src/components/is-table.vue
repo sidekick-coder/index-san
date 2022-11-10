@@ -13,8 +13,7 @@ interface Column {
     name: string
     label?: string
     field?: string
-    type?: string,
-    options?: string[]
+    width?: string | number
 }
 
 const props = defineProps({
@@ -100,6 +99,7 @@ const classes = computed(() => ({
                     v-for="(column, index) in columns"
                     :key="column.name"
                     :class="classes.th"
+                    :style=" column.width ? `width: ${column.width}px` : '' "
                     @click="$emit('column:update', column)"
                 >
                     <slot name="column" :column="column" :index="index" >
@@ -155,11 +155,14 @@ const classes = computed(() => ({
                 <div v-if="!column.field" />
 
                 <slot v-else :name="`item-${column.name}`" :item="item" :column="column">
-                    <input                        
+                    <div class="p-2 bg-transparent  w-full" >
+                        {{ item[column.field] }}                
+                    </div>
+                    <!-- <input                        
                         v-model="item[column.field]"
                         class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
                         @change="$emit('item:update', item)"
-                    >
+                    > -->
                 </slot>
 
                 <i

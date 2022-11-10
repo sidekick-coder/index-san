@@ -22,19 +22,19 @@ export default defineConfig({
     resolve: { alias },
     plugins: [
         vue(), 
-        electron({
-            main: {
+        electron([
+            {
                 entry: 'electron/main.ts',
                 vite: {
                     resolve: { alias },
                 }
             },
-            preload: {
-                input: {
-                    // Must be use absolute path, this is the restrict of Rollup
-                    preload: path.join(__dirname, 'electron/preload.ts'),
+            {
+                entry: 'electron/preload.ts',
+                onstart(options) {
+                    options.reload()
                 },
-            },
-        }),
+            }
+        ]),
     ]
 })
