@@ -12,7 +12,7 @@ export default class ListScripts {
 
         const importers: Importer[] = []
         
-        const entries = await workspace.drive.list('.is/importers')
+        const entries = await workspace.drive.list('.is/scripts')
 
         for await (const entry of entries) {
             const buffer = await workspace.drive.read(entry.path)

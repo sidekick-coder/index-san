@@ -11,7 +11,7 @@ test.group('create-item (use-case)', group => {
     
     const useCase = new CreateItem(app)      
     
-    group.each.teardown(() => app.clear())
+    group.each.teardown(() => app.memoryDrive.clear())
     
     test('should create an item in collection', async ({ expect }) => {
         
@@ -25,8 +25,6 @@ test.group('create-item (use-case)', group => {
             collectionId: collection.id,
             data: {}
         })
-
-        console.log(app.memoryDrive.entries)
 
         expect(app.memoryDrive.entries[1].path).toEqual([collection.path, data.id].join('/'))
     })

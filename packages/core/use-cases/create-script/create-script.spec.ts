@@ -9,7 +9,7 @@ test.group('create-script (use-case)', (group) => {
 
     const useCase = new CreateScript(app)
 
-    group.each.teardown(() => app.clear())
+    group.each.teardown(() => app.memoryDrive.clear())
 
     test('should create a script', async ({ expect }) => {
         const workspace = await app.workspaceRepository.createFake()

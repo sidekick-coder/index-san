@@ -10,7 +10,7 @@ test.group('update-directory-entry (use-case)', (group) => {
 
     const useCase = new UpdateDirectoryEntry(app)
 
-    group.each.teardown(() => app.clear())
+    group.each.teardown(() => app.memoryDrive.clear())
 
     test('should update an entry using drive', async ({ expect }) => {
 
