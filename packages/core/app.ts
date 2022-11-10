@@ -28,6 +28,10 @@ import CreateItem from './use-cases/create-item/create-item'
 import UpdateItem from './use-cases/update-item/update-item'
 import DeleteItem from './use-cases/delete-item/delete-item'
 import AppService from './services/app-service'
+import ListScripts from './use-cases/list-scripts/list-scripts'
+import CreateScript from './use-cases/create-script/create-script'
+import UpdateScript from './use-cases/update-script/update-script'
+import DeleteScript from './use-cases/delete-script/delete-script'
 
 interface AppArgs {
     workspaceRepository: IWorkspaceRepository
@@ -59,7 +63,12 @@ interface AppUseCases {
     'show-item': ShowItem,
     'create-item': CreateItem,
     'update-item': UpdateItem,
-    'delete-item': DeleteItem
+    'delete-item': DeleteItem,
+
+    'list-scripts': ListScripts
+    'create-script': CreateScript
+    'update-script': UpdateScript
+    'delete-script': DeleteScript
 }
 
 export default class App extends AppService {
@@ -95,7 +104,12 @@ export default class App extends AppService {
             'show-item': new ShowItem(this),
             'create-item': new CreateItem(this),
             'update-item': new UpdateItem(this),
-            'delete-item': new DeleteItem(this)
+            'delete-item': new DeleteItem(this),
+
+            'list-scripts': new ListScripts(this),
+            'create-script': new CreateScript(this),
+            'update-script': new UpdateScript(this),
+            'delete-script': new DeleteScript(this),
         }
     }
 }
