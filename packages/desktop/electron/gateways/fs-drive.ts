@@ -57,6 +57,12 @@ export default class FSDrive implements Drive {
             target: this.resolve([this.config.path, target]),
         }
 
+        const targetExist = await this.exists(target)
+
+        if (targetExist) {
+            throw new Error('Target filename already exists')
+        }
+
         await fs.promises.rename(systemPath.source, systemPath.target)
     }
 

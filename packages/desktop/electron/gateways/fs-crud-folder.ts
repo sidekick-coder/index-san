@@ -10,6 +10,28 @@ interface ItemMeta {
     [props: string]: any
 }
 
+const lockedFiles = new Map<string, boolean>()
+
+function waitFreeFile(filename: string, timeout = 3000){
+    const start = Date.now() + timeout
+
+    if (!lockedFiles.has(filename)) {
+        lockedFiles.set(filename, false)
+        return
+    }
+
+    return new Promise<void>((resolve, reject) => {
+        while(lockedFiles.get(filename)) {
+            if (start <= Date.now()) {
+                reject(new Error('Timeout'))
+                break
+            }
+        }
+        resolve()
+
+    })
+}
+
 export default class FolderCrud implements Crud {
     public drive: Drive
 
@@ -24,12 +46,18 @@ export default class FolderCrud implements Crud {
     }
     
     private async updateMetas(collectionPath: string, newMetas: ItemMeta[]){
-        const metasFilename = [collectionPath, '.is', 'metas.json'].join('/')
 
-        await this.drive.write(
-            metasFilename,
-            Buffer.from(JSON.stringify(newMetas, undefined, 4))
-        )
+        const filename = [collectionPath, '.is', 'metas.json'].join('/')
+
+        await waitFreeFile(filename)
+
+        lockedFiles.set(filename, true)
+
+        const buffer = Buffer.from(JSON.stringify(newMetas, undefined, 4))
+
+        await this.drive.write(filename, buffer)
+
+        lockedFiles.set(filename, false)
     }
 
     public async list(collectionPath: string): Promise<item[]> {
@@ -40,9 +68,7 @@ export default class FolderCrud implements Crud {
         entries = entries.filter(e => e.type === 'directory' && e.name !== '.is')
 
         for await (const entry of entries) {
-            const data: any = {
-                _filename: entry.path,
-            }
+            const data: any = {}
 
             const meta = metas.find(m => m.id === entry.name)
 
@@ -73,11 +99,7 @@ export default class FolderCrud implements Crud {
         
         Object.assign(data, itemMeta)
 
-        const content = await this.drive.read(path + '/content.json')
-
-        if (content) {
-            data._content = JSON.parse(content.toString())
-        }
+        const content = await this.drive.read(path + '/content.md')
 
         return new Item(data, entry.name)
     }
@@ -85,10 +107,10 @@ export default class FolderCrud implements Crud {
     public async create(collectionPath: string, data: item): Promise<item> {
 
         const entry = DirectoryEntry.directory(collectionPath, data.id)
-        const contentEntry = DirectoryEntry.file(collectionPath, data.id, 'content.json')
+        const contentEntry = DirectoryEntry.file(collectionPath, data.id, 'content.md')
         
         await this.drive.mkdir(entry.path)
-        await this.drive.write(contentEntry.path, Buffer.from('{}'))
+        await this.drive.write(contentEntry.path, Buffer.from(''))
         
         const metas = await this.findMetas(collectionPath)
 
@@ -106,32 +128,32 @@ export default class FolderCrud implements Crud {
     
     public async updateById(collectionPath: string, itemId: string, payload: any): Promise<void> {
         const entry = DirectoryEntry.directory(collectionPath, itemId)
-        const { _content, ...data } = payload
 
         const isValid = await this.drive.exists(entry.path)
 
         if (!isValid) return
 
         const metas = await this.findMetas(collectionPath)
-
-        if (_content) {
-            await this.drive.write(entry.path + '/content.json', Buffer.from(JSON.stringify(_content)))
-        }
         
-        const oldMeta = metas.find(m => m.id === itemId)
-
-        const newMeta = {
-            ...oldMeta,
-            ...data,
-            id: itemId,
-            _updateAt: Date.now()
+        if (payload.id) {
+            await this.drive.move(entry.path, [collectionPath, payload.id].join('/'))
         }
+
+        const meta: any = metas.find(m => m.id === itemId) || {}
+        const metaIndex = metas.findIndex(m => m.id === itemId)
+
+        Object.keys(payload).forEach(key => {
+            meta[key] = payload[key]
+        })
+
+        meta._updateAt = Date.now()
+        meta._createdAt = meta._createdAt || Date.now()
+
         
-        const index = metas.findIndex(m => m.id === itemId)
 
-        if (index === -1) metas.push(newMeta)
+        if (metaIndex === -1) metas.push(meta)
 
-        if (index !== -1) metas[index] = newMeta
+        if (metaIndex !== -1) metas[metaIndex] = meta
 
         await this.updateMetas(collectionPath, metas)        
     }
