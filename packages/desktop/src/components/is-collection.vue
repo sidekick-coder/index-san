@@ -6,11 +6,11 @@ import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
 
-import { useCollection, useCollectionAsync, useCollectionItemsAsync } from '@/composables/collection'
+import { useCollection, useCollectionAsync, useCollectionItemsAsync, onCollectionUpdate } from '@/composables/collection'
 import { useRouter } from 'vue-router'
 import { useChildren } from '@/composables/children'
 import { useArray } from '@/composables/array'
-import { useHooks } from '@/plugins/hooks'
+
 
 const props = defineProps({
     workspaceId: {
@@ -25,7 +25,6 @@ const props = defineProps({
 
 const children = useChildren(useSlots())
 const router = useRouter()
-const hooks = useHooks()
 
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 
@@ -74,7 +73,7 @@ function setViews(){
 
 
 async function setColumns(){
-    const collection = await useCollectionAsync(props.workspaceId, props.collectionId) 
+    const collection = await useCollectionAsync(props.workspaceId, props.collectionId, true) 
 
     columns.value = collection.value?.columns.slice() ?? []
     
@@ -108,10 +107,10 @@ async function setItems(){
 }
 
 async function load(){
+    console.log('load')
     if (!props.workspaceId || !props.collectionId) return
 
-    loading.value = true
-    
+    loading.value = true    
     
     await setColumns()   
     
@@ -119,18 +118,14 @@ async function load(){
 
     await setItems()
 
-
     loading.value = false
 
-    hooks.on({
-        handler: load,
-        name: `collection:${props.collectionId}:update`,
-    })
 }
 
 watch(() => props.collectionId, load, {
     immediate: true,
 })
+onCollectionUpdate(props.workspaceId, props.collectionId, load)
 
 
 async function onItemNew() {

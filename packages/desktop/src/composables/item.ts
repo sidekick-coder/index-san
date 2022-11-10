@@ -1,5 +1,6 @@
 import Item from '@core/entities/item'
 import { useHooks } from '../plugins/hooks'
+import { createCollectionKey } from './collection'
 import { DataResponse, useCase } from './use-case'
 
 export interface CollectionFolderItem extends Item {
@@ -8,8 +9,7 @@ export interface CollectionFolderItem extends Item {
 }
 
 export function useItemRepository(workspaceId: string, collectionId: string) {
-    const hooks = useHooks()
-    
+    const hooks = useHooks()    
 
     async function show(itemId: string){
         const { data } = await useCase<DataResponse<CollectionFolderItem>>('show-item', { workspaceId, collectionId, itemId })
@@ -22,19 +22,19 @@ export function useItemRepository(workspaceId: string, collectionId: string) {
     }
     
     async function create(data: any = {}){
-        hooks.emit(`collection:${collectionId}:update`)
+        hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
 
         return useCase('create-item', { workspaceId, collectionId, data })
     } 
     
     async function update(itemId: string, data: any){
-        hooks.emit(`collection:${collectionId}:update`)
+        hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
 
         return useCase('update-item', { workspaceId, collectionId, itemId, data })
     }
     
     async function destroy(itemId: string) {
-        hooks.emit(`collection:${collectionId}:update`)
+        hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
 
         return useCase('delete-item', { workspaceId, collectionId, itemId })
     }

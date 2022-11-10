@@ -6,7 +6,6 @@ import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
-import { useCollectionItems } from '@/composables/collection'
 import { useBuilder } from 'vue-wind/composables/builder'
 
 
@@ -34,8 +33,6 @@ const edit = ref(false)
 const builder = useBuilder()
 const payload = ref('')
 
-const relation = useCollectionItems(props.workspaceId, props.column.collectionId)
-
 const classes = computed(() => ({
     input: builder.make()
 }))
@@ -55,7 +52,7 @@ const onChange = throttle(async () => {
     })
 }, 1000)
 
-watch(props, load, {
+watch(() => props.item, load, {
     immediate: true,
     deep: true
 })

@@ -3,10 +3,15 @@ import { ref } from 'vue'
 
 import Collection, { CollectionColumn } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
-import { useHooks } from '../plugins/hooks'
+import { useHooks, HookEventListener } from '../plugins/hooks'
 import { useState } from './state'
 import { CollectionFolderItem } from './item'
 
+const hooks = useHooks()
+
+export function createCollectionKey(workspaceId: string, collectionId: string, ...args: string[]){
+    return ['workspaces', workspaceId,'collections', collectionId, ...args].join(':')
+}
 
 export function useCollectionRepository(workspaceId: string) {
     function show(collectionId: string){
@@ -45,7 +50,7 @@ export function useCollection(workspaceId: string, collectionId: string) {
     async function update(payload: Partial<Collection>){
         await repository.update(collectionId, payload)
 
-        hooks.emit(`collection:${collectionId}:update`)
+        hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
     }
 
     async function addColumn(payload?: Partial<CollectionColumn>) {
@@ -100,14 +105,7 @@ export function useCollection(workspaceId: string, collectionId: string) {
         await update({ columns })
     }
 
-    function on(event: 'update', handler: () => any) {
-        hooks.on({
-            name: `collection:${collectionId}:update`,
-            handler,
-        })
-    }
-
-    return { show, addColumn, updateColumn, deleteColumn, on }
+    return { show, addColumn, updateColumn, deleteColumn }
 }
 
 export function useCollectionItems(workspaceId: string, collectionId: string){
@@ -132,7 +130,7 @@ export function useCollectionItems(workspaceId: string, collectionId: string){
     return items
 }
 
-export async function useCollectionAsync(workspaceId: string, collectionId: string){
+export async function useCollectionAsync(workspaceId: string, collectionId: string, forceUpdate = false){
 
     if (!workspaceId || !collectionId) {
         return ref(null)
@@ -140,7 +138,7 @@ export async function useCollectionAsync(workspaceId: string, collectionId: stri
     
     const collection = useState<Collection | null>(`workspace:${workspaceId}:collection:${collectionId}`, null)
 
-    if (!collection.value) {
+    if (!collection.value || forceUpdate) {
         await useCase<DataResponse<Collection>>('show-collection', { workspaceId, collectionId })
             .then(r => collection.value = r.data)
             .catch(() => collection.value = null)
@@ -167,4 +165,11 @@ export async function useCollectionItemsAsync(workspaceId: string, collectionId:
         .finally(() => loading.value = false)
 
     return items
+}
+
+export function onCollectionUpdate(workspaceId: string, collectionId: string, cb: HookEventListener['handler']) {
+    hooks.on({
+        name: createCollectionKey(workspaceId, collectionId, 'update'),
+        handler: cb,
+    })
 }
