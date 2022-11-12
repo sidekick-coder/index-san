@@ -18,7 +18,6 @@ const props = defineProps({
 })
 
 const meta = definePageMeta({ title: props.entryId })
-const repository = useDirectoryEntry(props.workspaceId)
 
 const views = {
     default: 'is-entry-view-default',
@@ -60,7 +59,7 @@ function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views 
 async function load(){
     entry.value = undefined
 
-    const data = await repository.show(props.entryId)
+    const data = await useDirectoryEntry(props.workspaceId).show(props.entryId)
 
     entry.value = data
     meta.value.title = data.name ?? 'Entry'
