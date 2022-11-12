@@ -11,6 +11,7 @@ import { createIcon } from './plugins/icons'
 import App from './App.vue'
 import { createGCRegister } from './plugins/global-component'
 import { createHooks } from './plugins/hooks'
+import { createMoment } from './plugins/moment'
 
 const app = createApp(App)
 
@@ -19,6 +20,7 @@ app.use(createPinia())
 app.use(createVWind())
 app.use(createIcon())
 app.use(createHooks())
+app.use(createMoment())
 
 app.use(createGCRegister())
 
