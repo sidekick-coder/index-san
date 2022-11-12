@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import _map from 'lodash/map'
 
 interface Filter {
     type: string
@@ -6,14 +6,19 @@ interface Filter {
     value: string
 }
 
-export function useArray<T extends Record<string, any>>(){
-    const items = ref([] as T[])
+interface Iterator {
+    type: 'filter' | 'map'
+    options: any
+}
+
+
+export function useArray<T extends Array<any>>(source: T){
+    const iterations: Iterator[] = []
 
     function filterNumber(filterValue: string, itemValue: string){
-
         return filterValue.split('|')
             .every(pattern => {
-                const number = Number(pattern.replace( /^\D+/g, ''))
+                const number = Number(pattern.replace(/^\D+/g, ''))
                 const operator = pattern.replace(String(number),'')
     
                 let valid = true
@@ -39,22 +44,53 @@ export function useArray<T extends Record<string, any>>(){
 
     }
 
-    function filterArray(...filters: Filter[]){
-        items.value = items.value.filter(item => {
-            const valid = filters.every(f => {
-                if (f.type === 'number') {
-                    return filterNumber(f.value, item[f.key])
-                }
+    function iterate(type: Iterator['type'], options: Iterator['options']){
+        iterations.push({ type, options })
+    }
 
-                return item[f.key] === f.value
-            })
+    function filter(...filters: Filter[]){
+        filters.forEach(f => iterate('filter', f))
+        
+        return this
+    }
 
-            return valid
+    function map(...args: any[]) {
+        args.forEach(a => iterate('map', a))
+        
+        return this
+    }
+
+    function _filterItems(items: any[], filter: Filter){
+        return items.filter(item => {
+            if (filter.type === 'number') {
+                return filterNumber(filter.value, item[filter.key])
+            }
+
+            return item[filter.key] === filter.value
         })
+    }
+   
+
+    function value(): [string, string][] {
+        let result = source.slice()
+
+        iterations.forEach(i => {
+            if (i.type === 'filter') {
+                result = _filterItems(result, i.options)
+            }
+            
+            if (i.type === 'map') {
+                result = _map(result, i.options)
+            }
+
+        })
+
+        return result
     }
 
     return {
-        items,
-        filterArray
+        filter,
+        map,
+        value
     }
 }

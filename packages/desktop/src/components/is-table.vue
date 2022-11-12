@@ -30,7 +30,7 @@ const props = defineProps({
         default: () => []
     },
     limit: {
-        type: Number,
+        type: [Number, String],
         default: 10
     },
     disableAddColumn: {
@@ -51,7 +51,7 @@ const builder = useBuilder()
 const aggregation = computed(() => useAggregation(props.items))
 
 const pagination = ref({
-    limit: props.limit,
+    limit: +props.limit,
 })
 
 const visibleItems = computed(() => {    
@@ -193,7 +193,7 @@ const classes = computed(() => ({
                 :class="[classes.td, actionsColor]"
                 :colspan="columns.length + 2"
                 class="p-2 cursor-pointer hover:bg-gray-800 text-sm"
-                @click="pagination.limit = pagination.limit + limit"
+                @click="pagination.limit = pagination.limit + Number(limit)"
             >
                 <fa-icon icon="arrow-down" class="mr-2" />
 

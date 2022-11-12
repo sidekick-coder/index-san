@@ -28,7 +28,7 @@ const router = useRouter()
 
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 
-const { items, filterArray } = useArray<Item>()
+const items = ref<Item[]>([])
 
 const loading = ref(false)
 const filtersDrawer = ref(false)
@@ -93,8 +93,6 @@ async function setColumns(){
 async function setItems(){
     const data = await useCollectionItemsAsync(props.workspaceId, props.collectionId)
 
-    items.value = data.value.slice()
-
     const params = columns.value
         .filter(c => !!filters.value[c.field])
         .map(c => ({
@@ -103,11 +101,12 @@ async function setItems(){
             value: filters.value[c.field]
         }))
 
-    filterArray(...params)
+    items.value = useArray(data.value)
+        .filter(...params)
+        .value()
 }
 
 async function load(){
-    console.log('load')
     if (!props.workspaceId || !props.collectionId) return
 
     loading.value = true    

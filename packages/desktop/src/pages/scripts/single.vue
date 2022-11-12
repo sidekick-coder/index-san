@@ -88,7 +88,7 @@ setItem()
             <is-textarea
                 v-model="content"
                 class="py-5 bg-transparent outline-none"
-                :class="output ? 'w-[calc(100%_-_300px)]' : 'w-full' "
+                :class="output ? 'w-[calc(100%_-_500px)]' : 'w-full' "
                 spellcheck="false"
                 @keydown.ctrl.s="save"
                 @keydown.ctrl.enter="execute"
@@ -96,7 +96,7 @@ setItem()
     
             <div
                 v-show="output"
-                class="h-full w-[300px] border-l border-zinc-700 p-3"
+                class="h-full w-[500px] border-l border-zinc-700 p-3"
             >
                 <div class="flex">
                     <div class="font-bold text-xl mb-4 mr-auto">Output</div>

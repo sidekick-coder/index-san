@@ -4,12 +4,11 @@ export default { name: 'IsChartBar' }
 
 <script setup lang="ts">
 import { Chart, registerables } from 'chart.js'
-import { onMounted, ref, computed, onUnmounted } from 'vue'
+import { onMounted, ref, unref, onUnmounted, useSlots } from 'vue'
 import { useMeasurement } from '@/composables/measurement'
 
-import groupBy from 'lodash/groupBy'
-import sumBy from 'lodash/sumBy'
 import { useTheme } from '@/composables/theme'
+import { useChildren } from '@/composables/children'
 
 Chart.register(...registerables)
 
@@ -18,100 +17,84 @@ const props = defineProps({
         type: Array as () => Record<string, string>[],
         default: () => []
     },
-    labelKey: {
-        type: String,
-        required: false,
-    },
-    labelPrefix: {
-        type: String,
-        default: ''
-    },
-    valueKey: {
-        type: String,
-        required: true,
-    },
-    valuePrefix: {
-        type: String,
-        default: ''
-    },
-    groupBy: {
-        type: String,
-        default: null
-    },
     width: {
-        type: String,
-        default: undefined
+        type: [String, Number],
+        default: 300
     },
     height: {
-        type: String,
+        type: [String, Number],
         default: undefined
     },
 })
 
 const measurement = useMeasurement()
-const theme = useTheme()
+const children = useChildren(useSlots())
+const components = ref<any[]>([])
 
 const root = ref()
-const chart = ref<Chart>()
+
+let chart: Chart
+
+const datasets = ref<any[]>([])
 const style = {
     width: measurement.toSize(props.width),
     height: measurement.toSize(props.height),
 }
 
-const data = computed(() => {
-    if (props.groupBy) {
-        return Object.entries(groupBy(props.items, props.groupBy))
-            .map(([label, items]) => ({
-                label,
-                value: sumBy(items, props.valueKey).toString()
-            }))
-    }
-
-    return props.items.map((item, index) => ({
-        label: props.labelKey ? item[props.labelKey] : index,
-        value: item[props.valueKey]
-    }))
-})
-
 function load(){
-    chart.value = new Chart(root.value, {
+    children.load()
+
+    components.value = children.findComponent('IsChartBarDataset')
+   
+}
+
+function create(){
+    chart = new Chart(root.value, {
         type: 'bar',
         data: {
-            labels: data.value.map(d =>  `${props.labelPrefix}${d.label}`),
-            datasets: [{
-                data: data.value.map(d => Number( d.value)),
-                backgroundColor: theme.chartColors(),                
-            }]
+            datasets: datasets.value.slice()
         },
-        options: {
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {                        
-                        label({ raw }) {
-                            let value = raw                            
-                            
-                            if (/^\d+$/.test(String(value))) {
-                                value = Number(value).toLocaleString()
-                            }
-
-                            return ` ${props.valuePrefix}${value}`
-                        }
-                    }
-                }
-            }
-        }
     })
 }
 
+function update(){
+    if (!chart) return
+
+    chart.data.datasets = datasets.value
+
+    chart.update()
+}
+
+function setChart(){
+    if (!datasets.value.length) return
+
+    if (!chart) create()
+
+    if (chart) update()
+    
+  
+}
 onMounted(load)
-onUnmounted(() => chart.value?.destroy())
+onUnmounted(() => chart?.destroy())
+
+function setDataset(index: number, dataset: any[]){
+    datasets.value[index] = dataset
+
+    setChart()
+}
 
 </script>
 <template>
     <div :style="style" >
         <canvas ref="root" />
+
+        <component
+            v-for="(c, index) in components"
+            :key="index"
+            :is="c"
+            :items="items"
+            @load="setDataset(index, $event)"
+        />
+
     </div>
 </template>
