@@ -29,7 +29,7 @@ watch(() => props.collectionId, load, {
 
 </script>
 <template>
-    <is-collection :workspace-id="workspaceId" :collection-id="collectionId">
+    <is-collection class="pt-5" :workspace-id="workspaceId" :collection-id="collectionId">
         <is-table :limit="20" />
     </is-collection>
 </template>

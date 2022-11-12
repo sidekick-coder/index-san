@@ -20,6 +20,7 @@ const props = defineProps({
 const router = useRouter()
 const repository = useCollectionRepository(props.workspaceId)
 
+const dialog = ref(false)
 const items = ref<Collection[]>([])
 const columns = [
     {
@@ -92,42 +93,53 @@ async function viewItem(collectionId: string){
     
 </script>
     <template>
-        <div class="py-10">    
-            <w-form @submit="submit" class="mb-4">
-                <div class="mb-4">
-                    <w-input
-                        v-model="payload.id"
-                        label="ID"
-                        placeholder="collection-01"
-                    />
-                </div>
+        <div>
+            <is-dialog v-model="dialog">
+                <w-form @submit="submit" class="mb-4">
+                    <div class="mb-4">
+                        <w-input
+                            v-model="payload.id"
+                            label="ID"
+                            placeholder="collection-01"
+                        />
+                    </div>
+    
+                    <div class="mb-4">
+                        <w-input
+                            v-model="payload.name"
+                            label="Name"
+                            placeholder="Collection 01"
+                        />
+                    </div>
+                    
+                    <div class="mb-4">
+                        <w-input
+                            v-model="payload.path"
+                            label="Path"
+                            placeholder="/collections/collection-01"
+                        />
+                    </div>
+        
+                    <w-btn :disabled="!payload.name || !payload.path" class="w-full" >Add</w-btn>
+                </w-form>
+            </is-dialog>
 
-                <div class="mb-4">
-                    <w-input
-                        v-model="payload.name"
-                        label="Name"
-                        placeholder="Collection 01"
-                    />
+            <div class="w-full py-5 border-b border-gray-700 flex items-center">
+                <div class="text-2xl font-bold">
+                    Collection list
                 </div>
-                
-                <div class="mb-4">
-                    <w-input
-                        v-model="payload.path"
-                        label="Path"
-                        placeholder="/collections/collection-01"
-                    />
-                </div>
+                <w-btn class="ml-auto" color="teal" @click="dialog = true" >Add new</w-btn>
+             </div>
     
-                <w-btn :disabled="!payload.name || !payload.path" class="w-full" >Add</w-btn>
-            </w-form>
-    
-            <w-data-table
+            <is-table
                 :columns="columns"
                 :items="items"
+                disable-add-column
+                disable-view-item
+                disable-new-item
             >
-    
             <template #item-actions="{ item }">
-                <div class="flex gap-x-4">
+                <div class="flex gap-x-4 p-2">
                     <w-btn @click="viewItem(item.id)" >
                         <fa-icon icon="eye" />
                     </w-btn>
@@ -138,6 +150,6 @@ async function viewItem(collectionId: string){
                 </div>
             </template>
         
-            </w-data-table>
+            </is-table>
         </div>
     </template>
