@@ -12,14 +12,14 @@
     },
     {
         "id": "848e7cd4-adaa-415c-88c0-d9891b326bc7",
-        "asset": "b0082d76-ec98-4005-9080-a64824f3134b",
+        "asset": "01",
         "portfolio": "Real state",
         "date": "06/18/2022",
         "quantity": 40179,
         "amount": 95707,
         "value": 59248,
         "_createdAt": 1667430082207,
-        "_updateAt": 1667430082207
+        "_updateAt": 1668284662001
     },
     {
         "id": "0066a40c-0729-4103-bddd-fc3f598919fc",
@@ -111,36 +111,36 @@
     },
     {
         "id": "dbfdc272-001d-459a-86da-123b367f3ecf",
-        "asset": "5aa87f08-4a16-43ad-a263-63c5c1dcbcdc",
+        "asset": "01",
         "portfolio": "Real state",
         "date": "06/23/2022",
         "quantity": 30933,
         "amount": 78900,
         "value": 29345,
         "_createdAt": 1667430095978,
-        "_updateAt": 1667430095978
+        "_updateAt": 1668284674381
     },
     {
         "id": "aa406fc1-fc01-404b-b43b-514dc546d400",
-        "asset": "b0082d76-ec98-4005-9080-a64824f3134b",
+        "asset": "01",
         "portfolio": "Real state",
         "date": "11/19/2021",
         "quantity": 94192,
         "amount": 61058,
         "value": 93308,
         "_createdAt": 1667430097494,
-        "_updateAt": 1667430097494
+        "_updateAt": 1668284675432
     },
     {
         "id": "f6b85209-3772-4e42-b3a6-cc600df19f1b",
-        "asset": "b0082d76-ec98-4005-9080-a64824f3134b",
+        "asset": "01",
         "portfolio": "Real state",
         "date": "06/16/2022",
         "quantity": 29519,
         "amount": 79442,
         "value": 53168,
         "_createdAt": 1667430099021,
-        "_updateAt": 1667430099021
+        "_updateAt": 1668284676507
     },
     {
         "id": "4cac4eb4-265c-44ef-9dae-3e7e6d580157",
@@ -188,14 +188,14 @@
     },
     {
         "id": "81d71f2f-9ada-49ce-ae0c-c86e81827de9",
-        "asset": "5aa87f08-4a16-43ad-a263-63c5c1dcbcdc",
+        "asset": "01",
         "portfolio": "Real state",
         "date": "06/05/2022",
         "quantity": 99133,
         "amount": 92192,
         "value": 13810,
         "_createdAt": 1667430106741,
-        "_updateAt": 1667430106741
+        "_updateAt": 1668284678633
     },
     {
         "id": "428e3765-4f44-4467-840c-53eddab07ec2",

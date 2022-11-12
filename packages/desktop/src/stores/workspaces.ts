@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useCase } from '../composables/use-case'
+import { DataResponse, useCase } from '../composables/use-case'
 import Workspace from '@core/entities/workspace'
 
 interface ListResponse {
@@ -21,6 +21,16 @@ export const useWorkspace = defineStore('workspace', {
         },
         async delete(id: string){
             await useCase('delete-workspace', { id })
+        },
+        async findOptions(workspaceId: string){
+            return useCase<DataResponse<any>>('show-workspace-options', {
+                workspaceId
+            })
+                .then(r => r.data)
+                .catch(() => ({}))
+        },
+        async updateOptions(workspaceId: string, data: any){
+            await useCase('update-workspace-options', { workspaceId, data })
         },
 
     }

@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import { definePageMeta } from '@/composables/page-meta'
-import { useOptionStore, MenuItem } from '@/stores/options'
-
-const store = useOptionStore()
+import { useAllMenu, useAllMenuAsync, saveWorkspaceMenu, MenuItemWithWorkspace } from '@/composables/menu'
 
 definePageMeta({
     title: 'Menu settings'
 })
 
-const items = ref<MenuItem[]>([])
+const menu = useAllMenu()
 
 const columns = [
     {
-        name: 'sort',
+        name: 'order',
         label: 'Order',
-        field: 'sort'
+        field: 'order',
+        width: '40'
+    },
+    {
+        name: 'workspace',
+        label: 'Workspace',
+        field: 'workspace'
     },
     {
         name: 'label',
@@ -24,9 +26,9 @@ const columns = [
         field: 'label'
     },
     {
-        name: 'to',
-        label: 'To',
-        field: 'to'
+        name: 'section',
+        label: 'section',
+        field: 'section'
     },
     {
         name: 'icon',
@@ -36,90 +38,86 @@ const columns = [
 ]
 
 async function setItems(){
-    await store.load()
 
-    items.value = store.menuItems.slice()
+    await useAllMenuAsync()
 }
 
 async function update(workspaceId: string){
-    const option = {
-        menu: {
-            items: items.value
-        }
-    }
 
-    await store.update(workspaceId, option)
+    const items = menu.value.filter(m => m.workspace.id === workspaceId)
+
+    await saveWorkspaceMenu(workspaceId, items)
+}
+
+async function onItemUpdate(item: MenuItemWithWorkspace){    
+    await update(item.workspace.id)
 
     await setItems()
 }
 
-async function onItemUpdate(item: MenuItem){    
-    await update(item.workspaceId)
-}
-async function onItemDelete(item: MenuItem){
-    const index = items.value.findIndex(i => i.id === item.id)
+async function onItemDelete(item: MenuItemWithWorkspace){
+    const items = menu
+        .value
+        .filter(m => m.workspace.id === item.workspace.id)
+        .filter(m => m.id !== item.id)
 
-    if (index === -1) {
-        return
-    }
+    await saveWorkspaceMenu(item.workspace.id, items)
 
-    items.value.splice(index, 1)
-
-    await update(item.workspaceId)
+    await setItems()
 }
 
 setItems()
 
-async function move(item: MenuItem, count = 1) {
-    const index = items.value.findIndex(i => i.id === item.id)
-
-    if (index === -1) {
-        return
-    }
-
-    if (index === 0 && count === -1) return
-    if (index === items.value.length - 1 && count === 1) return
-
-    items.value.splice(index, 1)
-    
-    items.value.splice(index + count, 0, item)
-
-    await update(item.workspaceId)
-}
-
-
 </script>
 <template>
-    <is-table
-        :columns="columns"
-        :items="items"
-        disable-add-column
-        disable-view-item
-        disable-new-item
-        @item:update="onItemUpdate"
-        @item:delete="onItemDelete"
-    >
-
-        <template #item-label="{ item, column }">
-            <input                        
-                v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                @change="onItemUpdate(item)"
-            >
-        </template>
+    
+        <is-table
+            :columns="columns"
+            :items="menu"
+            disable-add-column
+            disable-view-item
+            disable-new-item
+            @item:delete="onItemDelete"
+        >
         
-        <template #item-icon="{ item, column }">
-            <input                        
-                v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                @change="onItemUpdate(item)"
-            >
-        </template>
+            <template #item-order="{ item, column }">
+                <input                        
+                    v-model="item[column.field]"
+                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                    @change="onItemUpdate(item)"
+                >
+            </template>
+    
+            <template #item-workspace="{ item }">
+                <div class="p-2">
+                    {{ item.workspace.name }}
+                </div>
+            </template>
 
-        <template #item-sort="{ item }">
-            <is-icon @click="move(item, -1)" name="arrow-up" class="cursor-pointer text-sm mr-2" />
-            <is-icon @click="move(item)" name="arrow-down" class="cursor-pointer text-sm" />
-        </template>
-
-    </is-table>
+            <template #item-label="{ item, column }">
+                <input                        
+                    v-model="item[column.field]"
+                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                    @change="onItemUpdate(item)"
+                >
+            </template>
+            
+            <template #item-section="{ item, column }">
+                <input                        
+                    v-model="item[column.field]"
+                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                    @change="onItemUpdate(item)"
+                >
+            </template>
+            
+            <template #item-icon="{ item, column }">
+                <input                        
+                    v-model="item[column.field]"
+                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                    @change="onItemUpdate(item)"
+                >
+            </template>
+    
+    
+        </is-table>
 </template>

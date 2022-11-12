@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import uuid from 'uuid-random'
+
+import { saveWorkspaceMenu, useWorkspaceMenu } from '@/composables/menu'
 import { usePageMeta } from '@/composables/page-meta'
 import { useState } from '@/composables/state'
-import { useOptionStore } from '@/stores/options'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -12,13 +14,19 @@ const props = defineProps({
     }
 })
 
-const store = useOptionStore()
 const route = useRoute()
 const meta = usePageMeta()
 
 const drawer = useState('app:drawer', true)
+const workspaceId = computed(() => route.params.workspaceId)
 
-const menuItem = computed(() => store.menuItems.find(i => i.to === route.path))
+const menu = computed(() => {
+    if (!route.params.workspaceId) return []
+
+    return useWorkspaceMenu(route.params.workspaceId as string).value
+})
+
+const item = computed(() => menu.value.find(i => i.to === route.path))
 
 const label = computed(() => {
     if (props.title) return props.title
@@ -29,18 +37,26 @@ const label = computed(() => {
 const history = computed(() => window.history.state)
 
 async function toggleFavorite() {
-    const workspaceId = route.params.workspaceId as string
+    
+    const items = menu.value.slice()
 
-    if (menuItem.value) {
-        await store.removeFavorite(menuItem.value)
-        return
+    const index = items.findIndex(i => i.id === item.value?.id)
+
+    if (index !== -1) {
+        items.splice(index, 1)
     }
     
-    await store.addFavorite({
-        workspaceId,
-        label: label.value,
-        to: route.path,   
-    })
+    if (index === -1) {
+        items.push({
+            label: label.value,
+            to: route.path,
+            order: 10,
+            id: uuid()
+        })
+    }
+
+
+    await saveWorkspaceMenu(route.params.workspaceId as string, items)
 }
 
 </script>
@@ -72,8 +88,8 @@ async function toggleFavorite() {
 
 
         <is-icon
-            v-if="$route.params.workspaceId"
-            :name="menuItem ? 'star' : 'fa-regular fa-star'"
+            v-if="workspaceId"
+            :name="item ? 'star' : 'fa-regular fa-star'"
             class="ml-auto cursor-pointer"
             @click="toggleFavorite"
         />

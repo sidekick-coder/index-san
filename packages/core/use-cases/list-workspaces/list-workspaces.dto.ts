@@ -4,6 +4,6 @@ export declare namespace ListWorkspacesDTO {
     export interface Input {}
 
     export interface Output {
-        data: Pick<Workspace, 'id' | 'drive' | 'name' | 'path' | 'config'>[]
+        data: Workspace[]
     }
 }

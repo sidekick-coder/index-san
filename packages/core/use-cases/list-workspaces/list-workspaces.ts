@@ -8,14 +8,6 @@ export default class ListWorkspaces {
         
         const workspaces = await this.repository.findAll()
 
-        const data = workspaces.map(w => ({
-            id: w.id,
-            name: w.name,
-            drive: w.drive,
-            path: w.path,
-            config: w.config,
-        }))
-
-        return { data }
+        return { data: workspaces }
     }
 }

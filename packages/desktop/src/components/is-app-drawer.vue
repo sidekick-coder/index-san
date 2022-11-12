@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import get from 'lodash/get'
+import groupBy from 'lodash/groupBy'
 
-import { useOptionStore } from '@/stores/options'
 import { useState } from '@/composables/state'
+import { useAllMenu, useAllMenuAsync } from '@/composables/menu'
 
-const store = useOptionStore()
 const drawer = useState('app:drawer', true)
+const menu = useAllMenu()
 
-store.load()
+const sections = computed(() => {
+    return groupBy(menu.value, (i) => i.section || 'Favorites')
+})
+
+if (!menu.value.length) {
+    useAllMenuAsync()
+}
 
 </script>
 
@@ -39,15 +45,15 @@ store.load()
             </router-link>
         </div>
 
-        <div class="flex flex-wrap items-start">
-            <div class="sidebar-list-item text-gray-500 text-sm font-bold">Favorites</div>
-
-            <div v-if="!store.menuItems.length" class="sidebar-list-item text-xs">
-                No items
-            </div>
+        <div
+            v-for="(items, name) in sections"
+            :key="name"
+            class="flex flex-wrap items-start"
+        >
+        <div class="sidebar-list-item text-gray-500 text-sm font-bold">{{name}}</div>
 
             <router-link
-                v-for="(item, index) in store.menuItems"
+                v-for="(item, index) in items"
                 :key="index"
                 :to="item.to"
                 class="sidebar-list-item clickable text-sm"
@@ -55,6 +61,7 @@ store.load()
                 <is-icon :name="item.icon || 'circle' " class="mr-4" />
                 <div>{{item.label}}</div>
             </router-link>
+
         </div>
 
     </w-drawer>
