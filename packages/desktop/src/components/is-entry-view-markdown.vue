@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDirectoryEntry } from '@/composables/directory-entry'
+import { useState } from '@/composables/state'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -20,7 +21,9 @@ const previewRef = ref<HTMLTextAreaElement>()
 const decoder = new TextDecoder('utf-8')
 
 const content = ref('')
-const edit = ref(false)
+const edit = useState('app:markdown:preview', false, {
+    localStorage: true
+})
 const loading = ref(false)
 const previewHeight = ref(100)
 

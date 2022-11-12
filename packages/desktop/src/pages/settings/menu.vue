@@ -69,55 +69,53 @@ async function onItemDelete(item: MenuItemWithWorkspace){
 setItems()
 
 </script>
-<template>
+<template>    
+    <is-table
+        :columns="columns"
+        :items="menu"
+        disable-add-column
+        disable-view-item
+        disable-new-item
+        @item:delete="onItemDelete"
+        limit="100"
+    >
     
-        <is-table
-            :columns="columns"
-            :items="menu"
-            disable-add-column
-            disable-view-item
-            disable-new-item
-            @item:delete="onItemDelete"
-        >
-        
-            <template #item-order="{ item, column }">
-                <input                        
-                    v-model="item[column.field]"
-                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                    @change="onItemUpdate(item)"
-                >
-            </template>
-    
-            <template #item-workspace="{ item }">
-                <div class="p-2">
-                    {{ item.workspace.name }}
-                </div>
-            </template>
+        <template #item-order="{ item, column }">
+            <input                        
+                v-model="item[column.field]"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                @change="onItemUpdate(item)"
+            >
+        </template>
 
-            <template #item-label="{ item, column }">
-                <input                        
-                    v-model="item[column.field]"
-                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                    @change="onItemUpdate(item)"
-                >
-            </template>
-            
-            <template #item-section="{ item, column }">
-                <input                        
-                    v-model="item[column.field]"
-                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                    @change="onItemUpdate(item)"
-                >
-            </template>
-            
-            <template #item-icon="{ item, column }">
-                <input                        
-                    v-model="item[column.field]"
-                    class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                    @change="onItemUpdate(item)"
-                >
-            </template>
-    
-    
-        </is-table>
+        <template #item-workspace="{ item }">
+            <div class="p-2">
+                {{ item.workspace.name }}
+            </div>
+        </template>
+
+        <template #item-label="{ item, column }">
+            <input                        
+                v-model="item[column.field]"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                @change="onItemUpdate(item)"
+            >
+        </template>
+        
+        <template #item-section="{ item, column }">
+            <input                        
+                v-model="item[column.field]"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                @change="onItemUpdate(item)"
+            >
+        </template>
+        
+        <template #item-icon="{ item, column }">
+            <input                        
+                v-model="item[column.field]"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                @change="onItemUpdate(item)"
+            >
+        </template>
+    </is-table>
 </template>

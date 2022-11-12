@@ -5,7 +5,9 @@ import groupBy from 'lodash/groupBy'
 import { useState } from '@/composables/state'
 import { useAllMenu, useAllMenuAsync } from '@/composables/menu'
 
-const drawer = useState('app:drawer', true)
+const drawer = useState('app:drawer', true, {
+    localStorage: true
+})
 const menu = useAllMenu()
 
 const sections = computed(() => {

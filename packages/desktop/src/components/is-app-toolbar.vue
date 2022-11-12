@@ -17,7 +17,9 @@ const props = defineProps({
 const route = useRoute()
 const meta = usePageMeta()
 
-const drawer = useState('app:drawer', true)
+const drawer = useState('app:drawer', true, {
+    localStorage: true
+})
 const workspaceId = computed(() => route.params.workspaceId)
 
 const menu = computed(() => {

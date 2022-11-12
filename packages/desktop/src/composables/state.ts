@@ -1,9 +1,41 @@
 import { computed, ref } from 'vue'
 
+interface Options {
+    localStorage?: boolean
+}
 
 const states = ref(new Map<string, any>())
 
-export function useState<T = any>(key: string, defaultValue?: T) {
+function setLocalStorage(key: string, payload: any) {
+    console.log(key, payload)
+    let value = payload
+
+    if (['object', 'array'].includes(typeof value)) {
+        value = JSON.stringify(value)
+    }
+
+    if (['boolean'].includes(typeof value)) {
+        value = value ? 'true' : 'false'
+    }
+
+    localStorage.setItem(key, value)
+}
+
+function getLocalStorage<T = any>(key: string) {
+    let value: any = localStorage.getItem(key)
+
+    if (['true', 'false'].includes(value)) {
+        value = value === 'true'
+    }
+
+    return value as T
+}
+
+export function useState<T = any>(key: string, defaultValue?: T, options?: Options) {
+
+    if (options?.localStorage && !states.value.has(key)) {
+        states.value.set(key, getLocalStorage(key))
+    }
     
     if (!states.value.has(key)) {
         states.value.set(key, defaultValue)
@@ -15,7 +47,12 @@ export function useState<T = any>(key: string, defaultValue?: T) {
         },
         set(v){
             console.debug('states:set', key, v)
-            return states.value.set(key, v)
+
+            if (options?.localStorage) {
+                setLocalStorage(key, v)
+            }
+
+            states.value.set(key, v)
         },
     })
 }
