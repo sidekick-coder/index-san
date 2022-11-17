@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCollection, useCollectionAsync } from '@/composables/collection'
+import { useCollectionAsync } from '@/composables/collection'
 import { usePageMeta } from '@/composables/page-meta'
 import { watch } from 'vue'
 
@@ -22,8 +22,9 @@ async function load(){
     meta.value.title = collection.value?.name ?? `collection ${props.collectionId}`
 }
 
-watch(() => props.collectionId, load, {
+watch(() => props, load, {
     immediate: true,
+    deep: true
 })
 
 

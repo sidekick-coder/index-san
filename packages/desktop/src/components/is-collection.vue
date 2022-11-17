@@ -121,8 +121,9 @@ async function load(){
 
 }
 
-watch(() => props.collectionId, load, {
+watch(() => props, load, {
     immediate: true,
+    deep: true
 })
 onCollectionUpdate(props.workspaceId, props.collectionId, load)
 

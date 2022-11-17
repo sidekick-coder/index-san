@@ -2,20 +2,20 @@
     "menu": {
         "items": [
             {
-                "id": "136941bb-125b-4f07-9af3-2dbf78151b057",
-                "order": "1",
-                "section": "Example dashboards",
-                "to": "/workspaces/example/entries/dashboards/investments.md",
-                "label": "Investments ",
-                "icon": "money-bill"
-            },
-            {
                 "id": "136941bb-125b-4f07-9af3-2dbf78151b058",
-                "order": "1",
+                "order": "2",
                 "section": "Example dashboards",
                 "to": "/workspaces/example/entries/dashboards/admin.md",
                 "label": "Admin",
                 "icon": "suitcase"
+            },
+            {
+                "id": "136941bb-125b-4f07-9af3-2dbf78151b057",
+                "order": "2",
+                "section": "Example dashboards",
+                "to": "/workspaces/example/entries/dashboards/investments.md",
+                "label": "Investments ",
+                "icon": "money-bill"
             },
             {
                 "id": "334b892b-f8d0-4f4c-b678-d1eab79959ac",
