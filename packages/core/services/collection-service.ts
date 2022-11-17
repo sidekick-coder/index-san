@@ -39,6 +39,12 @@ export default class CollectionService extends Collection {
         return data
     }
     
+    public async exists(id: string){
+        const item = await this.crud.findById(this.path, id)
+
+        return item ? true : false
+    }
+
     public async show(id: string){
         const item = await this.crud.findById(this.path, id)
 
