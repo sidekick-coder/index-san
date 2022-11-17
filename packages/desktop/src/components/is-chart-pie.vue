@@ -56,7 +56,7 @@ const measurement = useMeasurement()
 const theme = useTheme()
 
 const root = ref()
-const chart = ref<Chart>()
+const chart = ref<Chart<'pie'>>()
 const total = sumBy(props.items, props.valueKey)
 
 const style = {

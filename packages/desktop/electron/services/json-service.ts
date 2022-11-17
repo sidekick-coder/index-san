@@ -1,6 +1,16 @@
 import fs from 'fs'
 import path from 'path'
 
+function isJSON(text: string) {
+    try {
+        JSON.parse(text)
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
 export default class JSONService<T = Record<string, string>> {
     public items: T[] = []
 
@@ -21,6 +31,10 @@ export default class JSONService<T = Record<string, string>> {
         }
 
         const text = await fs.promises.readFile(this.filename, 'utf-8')
+
+        if (!isJSON(text)) {
+            throw new Error(`Error reading json ${this.filename}`)
+        }
 
         this.items = JSON.parse(text)
     }

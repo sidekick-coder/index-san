@@ -8,7 +8,6 @@ const WorkspaceFactory = new Factory<Workspace>((data) => {
     return new Workspace({
         name: id,
         driveName: 'memory',
-        path: `/${id}`,
         config: {},
         ...data
     })
