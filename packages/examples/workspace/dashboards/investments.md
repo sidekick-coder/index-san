@@ -33,6 +33,7 @@ Investments management template
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
+    view-id="portifolio"
    class="flex w-full bg-zinc-800 rounded p-4"
     style="max-width:1000px"  
 >
@@ -53,10 +54,10 @@ Investments management template
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
+    view-id="real-state"
    class="flex w-full bg-zinc-800 rounded p-4"
     style="max-width:500px"  
 >
-    <is-collection-filter field="portfolio" value="Real state" />
     <is-chart-pie value-key="value" group-by="asset" width="100%" />
 </is-collection>
 
@@ -65,10 +66,10 @@ Investments management template
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
+    view-id="crypto"
    class="flex w-full bg-zinc-800 rounded p-4"
     style="max-width:500px"  
 >
-    <is-collection-filter field="portfolio" value="Crypto" />
     <is-chart-pie value-key="value" group-by="asset" width="50%" />
     <is-chart-pie value-key="value" group-by="asset" percentage value-suffix="%" width="50%" />
 </is-collection>

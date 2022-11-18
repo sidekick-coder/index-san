@@ -1,7 +1,8 @@
 import uuid from 'uuid-random'
-import { ref } from 'vue'
+import debounce from 'lodash/debounce'
+import { ref, WritableComputedRef, Ref, watch } from 'vue'
 
-import Collection, { CollectionColumn } from '@core/entities/collection'
+import Collection, { CollectionColumn, CollectionView } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
 import { useHooks, HookEventListener } from '../plugins/hooks'
 import { useState } from './state'
@@ -37,76 +38,6 @@ export function useCollectionRepository(workspaceId: string) {
     return { list, show, create, update, destroy }
 }
 
-export function useCollection(workspaceId: string, collectionId: string) {
-    const hooks = useHooks()
-    const repository = useCollectionRepository(workspaceId)
-
-    async function show(){
-        const { data } = await repository.show(collectionId)
-
-        return data
-    }
-
-    async function update(payload: Partial<Collection>){
-        await repository.update(collectionId, payload)
-
-        hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
-    }
-
-    async function addColumn(payload?: Partial<CollectionColumn>) {
-        const id = uuid()
-
-        const data = {
-            id: uuid(),
-            label: 'New',
-            field: id,
-            type: 'text',
-            ...payload,
-        }
-    
-        const collection = await show()
-    
-        const columns = collection.columns.slice() || []
-    
-        columns.push(data)
-
-        await update({ columns })    
-    }
-
-    async function updateColumn(id: string, payload: Omit<CollectionColumn, 'id' | 'field'>) {
-        const collection = await show()
-
-        const columns = collection.columns?.slice() || []
-
-        const column = columns.find(c => c.id === id)
-
-        if (!column) return
-
-        Object.keys(payload)
-            .filter(k => !['id'].includes(k))
-            .forEach(key => {
-                column[key] = payload[key]
-            })        
-
-        await update({ columns })
-    }
-
-    async function deleteColumn(id: string) {
-        const collection = await show()
-
-        const columns = collection.columns?.slice() || []
-
-        const index = columns.findIndex(c => c.id === id)
-
-        if (index === -1) return
-
-        columns.splice(index, 1)
-
-        await update({ columns })
-    }
-
-    return { show, addColumn, updateColumn, deleteColumn }
-}
 
 export function useCollectionItems(workspaceId: string, collectionId: string){
 
@@ -130,13 +61,18 @@ export function useCollectionItems(workspaceId: string, collectionId: string){
     return items
 }
 
+
+export function useCollection(workspaceId: string, collectionId: string){
+    return useState<Collection | null>(createCollectionKey(workspaceId, collectionId), null)
+}
+
 export async function useCollectionAsync(workspaceId: string, collectionId: string, forceUpdate = false){
 
     if (!workspaceId || !collectionId) {
         return ref(null)
     }
     
-    const collection = useState<Collection | null>(`workspace:${workspaceId}:collection:${collectionId}`, null)
+    const collection = useCollection(workspaceId, collectionId)
 
     if (!collection.value || forceUpdate) {
         await useCase<DataResponse<Collection>>('show-collection', { workspaceId, collectionId })
@@ -167,9 +103,115 @@ export async function useCollectionItemsAsync(workspaceId: string, collectionId:
     return items
 }
 
+
+
+
+export async function updateCollection(workspaceId: string, collectionId: string, data: Partial<Collection>, emitEvent = true){
+    await useCase('update-collection', { workspaceId, collectionId, data })
+
+    if (emitEvent) hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
+}
+
 export function onCollectionUpdate(workspaceId: string, collectionId: string, cb: HookEventListener['handler']) {
     hooks.on({
         name: createCollectionKey(workspaceId, collectionId, 'update'),
         handler: cb,
     })
+}
+
+export async function updateCollectionColumn(workspaceId: string, collectionId: string, id: string, data: Partial<CollectionColumn>){
+    const collection = await useCollectionAsync(workspaceId, collectionId)
+
+    const columns = collection.value?.columns.slice() || []
+
+    const column = columns.find(c => c.id === id)
+
+    if (!column) return
+
+    Object.keys(data)
+        .filter(k => !['id'].includes(k))
+        .forEach(key => {
+            column[key] = data[key]
+        })        
+
+    await updateCollection(workspaceId, collectionId, { columns }, false)
+}
+
+export async function createCollectionColumn(workspaceId: string, collectionId: string, payload?: Partial<CollectionColumn>) {
+    const id = uuid()
+
+    const collection = await useCollectionAsync(workspaceId, collectionId)
+
+    const data = {
+        id,
+        field: id,
+        label: 'New',
+        type: 'text',
+        ...payload,
+    }
+
+    const columns = collection.value?.columns.slice() || []
+
+    columns.push(data)
+
+    await updateCollection(workspaceId, collectionId, { columns })    
+}
+
+export async function deleteCollectionColumn(workspaceId: string, collectionId: string, id: string) {
+    const collection = await useCollectionAsync(workspaceId, collectionId)
+
+    const columns = collection.value?.columns.slice() || []
+
+    const index = columns.findIndex(c => c.id === id)
+
+    if (index === -1) return
+
+    columns.splice(index, 1)
+
+    await updateCollection(workspaceId, collectionId, { columns })    
+}
+
+export async function updateOrCreateCollectionView(workspaceId: string, collectionId: string, id: string, data: Partial<CollectionView>) {
+    const collection = await useCollectionAsync(workspaceId, collectionId)
+
+    const views = collection.value?.views?.slice() || []
+
+    if (!views.some(c => c.id === id)) {
+        views.push( { id, filters: {} })
+    }
+
+    const view = views.find(c => c.id === id)
+
+    if (!view) return
+
+    Object.keys(data)
+        .filter(k => !['id'].includes(k))
+        .forEach(key => {
+            view[key] = data[key]
+        })        
+
+    await updateCollection(workspaceId, collectionId, { views }, false)
+}
+
+export function useCollectionView(): [WritableComputedRef<CollectionView> | Ref<CollectionView>, (workspaceId: string, collectionId: string, name?: string) => Promise<void> ] {
+    const state = ref<CollectionView>({
+        filters: {}
+    })
+
+    async function setState(workspaceId: string, collectionId: string, viewId?: string) {
+        if (!viewId) {
+            state.value = {  filters:  {} }
+            return
+        }
+
+        const collection = await useCollectionAsync(workspaceId, collectionId)
+
+        const view = collection.value?.views.find(v => v.id === viewId)
+
+        if (!view) return
+        
+        state.value = view
+    }
+
+    return [state, setState]
 }

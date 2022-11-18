@@ -1,15 +1,26 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef, useSlots, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
 
-import { useCollection, useCollectionAsync, useCollectionItemsAsync, onCollectionUpdate } from '@/composables/collection'
-import { useRouter } from 'vue-router'
 import { useChildren } from '@/composables/children'
 import { useArray } from '@/composables/array'
+import {
+    useCollection,
+    useCollectionAsync,
+    useCollectionItemsAsync,
+    onCollectionUpdate,
+    useCollectionItems,
+    createCollectionColumn,
+    useCollectionView,
+    updateOrCreateCollectionView
+} from '@/composables/collection'
+import { debounce } from 'lodash'
+import { vi } from 'vitest'
 
 
 const props = defineProps({
@@ -20,6 +31,10 @@ const props = defineProps({
     collectionId: {
         type: String,
         required: true,
+    },
+    viewId: {
+        type: String,
+        default: null
     }
 })
 
@@ -28,14 +43,32 @@ const router = useRouter()
 
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 
-const items = ref<Item[]>([])
-
 const loading = ref(false)
-const filtersDrawer = ref(false)
-const filters = ref<Record<string, string>>({})
+const drawer = ref(false)
 const columns = ref<CollectionColumn[]>([])
 
-const formattedItems = computed(() => items.value.map(item => {
+const components = shallowRef<any[]>([])
+const collection = computed(() => useCollection(props.workspaceId, props.collectionId).value)
+const items = computed(() => useCollectionItems(props.workspaceId, props.collectionId).value)
+
+const [view, setView] = useCollectionView()
+
+const filteredItems = computed<Item[]>(() => {
+
+    if (!view.value.filters) return items.value
+
+    const params = columns.value
+        .filter(c => !!view.value.filters[c.field])
+        .map(c => ({
+            type: c.type === 'relation' ? 'string' : c.type,
+            key: c.field,
+            value: view.value.filters[c.field]
+        }))
+
+    return useArray(items.value).filter(...params).value()
+})
+
+const formattedItems = computed(() => filteredItems.value.map(item => {
     const data: any = {}
 
     columns.value.forEach(column => {
@@ -49,31 +82,20 @@ const formattedItems = computed(() => items.value.map(item => {
     return data
 }))
 
-const components = shallowRef<any[]>([])
-
-function setViews(){
+function setComponents(){
     components.value = []
 
     children.load()
 
-    children.findComponent('IsTable', 'IsChartBar').forEach(c => {
-        components.value.push(c)
-    })
-    
-    children.findComponent('IsCollectionFilter').forEach(component => {
-        const { field, value } = component.props ?? {}
-
-        if (field && value) {
-            filters.value[field] = value
-        }
-
-    })
+    children
+        .findComponent('IsTable', 'IsChartBar')
+        .forEach(c => components.value.push(c))
 
 }
 
 
 async function setColumns(){
-    const collection = await useCollectionAsync(props.workspaceId, props.collectionId, true) 
+    await useCollectionAsync(props.workspaceId, props.collectionId, true)
 
     columns.value = collection.value?.columns.slice() ?? []
     
@@ -90,30 +112,35 @@ async function setColumns(){
     }
 }
 
-async function setItems(){
-    const data = await useCollectionItemsAsync(props.workspaceId, props.collectionId)
+async function setItems(filters?: any){
+    if (filters) {
+        view.value.filters = filters
+    }
 
-    const params = columns.value
-        .filter(c => !!filters.value[c.field])
-        .map(c => ({
-            type: c.type === 'relation' ? 'string' : c.type,
-            key: c.field,
-            value: filters.value[c.field]
-        }))
-
-    items.value = useArray(data.value)
-        .filter(...params)
-        .value()
+    await useCollectionItemsAsync(props.workspaceId, props.collectionId)
 }
+
+const updateView = debounce(async () => {
+    if (!props.viewId) return
+
+    await updateOrCreateCollectionView(
+        props.workspaceId,
+        props.collectionId,
+        props.viewId,
+        view.value
+    )
+}, 3000)
 
 async function load(){
     if (!props.workspaceId || !props.collectionId) return
-
+    
     loading.value = true    
+
+    await setView(props.workspaceId, props.collectionId, props.viewId)
     
     await setColumns()   
     
-    setViews()
+    setComponents()
 
     await setItems()
 
@@ -125,6 +152,11 @@ watch(() => props, load, {
     immediate: true,
     deep: true
 })
+
+watch(() => view, updateView, {
+    deep: true
+})
+
 onCollectionUpdate(props.workspaceId, props.collectionId, load)
 
 
@@ -153,74 +185,28 @@ async function onItemDelete(item: any) {
 
 
 async function onColumnNew(){
-    await useCollection(props.workspaceId, props.collectionId).addColumn()
-}
-
-async function clearFilters(){
-    Object.keys(filters.value).forEach(key => {
-        filters.value[key] = ''
-    })
-
-    await setItems()
+    await createCollectionColumn(props.workspaceId, props.collectionId)
 }
 
 </script>
 <template>
     <div v-if="!loading" class="flex flex-wrap">
         <div class="border-b py-2 border-gray-700 w-full">
-            <is-icon name="filter" class="cursor-pointer text-gray-500" @click="filtersDrawer = !filtersDrawer"  />
+            <is-icon name="filter" class="cursor-pointer text-gray-500" @click="drawer = !drawer"  />
         </div>
 
-        <teleport to="body">
-            <div
-                v-if="filtersDrawer"
-                class="fixed inset-0 flex h-screen w-screen bg-black/30"
-                @click="filtersDrawer = false"
-            >
-                <aside
-                    class="fixed right-0 top-0 h-full border-l border-gray-700 w-[300px] bg-zinc-800"
-                    @click.stop=""
-                >
-                    <w-form class="flex flex-wrap px-4 py-4" @submit="setItems">
-                        <div class="w-full mb-4" v-for="(column, index) in columns" :key="index">
-                            <w-select
-                                v-if="column.type === 'select'"
-                                v-model="filters[column.field]"
-                                :label="column.label"
-                                :options="column.options.split(',')"
-                            />
-    
-                            <w-select
-                                v-else-if="column.type === 'relation'"
-                                v-model="filters[column.field]"
-                                :label="column.label"
-                                :options="Array.from(column.options.entries())"
-                                label-key="1"
-                                value-key="0"
-                            />
-    
-                            <w-input
-                                v-else
-                                v-model="filters[column.field]"
-                                :label="column.label"
-                                class="text-white"
-                            />
-                        </div>
-    
-                        <div class="flex justify-between w-full">
-                            <w-btn type="submit" class="w-5/12" color="teal" >Apply</w-btn>
-                            <w-btn type="button" class="w-5/12" @click="clearFilters" >Clean</w-btn>
-                        </div>
-                    </w-form>
-                </aside>
-            </div>
-        </teleport>
+        <is-collection-drawer
+            v-model="drawer"
+            :columns="columns"
+            :initialFilters="view.filters"
+            @submit="setItems"
+        />
 
         <template v-for="(c, index) in components" :key="index">
             <component
                 v-if="c.type.name === 'IsTable' "
                 :is="c"
-                :items="items"
+                :items="filteredItems"
                 :columns="columns"
                 @item:show="onItemShow"
                 @item:new="onItemNew"

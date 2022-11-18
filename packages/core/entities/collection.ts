@@ -9,6 +9,11 @@ export interface CollectionColumn {
     [key: string]: any
 }
 
+export interface CollectionView {
+    filters: Record<string, string>
+    [key: string]: any
+}
+
 export default class Collection {
     public id: string
     public workspaceId?: string
@@ -17,6 +22,7 @@ export default class Collection {
     
     public crudName: string
     public columns = [] as CollectionColumn[]
+    public views: CollectionView[] = []
 
     constructor(
         props: Omit<Collection, 'id'>,

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { useCollection } from '@/composables/collection'
 import { CollectionColumn } from '@core/entities/collection'
+
+import { useCollection, updateCollectionColumn, deleteCollectionColumn } from '@/composables/collection'
+
 import { ref, watch } from 'vue'
 
 
@@ -20,6 +22,7 @@ const props = defineProps({
 })
 
 const collection = useCollection(props.workspaceId, props.collectionId)
+
 const types = [
     {
         label:'Text',
@@ -74,13 +77,13 @@ async function submit(){
         payload.value.options = undefined
     }
 
-    await collection.updateColumn(props.column.id, payload.value)
+    await updateCollectionColumn(props.workspaceId, props.collectionId, props.column.id, payload.value)
 
     dialog.value = false
 }
 
 async function deleteColumn(){
-    await collection.deleteColumn(props.column.id)
+    await deleteCollectionColumn(props.workspaceId, props.collectionId, props.column.id)
 
     dialog.value = false
 }

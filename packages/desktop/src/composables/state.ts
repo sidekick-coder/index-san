@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, WritableComputedRef } from 'vue'
 
 interface Options {
     localStorage?: boolean
@@ -7,7 +7,6 @@ interface Options {
 const states = ref(new Map<string, any>())
 
 function setLocalStorage(key: string, payload: any) {
-    console.log(key, payload)
     let value = payload
 
     if (['object', 'array'].includes(typeof value)) {
@@ -46,8 +45,6 @@ export function useState<T = any>(key: string, defaultValue?: T, options?: Optio
             return states.value.get(key) as T
         },
         set(v){
-            console.debug('states:set', key, v)
-
             if (options?.localStorage) {
                 setLocalStorage(key, v)
             }
@@ -56,3 +53,4 @@ export function useState<T = any>(key: string, defaultValue?: T, options?: Optio
         },
     })
 }
+
