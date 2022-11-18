@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
+
+import Script from '@core/entities/script'
+
 import { usePageMeta } from '@/composables/page-meta'
 import { useCase } from '@/composables/use-case'
-import Script from '@core/entities/script'
-import { ref } from 'vue'
 
 const props = defineProps({
     workspaceId: {
@@ -62,8 +64,10 @@ async function execute() {
         name: script.value.name,
     }).then(r => output.value = r.data)
 }
-
-setItem()
+watch(() => props, setItem, {
+    immediate: true,
+    deep: true,
+})
 
 </script>
 <template>
