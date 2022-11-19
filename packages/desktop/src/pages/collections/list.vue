@@ -5,10 +5,9 @@ import { useCollectionRepository } from '@/composables/collection'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { definePageMeta } from '@/composables/page-meta'
+import { useI18n } from 'vue-i18n'
 
-definePageMeta({
-    title: 'Collection list'
-})
+
 
 const props = defineProps({
     workspaceId: {
@@ -18,7 +17,11 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const tm = useI18n()
 const repository = useCollectionRepository(props.workspaceId)
+const meta = definePageMeta({
+    title: tm.t('listEntity', [tm.t('collection', 2)])
+})
 
 const dialog = ref(false)
 const items = ref<Collection[]>([])
@@ -29,17 +32,12 @@ const columns = [
         field: 'id'
     },
     {
-        label: 'Name',
+        label: tm.t('name'),
         name: 'name',
         field: 'name'
     },
     {
-        label: 'Crud',
-        name: 'crudName',
-        field: 'crudName'
-    },
-    {
-        label: 'Path',
+        label: tm.t('path'),
         name: 'path',
         field: 'path'
     },
@@ -126,9 +124,11 @@ async function viewItem(collectionId: string){
 
             <div class="w-full py-5 border-b border-gray-700 flex items-center">
                 <div class="text-2xl font-bold">
-                    Collection list
+                    {{ meta.title }}
                 </div>
-                <w-btn class="ml-auto" color="teal" @click="dialog = true" >Add new</w-btn>
+                <w-btn class="ml-auto" color="teal" @click="dialog = true" >
+                    {{$t('addEntity',[$t('collection')])}}
+                </w-btn>
              </div>
     
             <is-table

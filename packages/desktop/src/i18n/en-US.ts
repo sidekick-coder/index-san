@@ -1,3 +1,10 @@
 export default {
-    settings: 'Settings'
+    settings: 'Settings',
+    workspace: 'Workspace | Workspaces',
+    collection: 'Collection | Collections',
+    listEntity: '{0} list',
+    addEntity: 'Add {0}',
+    name: 'Name',
+    path: 'Path'
+
 }

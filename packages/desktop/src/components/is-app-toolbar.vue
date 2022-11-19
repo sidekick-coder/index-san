@@ -76,13 +76,18 @@ async function toggleFavorite() {
     await saveWorkspaceMenu(route.params.workspaceId as string, items)
 }
 
-watch(route, async () => {
+watch(() => route.fullPath, async () => {
     haveBack.value = !!window.history.state.back
     haveForward.value = !!window.history.state.forward
+
+    if (!workspaceId.value) {
+        workspace.value = null
+    }
 
     if (workspaceId.value) {
         await setWorkspace(workspaceId.value as string)
     }
+
 }, { immediate: true })
 
 </script>

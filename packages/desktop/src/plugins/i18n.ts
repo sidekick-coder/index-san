@@ -19,7 +19,8 @@ Object.entries(files).forEach(([filename, value]: any) => {
 export const i18n = baseCreateI18n({
     locale: 'en-US',
     fallbackLocale: 'en-US',
-    messages
+    messages,
+    legacy: false
 })
 
 export function createI18n(){
@@ -34,7 +35,7 @@ export function useLocale(){
     const state= useState('app:i18n:locale', 'en-US', { localStorage: true })
 
     watch(state, (value) => {
-        i18n.global.locale = value
+        i18n.global.locale.value = value
     }, { immediate: true })
 
 

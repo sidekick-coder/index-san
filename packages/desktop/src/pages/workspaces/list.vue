@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { definePageMeta } from '@/composables/page-meta'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useWorkspace } from '../../stores/workspaces'
 
-definePageMeta({
-    title: 'Workspace list'
-})
-
 const store = useWorkspace()
+const tm = useI18n()
+
+const meta = definePageMeta({
+    title: tm.t('listEntity', [tm.t('workspace', 2)])
+})
 
 const columns = [
     {
@@ -16,12 +18,12 @@ const columns = [
         field: 'id'
     },
     {
-        label: 'Name',
+        label: tm.t('name'),
         name: 'name',
         field: 'name'
     },
     {
-        label: 'Path',
+        label: tm.t('path'),
         name: 'path',
         field: 'path'
     },
@@ -102,9 +104,11 @@ async function deleteItem(id: string) {
 
         <div class="w-full py-5 border-b border-gray-700 flex items-center">
             <div class="text-2xl font-bold">
-                Workspace list
+                {{ meta.title }}
             </div>
-            <w-btn class="ml-auto" color="teal" @click="dialog = true" >Add new</w-btn>
+            <w-btn class="ml-auto" color="teal" @click="dialog = true" >
+                {{$t('addEntity', [$t('workspace')])}}
+            </w-btn>
         </div>
 
         <is-table

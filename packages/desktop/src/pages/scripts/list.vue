@@ -95,7 +95,9 @@ async function onItemShow(item: Script){
             class="max-w-[300px]"
         />
 
-        <w-btn class="ml-auto" @click="dialog = true">Add new</w-btn>
+        <w-btn class="ml-auto" @click="dialog = true">
+            {{ $t('addEntity', ['script']) }}
+        </w-btn>
     </div>
 
     <is-table
