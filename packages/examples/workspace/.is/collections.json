@@ -92,12 +92,13 @@
         "views": [
             {
                 "id": "test",
-                "column:a2b37f3f-99b5-40a4-8c7d-0441153c8723:width": 109,
+                "column:a2b37f3f-99b5-40a4-8c7d-0441153c8723:width": 112,
                 "filter:asset": "",
                 "filter:date": "",
                 "filter:quantity": "",
                 "filter:value": "",
-                "filter:portfolio": ""
+                "filter:portfolio": "",
+                "column:d6e75ffd-02e5-4acb-b03c-c6f873093224:width": 179
             },
             {
                 "id": "real-state"

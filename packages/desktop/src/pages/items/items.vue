@@ -27,10 +27,7 @@ watch(() => props, load, {
     deep: true
 })
 
-
 </script>
-<template>
-    <is-collection class="pt-5" :workspace-id="workspaceId" :collection-id="collectionId">
-        <is-table :limit="20" />
-    </is-collection>
+<template>    
+    <is-collection-table :workspace-id="workspaceId" :collection-id="collectionId" view-id="default" />    
 </template>

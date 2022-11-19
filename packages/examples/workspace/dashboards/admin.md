@@ -2,21 +2,18 @@
 
 Sample of projects and tasks dashboard
 
-## Projects
+<br />
 
-<is-collection
+<is-collection-table
+    title="Projects"
     workspace-id="example"
     collection-id="work-projects"
->
-    <is-table />
-</is-collection>
+/>
 
-## Tasks
+<br />
 
-<is-collection
+<is-collection-table
+    title="Tasks"
     workspace-id="example"
     collection-id="work-tasks"
->
-    <is-table />
-</is-collection>
-
+/>
