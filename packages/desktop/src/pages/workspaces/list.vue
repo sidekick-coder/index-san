@@ -110,9 +110,7 @@ async function deleteItem(id: string) {
         <is-table
             :columns="columns"
             :items="store.all"
-            disable-add-column
-            disable-view-item
-            disable-new-item
+            :fixed="false"
         >
             <template #item-path="{ item }">
                 <div class="p-2">

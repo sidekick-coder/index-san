@@ -43,7 +43,7 @@ if (!menu.value.length) {
 
             <router-link to="/settings/menu" class="sidebar-list-item clickable text-sm">
                 <i class="mr-2"> <fa-icon icon="cog" /></i>
-                <div>Settings</div>
+                <div>{{ $t('settings') }}</div>
             </router-link>
         </div>
 
