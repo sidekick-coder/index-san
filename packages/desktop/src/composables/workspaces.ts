@@ -1,5 +1,5 @@
 import Workspace from '@core/entities/workspace'
-import { useState } from './state'
+import { useState, useStateV2 } from './state'
 import { DataResponse, useCase } from './use-case'
 
 interface WorkspaceOptions {
@@ -44,4 +44,20 @@ export async function saveWorkspaceOption(workspaceId: string, data: WorkspaceOp
     await useCase('update-workspace-options', { workspaceId, data })
 
     options.value = Object.assign(options.value, data)
+}
+
+export function useWorkspace(){
+    const [workspace, setWorkspaceKey] = useStateV2<Workspace | null>()
+
+    async function setWorkspace(workspaceId: string){
+        setWorkspaceKey(['workspaces', workspaceId].join(':'))
+
+        const workspaces = await useWorkspacesAsync()
+
+        const search = workspaces.value.find(w => w.id === workspaceId)
+
+        workspace.value = search || null
+    }
+
+    return [workspace, setWorkspace] as [typeof workspace, typeof setWorkspace]
 }

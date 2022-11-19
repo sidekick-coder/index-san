@@ -4,8 +4,9 @@ import uuid from 'uuid-random'
 import { saveWorkspaceMenu, useWorkspaceMenu } from '@/composables/menu'
 import { usePageMeta } from '@/composables/page-meta'
 import { useState } from '@/composables/state'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useWorkspace } from '@/composables/workspaces'
 
 const props = defineProps({
     title: {
@@ -17,9 +18,12 @@ const props = defineProps({
 const route = useRoute()
 const meta = usePageMeta()
 
-const drawer = useState('app:drawer', true, {
-    localStorage: true
-})
+const [workspace, setWorkspace] = useWorkspace()
+
+const drawer = useState('app:drawer', true, { localStorage: true })
+const haveForward = ref(!!window.history.state.forward)
+const haveBack = ref(!!window.history.state.back)
+
 const workspaceId = computed(() => route.params.workspaceId)
 
 const menu = computed(() => {
@@ -36,7 +40,18 @@ const label = computed(() => {
     return meta.value.title
 })
 
-const history = computed(() => window.history.state)
+const links = computed(() => {
+    const result = [ { label: label.value, to: '' } ]
+
+    if (workspace.value) {
+        result.unshift({
+            label: workspace.value.name,
+            to: `/workspaces/${workspace.value.id}/entries`
+        })
+    }
+
+    return result
+})
 
 async function toggleFavorite() {
     
@@ -61,6 +76,15 @@ async function toggleFavorite() {
     await saveWorkspaceMenu(route.params.workspaceId as string, items)
 }
 
+watch(route, async () => {
+    haveBack.value = !!window.history.state.back
+    haveForward.value = !!window.history.state.forward
+
+    if (workspaceId.value) {
+        await setWorkspace(workspaceId.value as string)
+    }
+}, { immediate: true })
+
 </script>
 
 <template>
@@ -75,18 +99,30 @@ async function toggleFavorite() {
         <is-icon            
             name="arrow-left"
             class="mr-2"
-            :class="history.back ? 'cursor-pointer' : 'text-gray-500' "
+            :class="haveBack ? 'cursor-pointer' : 'text-gray-500' "
             @click="$router.go(-1)"
         />
         
         <is-icon
             name="arrow-right"
             class="mr-4 "
-            :class="history.forward ? 'cursor-pointer' : 'text-gray-500' "
+            :class="haveForward ? 'cursor-pointer' : 'text-gray-500' "
             @click="$router.go(1)"
         />
 
-        <div class="text-sm"> {{ label }} </div>
+        <template v-for="(link, index) in links" :key="index">
+        
+        <router-link class="text-sm" v-if="link.to" :to="link.to">
+            {{ link.label }}        
+        </router-link>
+
+        <div class="text-sm" v-else>
+            {{ link.label }}        
+        </div>
+
+        <div class="mx-2" v-if="index !== links.length - 1" >/</div>
+
+        </template>
 
 
         <is-icon
