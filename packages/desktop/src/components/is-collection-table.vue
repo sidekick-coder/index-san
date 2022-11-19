@@ -29,21 +29,28 @@ const props = defineProps({
 
 
 const router = useRouter()
-const drawer = ref(false)
+const drawers = ref({
+    filters: false,
+    columns: false
+})
 const loading = ref(false)
 
 const [columns, setColumns] = useCollectionColumns()
 const [items, setItems] = useCollectionItemsV2()
 const [views, setViews] = useCollectionViews()
 
-const options = ref<Record<string, string | number>>({})
+const options = ref<Record<string, any>>({})
 
-const filteredColumns = computed(() => columns.value.map(column => {
-    return {
+const filteredColumns = computed(() => {
+
+    const formatted = columns.value.map(column => ({
         ...column,
+        hide: options.value[`column:${column.id}:hide`] || false,
         width: options.value[`column:${column.id}:width`] || 100
-    }
-}))
+    }))
+
+    return formatted.filter(c => !c.hide)
+})
 
 const filteredItems = computed(() => {
     const filters = columns.value
@@ -69,6 +76,18 @@ const filters = computed(() => {
     return result
 })
 
+const hiddenColumns = computed(() => {
+    const result: string[] = []
+
+    columns.value.forEach(column => {
+        if (options.value[`column:${column.id}:hide`]) {
+            result.push(column.id)
+        }
+    })
+
+    return result
+})
+
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 
 async function load(){
@@ -87,7 +106,7 @@ async function load(){
     }
 
 
-    setTimeout(() => (loading.value = false), 800)
+    setTimeout(() => (loading.value = false), 500)
 }
 
 async function onItemNew() {
@@ -126,6 +145,12 @@ function setFilters(value: any) {
     })
 }
 
+function setHiddenColumns(value: string[]) {
+    columns.value.forEach(column => {
+        options.value[`column:${column.id}:hide`] = value.includes(column.id)
+    })
+}
+
 watch(options, saveOptions, { deep: true })
 watch(props, load, { immediate: true, deep: true })
 
@@ -133,7 +158,20 @@ watch(props, load, { immediate: true, deep: true })
 
 <template>
     <div class="overflow-auto w-full">
-        <is-collection-table-filters v-model="drawer" :columns="columns" :filters="filters" @submit="setFilters" />
+        
+        <is-collection-table-filters
+            v-model="drawers.filters"
+            :columns="columns"
+            :filters="filters"
+            @submit="setFilters"
+        />
+        
+        <is-collection-table-columns
+            v-model="drawers.columns"
+            :columns="columns"
+            :hidden-columns="hiddenColumns"
+            @submit="setHiddenColumns"
+        />
     
         <div class="w-full py-3 flex items-center border-b border-gray-700" >
             <div class="text-lg font-bold" v-if="title">
@@ -141,13 +179,18 @@ watch(props, load, { immediate: true, deep: true })
             </div>
     
             <div class="ml-auto">
-                <is-btn @click="drawer = true">
+                <is-btn @click="drawers.columns = true">
+                    <is-icon name="table-columns" />
+                </is-btn>
+
+                <is-btn @click="drawers.filters = true">
                     <is-icon name="filter" />                
                 </is-btn>
             </div>
         </div>
         
         <is-table
+            v-if="!loading"
             :items="filteredItems"
             :columns="filteredColumns"
             class="collection-table"
@@ -197,7 +240,12 @@ watch(props, load, { immediate: true, deep: true })
             <template #item="{ item, classes }">
     
                 <tr :class="classes.tr" class="collection-table-item" >
-                    <td v-for="(c, index) in filteredColumns" :key="index" :class="classes.td" class="relative">
+                    <td
+                        v-for="(c, index) in filteredColumns"
+                        :key="c.id"
+                        :class="classes.td"
+                        class="relative"
+                    >
                         
                         <is-icon
                             v-if="index === 0"
