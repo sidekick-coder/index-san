@@ -26,18 +26,18 @@ const props = defineProps({
         type: [Number, String],
         default: 10
     },
+    fixed: {
+        type: Boolean,
+        default: true
+    }
 })
 
 const pagination = ref({ limit: +props.limit })
-const innerColumns = ref(props.columns.slice().map(c => ({
-    ...c,
-    width: c.width ?? 300
-})))
 
 const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
 
 const classes = computed(() => ({
-    main: 'is-table table-fixed w-full border-gray-700',
+    main: 'is-table w-full border-gray-700',
     th: 'text-left p-2 border-r relative border-gray-700',
     td: 'text-left p-0 border-r border-gray-700',
     tr: 'item border-b border-gray-700',
@@ -45,20 +45,20 @@ const classes = computed(() => ({
 </script>
 
 <template>
-    <table :class="classes.main">
+    <table
+        :class="[classes.main, fixed ? 'table-fixed' : '' ]"
+    >
         <thead>
-            <slot name="column" :classes="classes" :columns="innerColumns" >
+            <slot name="column" :classes="classes" :columns="columns" >
                 <tr :class="classes.tr" class="relative">
                     <th
-                        v-for="column in innerColumns"
+                        v-for="column in columns"
                         :key="column.name"
                         :class="classes.th"
                         :style="column.width ? `width: ${column.width}px` : '' "
                     >
                         
                         <div class="text-gray-500"> {{ column.label }}</div>
-    
-                        <is-resize-line v-model="column.width" :min-width="100" />
                     </th>                   
                 </tr>
             </slot>

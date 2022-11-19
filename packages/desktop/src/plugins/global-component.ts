@@ -16,6 +16,8 @@ export function createGCRegister(){
             const basename = key.split('/').pop() as string
 
             const name = upperFirst(camelCase(basename.replace('.vue', '')))
+
+            value.default.name = name
             
             components.push({
                 name,

@@ -7,6 +7,7 @@ import Item from '@core/entities/item'
 
 import { useItemRepository } from '@/composables/item'
 import { useBuilder } from 'vue-wind/composables/builder'
+import { useCollectionItemsV2 } from '@/composables/collection'
 
 
 const props = defineProps({
@@ -28,10 +29,17 @@ const props = defineProps({
     },
 })
 
+const [relatedItems, setRelatedItems] = useCollectionItemsV2()
+
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 const edit = ref(false)
 const builder = useBuilder()
 const payload = ref('')
+
+if (props.column.type === 'relation') {
+    setRelatedItems(props.workspaceId, props.column.collectionId)
+}
+
 
 const classes = computed(() => ({
     input: builder.make()
@@ -118,8 +126,8 @@ watch(() => props.item, load, {
     >
         <option value=""> - </option>
         
-        <option v-for="option in column.options.keys()" :value="option" :key="option.id">
-            {{ column.options.get(option) }}
+        <option v-for="item in relatedItems" :value="item.id" :key="item.id">
+            {{ item[column.displayField] }}
         </option>
     </select>
     

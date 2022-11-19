@@ -54,3 +54,22 @@ export function useState<T = any>(key: string, defaultValue?: T, options?: Optio
     })
 }
 
+
+export function useStateV2<T = any>(defaultValue?: T){
+    const key = ref('')
+
+    const state = computed<T>({
+        get(){
+            return states.value.get(key.value) || defaultValue
+        },
+        set(value){
+            states.value.set(key.value, value)
+        },
+    })
+
+    function setKey(value: string) {
+        key.value = value
+    }
+
+    return [state, setKey] as [typeof state, typeof setKey]
+}

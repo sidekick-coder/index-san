@@ -1,8 +1,4 @@
-## Table
+## Table view
 
-<is-collection
-    workspace-id="example"
-    collection-id="investments-extract"
->
-    <is-table  />
-</is-collection>
+
+<is-collection-table  title="Table" workspace-id="example" collection-id="investments-extract" />

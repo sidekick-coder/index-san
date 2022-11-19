@@ -1,9 +1,9 @@
 import _map from 'lodash/map'
 
-interface Filter {
+export interface ArrayFilter {
     type: string
     key: string
-    value: string
+    value: string | number
 }
 
 interface Iterator {
@@ -15,13 +15,17 @@ interface Iterator {
 export function useArray<T extends Array<any>>(source: T){
     const iterations: Iterator[] = []
 
-    function filterNumber(filterValue: string, itemValue: string){
-        return filterValue.split('|')
+    function filterNumber(filterValue: ArrayFilter['value'], itemValue: string){
+        return String(filterValue).split('|')
             .every(pattern => {
                 const number = Number(pattern.replace(/^\D+/g, ''))
                 const operator = pattern.replace(String(number),'')
     
                 let valid = true
+
+                if (!operator.length) {
+                    valid = Number(itemValue) === number
+                }
     
                 if (operator.includes('>')) {
                     valid = valid && Number(itemValue) > number
@@ -48,7 +52,7 @@ export function useArray<T extends Array<any>>(source: T){
         iterations.push({ type, options })
     }
 
-    function filter(...filters: Filter[]){
+    function filter(...filters: ArrayFilter[]){
         filters.forEach(f => iterate('filter', f))
         
         return this
@@ -60,7 +64,7 @@ export function useArray<T extends Array<any>>(source: T){
         return this
     }
 
-    function _filterItems(items: any[], filter: Filter){
+    function _filterItems(items: any[], filter: ArrayFilter){
         return items.filter(item => {
             if (filter.type === 'number') {
                 return filterNumber(filter.value, item[filter.key])

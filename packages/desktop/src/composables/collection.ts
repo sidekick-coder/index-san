@@ -1,11 +1,10 @@
 import uuid from 'uuid-random'
-import debounce from 'lodash/debounce'
-import { ref, WritableComputedRef, Ref, watch } from 'vue'
+import { ref, WritableComputedRef, Ref } from 'vue'
 
 import Collection, { CollectionColumn, CollectionView } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
 import { useHooks, HookEventListener } from '../plugins/hooks'
-import { useState } from './state'
+import { useState, useStateV2 } from './state'
 import { CollectionFolderItem } from './item'
 
 const hooks = useHooks()
@@ -215,4 +214,61 @@ export function useCollectionView(): [WritableComputedRef<CollectionView> | Ref<
     }
 
     return [state, setState]
+}
+
+export function useCollectionColumns(){
+
+    const [state, setKey] = useStateV2<CollectionColumn[]>([])
+
+    async function setColumns(workspaceId: string, collectionId: string){
+
+        setKey(createCollectionKey(workspaceId, collectionId, 'columns'))
+        
+        const collection = await useCollectionAsync(workspaceId, collectionId)
+
+        state.value = collection.value?.columns.slice() || []
+
+    }
+
+    return [state, setColumns] as [typeof state, typeof setColumns]
+}
+
+function waitFor(cb: () => boolean){
+    return new Promise<void>(resolve => {
+        const interval = setInterval(() => {
+            if (cb()) {
+                resolve()
+                clearInterval(interval)
+            }
+        }, 500)
+    })
+}
+
+export function useCollectionItemsV2(){
+
+    const [items, setItemsKey] = useStateV2<CollectionFolderItem[]>([])
+    const [loading, setLoadingKey] = useStateV2<boolean>(false)
+
+    async function setState(workspaceId: string, collectionId: string, forceUpdate = false){
+
+        setItemsKey(createCollectionKey(workspaceId, collectionId, 'items'))
+        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'loading'))
+
+        if (loading.value) {
+            await waitFor(() => loading.value === false)
+        }
+        
+        if (items.value.length && !forceUpdate) return
+        
+        loading.value = true
+
+        await useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
+            .then(r => items.value = r.data)
+            .catch(() => items.value = [])
+            .finally(() => loading.value = false)
+
+
+    }
+
+    return [items, setState] as [typeof items, typeof setState]
 }
