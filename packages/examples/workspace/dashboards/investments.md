@@ -5,8 +5,9 @@ Investments management template
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
+    view-id="extract"
 >
-    <is-table :limit="5"  :aggregations="['count', null, null, 'sum']" />
+    <is-table :limit="5" />
 </is-collection>
 
 ## Assets

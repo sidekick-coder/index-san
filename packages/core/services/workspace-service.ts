@@ -56,7 +56,7 @@ export default class WorkspaceService extends Workspace {
 
         this.app.repositories.workspace.updateById(this.id, payload)
 
-        await this.drive.write('.is/collections.json', JSON.stringify(this.collections))
+        await this.drive.write('.is/collections.json', JSON.stringify(this.collections, null, 4))
     }
 
     public collection(collectionId: string) {

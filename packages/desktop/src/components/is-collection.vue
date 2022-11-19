@@ -19,9 +19,6 @@ import {
     useCollectionView,
     updateOrCreateCollectionView
 } from '@/composables/collection'
-import { debounce } from 'lodash'
-import { vi } from 'vitest'
-
 
 const props = defineProps({
     workspaceId: {
@@ -82,6 +79,14 @@ const formattedItems = computed(() => filteredItems.value.map(item => {
     return data
 }))
 
+const filteredColumns = computed(() => columns.value.filter(c => {
+    if (view.value.hiddenColumns) {
+        return !view.value.hiddenColumns.includes(c.id)
+    }
+
+    return true
+}))
+
 function setComponents(){
     components.value = []
 
@@ -97,9 +102,9 @@ function setComponents(){
 async function setColumns(){
     await useCollectionAsync(props.workspaceId, props.collectionId, true)
 
-    columns.value = collection.value?.columns.slice() ?? []
+    const collectionColumns = collection.value?.columns.slice() ?? []
     
-    for await (const column of columns.value) {
+    for await (const column of collectionColumns) {
         column.name = column.field
 
         if (column.type === 'relation') {
@@ -110,6 +115,8 @@ async function setColumns(){
             relation.value.forEach(i => column.options.set(i.id, i[column.displayField]))
         }
     }
+
+    columns.value = collectionColumns
 }
 
 async function setItems(filters?: any){
@@ -120,7 +127,9 @@ async function setItems(filters?: any){
     await useCollectionItemsAsync(props.workspaceId, props.collectionId)
 }
 
-const updateView = debounce(async () => {
+async function updateView(data: any)  {
+    view.value = data
+    
     if (!props.viewId) return
 
     await updateOrCreateCollectionView(
@@ -129,7 +138,7 @@ const updateView = debounce(async () => {
         props.viewId,
         view.value
     )
-}, 3000)
+}
 
 async function load(){
     if (!props.workspaceId || !props.collectionId) return
@@ -150,10 +159,6 @@ async function load(){
 
 watch(() => props, load, {
     immediate: true,
-    deep: true
-})
-
-watch(() => view, updateView, {
     deep: true
 })
 
@@ -190,16 +195,19 @@ async function onColumnNew(){
 
 </script>
 <template>
-    <div v-if="!loading" class="flex flex-wrap">
-        <div class="border-b py-2 border-gray-700 w-full">
-            <is-icon name="filter" class="cursor-pointer text-gray-500" @click="drawer = !drawer"  />
+    <div v-if="!loading" class="flex flex-wrap relative group">
+        <div
+            @click="drawer = !drawer"
+            class="absolute -ml-[36px] h-[36px] w-[36px] flex items-center justify-center left-0 top-0 opacity-x0 group-hover:opacity-100 cursor-pointer"
+        >
+            <is-icon name="ellipsis-vertical" class="cursor-pointer text-gray-500" />
         </div>
 
         <is-collection-drawer
             v-model="drawer"
             :columns="columns"
-            :initialFilters="view.filters"
-            @submit="setItems"
+            :view="view"
+            @submit="updateView"
         />
 
         <template v-for="(c, index) in components" :key="index">
@@ -207,7 +215,7 @@ async function onColumnNew(){
                 v-if="c.type.name === 'IsTable' "
                 :is="c"
                 :items="filteredItems"
-                :columns="columns"
+                :columns="filteredColumns"
                 @item:show="onItemShow"
                 @item:new="onItemNew"
                 @item:update="onItemUpdate"

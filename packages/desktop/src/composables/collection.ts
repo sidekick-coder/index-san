@@ -195,7 +195,8 @@ export async function updateOrCreateCollectionView(workspaceId: string, collecti
 
 export function useCollectionView(): [WritableComputedRef<CollectionView> | Ref<CollectionView>, (workspaceId: string, collectionId: string, name?: string) => Promise<void> ] {
     const state = ref<CollectionView>({
-        filters: {}
+        filters: {},
+        hiddenColumns: []
     })
 
     async function setState(workspaceId: string, collectionId: string, viewId?: string) {

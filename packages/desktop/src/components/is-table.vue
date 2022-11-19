@@ -139,7 +139,7 @@ const classes = computed(() => ({
 
             <td
                 v-for="(column, cIndex) in columns"
-                :key="cIndex"
+                :key="`${item.id}-${column.name}`"
                 :class="classes.td"
             >
 
@@ -158,11 +158,6 @@ const classes = computed(() => ({
                     <div class="p-2 bg-transparent  w-full" >
                         {{ item[column.field] }}                
                     </div>
-                    <!-- <input                        
-                        v-model="item[column.field]"
-                        class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
-                        @change="$emit('item:update', item)"
-                    > -->
                 </slot>
 
                 <i
