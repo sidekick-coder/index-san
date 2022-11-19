@@ -13,7 +13,7 @@ const columns = [
         name: 'order',
         label: 'Order',
         field: 'order',
-        width: '40'
+        width: 80
     },
     {
         name: 'workspace',
@@ -34,6 +34,11 @@ const columns = [
         name: 'icon',
         label: 'icon',
         field: 'icon'
+    },
+    {
+        name: 'actions',
+        label: '',
+        width: 80
     },
 ]
 
@@ -70,15 +75,7 @@ setItems()
 
 </script>
 <template>    
-    <is-table
-        :columns="columns"
-        :items="menu"
-        disable-add-column
-        disable-view-item
-        disable-new-item
-        @item:delete="onItemDelete"
-        limit="100"
-    >
+    <is-table :columns="columns" :items="menu" limit="100">
     
         <template #item-order="{ item, column }">
             <input                        
@@ -116,6 +113,12 @@ setItems()
                 class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
                 @change="onItemUpdate(item)"
             >
+        </template>
+       
+        <template #item-actions="{ item }">
+            <div class="flex items-center justify-center">
+                <is-icon name="trash" @click="onItemDelete(item)" class="cursor-pointer"  />
+            </div>
         </template>
     </is-table>
 </template>
