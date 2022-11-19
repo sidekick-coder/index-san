@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import debounce from 'lodash/debounce'
 
-import { createCollectionColumn, useCollectionColumns, useCollectionItemsV2 } from '@/composables/collection'
+import { createCollectionColumn, updateOrCreateCollectionView, useCollectionColumns, useCollectionItemsV2, useCollectionViews } from '@/composables/collection'
 import { useItemRepository } from '@/composables/item'
-import { throttle } from 'lodash'
 import { useArray, ArrayFilter } from '@/composables/array'
 
 const props = defineProps({
@@ -16,6 +16,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    viewId: {
+        type: String,
+        required: true,
+    },
     title: {
         type: String,
         default: null
@@ -24,12 +28,14 @@ const props = defineProps({
 
 
 const router = useRouter()
-const options = ref<Record<string, string | number>>({})
 const drawer = ref(false)
+const loading = ref(false)
 
 const [columns, setColumns] = useCollectionColumns()
 const [items, setItems] = useCollectionItemsV2()
+const [views, setViews] = useCollectionViews()
 
+const options = ref<Record<string, string | number>>({})
 
 const filteredColumns = computed(() => columns.value.map(column => {
     return {
@@ -50,11 +56,36 @@ const filteredItems = computed(() => {
     return useArray(items.value).filter(...filters).value()
 })
 
+const filters = computed(() => {
+    const result = {}
+    
+    Object.keys(options.value)
+        .filter(key => key.startsWith('filter:'))
+        .forEach(key => {
+            result[key.replace('filter:', '')] = options.value[key]
+        })
+
+    return result
+})
+
 const crud = useItemRepository(props.workspaceId, props.collectionId)
 
 async function load(){
+    loading.value = true
+
+    await setViews(props.workspaceId, props.collectionId)
     await setColumns(props.workspaceId, props.collectionId)
     await setItems(props.workspaceId, props.collectionId)
+
+    const view = views.value.find(v => v.id === props.viewId)
+
+    if (!view) return
+
+    Object.keys(view).forEach(key => {
+        options.value[key] = view[key]
+    })
+
+    setTimeout(() => (loading.value = false), 800)
 }
 
 async function onItemNew() {
@@ -81,24 +112,25 @@ async function onColumnNew(){
     await createCollectionColumn(props.workspaceId, props.collectionId)
 }
 
-const saveOptions = throttle( () => {
-    console.log(options.value)
-}, 3000)
+const saveOptions = debounce( async () => {
+    if (loading.value) return
+    
+    await updateOrCreateCollectionView(props.workspaceId, props.collectionId, props.viewId, options.value)
+}, 1000)
 
-function setFilters(filters: any) {
-    Object.keys(filters).forEach(key => {
-        options.value[`filter:${key}`] = filters[key]
+function setFilters(value: any) {
+    Object.keys(value).forEach(key => {
+        options.value[`filter:${key}`] = value[key]
     })
 }
 
-watch(props, load, { immediate: true, deep: true })
-
 watch(options, saveOptions, { deep: true })
+watch(props, load, { immediate: true, deep: true })
 
 </script>
 <template>
 
-    <is-collection-table-filters v-model="drawer" :columns="columns" @submit="setFilters" />
+    <is-collection-table-filters v-model="drawer" :columns="columns" :filters="filters" @submit="setFilters" />
 
     <div class="w-full my-4 flex items-center" >
         <div class="text-lg font-bold" v-if="title">

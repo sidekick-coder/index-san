@@ -176,7 +176,7 @@ export async function updateOrCreateCollectionView(workspaceId: string, collecti
     const views = collection.value?.views?.slice() || []
 
     if (!views.some(c => c.id === id)) {
-        views.push( { id, filters: {} })
+        views.push( { id })
     }
 
     const view = views.find(c => c.id === id)
@@ -190,30 +190,6 @@ export async function updateOrCreateCollectionView(workspaceId: string, collecti
         })        
 
     await updateCollection(workspaceId, collectionId, { views }, false)
-}
-
-export function useCollectionView(): [WritableComputedRef<CollectionView> | Ref<CollectionView>, (workspaceId: string, collectionId: string, name?: string) => Promise<void> ] {
-    const state = ref<CollectionView>({
-        filters: {},
-        hiddenColumns: []
-    })
-
-    async function setState(workspaceId: string, collectionId: string, viewId?: string) {
-        if (!viewId) {
-            state.value = {  filters:  {} }
-            return
-        }
-
-        const collection = await useCollectionAsync(workspaceId, collectionId)
-
-        const view = collection.value?.views?.find(v => v.id === viewId)
-
-        if (!view) return
-        
-        state.value = view
-    }
-
-    return [state, setState]
 }
 
 export function useCollectionColumns(){
@@ -252,7 +228,7 @@ export function useCollectionItemsV2(){
     async function setState(workspaceId: string, collectionId: string, forceUpdate = false){
 
         setItemsKey(createCollectionKey(workspaceId, collectionId, 'items'))
-        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'loading'))
+        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'items', 'loading'))
 
         if (loading.value) {
             await waitFor(() => loading.value === false)
@@ -271,4 +247,26 @@ export function useCollectionItemsV2(){
     }
 
     return [items, setState] as [typeof items, typeof setState]
+}
+
+export function useCollectionViews(){
+    const [views, setViewsKey] = useStateV2<CollectionView[]>([])
+    const [loading, setLoadingKey] = useStateV2<boolean>(false)
+
+    async function setViews(workspaceId: string, collectionId: string, forceUpdate = false){
+        setViewsKey(createCollectionKey(workspaceId, collectionId, 'views'))
+        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'views', 'loading'))
+
+        if (loading.value) {
+            await waitFor(() => loading.value === false)
+        }
+
+        if (views.value.length && !forceUpdate) return
+
+        const collection = await useCollectionAsync(workspaceId, collectionId)
+
+        views.value = collection.value?.views?.slice() || []
+    }
+
+    return [views, setViews] as [typeof views, typeof setViews]
 }

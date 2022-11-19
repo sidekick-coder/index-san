@@ -10,7 +10,7 @@ export interface CollectionColumn {
 }
 
 export interface CollectionView {
-    filters: Record<string, string>
+    id: string
     [key: string]: any
 }
 
