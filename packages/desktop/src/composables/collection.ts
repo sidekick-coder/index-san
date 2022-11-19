@@ -207,7 +207,7 @@ export function useCollectionView(): [WritableComputedRef<CollectionView> | Ref<
 
         const collection = await useCollectionAsync(workspaceId, collectionId)
 
-        const view = collection.value?.views.find(v => v.id === viewId)
+        const view = collection.value?.views?.find(v => v.id === viewId)
 
         if (!view) return
         
