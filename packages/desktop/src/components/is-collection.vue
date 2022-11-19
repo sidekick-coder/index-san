@@ -105,7 +105,7 @@ async function setColumns(){
     const collectionColumns = collection.value?.columns.slice() ?? []
     
     for await (const column of collectionColumns) {
-        column.name = column.field
+        column.name = column.id
 
         if (column.type === 'relation') {
             const relation = await useCollectionItemsAsync(props.workspaceId, column.collectionId)
@@ -128,7 +128,12 @@ async function setItems(filters?: any){
 }
 
 async function updateView(data: any)  {
+
+    loading.value = true
+
     view.value = data
+
+    setTimeout(() => (loading.value = false), 800)
     
     if (!props.viewId) return
 
@@ -233,7 +238,7 @@ async function onColumnNew(){
                 <template
                     v-for="(c, index) in columns"
                     :key="index"
-                    v-slot:[`item-${c.field}`]="{ item }"
+                    v-slot:[`item-${c.id}`]="{ item }"
                 >
                     <is-collection-column-value
                         :workspace-id="workspaceId"

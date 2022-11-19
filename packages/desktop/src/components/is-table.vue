@@ -13,7 +13,7 @@ interface Column {
     name: string
     label?: string
     field?: string
-    width?: string | number
+    width: | number
 }
 
 const props = defineProps({
@@ -50,29 +50,29 @@ const props = defineProps({
 const builder = useBuilder()
 const aggregation = computed(() => useAggregation(props.items))
 
-const pagination = ref({
-    limit: +props.limit,
-})
+const pagination = ref({ limit: +props.limit })
+const innerColumns = ref(props.columns.slice().map(c => ({
+    ...c,
+    width: c.width ?? 300
+})))
 
-const visibleItems = computed(() => {    
-    return props.items.slice(0, pagination.value.limit)
-})
+const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
 
 const borderColor = 'border-gray-700'
 const actionsColor = 'text-gray-500'
 
 builder
-    .add('is-table w-full')
+    .add('is-table table-fixed w-full')
     .add(borderColor)
 
 builder
     .createChild('th')
-    .add('text-left p-2 border-b border-r last:border-r-0')
+    .add('text-left p-2 border-r relative')
     .add(borderColor)
 
 builder
     .createChild('td')
-    .add('text-left p-0 border-b border-r last:border-r-0')
+    .add('text-left p-0 border-r')
     .add(borderColor)
 
 builder
@@ -80,7 +80,7 @@ builder
     .add('actions flex items-center h-full')
     .add(actionsColor)
 
-builder.createChild('tr').add('item')
+builder.createChild('tr').add('item border-b').add(borderColor)
 
 const classes = computed(() => ({
     main: builder.make(),
@@ -96,10 +96,10 @@ const classes = computed(() => ({
         <thead>
             <tr :class="classes.tr" class="relative">
                 <th
-                    v-for="(column, index) in columns"
+                    v-for="(column, index) in innerColumns"
                     :key="column.name"
                     :class="classes.th"
-                    :style=" column.width ? `width: ${column.width}px` : '' "
+                    :style="column.width ? `width: ${column.width}px` : '' "
                     @click="$emit('column:update', column)"
                 >
                     <slot name="column" :column="column" :index="index" >
@@ -114,6 +114,11 @@ const classes = computed(() => ({
                     >
                         <fa-icon icon="plus" />
                     </i>
+
+                   <is-resize-line
+                        v-model="column.width"
+                        :min-width="100"
+                    />
                 </th>
                
                 <th 
@@ -187,7 +192,7 @@ const classes = computed(() => ({
             <td
                 :class="[classes.td, actionsColor]"
                 :colspan="columns.length + 2"
-                class="p-2 cursor-pointer hover:bg-gray-800 text-sm"
+                class="p-2 cursor-pointer hover:bg-gray-800 text-sm border-r-0"
                 @click="pagination.limit = pagination.limit + Number(limit)"
             >
                 <fa-icon icon="arrow-down" class="mr-2" />
@@ -201,7 +206,7 @@ const classes = computed(() => ({
             <td
                 :class="[classes.td, actionsColor]"
                 :colspan="columns.length + 2"
-                class="p-2 cursor-pointer hover:bg-gray-800 text-sm"
+                class="p-2 cursor-pointer hover:bg-gray-800 text-sm border-r-0"
                 @click="$emit('item:new')"
             >
                 <fa-icon icon="plus" class="mr-2" />
