@@ -10,12 +10,19 @@
                 "label": "ID",
                 "field": "id",
                 "type": "text"
+            },
+            {
+                "id": "3dbb88f0-863b-46c1-a93c-37ae61500fbf",
+                "field": "description",
+                "label": "Description",
+                "type": "text"
             }
         ],
         "views": [
             {
                 "id": "default",
-                "column:41ede78e-cb59-4122-a1f9-9a04526e44e8:width": 100
+                "column:41ede78e-cb59-4122-a1f9-9a04526e44e8:width": 100,
+                "column:3dbb88f0-863b-46c1-a93c-37ae61500fbf:width": 432
             }
         ]
     },
