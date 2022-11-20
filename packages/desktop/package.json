@@ -3,7 +3,7 @@
   "productName": "index-san",
   "description": "Notes app based in filesystem",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Henrique",
     "email": "henriqueoliwork@gmail.com",
