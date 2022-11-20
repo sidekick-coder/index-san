@@ -89,31 +89,6 @@
                 "options": "Real state,EUA Stocks,BR Stocks,Crypto"
             }
         ],
-        "views": [
-            {
-                "id": "test",
-                "column:a2b37f3f-99b5-40a4-8c7d-0441153c8723:width": 112,
-                "filter:asset": "",
-                "filter:date": "",
-                "filter:quantity": "",
-                "filter:value": "",
-                "filter:portfolio": "",
-                "column:d6e75ffd-02e5-4acb-b03c-c6f873093224:width": 179,
-                "column:a2b37f3f-99b5-40a4-8c7d-0441153c8723:hide": false,
-                "column:11b761d5-e7c2-4ac8-bade-465a336b9253:hide": false,
-                "column:adcdde00-04b2-47fd-91cc-f519757c8524:hide": false,
-                "column:9b736c00-ac2e-4358-8cc5-c44646d1985e:hide": false,
-                "column:d6e75ffd-02e5-4acb-b03c-c6f873093224:hide": false
-            },
-            {
-                "id": "real-state"
-            },
-            {
-                "id": "crypto"
-            },
-            {
-                "id": "extract"
-            }
-        ]
+        "views": []
     }
 ]
