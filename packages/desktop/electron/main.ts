@@ -52,7 +52,8 @@ app.whenReady().then(async () => {
             contextIsolation: true,
             nodeIntegration: true,
             spellcheck: true
-        }
+        },
+        icon: path.resolve(__dirname, '..', 'resources', 'icons', 'logo.ico')
     })
 
     window.on(

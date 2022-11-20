@@ -1,8 +1,7 @@
-const { bundle } = require('./bundler')
-
 module.exports = {
     packagerConfig: {
-        name: 'index-san'
+        name: 'index-san',
+        icon: 'resources/icons/logo.ico'
     },
     rebuildConfig: {},
     makers: [
@@ -21,14 +20,4 @@ module.exports = {
         //     config: {},
         // },
     ],
-    hooks: {
-        packageAfterCopy: async (
-            /** @type {any} */ _forgeConfig,
-            /** @type {string} */ buildPath,
-        ) => {
-            // this is a workaround until we find a proper solution
-            // for running electron-forge in a mono repository
-            await bundle(__dirname, buildPath)
-        },
-    }
 }
