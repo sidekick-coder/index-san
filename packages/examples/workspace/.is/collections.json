@@ -2,27 +2,27 @@
     {
         "id": "investments-assets",
         "name": "Assets",
-        "path": "/collections/investments.assets",
+        "path": "/collections/assets",
         "crudName": "fsFolder",
         "columns": [
-            {
-                "id": "a19c6fc6-ba1a-4a70-aaa5-27ae6e021d6b",
-                "label": "Name",
-                "field": "name",
-                "type": "text"
-            },
             {
                 "id": "41ede78e-cb59-4122-a1f9-9a04526e44e8",
                 "label": "ID",
                 "field": "id",
                 "type": "text"
             }
+        ],
+        "views": [
+            {
+                "id": "default",
+                "column:41ede78e-cb59-4122-a1f9-9a04526e44e8:width": 100
+            }
         ]
     },
     {
         "id": "work-projects",
         "name": "Projects",
-        "path": "/collections/work-projects",
+        "path": "/collections/projects",
         "crudName": "fsFolder",
         "columns": [
             {
@@ -35,7 +35,7 @@
     {
         "id": "work-tasks",
         "name": "Tasks",
-        "path": "/collections/work-tasks",
+        "path": "/collections/tasks",
         "crudName": "fsFolder",
         "columns": [
             {
@@ -53,7 +53,7 @@
     {
         "id": "investments-extract",
         "name": "Extract",
-        "path": "/collections/investments.extract",
+        "path": "/collections/extract",
         "crudName": "fsFolder",
         "columns": [
             {
