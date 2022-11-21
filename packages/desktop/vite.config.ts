@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, configDefaults } from 'vitest/config'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
@@ -16,6 +16,7 @@ const alias = {
 export default defineConfig({
     test: {
         watch: false,
+        exclude: [...configDefaults.exclude, 'packages/core/*', 'out'],
     },
     resolve: { alias },
     plugins: [

@@ -37,6 +37,10 @@ export default class FSDrive implements Drive {
     public async get(entryPath: string) {
         const systemPath = this.resolve([this.config.path, entryPath])
 
+        const exists = await this.exists(entryPath)
+
+        if (!exists) return null
+
         return await fs.promises
             .stat(systemPath)
             .then((e) =>

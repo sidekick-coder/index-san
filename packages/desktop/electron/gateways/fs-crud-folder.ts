@@ -21,20 +21,24 @@ function waitFreeFile(filename: string, timeout = 3000) {
     }
 
     return new Promise<void>((resolve, reject) => {
-        while (lockedFiles.get(filename)) {
+        const interval = setInterval(() => {
             if (start <= Date.now()) {
                 reject(new Error('Timeout'))
-                break
+                clearInterval(interval)
             }
-        }
-        resolve()
+
+            if (!lockedFiles.get(filename)) {
+                resolve()
+                clearInterval(interval)
+            }
+        })
     })
 }
 
 export default class FolderCrud implements Crud {
     public drive: Drive
 
-    private async findMetas(collectionPath: string) {
+    private async getMetas(collectionPath: string) {
         const metasFilename = [collectionPath, '.is', 'metas.json'].join('/')
 
         const text = await this.drive.read(metasFilename)
@@ -44,7 +48,7 @@ export default class FolderCrud implements Crud {
         return json as ItemMeta[]
     }
 
-    private async updateMetas(collectionPath: string, newMetas: ItemMeta[]) {
+    private async setMetas(collectionPath: string, newMetas: ItemMeta[]) {
         const filename = [collectionPath, '.is', 'metas.json'].join('/')
 
         await waitFreeFile(filename)
@@ -60,7 +64,7 @@ export default class FolderCrud implements Crud {
 
     public async list(collectionPath: string): Promise<item[]> {
         let entries = await this.drive.list(collectionPath)
-        const metas = await this.findMetas(collectionPath)
+        const metas = await this.getMetas(collectionPath)
         const items: Item[] = []
 
         entries = entries.filter((e) => e.type === 'directory' && e.name !== '.is')
@@ -89,7 +93,7 @@ export default class FolderCrud implements Crud {
 
         const data: any = Object.assign({}, entry)
 
-        const metas = await this.findMetas(collectionPath)
+        const metas = await this.getMetas(collectionPath)
 
         const itemMeta = metas.find((m) => m.id === entry.name)
 
@@ -105,7 +109,7 @@ export default class FolderCrud implements Crud {
         await this.drive.mkdir(entry.path)
         await this.drive.write(contentEntry.path, Buffer.from(''))
 
-        const metas = await this.findMetas(collectionPath)
+        const metas = await this.getMetas(collectionPath)
 
         metas.push({
             ...data,
@@ -114,7 +118,7 @@ export default class FolderCrud implements Crud {
             _updateAt: Date.now(),
         })
 
-        await this.updateMetas(collectionPath, metas)
+        await this.setMetas(collectionPath, metas)
 
         return data
     }
@@ -126,7 +130,7 @@ export default class FolderCrud implements Crud {
 
         if (!isValid) return
 
-        const metas = await this.findMetas(collectionPath)
+        const metas = await this.getMetas(collectionPath)
 
         if (payload.id) {
             await this.drive.move(entry.path, [collectionPath, payload.id].join('/'))
@@ -139,6 +143,7 @@ export default class FolderCrud implements Crud {
             meta[key] = payload[key]
         })
 
+        meta.id = payload.id || itemId
         meta._updateAt = Date.now()
         meta._createdAt = meta._createdAt || Date.now()
 
@@ -146,7 +151,7 @@ export default class FolderCrud implements Crud {
 
         if (metaIndex !== -1) metas[metaIndex] = meta
 
-        await this.updateMetas(collectionPath, metas)
+        await this.setMetas(collectionPath, metas)
     }
 
     public async deleteById(collectionPath: string, itemId: string): Promise<void> {
@@ -154,12 +159,12 @@ export default class FolderCrud implements Crud {
 
         await this.drive.delete(entry.path)
 
-        const metas = await this.findMetas(collectionPath)
+        const metas = await this.getMetas(collectionPath)
 
         const index = metas.findIndex((m) => m.id === itemId)
 
         if (index !== -1) metas.splice(index, 1)
 
-        await this.updateMetas(collectionPath, metas)
+        await this.setMetas(collectionPath, metas)
     }
 }

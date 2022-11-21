@@ -12,8 +12,8 @@ export default class InMemoryDrive implements Drive {
         this.content.clear()
     }
 
-    public async list(): Promise<DirectoryEntry[]> {
-        return this.entries
+    public async list(path: string): Promise<DirectoryEntry[]> {
+        return this.entries.filter((e) => e.path === [path, e.name].join('/'))
     }
 
     public async get(path: string) {
