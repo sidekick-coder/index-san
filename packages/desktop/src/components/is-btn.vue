@@ -22,10 +22,14 @@ const sizes = {
 }
 
 const defaultColors = {
+    accent: 'bg-teal-500 hover:bg-teal-500/75',
+    error: 'bg-red-500 hover:bg-red-500/75',
     info: 'bg-blue-500 hover:bg-blue-500/75',
 }
 
 const textColors = {
+    accent: 'hover:border-teal-500 border border-transparent hover:text-teal-500',
+    error: 'hover:border-red-500 border border-transparent hover:text-red-500',
     info: 'hover:border-blue-500 border border-transparent hover:text-blue-500',
 }
 

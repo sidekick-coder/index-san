@@ -71,50 +71,53 @@ watch(() => props, setItem, {
 
 </script>
 <template>
-    <div class="h-full w-full">
-        <div class="h-[50px] border-b border-b-gray-500 flex justify-end items-center">
-            <div class="mr-auto">
-                Script Editor
-            </div>
-            <w-btn
-                :disabled="script.content === content"
-                class="mr-3 disabled:bg-gray-500"
-                color="blue"
-                size="sm"
-                @click="save"
-            >
-                Save
-            </w-btn>
-            <w-btn color="red" size="sm" @click="execute" >Execute</w-btn>
-        </div>
-
-        <div class="h-[calc(100%_-_51px)] flex w-full">
-            <is-textarea
-                v-model="content"
-                class="py-5 bg-transparent outline-none"
-                :class="output ? 'w-[calc(100%_-_500px)]' : 'w-full' "
-                spellcheck="false"
-                @keydown.ctrl.s="save"
-                @keydown.ctrl.enter="execute"
-            />
-    
-            <div
-                v-show="output"
-                class="h-full w-[500px] border-l border-zinc-700 p-3"
-            >
-                <div class="flex">
-                    <div class="font-bold text-xl mb-4 mr-auto">Output</div>
-
-                    <is-icon name="times" @click="output = '' " />
-
-                </div>
+    <w-layout use-percentage>
+        <w-toolbar>
+            <is-container>
+                <div class="grow" />
                 
-                <div class="whitespace-pre-line bg-gray-700 rounded py-2 px-4 leading-7">
-                    {{ output }}
+                <is-btn
+                    :disabled="script.content === content"
+                    class="mr-3 disabled:bg-gray-500"
+                    color="info"
+                    size="sm"
+                    @click="save"
+                >
+                    Save
+                </is-btn>
+    
+                <is-btn color="accent" size="sm" @click="execute" >Execute</is-btn>
+            </is-container>
+
+        </w-toolbar>
+        <w-content>
+            <div class="h-full flex w-full">
+                <is-code-editor
+                    v-model="content"
+                    @keydown.ctrl.s="save"
+                    @keydown.ctrl.enter="execute"
+                />
+        
+                <div
+                    v-show="output"
+                    class="h-full w-[500px] border-l border-zinc-700 p-3"
+                >
+                    <div class="flex">
+                        <div class="font-bold text-xl mb-4 mr-auto">Output</div>
+    
+                        <is-icon name="times" @click="output = '' " />
+    
+                    </div>
+                    
+                    <div class="whitespace-pre-line bg-gray-700 rounded py-2 px-4 leading-7">
+                        {{ output }}
+                    </div>
                 </div>
+    
             </div>
 
-        </div>
+        </w-content>
 
-    </div>
+
+    </w-layout>
 </template>
