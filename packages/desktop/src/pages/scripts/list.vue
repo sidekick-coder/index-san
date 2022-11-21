@@ -5,6 +5,7 @@ import { definePageMeta } from '@/composables/page-meta'
 import Script from '@core/entities/script'
 import { useCase } from '@/composables/use-case'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 definePageMeta({
     title: 'Scripts list'
@@ -18,6 +19,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const tm = useI18n()
 
 const items = ref<Script[]>([])
 const search = ref('')
@@ -33,8 +35,12 @@ const filteredItems = computed(() => items.value.filter(i => i.name.match(search
 const columns = [
     {
         name: 'name',
-        label: 'Name',
+        label: tm.t('name'),
         field: 'name'
+    },
+    {
+        name: 'actions',
+        width: 100
     }
 ]
 
@@ -87,8 +93,7 @@ async function onItemShow(item: Script){
         </w-form>
     </is-dialog>
 
-    <div class="w-full mt-5 pb-5 border-b border-zinc-700 flex items-center">
-        
+    <div class="w-full mt-5 pb-5 border-b border-zinc-700 flex items-center">        
         <is-input
             v-model="search"
             placeholder="Search..." 
@@ -100,14 +105,18 @@ async function onItemShow(item: Script){
         </w-btn>
     </div>
 
-    <is-table
-        :columns="columns"
-        :items="filteredItems"
-        disable-add-column
-        disable-new-item
-        @item:show="onItemShow"
-        @item:delete="onItemDelete"
-    >
+    <is-table :columns="columns" :items="filteredItems">
+
+    <template #item-actions="{ item }">
+        <div class="px-2">
+            <is-btn @click="onItemShow(item)">
+                <is-icon name="eye" />
+            </is-btn>
+            <is-btn @click="onItemDelete(item)">
+                <is-icon name="trash" />
+            </is-btn>
+        </div>
+    </template>
 
     </is-table>
 </template>
