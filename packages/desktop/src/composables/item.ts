@@ -1,6 +1,6 @@
 import Item from '@core/entities/item'
 import { useHooks } from '../plugins/hooks'
-import { createCollectionKey } from './collection'
+import { createCollectionKey, useCollectionItems } from './collection'
 import { DataResponse, useCase } from './use-case'
 
 export interface CollectionFolderItem extends Item {
@@ -8,8 +8,9 @@ export interface CollectionFolderItem extends Item {
     _content?: Record<string, any>
 }
 
+const hooks = useHooks()    
+
 export function useItemRepository(workspaceId: string, collectionId: string) {
-    const hooks = useHooks()    
 
     async function show(itemId: string){
         const { data } = await useCase<DataResponse<CollectionFolderItem>>('show-item', { workspaceId, collectionId, itemId })
@@ -40,4 +41,34 @@ export function useItemRepository(workspaceId: string, collectionId: string) {
     }
 
     return { list, show, create, update, destroy }
+}
+
+export async function createItem(workspaceId: string, collectionId: string, data: any = {}){
+    const [, setItems] = useCollectionItems()
+
+    const result = await useCase('create-item', { workspaceId, collectionId, data })
+
+    await setItems(workspaceId, collectionId, true)
+
+    return result
+}
+
+export async function deleteItem(workspaceId: string, collectionId: string, itemId: string){
+    const [, setItems] = useCollectionItems()
+
+    const result = await useCase('delete-item', { workspaceId, collectionId, itemId })
+
+    await setItems(workspaceId, collectionId, true)
+
+    return result
+}
+
+export async function updateItem(workspaceId: string, collectionId: string, itemId: string, data: any = {}){
+    const [, setItems] = useCollectionItems()
+
+    const result = await useCase('update-item', { workspaceId, collectionId, itemId, data })
+
+    await setItems(workspaceId, collectionId, true)
+
+    return result
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCollectionAsync } from '@/composables/collection'
+import { useCollection } from '@/composables/collection'
 import { usePageMeta } from '@/composables/page-meta'
 import { watch } from 'vue'
 
@@ -16,8 +16,10 @@ const props = defineProps({
 
 const meta = usePageMeta()
 
+const [collection, setCollection] = useCollection()
+
 async function load(){
-    const collection = await useCollectionAsync(props.workspaceId, props.collectionId) 
+    await setCollection(props.workspaceId, props.collectionId)
     
     meta.value.title = collection.value?.name ?? `collection ${props.collectionId}`
 }

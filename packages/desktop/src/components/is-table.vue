@@ -67,7 +67,7 @@ const classes = computed(() => ({
         <slot
             v-for="item in visibleItems"
             name="item"
-            :key="item.id"
+            :key="item"
             :item="item"
             :classes="classes"
         >

@@ -4,8 +4,14 @@ import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import debounce from 'lodash/debounce'
 
-import { createCollectionColumn, updateOrCreateCollectionView, useCollectionColumns, useCollectionItemsV2, useCollectionViews } from '@/composables/collection'
-import { useItemRepository } from '@/composables/item'
+import {
+    createCollectionColumn,
+    useCollectionColumns,
+    useCollectionItems,
+    useCollectionViews,
+    updateOrCreateCollectionView,
+} from '@/composables/collection'
+import { createItem, deleteItem } from '@/composables/item'
 import { useArray, ArrayFilter } from '@/composables/array'
 
 const props = defineProps({
@@ -33,10 +39,11 @@ const drawers = ref({
     filters: false,
     columns: false
 })
+
 const loading = ref(false)
 
 const [columns, setColumns] = useCollectionColumns()
-const [items, setItems] = useCollectionItemsV2()
+const [items, setItems] = useCollectionItems()
 const [views, setViews] = useCollectionViews()
 
 const options = ref<Record<string, any>>({})
@@ -88,8 +95,6 @@ const hiddenColumns = computed(() => {
     return result
 })
 
-const crud = useItemRepository(props.workspaceId, props.collectionId)
-
 async function load(){
     loading.value = true
 
@@ -110,7 +115,7 @@ async function load(){
 }
 
 async function onItemNew() {
-    await crud.create()
+    await createItem(props.workspaceId, props.collectionId)
 }
 
 async function onItemShow(item: any) {
@@ -124,8 +129,8 @@ async function onItemShow(item: any) {
     })
 }
 
-async function onItemDelete(item: any) {
-    await crud.destroy(item.id)
+async function onItemDelete(itemId: string) {
+    await deleteItem(props.workspaceId, props.collectionId, itemId)
 }
 
 
@@ -257,6 +262,7 @@ watch(props, load, { immediate: true, deep: true })
                         <is-collection-column-value
                             :workspace-id="workspaceId"
                             :collection-id="collectionId"
+                            :item-id="item.id"
                             :column="c"
                             :item="item"
                         />
@@ -264,7 +270,7 @@ watch(props, load, { immediate: true, deep: true })
                         <i
                             class="absolute text-gray-500 cursor-pointer -mr-[36px] h-full flex items-center justify-center actions right-0 top-0"
                             v-if="index === filteredColumns.length - 1"
-                            @click="onItemDelete(item)"
+                            @click="onItemDelete(item.id)"
                         >
                             <fa-icon icon="trash" />
                         </i>    

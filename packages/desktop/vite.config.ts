@@ -6,8 +6,6 @@ import electron from 'vite-plugin-electron'
 const root = path.resolve(__dirname, '..', '..')
 const rootNodeModules = path.resolve(root, 'node_modules')
 
-console.log(path.resolve(root, 'packages', 'core'))
-
 const alias = {
     '@core' : path.resolve(__dirname, '..', 'core'),
     '@root-node-modules': rootNodeModules,

@@ -1,13 +1,23 @@
 import uuid from 'uuid-random'
-import { ref, WritableComputedRef, Ref } from 'vue'
 
 import Collection, { CollectionColumn, CollectionView } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
 import { useHooks, HookEventListener } from '../plugins/hooks'
-import { useState, useStateV2 } from './state'
+import { useStateV2 } from './state'
 import { CollectionFolderItem } from './item'
 
 const hooks = useHooks()
+
+function waitFor(cb: () => boolean){
+    return new Promise<void>(resolve => {
+        const interval = setInterval(() => {
+            if (cb()) {
+                resolve()
+                clearInterval(interval)
+            }
+        }, 500)
+    })
+}
 
 export function createCollectionKey(workspaceId: string, collectionId: string, ...args: string[]){
     return ['workspaces', workspaceId,'collections', collectionId, ...args].join(':')
@@ -37,89 +47,79 @@ export function useCollectionRepository(workspaceId: string) {
     return { list, show, create, update, destroy }
 }
 
+export function useCollection(){
+    const [collection, setCollectionKey] = useStateV2<Collection | null>(null)
+    const [loading, setLoadingKey] = useStateV2(false)
 
-export function useCollectionItems(workspaceId: string, collectionId: string){
+    async function setCollection(workspaceId: string, collectionId: string, forceUpdate = false){
+        setCollectionKey(createCollectionKey(workspaceId, collectionId))
+        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'loading'))       
+        
+        if (loading.value) {
+            await waitFor(() => loading.value === false)
+        }       
 
-    if (!workspaceId || !collectionId) {
-        return ref([])
-    }
-    
-    const loading = useState<boolean>(`workspace:${workspaceId}:collection:${collectionId}:loading`, false)
-    const items = useState<CollectionFolderItem[]>(`workspace:${workspaceId}:collection:${collectionId}:items`, [])
+        if (collection.value && !forceUpdate) return
 
-    if (!items.value.length && !loading.value) {
         loading.value = true
 
-        useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
-            .then(r => items.value = r.data)
+        await useCase<DataResponse<Collection>>('show-collection', { workspaceId, collectionId })
+            .then(({data}) => collection.value = data)
+            .catch(() => collection.value = null)
+            .finally(() => loading.value = false)
+    }
+
+    return [collection, setCollection] as [typeof collection, typeof setCollection]
+}
+
+export function useCollectionItems(){
+    const [items, setItemsKey] = useStateV2<CollectionFolderItem[]>([])
+    const [loading, setLoadingKey] = useStateV2(false)
+
+    async function setItems(workspaceId: string, collectionId: string, forceUpdate = false){
+        setItemsKey(createCollectionKey(workspaceId, collectionId, 'items'))
+        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'items', 'loading'))       
+        
+        if (loading.value) {
+            await waitFor(() => loading.value === false)
+        }       
+
+        if (items.value.length && !forceUpdate) return
+
+        loading.value = true
+
+        await useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
+            .then(({data}) => items.value = data)
             .catch(() => items.value = [])
             .finally(() => loading.value = false)
     }
 
-
-    return items
+    return [items, setItems] as [typeof items, typeof setItems]
+   
 }
 
+export async function updateCollection(workspaceId: string, collectionId: string, data: Partial<Collection>){
+    const [_, setCollection] = useCollection()
 
-export function useCollection(workspaceId: string, collectionId: string){
-    return useState<Collection | null>(createCollectionKey(workspaceId, collectionId), null)
-}
-
-export async function useCollectionAsync(workspaceId: string, collectionId: string, forceUpdate = false){
-
-    if (!workspaceId || !collectionId) {
-        return ref(null)
-    }
-    
-    const collection = useCollection(workspaceId, collectionId)
-
-    if (!collection.value || forceUpdate) {
-        await useCase<DataResponse<Collection>>('show-collection', { workspaceId, collectionId })
-            .then(r => collection.value = r.data)
-            .catch(() => collection.value = null)
-    }
-
-
-    return collection
-}
-
-export async function useCollectionItemsAsync(workspaceId: string, collectionId: string){
-
-    if (!workspaceId || !collectionId) {
-        return ref<CollectionFolderItem[]>([])
-    }
-    
-    const loading = useState<boolean>(`workspace:${workspaceId}:collection:${collectionId}:loading`, false)
-    const items = useState<CollectionFolderItem[]>(`workspace:${workspaceId}:collection:${collectionId}:items`, [])
-
-    loading.value = true
-
-    await useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
-        .then(r => items.value = r.data)
-        .catch(() => items.value = [])
-        .finally(() => loading.value = false)
-
-    return items
-}
-
-
-
-
-export async function updateCollection(workspaceId: string, collectionId: string, data: Partial<Collection>, emitEvent = true){
     await useCase('update-collection', { workspaceId, collectionId, data })
 
-    if (emitEvent) hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
+    await setCollection(workspaceId, collectionId, true)
+
+
+    hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
 }
 
 export function onCollectionUpdate(workspaceId: string, collectionId: string, cb: HookEventListener['handler']) {
     hooks.on({
-        name: createCollectionKey(workspaceId, collectionId, 'update'),
+        pattern: createCollectionKey(workspaceId, collectionId, 'update'),
         handler: cb,
     })
 }
 
 export async function updateCollectionColumn(workspaceId: string, collectionId: string, id: string, data: Partial<CollectionColumn>){
-    const collection = await useCollectionAsync(workspaceId, collectionId)
+    const [collection, setCollection] = useCollection()
+
+    await setCollection(workspaceId, collectionId)
 
     const columns = collection.value?.columns.slice() || []
 
@@ -133,13 +133,15 @@ export async function updateCollectionColumn(workspaceId: string, collectionId: 
             column[key] = data[key]
         })        
 
-    await updateCollection(workspaceId, collectionId, { columns }, false)
+    await updateCollection(workspaceId, collectionId, { columns })
 }
 
 export async function createCollectionColumn(workspaceId: string, collectionId: string, payload?: Partial<CollectionColumn>) {
     const id = uuid()
 
-    const collection = await useCollectionAsync(workspaceId, collectionId)
+    const [collection, setCollection] = useCollection()
+
+    await setCollection(workspaceId, collectionId)
 
     const data = {
         id,
@@ -157,7 +159,9 @@ export async function createCollectionColumn(workspaceId: string, collectionId: 
 }
 
 export async function deleteCollectionColumn(workspaceId: string, collectionId: string, id: string) {
-    const collection = await useCollectionAsync(workspaceId, collectionId)
+    const [collection, setCollection] = useCollection()
+
+    await setCollection(workspaceId, collectionId)
 
     const columns = collection.value?.columns.slice() || []
 
@@ -171,7 +175,9 @@ export async function deleteCollectionColumn(workspaceId: string, collectionId: 
 }
 
 export async function updateOrCreateCollectionView(workspaceId: string, collectionId: string, id: string, data: Partial<CollectionView>) {
-    const collection = await useCollectionAsync(workspaceId, collectionId)
+    const [collection, setCollection] = useCollection()
+
+    await setCollection(workspaceId, collectionId)
 
     const views = collection.value?.views?.slice() || []
 
@@ -189,7 +195,7 @@ export async function updateOrCreateCollectionView(workspaceId: string, collecti
             view[key] = data[key]
         })        
 
-    await updateCollection(workspaceId, collectionId, { views }, false)
+    await updateCollection(workspaceId, collectionId, { views })
 }
 
 export function useCollectionColumns(){
@@ -200,53 +206,15 @@ export function useCollectionColumns(){
 
         setKey(createCollectionKey(workspaceId, collectionId, 'columns'))
         
-        const collection = await useCollectionAsync(workspaceId, collectionId)
+        const [collection, setCollection] = useCollection()
+
+        await setCollection(workspaceId, collectionId)
 
         state.value = collection.value?.columns.slice() || []
 
     }
 
     return [state, setColumns] as [typeof state, typeof setColumns]
-}
-
-function waitFor(cb: () => boolean){
-    return new Promise<void>(resolve => {
-        const interval = setInterval(() => {
-            if (cb()) {
-                resolve()
-                clearInterval(interval)
-            }
-        }, 500)
-    })
-}
-
-export function useCollectionItemsV2(){
-
-    const [items, setItemsKey] = useStateV2<CollectionFolderItem[]>([])
-    const [loading, setLoadingKey] = useStateV2<boolean>(false)
-
-    async function setState(workspaceId: string, collectionId: string, forceUpdate = false){
-
-        setItemsKey(createCollectionKey(workspaceId, collectionId, 'items'))
-        setLoadingKey(createCollectionKey(workspaceId, collectionId, 'items', 'loading'))
-
-        if (loading.value) {
-            await waitFor(() => loading.value === false)
-        }
-        
-        if (items.value.length && !forceUpdate) return
-        
-        loading.value = true
-
-        await useCase<DataResponse<CollectionFolderItem[]>>('list-items', { workspaceId, collectionId })
-            .then(r => items.value = r.data)
-            .catch(() => items.value = [])
-            .finally(() => loading.value = false)
-
-
-    }
-
-    return [items, setState] as [typeof items, typeof setState]
 }
 
 export function useCollectionViews(){
@@ -263,7 +231,9 @@ export function useCollectionViews(){
 
         if (views.value.length && !forceUpdate) return
 
-        const collection = await useCollectionAsync(workspaceId, collectionId)
+        const [collection, setCollection] = useCollection()
+
+        await setCollection(workspaceId, collectionId)
 
         views.value = collection.value?.views?.slice() || []
     }

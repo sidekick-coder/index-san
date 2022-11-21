@@ -3,7 +3,7 @@ import { computed, ref, shallowRef, useSlots, watch } from 'vue'
 import { CollectionColumn } from '@core/entities/collection'
 
 import { useChildren } from '@/composables/children'
-import { onCollectionUpdate, useCollectionColumns, useCollectionItemsV2 } from '@/composables/collection'
+import { onCollectionUpdate, useCollectionColumns, useCollectionItems } from '@/composables/collection'
 
 const props = defineProps({
     workspaceId: {
@@ -26,7 +26,7 @@ const loading = ref(false)
 
 const components = shallowRef<any[]>([])
 const [columns, setColumns] = useCollectionColumns()
-const [items, setItems] = useCollectionItemsV2()
+const [items, setItems] = useCollectionItems()
 
 const formattedItems = computed(() => items.value.map(item => {
     const data: any = {}

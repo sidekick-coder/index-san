@@ -1,13 +1,14 @@
 import { Plugin } from 'vue'
 
 export interface HookEventListener {
-    name: string
+    pattern: string | RegExp
     handler: (data?: any) => void
 }
 
 export interface HooksManager {
     listeners:  HookEventListener[]
     on: (listener: HookEventListener) => void
+    off: (listener: HookEventListener) => void
     emit: (name: string, data?: any) => void
 }
 
@@ -19,14 +20,28 @@ export function createHookManager(){
         listeners.push(listener)
     }
     
+    const off: HooksManager['off'] = (listener) => {
+        const index = listeners.findIndex(l => l.pattern === listener.pattern && listener.handler === listener.handler)
+
+        if (index !== -1) {
+            listeners.splice(index, 1)
+        }
+
+    }
+    
     const emit: HooksManager['emit'] = (name, data) => {
-        console.debug('hooks', { name, data })
-        listeners.filter(l => l.name === name && !!l.handler).forEach(l => l.handler(data))
+        console.debug('hook', name, data)
+        
+        listeners
+            .filter(l => name.match(l.pattern) && !!l.handler)
+            .filter(l => !!l.handler)
+            .forEach(l => l.handler(data))
     }
 
     const state: HooksManager = {
         listeners,
         on,
+        off,
         emit
     }
 

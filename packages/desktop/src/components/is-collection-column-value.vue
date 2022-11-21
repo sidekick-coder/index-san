@@ -5,9 +5,9 @@ import throttle from 'lodash/throttle'
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
-import { useItemRepository } from '@/composables/item'
+import { updateItem } from '@/composables/item'
 import { useBuilder } from 'vue-wind/composables/builder'
-import { useCollectionItemsV2 } from '@/composables/collection'
+import { useCollectionItems } from '@/composables/collection'
 
 
 const props = defineProps({
@@ -16,6 +16,10 @@ const props = defineProps({
         required: true,
     },
     collectionId: {
+        type: String,
+        required: true,
+    },
+    itemId: {
         type: String,
         required: true,
     },
@@ -29,9 +33,8 @@ const props = defineProps({
     },
 })
 
-const [relatedItems, setRelatedItems] = useCollectionItemsV2()
+const [relatedItems, setRelatedItems] = useCollectionItems()
 
-const crud = useItemRepository(props.workspaceId, props.collectionId)
 const edit = ref(false)
 const builder = useBuilder()
 const payload = ref('')
@@ -55,7 +58,7 @@ builder
     .add('focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500')
 
 const onChange = throttle(async () => {
-    await crud.update(props.item.id, {
+    await updateItem(props.workspaceId, props.collectionId, props.itemId, {
         [props.column.field]: payload.value
     })
 }, 1000)

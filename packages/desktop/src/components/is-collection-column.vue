@@ -21,8 +21,6 @@ const props = defineProps({
     }
 })
 
-const collection = useCollection(props.workspaceId, props.collectionId)
-
 const types = [
     {
         label:'Text',
