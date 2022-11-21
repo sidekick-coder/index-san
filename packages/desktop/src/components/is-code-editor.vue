@@ -40,6 +40,9 @@ onMounted(() => {
         value: model.value,
         language: 'javascript',
         theme: 'app-theme',
+        padding: {
+            top: 20
+        }
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
@@ -71,8 +74,6 @@ monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
 
 </script>
-<template>
-    <div class="relative h-full w-full">
-        <div class="absolute inset-0" ref="root"></div>
-    </div>
+<template>    
+    <div ref="root" class="w-full h-full" ></div>    
 </template>
