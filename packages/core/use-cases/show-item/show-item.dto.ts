@@ -6,7 +6,7 @@ declare namespace ShowItemDTO {
         collectionId: string
         itemId: string
     }
-    
+
     export interface Output {
         data: Item
     }

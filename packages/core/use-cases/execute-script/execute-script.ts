@@ -1,10 +1,8 @@
 import vm from 'vm'
-import util from 'util'
 
 import ExecuteScriptDTO from './execute-script.dto'
 import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
-
 
 interface ScriptSandbox {
     main: (workspace: WorkspaceService) => Promise<string>
@@ -12,7 +10,7 @@ interface ScriptSandbox {
 }
 
 export default class ExecuteScript {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public executeScript(content: string, workspace: WorkspaceService) {
         return new Promise<string>((resolve) => {
@@ -23,27 +21,27 @@ export default class ExecuteScript {
                     main: () => Promise.reject('Error executing script'),
                     console: {
                         log: (...args: string[]) => {
-                            args.forEach(a => lines.push(`[log]: ${a}`))
-                        }
+                            args.forEach((a) => lines.push(`[log]: ${a}`))
+                        },
                     },
                 }
-                  
+
                 const executable = new vm.Script(content.toString())
                 const context = vm.createContext(script)
-        
+
                 executable.runInContext(context, {})
 
-                script.main(workspace).then(r => {
-                    lines.push(r)
+                script
+                    .main(workspace)
+                    .then((r) => {
+                        lines.push(r)
 
-                    resolve(lines.join('\n'))
-                })
-                    .catch(error => {
-                        lines.push(error.message || 'Error executing script')    
                         resolve(lines.join('\n'))
                     })
-
-                
+                    .catch((error) => {
+                        lines.push(error.message || 'Error executing script')
+                        resolve(lines.join('\n'))
+                    })
             } catch (error: any) {
                 lines.push(error.message || 'Error executing script')
 
@@ -52,14 +50,16 @@ export default class ExecuteScript {
         })
     }
 
-    public async execute({ workspaceId, name }: ExecuteScriptDTO.Input): Promise<ExecuteScriptDTO.Output> {
-
+    public async execute({
+        workspaceId,
+        name,
+    }: ExecuteScriptDTO.Input): Promise<ExecuteScriptDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const filename = `.is/scripts/${name}.js`
-        
+
         const content = await workspace.drive.read(filename)
-        
+
         if (!content) {
             throw new Error('Script not found')
         }
@@ -67,7 +67,7 @@ export default class ExecuteScript {
         const output = await this.executeScript(content.toString(), workspace)
 
         return {
-            data: output
+            data: output,
         }
     }
 }

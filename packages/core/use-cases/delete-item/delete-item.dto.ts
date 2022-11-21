@@ -4,7 +4,7 @@ declare namespace DeleteItemDTO {
         collectionId: string
         itemId: string
     }
-    
+
     // export interface Output {}
 }
 

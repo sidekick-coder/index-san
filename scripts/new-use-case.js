@@ -1,6 +1,5 @@
-
 const path = require('path')
-const fs  = require('fs')
+const fs = require('fs')
 const upperFirst = require('lodash/upperFirst')
 const camelCase = require('lodash/camelCase')
 const kebabCase = require('lodash/kebabCase')
@@ -8,7 +7,6 @@ const kebabCase = require('lodash/kebabCase')
 const BASE_PATH = path.resolve(__dirname, '..')
 
 const [name] = process.argv.slice(2)
-
 
 if (!name) {
     console.error('missing args')
@@ -61,9 +59,9 @@ test.group('{{kebabCaseName}} (use-case)', (group) => {
 
 })
 `
-async function main(){
-    const kebabCaseName  = kebabCase(name)
-    const camelCaseName  = upperFirst(camelCase(name))
+async function main() {
+    const kebabCaseName = kebabCase(name)
+    const camelCaseName = upperFirst(camelCase(name))
 
     const folderPath = path.resolve(BASE_PATH, 'packages', 'core', 'use-cases', kebabCaseName)
 
@@ -72,7 +70,7 @@ async function main(){
     const items = [
         [path.resolve(folderPath, `${kebabCaseName}.dto.ts`), dto],
         [path.resolve(folderPath, `${kebabCaseName}.spec.ts`), spec],
-        [path.resolve(folderPath, `${kebabCaseName}.ts`), useCase]
+        [path.resolve(folderPath, `${kebabCaseName}.ts`), useCase],
     ]
 
     for (const [filename, content] of items) {
@@ -83,7 +81,6 @@ async function main(){
 
         await fs.promises.writeFile(filename, parsed)
     }
-
 }
 
 main()

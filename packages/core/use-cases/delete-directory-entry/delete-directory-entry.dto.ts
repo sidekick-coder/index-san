@@ -3,7 +3,7 @@ declare namespace DeleteDirectoryEntryDTO {
         workspaceId: string
         path: string
     }
-    
+
     // export interface Output {}
 }
 

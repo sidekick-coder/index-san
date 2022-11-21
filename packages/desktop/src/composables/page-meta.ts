@@ -1,6 +1,5 @@
 import { ref, inject, provide, InjectionKey, Ref } from 'vue'
 
-
 interface PageMeta {
     layout: 'default'
     title: string
@@ -8,12 +7,13 @@ interface PageMeta {
 
 export const key = Symbol('app:page-meta') as InjectionKey<Ref<PageMeta>>
 
-const getState = () => ref<PageMeta>({
-    layout: 'default',
-    title: ''
-})
+const getState = () =>
+    ref<PageMeta>({
+        layout: 'default',
+        title: '',
+    })
 
-export function providePageMeta(){
+export function providePageMeta() {
     const state = getState()
 
     provide(key, state)
@@ -21,7 +21,7 @@ export function providePageMeta(){
     return state
 }
 
-export function usePageMeta(){
+export function usePageMeta() {
     return inject(key, getState())
 }
 

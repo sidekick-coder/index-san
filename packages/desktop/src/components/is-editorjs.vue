@@ -8,8 +8,8 @@ import DragDrop from 'editorjs-drag-drop'
 const props = defineProps({
     content: {
         type: Object as () => EditorJS.OutputData,
-        default: null
-    }
+        default: null,
+    },
 })
 
 const emit = defineEmits(['save'])
@@ -17,7 +17,7 @@ const emit = defineEmits(['save'])
 const root = ref<HTMLElement>()
 const editor = ref<EditorJS>()
 
-async function onChange(){
+async function onChange() {
     if (!editor.value) return
 
     const data = await editor.value.save()
@@ -25,14 +25,14 @@ async function onChange(){
     emit('save', data)
 }
 
-async function load(){
+async function load() {
     editor.value = new EditorJS({
         holder: root.value,
         onChange,
         minHeight: 0,
         tools: {
             header: Header,
-            toggle: Toggle
+            toggle: Toggle,
         },
     })
 
@@ -43,21 +43,19 @@ async function load(){
     if (props.content) {
         editor.value.render(props.content)
     }
-    
 }
 
 onMounted(load)
 
 onUnmounted(() => editor.value?.destroy())
-
 </script>
 
 <template>
-    <div class="w-full" ref="root" />
+    <div ref="root" class="w-full" />
 </template>
 
 <style lang="scss">
-.ce-toolbar  {
+.ce-toolbar {
     .ce-toolbar__content {
         max-width: unset;
     }
@@ -69,22 +67,22 @@ onUnmounted(() => editor.value?.destroy())
     .ce-toolbar__plus:hover {
         @apply bg-zinc-700;
     }
-    
+
     .cdx-search-field input::placeholder {
         @apply text-white/50;
     }
-    
+
     .cdx-search-field__icon .icon {
         @apply text-white;
     }
     .ce-popover {
         @apply bg-zinc-700 border-zinc-500;
     }
-    
+
     .ce-popover__item-icon {
         @apply bg-zinc-700 border-zinc-500;
-    }    
-    
+    }
+
     .ce-popover__item {
         @apply bg-zinc-500 border border-zinc-500;
     }
@@ -99,16 +97,16 @@ onUnmounted(() => editor.value?.destroy())
         padding-right: 20px;
     }
 }
-.ce-inline-toolbar  {
+.ce-inline-toolbar {
     @apply bg-zinc-700 border-zinc-500;
 
     button {
         @apply text-white;
     }
-    
+
     input {
         @apply bg-zinc-700 text-white;
-        
+
         &::placeholder {
             @apply text-white/50;
         }
@@ -116,9 +114,8 @@ onUnmounted(() => editor.value?.destroy())
 }
 
 .ce-block {
-    
     .ce-block__content {
-        @apply w-full;        
+        @apply w-full;
         max-width: unset;
     }
 
@@ -136,5 +133,4 @@ onUnmounted(() => editor.value?.destroy())
 .ce-settings {
     @apply bg-zinc-700 border-zinc-500;
 }
-
 </style>

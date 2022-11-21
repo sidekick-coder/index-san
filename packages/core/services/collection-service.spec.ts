@@ -15,23 +15,21 @@ import WorkspaceService from './workspace-service'
 test.group('collection-service (service)', (group) => {
     const memoryDrive = new InMemoryDrive()
     const memoryCrud = new InMemoryCrud()
-    const driveManager = new DriveManager({ memory: memoryDrive })    
-    const crudManger = new CrudManager({ memory: memoryCrud  })
+    const driveManager = new DriveManager({ memory: memoryDrive })
+    const crudManger = new CrudManager({ memory: memoryCrud })
     const workspaceRepository = new InMemoryWorkspaceRepository()
 
     let workspace: WorkspaceService
     let collection: Collection
 
     group.each.setup(async () => {
-        
         collection = CollectionFactory.create()
-        
+
         memoryDrive.createFile('.is/collections.json', [collection])
-        
+
         const data = workspaceRepository.createSync(WorkspaceFactory.create())
 
         workspace = await WorkspaceService.from(appService, data.id)
-
 
         return () => {
             workspaceRepository.clear()
@@ -42,28 +40,27 @@ test.group('collection-service (service)', (group) => {
     const appService = new AppService({
         workspaceRepository,
         driveManager,
-        crudManger
+        crudManger,
     })
 
-    test('should trigger an error if collection was not found',async ({ expect }) => {
+    test('should trigger an error if collection was not found', async ({ expect }) => {
         expect.assertions(1)
 
-        await CollectionService.from(workspace, 'invalid')
-            .catch(err => expect(err.message).toEqual('Collection not found'))
-        
+        await CollectionService.from(workspace, 'invalid').catch((err) =>
+            expect(err.message).toEqual('Collection not found')
+        )
     })
 
-    test('should instantiate collection',async ({ expect }) => {      
-
+    test('should instantiate collection', async ({ expect }) => {
         memoryDrive.createFile('.is/collections.json', [collection])
 
         const service = await CollectionService.from(workspace, collection.id)
 
         expect(service.id).toBe(collection.id)
-        expect(service.name).toBe(collection.name)        
+        expect(service.name).toBe(collection.name)
     })
-    
-    test('should list collection items',async ({ expect }) => {
+
+    test('should list collection items', async ({ expect }) => {
         const service = await CollectionService.from(workspace, collection.id)
 
         memoryDrive.createDir([service.path, 'item-01'].join('/'))
@@ -72,30 +69,33 @@ test.group('collection-service (service)', (group) => {
 
         const result = await service.list()
 
-        expect(result.length).toBe(3)        
+        expect(result.length).toBe(3)
     })
 
     test('should returned items have workspaceId & collectionId defined', async ({ expect }) => {
         expect.assertions(40)
-        
+
         const service = await CollectionService.from(workspace, collection.id)
 
         for (let i = 0; i < 20; i++) {
             memoryDrive.createDir([service.path, 'item-', i].join('/'))
         }
-        
+
         const result = await service.list()
-        
-        result.forEach(i => expect(i.collectionId).toBeDefined())
-        result.forEach(i => expect(i.workspaceId).toBeDefined())
+
+        result.forEach((i) => expect(i.collectionId).toBeDefined())
+        result.forEach((i) => expect(i.workspaceId).toBeDefined())
     })
 
-    test('should return a collection by id',async ({ expect }) => {
+    test('should return a collection by id', async ({ expect }) => {
         const service = await CollectionService.from(workspace, collection.id)
 
-        const item = await memoryCrud.create(collection.path, new Item({
-            message: 'hello word',
-        }))
+        const item = await memoryCrud.create(
+            collection.path,
+            new Item({
+                message: 'hello word',
+            })
+        )
 
         const result = await service.show(item.id)
 
@@ -104,15 +104,14 @@ test.group('collection-service (service)', (group) => {
             message: item.message,
             collectionId: collection.id,
             workspaceId: workspace.id,
-        })        
+        })
     })
-   
+
     test('should create an item', async ({ expect }) => {
-        
         const service = await CollectionService.from(workspace, collection.id)
 
         await service.create({
-            id: 'hello'
+            id: 'hello',
         })
 
         const result = await service.list()
@@ -121,39 +120,43 @@ test.group('collection-service (service)', (group) => {
             id: 'hello',
             collectionId: collection.id,
             workspaceId: workspace.id,
-        })        
+        })
     })
-   
+
     test('should update a item by id', async ({ expect }) => {
-        
         const service = await CollectionService.from(workspace, collection.id)
 
-        const item = await memoryCrud.create(collection.path, new Item({
-            message: 'hello word',
-        }))
+        const item = await memoryCrud.create(
+            collection.path,
+            new Item({
+                message: 'hello word',
+            })
+        )
 
         await service.update(item.id, {
-            message: 'update hello'
+            message: 'update hello',
         })
 
         const result = await service.show(item.id)
 
-        expect(result.message).toBe('update hello')        
+        expect(result.message).toBe('update hello')
     })
-    
+
     test('should delete a item by id', async ({ expect }) => {
-        
         const service = await CollectionService.from(workspace, collection.id)
 
-        const item = await memoryCrud.create(collection.path, new Item({
-            name: 'test',
-            custom: 'hello word',
-        }))
+        const item = await memoryCrud.create(
+            collection.path,
+            new Item({
+                name: 'test',
+                custom: 'hello word',
+            })
+        )
 
         await service.delete(item.id)
 
         const result = await service.list()
 
-        expect(result.length).toBe(0)        
+        expect(result.length).toBe(0)
     })
 })

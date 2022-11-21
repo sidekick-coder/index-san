@@ -4,9 +4,12 @@ import WorkspaceService from '../../services/workspace-service'
 import CreateCollectionDTO from './create-collection.dto'
 
 export default class CreateCollection {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
-    public async execute({ workspaceId, data }: CreateCollectionDTO.Input): Promise<CreateCollectionDTO.Output> {
+    public async execute({
+        workspaceId,
+        data,
+    }: CreateCollectionDTO.Input): Promise<CreateCollectionDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const collection = new Collection(data, data.id)
@@ -14,7 +17,7 @@ export default class CreateCollection {
         await workspace.createCollection(collection)
 
         return {
-            data: collection
+            data: collection,
         }
     }
 }

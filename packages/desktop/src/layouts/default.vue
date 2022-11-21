@@ -2,7 +2,7 @@
     <w-layout>
         <is-app-drawer />
 
-        <w-content class="bg-zinc-900 text-white">      
+        <w-content class="bg-zinc-900 text-white">
             <w-layout use-percentage>
                 <is-app-toolbar />
 
@@ -10,7 +10,6 @@
                     <slot></slot>
                 </w-content>
             </w-layout>
-
         </w-content>
     </w-layout>
 </template>

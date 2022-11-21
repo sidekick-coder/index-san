@@ -11,46 +11,47 @@ import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-
 
 import DeleteItem from './delete-item'
 
-test.group('delete-item (use-case)', group => {
+test.group('delete-item (use-case)', (group) => {
     const memoryDrive = new InMemoryDrive()
     const memoryCrud = new InMemoryCrud()
-    const driveManager = new DriveManager({ memory: memoryDrive })    
-    const crudManger = new CrudManager({ memory: memoryCrud  })
-    
+    const driveManager = new DriveManager({ memory: memoryDrive })
+    const crudManger = new CrudManager({ memory: memoryCrud })
+
     const workspaceRepository = new InMemoryWorkspaceRepository()
 
     const appService = new AppService({
         workspaceRepository,
         driveManager,
-        crudManger
+        crudManger,
     })
-    
-    
+
     const useCase = new DeleteItem(appService)
-    
-    const workspace = WorkspaceFactory.create({ drive: 'memory' })    
+
+    const workspace = WorkspaceFactory.create({ drive: 'memory' })
     const collection = CollectionFactory.create({ crudName: 'memory' })
-    
+
     memoryCrud.drive = memoryDrive
 
     group.each.setup(() => {
         memoryDrive.createFile('.is/collections.json', [collection])
         workspaceRepository.createSync(workspace)
     })
-    
+
     group.each.teardown(() => memoryDrive.clear())
-    
 
     test('should delete an item in collection', async ({ expect }) => {
-        const item = await memoryCrud.create(collection.path, new Item({
-            name: 'test',
-            custom: 'hello word',
-        }))
+        const item = await memoryCrud.create(
+            collection.path,
+            new Item({
+                name: 'test',
+                custom: 'hello word',
+            })
+        )
 
         await useCase.execute({
             workspaceId: workspace.id,
             collectionId: collection.id,
-            itemId: item.id
+            itemId: item.id,
         })
 
         expect(memoryDrive.entries.length).toEqual(1)

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useDirectoryEntry } from '@/composables/directory-entry'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import mime from 'mime'
 
 const props = defineProps({
@@ -17,7 +17,7 @@ const repository = useDirectoryEntry(props.workspaceId)
 
 const src = ref<string>()
 
-async function load(){
+async function load() {
     const arrayBuffer = await repository.read(props.path)
 
     const base64 = window.btoa(arrayBuffer.reduce((data, b) => data + String.fromCharCode(b), ''))
@@ -28,12 +28,7 @@ async function load(){
 }
 
 load()
-
-
 </script>
 <template>
-    <img
-        v-if="src" :src="src" :alt="path"
-        class="w-full h-full object-contain"
-    >
+    <img v-if="src" :src="src" :alt="path" class="w-full h-full object-contain" />
 </template>

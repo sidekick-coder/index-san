@@ -1,8 +1,7 @@
-
 <script lang="ts">
 export default {
     name: 'IsChartBarDataset',
-    inheritAttrs: false
+    inheritAttrs: false,
 }
 </script>
 <script setup lang="ts">
@@ -12,24 +11,24 @@ import { useTheme } from '@/composables/theme'
 const props = defineProps({
     label: {
         type: String,
-        default: 'dataset'
+        default: 'dataset',
     },
     items: {
         type: Array as () => Record<string, string>[],
-        default: () => []
+        default: () => [],
     },
     yKey: {
         type: [String, Function],
-        default: () => (item: any) => Object.keys(item)[0]
+        default: () => (item: any) => Object.keys(item)[0],
     },
     xKey: {
         type: [String, Function],
-        default: () => (item: any) => Object.values(item)[0]
+        default: () => (item: any) => Object.values(item)[0],
     },
     color: {
         type: [String, Array],
-        default: null
-    }
+        default: null,
+    },
 })
 
 const emit = defineEmits(['load'])
@@ -56,9 +55,9 @@ for (let i = 0; i < xKeys.length; i++) {
     map.set(xValue, y)
 }
 
-const data = Array.from(map.entries()).map(([x,y]) => ({ x, y }))
+const data = Array.from(map.entries()).map(([x, y]) => ({ x, y }))
 
-function getColor(){
+function getColor() {
     if (Array.isArray(props.color)) return props.color
 
     if (props.color) return [props.color]
@@ -70,9 +69,8 @@ emit('load', {
     label: props.label,
     data,
     backgroundColor: getColor(),
-    borderColor: '#18181b'
+    borderColor: '#18181b',
 })
-
 </script>
 
 <template>

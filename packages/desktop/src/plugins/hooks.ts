@@ -6,7 +6,7 @@ export interface HookEventListener {
 }
 
 export interface HooksManager {
-    listeners:  HookEventListener[]
+    listeners: HookEventListener[]
     on: (listener: HookEventListener) => void
     off: (listener: HookEventListener) => void
     emit: (name: string, data?: any) => void
@@ -14,35 +14,35 @@ export interface HooksManager {
 
 const listeners = [] as HookEventListener[]
 
-export function createHookManager(){
-
+export function createHookManager() {
     const on: HooksManager['on'] = (listener) => {
         listeners.push(listener)
     }
-    
+
     const off: HooksManager['off'] = (listener) => {
-        const index = listeners.findIndex(l => l.pattern === listener.pattern && listener.handler === listener.handler)
+        const index = listeners.findIndex(
+            (l) => l.pattern === listener.pattern && listener.handler === listener.handler
+        )
 
         if (index !== -1) {
             listeners.splice(index, 1)
         }
-
     }
-    
+
     const emit: HooksManager['emit'] = (name, data) => {
         console.debug('hook', name, data)
-        
+
         listeners
-            .filter(l => name.match(l.pattern) && !!l.handler)
-            .filter(l => !!l.handler)
-            .forEach(l => l.handler(data))
+            .filter((l) => name.match(l.pattern) && !!l.handler)
+            .filter((l) => !!l.handler)
+            .forEach((l) => l.handler(data))
     }
 
     const state: HooksManager = {
         listeners,
         on,
         off,
-        emit
+        emit,
     }
 
     return state
@@ -50,14 +50,14 @@ export function createHookManager(){
 
 const manager = createHookManager()
 
-export function useHooks(){
+export function useHooks() {
     return manager
 }
 
 const plugin: Plugin = {
-    install: () => true
+    install: () => true,
 }
 
-export function createHooks(){
+export function createHooks() {
     return plugin
 }

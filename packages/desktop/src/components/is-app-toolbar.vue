@@ -11,8 +11,8 @@ import { useWorkspace } from '@/composables/workspaces'
 const props = defineProps({
     title: {
         type: String,
-        required: false,
-    }
+        default: null,
+    },
 })
 
 const route = useRoute()
@@ -32,7 +32,7 @@ const menu = computed(() => {
     return useWorkspaceMenu(route.params.workspaceId as string).value
 })
 
-const item = computed(() => menu.value.find(i => i.to === route.path))
+const item = computed(() => menu.value.find((i) => i.to === route.path))
 
 const label = computed(() => {
     if (props.title) return props.title
@@ -41,12 +41,12 @@ const label = computed(() => {
 })
 
 const links = computed(() => {
-    const result = [ { label: label.value, to: '' } ]
+    const result = [{ label: label.value, to: '' }]
 
     if (workspace.value) {
         result.unshift({
             label: workspace.value.name,
-            to: `/workspaces/${workspace.value.id}/entries`
+            to: `/workspaces/${workspace.value.id}/entries`,
         })
     }
 
@@ -54,81 +54,73 @@ const links = computed(() => {
 })
 
 async function toggleFavorite() {
-    
     const items = menu.value.slice()
 
-    const index = items.findIndex(i => i.id === item.value?.id)
+    const index = items.findIndex((i) => i.id === item.value?.id)
 
     if (index !== -1) {
         items.splice(index, 1)
     }
-    
+
     if (index === -1) {
         items.push({
             label: label.value,
             to: route.path,
             order: 10,
-            id: uuid()
+            id: uuid(),
         })
     }
-
 
     await saveWorkspaceMenu(route.params.workspaceId as string, items)
 }
 
-watch(() => route.fullPath, async () => {
-    haveBack.value = !!window.history.state.back
-    haveForward.value = !!window.history.state.forward
+watch(
+    () => route.fullPath,
+    async () => {
+        haveBack.value = !!window.history.state.back
+        haveForward.value = !!window.history.state.forward
 
-    if (!workspaceId.value) {
-        workspace.value = null
-    }
+        if (!workspaceId.value) {
+            workspace.value = null
+        }
 
-    if (workspaceId.value) {
-        await setWorkspace(workspaceId.value as string)
-    }
-
-}, { immediate: true })
-
+        if (workspaceId.value) {
+            await setWorkspace(workspaceId.value as string)
+        }
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
     <w-toolbar class="px-10 border-b border-gray-700 text-sm" :height="40">
-        <is-icon            
-            v-if="!drawer"
-            name="bars"
-            class="mr-4 cursor-pointer"
-            @click="drawer = true"
-        />
+        <is-icon v-if="!drawer" name="bars" class="mr-4 cursor-pointer" @click="drawer = true" />
 
-        <is-icon            
+        <is-icon
             name="arrow-left"
             class="mr-2"
-            :class="haveBack ? 'cursor-pointer' : 'text-gray-500' "
+            :class="haveBack ? 'cursor-pointer' : 'text-gray-500'"
             @click="$router.go(-1)"
         />
-        
+
         <is-icon
             name="arrow-right"
-            class="mr-4 "
-            :class="haveForward ? 'cursor-pointer' : 'text-gray-500' "
+            class="mr-4"
+            :class="haveForward ? 'cursor-pointer' : 'text-gray-500'"
             @click="$router.go(1)"
         />
 
         <template v-for="(link, index) in links" :key="index">
-        
-        <router-link class="text-sm" v-if="link.to" :to="link.to">
-            {{ link.label }}        
-        </router-link>
+            <router-link v-if="link.to" class="text-sm" :to="link.to">
+                {{ link.label }}
+            </router-link>
 
-        <div class="text-sm" v-else>
-            {{ link.label }}        
-        </div>
+            <div v-else class="text-sm">
+                {{ link.label }}
+            </div>
 
-        <div class="mx-2" v-if="index !== links.length - 1" >/</div>
-
+            <div v-if="index !== links.length - 1" class="mx-2">/</div>
         </template>
-
 
         <is-icon
             v-if="workspaceId"

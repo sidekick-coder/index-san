@@ -3,7 +3,6 @@ import InMemoryApp from '../../__tests__/app'
 import ShowWorkspaceOptions from './show-workspace-options'
 
 test.group('show-workspace-options (use-case)', () => {
-
     const app = new InMemoryApp()
 
     const useCase = new ShowWorkspaceOptions(app)
@@ -12,8 +11,8 @@ test.group('show-workspace-options (use-case)', () => {
         const options = {
             theme: {
                 accent: '#000',
-                lines: '#eee'
-            }
+                lines: '#eee',
+            },
         }
 
         app.memoryDrive.createFile('.is/options.json', options)

@@ -11,25 +11,28 @@ const props = defineProps({
     collectionId: {
         type: String,
         required: true,
-    }
+    },
 })
 
 const meta = usePageMeta()
 
 const [collection, setCollection] = useCollection()
 
-async function load(){
+async function load() {
     await setCollection(props.workspaceId, props.collectionId)
-    
+
     meta.value.title = collection.value?.name ?? `collection ${props.collectionId}`
 }
 
 watch(() => props, load, {
     immediate: true,
-    deep: true
+    deep: true,
 })
-
 </script>
-<template>    
-    <is-collection-table :workspace-id="workspaceId" :collection-id="collectionId" view-id="default" />    
+<template>
+    <is-collection-table
+        :workspace-id="workspaceId"
+        :collection-id="collectionId"
+        view-id="default"
+    />
 </template>

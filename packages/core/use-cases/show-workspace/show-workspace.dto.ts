@@ -1,8 +1,6 @@
 import Workspace from '../../entities/workspace'
 
-
 declare namespace ShowWorkspaceDTO {
-    
     export interface Input {
         id: string
     }

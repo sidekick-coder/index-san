@@ -5,7 +5,7 @@ declare namespace CreateDirectoryEntryDTO {
         workspaceId: string
         data: DirectoryEntry
     }
-    
+
     export interface Output {
         data: DirectoryEntry
     }

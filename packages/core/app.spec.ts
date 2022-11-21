@@ -9,21 +9,19 @@ import InMemoryWorkspaceRepository from './__tests__/repositories/in-memory-work
 
 test.group('app', () => {
     test('should instantiate an app', ({ expect }) => {
-        const workspaceRepository = new InMemoryWorkspaceRepository()    
-        const memoryDrive = new InMemoryDrive()    
+        const workspaceRepository = new InMemoryWorkspaceRepository()
+        const memoryDrive = new InMemoryDrive()
         const memoryCrud = new InMemoryCrud()
-        const driveManager = new DriveManager({ memory: memoryDrive}, 'memory')
-        const crudManger = new CrudManager({ memory: memoryCrud  })
+        const driveManager = new DriveManager({ memory: memoryDrive }, 'memory')
+        const crudManger = new CrudManager({ memory: memoryCrud })
 
         const app = new App({
             workspaceRepository,
             driveManager,
-            crudManger
+            crudManger,
         })
 
         expect(app.managers.drive).toEqual(driveManager)
         expect(app.managers.crud).toEqual(crudManger)
     })
 })
-
-

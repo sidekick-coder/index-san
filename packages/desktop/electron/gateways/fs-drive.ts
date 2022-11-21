@@ -4,30 +4,28 @@ import DirectoryEntry from '../../../core/entities/directory-entry'
 import { Drive } from '../../../core/gateways/drive-manager'
 
 export default class FSDrive implements Drive {
-    
     public config = {
-        path: ''
+        path: '',
     }
 
     public resolve(args: string | string[], separator = path.sep) {
         args = Array.isArray(args) ? args : [args]
 
         return args
-            .map(a => a.split(/\\|\//))
+            .map((a) => a.split(/\\|\//))
             .reduce((all, a) => all.concat(a), [])
-            .filter(a => a !== '')
+            .filter((a) => a !== '')
             .join(separator)
     }
 
     public async list(path: string): Promise<DirectoryEntry[]> {
-        
         const systemPath = this.resolve([this.config.path, path])
 
         const entries = await fs.promises.readdir(systemPath, { withFileTypes: true })
-        
-        return entries.map(e => {
+
+        return entries.map((e) => {
             const filename = this.resolve([path, e.name], '/')
-            
+
             if (e.isDirectory()) {
                 return DirectoryEntry.directory(filename)
             }
@@ -35,20 +33,27 @@ export default class FSDrive implements Drive {
             return DirectoryEntry.file(filename)
         })
     }
-    
+
     public async get(entryPath: string) {
         const systemPath = this.resolve([this.config.path, entryPath])
 
         return await fs.promises
             .stat(systemPath)
-            .then((e) => e.isDirectory() ? DirectoryEntry.directory(entryPath) : DirectoryEntry.file(entryPath))
+            .then((e) =>
+                e.isDirectory()
+                    ? DirectoryEntry.directory(entryPath)
+                    : DirectoryEntry.file(entryPath)
+            )
             .catch(() => null)
     }
 
-    public async exists (path: string) {
+    public async exists(path: string) {
         const systemPath = this.resolve([this.config.path, path])
-        
-        return fs.promises.stat(systemPath).then(() => true).catch(() => false)
+
+        return fs.promises
+            .stat(systemPath)
+            .then(() => true)
+            .catch(() => false)
     }
 
     public async move(source: string, target: string) {
@@ -81,12 +86,13 @@ export default class FSDrive implements Drive {
 
         await fs.promises.writeFile(systemPath, content)
     }
-    
-    public async read (entryPath: string): Promise<Buffer | null> {
-        const systemPath = this.resolve([this.config.path, entryPath])        
-        
-        const isFile = await fs.promises.stat(systemPath)
-            .then(s => s.isFile())
+
+    public async read(entryPath: string): Promise<Buffer | null> {
+        const systemPath = this.resolve([this.config.path, entryPath])
+
+        const isFile = await fs.promises
+            .stat(systemPath)
+            .then((s) => s.isFile())
             .catch(() => false)
 
         if (!isFile) return null
@@ -94,11 +100,9 @@ export default class FSDrive implements Drive {
         return await fs.promises.readFile(systemPath)
     }
 
-    public async delete (path: string) {
+    public async delete(path: string) {
         const systemPath = this.resolve([this.config.path, path])
 
         await fs.promises.rm(systemPath, { recursive: true })
     }
-    
-  
 }

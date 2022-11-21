@@ -16,11 +16,12 @@ Chart.register(...registerables)
 const props = defineProps({
     items: {
         type: Array as () => Record<string, string>[],
-        default: () => []
+        default: () => [],
     },
     labelKey: {
         type: String,
         required: false,
+        default: '',
     },
     valueKey: {
         type: String,
@@ -28,11 +29,11 @@ const props = defineProps({
     },
     valueSuffix: {
         type: String,
-        default: ''
+        default: '',
     },
     groupBy: {
         type: String,
-        default: null
+        default: null,
     },
     percentage: {
         type: Boolean,
@@ -44,11 +45,11 @@ const props = defineProps({
     },
     width: {
         type: String,
-        default: undefined
+        default: undefined,
     },
     height: {
         type: String,
-        default: undefined
+        default: undefined,
     },
 })
 
@@ -66,70 +67,69 @@ const style = {
 
 const data = computed(() => {
     if (props.groupBy) {
-        return Object.entries(groupBy(props.items, props.groupBy))
-            .map(([label, items]) => {
-                let value: string | number = sumBy(items, props.valueKey)
+        return Object.entries(groupBy(props.items, props.groupBy)).map(([label, items]) => {
+            let value: string | number = sumBy(items, props.valueKey)
 
-                if (props.percentage) {
-                    value = (value / total) * 100
+            if (props.percentage) {
+                value = (value / total) * 100
 
-                    value = value.toFixed(2)
-                }
+                value = value.toFixed(2)
+            }
 
-                return {
-                    label,
-                    value
-                }
-            })
+            return {
+                label,
+                value,
+            }
+        })
     }
 
     return props.items.map((item, index) => ({
         label: props.labelKey ? item[props.labelKey] : index,
-        value: item[props.valueKey]
+        value: item[props.valueKey],
     }))
 })
 
-
-function load(){
+function load() {
     chart.value = new Chart(root.value, {
         type: 'pie',
         data: {
-            labels: data.value.map(d => d.label),
-            datasets: [{
-                data: data.value.map(d => Number(d.value)),
-                backgroundColor: theme.chartColors(),
-                borderColor: '#18181b'
-            }]
+            labels: data.value.map((d) => d.label),
+            datasets: [
+                {
+                    data: data.value.map((d) => Number(d.value)),
+                    backgroundColor: theme.chartColors(),
+                    borderColor: '#18181b',
+                },
+            ],
         },
         options: {
             plugins: {
                 legend: {
-                    display: props.showLegend
+                    display: props.showLegend,
                 },
                 tooltip: {
                     callbacks: {
                         label({ raw, label }) {
-                            let value = raw                            
-                            
+                            let value = raw
+
                             if (/^\d+$/.test(String(value))) {
                                 value = Number(value).toLocaleString()
                             }
 
                             return ` ${label} ${value}${props.valueSuffix}`
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
-        }
+        },
     })
 }
 
 onMounted(load)
 onUnmounted(() => chart.value?.destroy())
-
 </script>
 <template>
-    <div :style="style" >
+    <div :style="style">
         <canvas ref="root" />
     </div>
 </template>

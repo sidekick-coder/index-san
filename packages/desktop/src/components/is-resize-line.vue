@@ -9,7 +9,7 @@ const props = defineProps({
     },
     minWidth: {
         type: Number,
-        default: null
+        default: null,
     },
 })
 
@@ -24,7 +24,7 @@ const model = useVModel(props, 'modelValue', emit)
 
 const startWidth = ref(props.modelValue)
 
-function drag(event: MouseEvent){
+function drag(event: MouseEvent) {
     const width = startWidth.value + event.clientX - state.value.x
 
     if (width >= props.minWidth || !props.minWidth) {
@@ -32,7 +32,7 @@ function drag(event: MouseEvent){
     }
 }
 
-function stop(){
+function stop() {
     startWidth.value = model.value
 
     document.documentElement.removeEventListener('mousemove', drag, false)
@@ -48,14 +48,7 @@ function start(event: MouseEvent) {
     document.documentElement.addEventListener('mousemove', drag, false)
     document.documentElement.addEventListener('mouseup', stop, false)
 }
-
-
 </script>
 <template>
-    <div
-        class="h-full w-[5px] absolute right-0 top-0 cursor-col-resize"
-        @mousedown="start"
-    >
-
-    </div>
+    <div class="h-full w-[5px] absolute right-0 top-0 cursor-col-resize" @mousedown="start"></div>
 </template>

@@ -8,27 +8,27 @@ interface WorkspaceOptions {
     }
 }
 
-export function useWorkspaceOption(workspaceId: string){
+export function useWorkspaceOption(workspaceId: string) {
     return useState<WorkspaceOptions>(`workspaces:${workspaceId}:options`, {
-        menu: { items: [] }
+        menu: { items: [] },
     })
 }
 
-export async function useWorkspaceOptionAsync(workspaceId: string){
+export async function useWorkspaceOptionAsync(workspaceId: string) {
     const options = useWorkspaceOption(workspaceId)
 
     options.value = await useCase<DataResponse<any>>('show-workspace-options', {
-        workspaceId
-    }).then(r => r.data)
+        workspaceId,
+    }).then((r) => r.data)
 
     return options
 }
 
-export function useWorkspaces(){
+export function useWorkspaces() {
     return useState<Workspace[]>('workspaces', [])
 }
 
-export async function useWorkspacesAsync(){
+export async function useWorkspacesAsync() {
     const workspaces = useWorkspaces()
 
     workspaces.value = await useCase<DataResponse<Workspace[]>>('list-workspaces')
@@ -38,7 +38,7 @@ export async function useWorkspacesAsync(){
     return workspaces
 }
 
-export async function saveWorkspaceOption(workspaceId: string, data: WorkspaceOptions){
+export async function saveWorkspaceOption(workspaceId: string, data: WorkspaceOptions) {
     const options = useWorkspaceOption(workspaceId)
 
     await useCase('update-workspace-options', { workspaceId, data })
@@ -46,15 +46,15 @@ export async function saveWorkspaceOption(workspaceId: string, data: WorkspaceOp
     options.value = Object.assign(options.value, data)
 }
 
-export function useWorkspace(){
+export function useWorkspace() {
     const [workspace, setWorkspaceKey] = useStateV2<Workspace | null>()
 
-    async function setWorkspace(workspaceId: string){
+    async function setWorkspace(workspaceId: string) {
         setWorkspaceKey(['workspaces', workspaceId].join(':'))
 
         const workspaces = await useWorkspacesAsync()
 
-        const search = workspaces.value.find(w => w.id === workspaceId)
+        const search = workspaces.value.find((w) => w.id === workspaceId)
 
         workspace.value = search || null
     }

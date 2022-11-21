@@ -4,14 +4,13 @@ import WorkspaceService from '../../services/workspace-service'
 import ListScriptsDTO from './list-scripts.dto'
 
 export default class ListScripts {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public async execute({ workspaceId }: ListScriptsDTO.Input): Promise<ListScriptsDTO.Output> {
-
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const importers: Importer[] = []
-        
+
         const entries = await workspace.drive.list('.is/scripts')
 
         for await (const entry of entries) {
@@ -19,12 +18,13 @@ export default class ListScripts {
 
             const content = buffer?.toString() ?? ''
 
-            importers.push(new Importer({ content, name: entry.name.replace('.js', '') }, entry.name))
+            importers.push(
+                new Importer({ content, name: entry.name.replace('.js', '') }, entry.name)
+            )
         }
 
-
         return {
-            data: importers
+            data: importers,
         }
     }
 }

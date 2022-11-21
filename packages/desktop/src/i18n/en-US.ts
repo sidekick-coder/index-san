@@ -9,5 +9,4 @@ export default {
     editMode: 'Edit mode',
     viewMode: 'View mode',
     reload: 'Reload',
-
 }

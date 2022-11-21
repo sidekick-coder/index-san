@@ -7,12 +7,9 @@ export default class CreateWorkspace {
     constructor(
         private readonly repository: IWorkspaceRepository,
         private readonly drive: DriveManager
-    ){
+    ) {}
 
-    }
-    
-    public async execute(args: CreateWorkspaceDTO.Input){
-
+    public async execute(args: CreateWorkspaceDTO.Input) {
         const validDrives = Object.keys(this.drive.listDrives())
 
         if (!validDrives.includes(args.driveName)) {

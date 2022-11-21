@@ -24,15 +24,14 @@ const md = MarkdownIt({
         }
 
         return ''
-    }
+    },
 })
 
 md.use(componentPlugin)
 
 const view = {
-    template: md.render(props.content)
+    template: md.render(props.content),
 }
-
 </script>
 
 <template>
@@ -43,11 +42,16 @@ const view = {
 
 <style lang="scss">
 .is-markdown {
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         @apply font-bold;
         @apply my-4;
     }
-    
+
     h1 {
         @apply text-2xl;
     }
@@ -74,7 +78,6 @@ const view = {
         li {
             @apply w-full mb-2;
             @apply list-disc;
-
         }
     }
 }

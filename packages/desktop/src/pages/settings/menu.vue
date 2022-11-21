@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { definePageMeta } from '@/composables/page-meta'
-import { useAllMenu, useAllMenuAsync, saveWorkspaceMenu, MenuItemWithWorkspace } from '@/composables/menu'
+import {
+    useAllMenu,
+    useAllMenuAsync,
+    saveWorkspaceMenu,
+    MenuItemWithWorkspace,
+} from '@/composables/menu'
 
 definePageMeta({
-    title: 'Menu settings'
+    title: 'Menu settings',
 })
 
 const menu = useAllMenu()
@@ -13,58 +18,55 @@ const columns = [
         name: 'order',
         label: 'Order',
         field: 'order',
-        width: 80
+        width: 80,
     },
     {
         name: 'workspace',
         label: 'Workspace',
-        field: 'workspace'
+        field: 'workspace',
     },
     {
         name: 'label',
         label: 'Label',
-        field: 'label'
+        field: 'label',
     },
     {
         name: 'section',
         label: 'section',
-        field: 'section'
+        field: 'section',
     },
     {
         name: 'icon',
         label: 'icon',
-        field: 'icon'
+        field: 'icon',
     },
     {
         name: 'actions',
         label: '',
-        width: 80
+        width: 80,
     },
 ]
 
-async function setItems(){
-
+async function setItems() {
     await useAllMenuAsync()
 }
 
-async function update(workspaceId: string){
-
-    const items = menu.value.filter(m => m.workspace.id === workspaceId)
+async function update(workspaceId: string) {
+    const items = menu.value.filter((m) => m.workspace.id === workspaceId)
 
     await saveWorkspaceMenu(workspaceId, items)
 }
 
-async function onItemUpdate(item: MenuItemWithWorkspace){    
+async function onItemUpdate(item: MenuItemWithWorkspace) {
     await update(item.workspace.id)
 
     await setItems()
 }
 
-async function onItemDelete(item: MenuItemWithWorkspace){
-    const items = menu
-        .value
-        .filter(m => m.workspace.id === item.workspace.id)
-        .filter(m => m.id !== item.id)
+async function onItemDelete(item: MenuItemWithWorkspace) {
+    const items = menu.value
+        .filter((m) => m.workspace.id === item.workspace.id)
+        .filter((m) => m.id !== item.id)
 
     await saveWorkspaceMenu(item.workspace.id, items)
 
@@ -72,17 +74,15 @@ async function onItemDelete(item: MenuItemWithWorkspace){
 }
 
 setItems()
-
 </script>
-<template>    
+<template>
     <is-table :columns="columns" :items="menu" limit="100">
-    
         <template #item-order="{ item, column }">
-            <input                        
+            <input
                 v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
                 @change="onItemUpdate(item)"
-            >
+            />
         </template>
 
         <template #item-workspace="{ item }">
@@ -92,32 +92,32 @@ setItems()
         </template>
 
         <template #item-label="{ item, column }">
-            <input                        
+            <input
                 v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
                 @change="onItemUpdate(item)"
-            >
+            />
         </template>
-        
+
         <template #item-section="{ item, column }">
-            <input                        
+            <input
                 v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
                 @change="onItemUpdate(item)"
-            >
+            />
         </template>
-        
+
         <template #item-icon="{ item, column }">
-            <input                        
+            <input
                 v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500  w-full"
+                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
                 @change="onItemUpdate(item)"
-            >
+            />
         </template>
-       
+
         <template #item-actions="{ item }">
             <div class="flex items-center justify-center">
-                <is-icon name="trash" @click="onItemDelete(item)" class="cursor-pointer"  />
+                <is-icon name="trash" class="cursor-pointer" @click="onItemDelete(item)" />
             </div>
         </template>
     </is-table>

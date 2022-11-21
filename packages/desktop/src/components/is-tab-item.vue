@@ -11,7 +11,7 @@ export default {
 </script>
 
 <template>
-  <div class="px-2 py-4">
-    <slot />
-  </div>
+    <div class="px-2 py-4">
+        <slot />
+    </div>
 </template>

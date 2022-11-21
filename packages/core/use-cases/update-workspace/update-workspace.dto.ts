@@ -1,15 +1,13 @@
 declare namespace UpdateWorkspaceDTO {
     export interface Input {
-        id: string,
+        id: string
         data: {
-            name?: string,
+            name?: string
             config?: Record<string, string>
         }
     }
 
-    export interface Output {
-
-    }
+    export interface Output {}
 }
 
 export default UpdateWorkspaceDTO

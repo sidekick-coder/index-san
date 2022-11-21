@@ -7,32 +7,32 @@ const root = path.resolve(__dirname, '..', '..')
 const rootNodeModules = path.resolve(root, 'node_modules')
 
 const alias = {
-    '@core' : path.resolve(__dirname, '..', 'core'),
+    '@core': path.resolve(__dirname, '..', 'core'),
     '@root-node-modules': rootNodeModules,
-    '@' : path.resolve(__dirname, 'src'),
+    '@': path.resolve(__dirname, 'src'),
     'vue': path.resolve(rootNodeModules, 'vue/dist/vue.esm-bundler.js'),
 }
 
 export default defineConfig({
     test: {
-        watch: false
+        watch: false,
     },
     resolve: { alias },
     plugins: [
-        vue(), 
+        vue(),
         electron([
             {
                 entry: 'electron/main.ts',
                 vite: {
                     resolve: { alias },
-                }
+                },
             },
             {
                 entry: 'electron/preload.ts',
                 onstart(options) {
                     options.reload()
                 },
-            }
+            },
         ]),
-    ]
+    ],
 })

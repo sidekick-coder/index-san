@@ -8,7 +8,7 @@ export default class Workspace {
 
     constructor(props: Omit<Workspace, 'id'>, id?: string) {
         this.id = id ?? uuid()
-        
+
         this.name = props.name
         this.driveName = props.driveName
         this.config = props.config

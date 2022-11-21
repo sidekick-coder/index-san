@@ -3,7 +3,7 @@ import WorkspaceService from '../../services/workspace-service'
 import DeleteDirectoryEntryDTO from './delete-directory-entry.dto'
 
 export default class DeleteDirectoryEntry {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public async execute({ workspaceId, path }: DeleteDirectoryEntryDTO.Input) {
         const workspace = await WorkspaceService.from(this.app, workspaceId)

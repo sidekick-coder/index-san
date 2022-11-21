@@ -22,7 +22,7 @@ const decoder = new TextDecoder('utf-8')
 const content = ref('')
 const indentation = '    '
 
-async function load(){
+async function load() {
     const contentBuffer = await repository.read(props.path)
 
     content.value = decoder.decode(contentBuffer)
@@ -36,7 +36,7 @@ const onChange = debounce(async () => {
 
 watch(content, onChange)
 
-function onTabPress (event: KeyboardEvent) {
+function onTabPress(event: KeyboardEvent) {
     const textarea = event.target as HTMLTextAreaElement
 
     if (!textarea) return
@@ -53,7 +53,7 @@ function onTabPress (event: KeyboardEvent) {
     textarea.selectionStart = index + indentation.length
 }
 
-function onShiftTabPress (event: KeyboardEvent) {
+function onShiftTabPress(event: KeyboardEvent) {
     const textarea = event.target as HTMLTextAreaElement
 
     if (!textarea) return
@@ -72,7 +72,6 @@ function onShiftTabPress (event: KeyboardEvent) {
     textarea.selectionEnd = index - indentation.length
     textarea.selectionStart = index - indentation.length
 }
-
 </script>
 <template>
     <textarea
@@ -84,6 +83,5 @@ function onShiftTabPress (event: KeyboardEvent) {
         @keydown.exact.tab.prevent="onTabPress"
         @keydown.shift.tab.prevent="onShiftTabPress"
     >
-
     </textarea>
 </template>

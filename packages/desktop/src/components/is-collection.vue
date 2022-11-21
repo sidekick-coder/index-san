@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef, useSlots, watch } from 'vue'
-import { CollectionColumn } from '@core/entities/collection'
 
 import { useChildren } from '@/composables/children'
-import { onCollectionUpdate, useCollectionColumns, useCollectionItems } from '@/composables/collection'
+import {
+    onCollectionUpdate,
+    useCollectionColumns,
+    useCollectionItems,
+} from '@/composables/collection'
 
 const props = defineProps({
     workspaceId: {
@@ -16,8 +19,8 @@ const props = defineProps({
     },
     viewId: {
         type: String,
-        default: null
-    }
+        default: null,
+    },
 })
 
 const children = useChildren(useSlots())
@@ -28,38 +31,37 @@ const components = shallowRef<any[]>([])
 const [columns, setColumns] = useCollectionColumns()
 const [items, setItems] = useCollectionItems()
 
-const formattedItems = computed(() => items.value.map(item => {
-    const data: any = {}
+const formattedItems = computed(() =>
+    items.value.map((item) => {
+        const data: any = {}
 
-    columns.value.forEach(column => {
-        data[column.field] = item[column.field]
+        columns.value.forEach((column) => {
+            data[column.field] = item[column.field]
 
-        if (column.type === 'relation') {
-            // data[column.field] = column.options.get(item[column.field])
-        }
+            if (column.type === 'relation') {
+                // data[column.field] = column.options.get(item[column.field])
+            }
+        })
+
+        return data
     })
+)
 
-    return data
-}))
-
-
-function setComponents(){
+function setComponents() {
     components.value = []
 
     children.load()
 
     children
         .findComponent('IsCollectionTable', 'IsChartBar')
-        .forEach(c => components.value.push(c))
+        .forEach((c) => components.value.push(c))
 }
 
-
-async function load(){
+async function load() {
     if (!props.workspaceId || !props.collectionId) return
 
-    
-    loading.value = true    
-    
+    loading.value = true
+
     await setItems(props.workspaceId, props.collectionId)
     await setColumns(props.workspaceId, props.collectionId)
 
@@ -70,11 +72,10 @@ async function load(){
 
 watch(() => props, load, {
     immediate: true,
-    deep: true
+    deep: true,
 })
 
 onCollectionUpdate(props.workspaceId, props.collectionId, load)
-
 </script>
 <template>
     <div v-if="!loading" class="flex flex-wrap relative group">
@@ -84,8 +85,8 @@ onCollectionUpdate(props.workspaceId, props.collectionId, load)
                 :workspace-id="workspaceId"
                 :collection-id="collectionId"
             />
-            
-            <component v-else :is="c" :items="formattedItems" class="mt-5" />
+
+            <component :is="c" v-else :items="formattedItems" class="mt-5" />
         </template>
     </div>
 </template>
@@ -97,7 +98,7 @@ onCollectionUpdate(props.workspaceId, props.collectionId, load)
         .actions {
             opacity: 0;
         }
-    
+
         &:hover {
             .actions {
                 opacity: 1;

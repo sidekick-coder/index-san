@@ -9,5 +9,5 @@ export function useMeasurement() {
         return String(value)
     }
 
-    return {toSize}
+    return { toSize }
 }

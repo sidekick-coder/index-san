@@ -3,7 +3,7 @@ import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
 
 export default class DeleteScript {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public async execute({ workspaceId, name }: DeleteScriptDTO.Input): Promise<void> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)

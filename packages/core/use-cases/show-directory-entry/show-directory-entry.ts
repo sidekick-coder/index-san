@@ -3,10 +3,12 @@ import WorkspaceService from '../../services/workspace-service'
 import ShowDirectoryEntryDTO from './show-directory-entry.dto'
 
 export default class ShowDirectoryEntry {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
-    public async execute({ workspaceId, path }: ShowDirectoryEntryDTO.Input): Promise<ShowDirectoryEntryDTO.Output> {
-
+    public async execute({
+        workspaceId,
+        path,
+    }: ShowDirectoryEntryDTO.Input): Promise<ShowDirectoryEntryDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const entry = await workspace.drive.get(path)
@@ -14,8 +16,7 @@ export default class ShowDirectoryEntry {
         if (!entry) throw new Error('DirectoryEntry not found')
 
         return {
-            data: entry
+            data: entry,
         }
-
     }
 }

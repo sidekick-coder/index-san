@@ -11,28 +11,28 @@ test.group('create-workspace (use-case)', () => {
     const drive = new DriveManager({ memory: new InMemoryDrive() }, 'memory')
 
     const useCase = new CreateWorkspace(repository, drive)
-    
+
     test('should create a workspace', async ({ expect }) => {
         const workspace = WorkspaceFactory.create()
-        
+
         await useCase.execute(workspace)
 
         const item = repository.items[0]
 
-        expect(item.name).toEqual(workspace.name)        
-        expect(item.driveName).toEqual(workspace.driveName)        
+        expect(item.name).toEqual(workspace.name)
+        expect(item.driveName).toEqual(workspace.driveName)
         expect(item.path).toEqual(workspace.path)
-        
     })
 
     test('should throw an error if drive is invalid', async ({ expect }) => {
         expect.assertions(1)
 
         const workspace = WorkspaceFactory.create({
-            driveName: 'invalid'
+            driveName: 'invalid',
         })
 
-        await useCase.execute(workspace).catch(err => expect(err.message).toEqual('Invalid drive'))
+        await useCase
+            .execute(workspace)
+            .catch((err) => expect(err.message).toEqual('Invalid drive'))
     })
-    
 })

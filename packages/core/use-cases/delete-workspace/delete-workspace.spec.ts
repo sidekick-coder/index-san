@@ -4,21 +4,16 @@ import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-
 import DeleteWorkspace from './delete-workspace'
 
 test.group('delete-workspace (use-case)', (group) => {
-    const repository = new InMemoryWorkspaceRepository()    
+    const repository = new InMemoryWorkspaceRepository()
     const useCase = new DeleteWorkspace(repository)
 
     group.each.teardown(() => repository.clear())
 
     test('should delete workspace', async ({ expect }) => {
-
-        const workspace = await repository.create(
-            WorkspaceFactory.create()
-        )
+        const workspace = await repository.create(WorkspaceFactory.create())
 
         await useCase.execute({ id: workspace.id })
 
-
         expect(repository.items.length).toEqual(0)
-
     })
 })

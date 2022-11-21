@@ -11,7 +11,7 @@ declare namespace CreateItemDTO {
         collectionId: string
         data: any
     }
-    
+
     export interface Output {
         data: ItemWithWorkspace
     }

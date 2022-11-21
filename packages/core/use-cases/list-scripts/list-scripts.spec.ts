@@ -4,7 +4,6 @@ import InMemoryApp from '../../__tests__/app'
 import ListScripts from './list-scripts'
 
 test.group('list-scripts (use-case)', (group) => {
-
     const app = new InMemoryApp()
 
     const useCase = new ListScripts(app)
@@ -23,10 +22,9 @@ test.group('list-scripts (use-case)', (group) => {
         }
 
         const result = await useCase.execute({
-            workspaceId: workspace.id
+            workspaceId: workspace.id,
         })
 
-
-        expect(result.data.map(s => s.name)).toEqual(names)
+        expect(result.data.map((s) => s.name)).toEqual(names)
     })
 })

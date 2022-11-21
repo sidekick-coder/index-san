@@ -5,12 +5,11 @@ import CollectionFactory from '../../__tests__/factories/collections'
 import CreateCollection from './create-collection'
 
 test.group('create-collection (use-case)', (group) => {
-
     const app = new InMemoryApp()
 
     const useCase = new CreateCollection(app)
 
-    group.tap(t => t.teardown(() => app.memoryDrive.clear()))
+    group.tap((t) => t.teardown(() => app.memoryDrive.clear()))
 
     test('should create a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
@@ -19,7 +18,7 @@ test.group('create-collection (use-case)', (group) => {
 
         await useCase.execute({
             workspaceId: workspace.id,
-            data: collection
+            data: collection,
         })
 
         const content = app.memoryDrive.content.get('.is/collections.json')
@@ -27,9 +26,7 @@ test.group('create-collection (use-case)', (group) => {
         const json = content ? JSON.parse(content.toString()) : []
 
         expect(json.length).toEqual(1)
-        
+
         expect(json[0].path).toEqual(collection.path)
-
     })
-
 })

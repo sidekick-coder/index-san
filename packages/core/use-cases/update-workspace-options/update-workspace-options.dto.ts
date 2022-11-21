@@ -1,6 +1,6 @@
 declare namespace UpdateWorkspaceOptionsDTO {
     export interface Input {
-        workspaceId: string,
+        workspaceId: string
         data: Record<string, string>
     }
 

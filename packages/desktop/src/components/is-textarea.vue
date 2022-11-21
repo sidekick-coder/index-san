@@ -4,7 +4,7 @@ import { useVModel } from 'vue-wind/composables/v-model'
 const props = defineProps({
     modelValue: {
         type: String,
-        default: ''
+        default: '',
     },
 })
 
@@ -12,7 +12,7 @@ const emit = defineEmits(['update:modelValue', 'change'])
 const model = useVModel(props, 'modelValue', emit)
 const indentation = '    '
 
-function onTabPress (event: KeyboardEvent) {
+function onTabPress(event: KeyboardEvent) {
     const textarea = event.target as HTMLTextAreaElement
 
     if (!textarea) return
@@ -29,7 +29,7 @@ function onTabPress (event: KeyboardEvent) {
     textarea.selectionStart = index + indentation.length
 }
 
-function onShiftTabPress (event: KeyboardEvent) {
+function onShiftTabPress(event: KeyboardEvent) {
     const textarea = event.target as HTMLTextAreaElement
 
     if (!textarea) return
@@ -48,7 +48,6 @@ function onShiftTabPress (event: KeyboardEvent) {
     textarea.selectionEnd = index - indentation.length
     textarea.selectionStart = index - indentation.length
 }
-
 </script>
 <template>
     <textarea

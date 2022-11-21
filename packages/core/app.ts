@@ -40,31 +40,31 @@ interface AppArgs {
     crudManger: CrudManager
 }
 interface AppUseCases {
-    'list-workspaces': ListWorkspaces,
-    'create-workspace': CreateWorkspace,
-    'delete-workspace': DeleteWorkspace,
+    'list-workspaces': ListWorkspaces
+    'create-workspace': CreateWorkspace
+    'delete-workspace': DeleteWorkspace
 
-    'show-workspace-options': ShowWorkspaceOptions,
-    'update-workspace-options': UpdateWorkspaceOptions,
+    'show-workspace-options': ShowWorkspaceOptions
+    'update-workspace-options': UpdateWorkspaceOptions
 
-    'list-directory-entry': ListDirectoryEntry 
-    'show-directory-entry': ShowDirectoryEntry,
-    'read-directory-entry': ReadDirectoryEntry,
-    'create-directory-entry': CreateDirectoryEntry,
-    'write-directory-entry': WriteDirectoryEntry,
-    'delete-directory-entry': DeleteDirectoryEntry,
+    'list-directory-entry': ListDirectoryEntry
+    'show-directory-entry': ShowDirectoryEntry
+    'read-directory-entry': ReadDirectoryEntry
+    'create-directory-entry': CreateDirectoryEntry
+    'write-directory-entry': WriteDirectoryEntry
+    'delete-directory-entry': DeleteDirectoryEntry
 
-    'list-collections': ListCollections,
-    'show-collection': ShowCollection,
-    'create-collection': CreateCollection,
-    'update-collection': UpdateCollection,
-    'delete-collection': DeleteCollection,
+    'list-collections': ListCollections
+    'show-collection': ShowCollection
+    'create-collection': CreateCollection
+    'update-collection': UpdateCollection
+    'delete-collection': DeleteCollection
 
-    'list-items': ListItems,
-    'show-item': ShowItem,
-    'create-item': CreateItem,
-    'update-item': UpdateItem,
-    'delete-item': DeleteItem,
+    'list-items': ListItems
+    'show-item': ShowItem
+    'create-item': CreateItem
+    'update-item': UpdateItem
+    'delete-item': DeleteItem
 
     'list-scripts': ListScripts
     'create-script': CreateScript
@@ -74,11 +74,9 @@ interface AppUseCases {
 }
 
 export default class App extends AppService {
-    
     public cases: AppUseCases
 
-    constructor({ workspaceRepository, driveManager, crudManger }: AppArgs){
-        
+    constructor({ workspaceRepository, driveManager, crudManger }: AppArgs) {
         super({ workspaceRepository, driveManager, crudManger })
 
         this.cases = {
@@ -89,7 +87,7 @@ export default class App extends AppService {
             'show-workspace-options': new ShowWorkspaceOptions(this),
             'update-workspace-options': new UpdateWorkspaceOptions(this),
 
-            'list-directory-entry': new ListDirectoryEntry(this),    
+            'list-directory-entry': new ListDirectoryEntry(this),
             'show-directory-entry': new ShowDirectoryEntry(this),
             'read-directory-entry': new ReadDirectoryEntry(this),
             'create-directory-entry': new CreateDirectoryEntry(this),
@@ -112,7 +110,7 @@ export default class App extends AppService {
             'create-script': new CreateScript(this),
             'update-script': new UpdateScript(this),
             'delete-script': new DeleteScript(this),
-            'execute-script': new ExecuteScript(this)
+            'execute-script': new ExecuteScript(this),
         }
     }
 }

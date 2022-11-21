@@ -17,18 +17,18 @@ interface Repositories {
     workspace: IWorkspaceRepository
 }
 
-export default class AppService {    
+export default class AppService {
     public managers: Managers
     public repositories: Repositories
 
-    constructor({ workspaceRepository, driveManager, crudManger }: AppServiceArgs){
+    constructor({ workspaceRepository, driveManager, crudManger }: AppServiceArgs) {
         this.repositories = {
-            workspace: workspaceRepository
+            workspace: workspaceRepository,
         }
 
         this.managers = {
             drive: driveManager,
-            crud: crudManger
+            crud: crudManger,
         }
     }
 }

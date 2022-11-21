@@ -3,7 +3,7 @@ import WorkspaceService from '../../services/workspace-service'
 import UpdateWorkspaceOptionsDTO from './update-workspace-options.dto'
 
 export default class UpdateWorkspaceOptions {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public async execute({ workspaceId, data }: UpdateWorkspaceOptionsDTO.Input): Promise<void> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)

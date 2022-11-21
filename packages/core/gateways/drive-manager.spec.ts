@@ -3,14 +3,13 @@ import DirectoryEntry from '../entities/directory-entry'
 import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
 import DriveManager from './drive-manager'
 
-
 test.group('drive-manager', () => {
     const localDrive = new InMemoryDrive()
 
     test('should instantiate with drives', async ({ expect }) => {
         const drives = {
             local: localDrive,
-            another: localDrive
+            another: localDrive,
         }
 
         const drive = new DriveManager(drives, 'local')
@@ -21,7 +20,7 @@ test.group('drive-manager', () => {
     test('should use() change the current drive', async ({ expect }) => {
         const drives = {
             local: localDrive,
-            another: localDrive
+            another: localDrive,
         }
 
         const drive = new DriveManager(drives, 'local')
@@ -34,7 +33,7 @@ test.group('drive-manager', () => {
     test('should config() set drive configuration', async ({ expect }) => {
         const drives = {
             local: localDrive,
-            another: localDrive
+            another: localDrive,
         }
 
         const drive = new DriveManager(drives, 'local')
@@ -48,11 +47,11 @@ test.group('drive-manager', () => {
         const entry = new DirectoryEntry({
             name: 'test.txt',
             path: 'test',
-            type: 'file',               
+            type: 'file',
         })
 
         const local = new InMemoryDrive()
-        
+
         local.list = async () => [entry]
 
         const drive = new DriveManager({ local }, 'local')
@@ -66,13 +65,13 @@ test.group('drive-manager', () => {
         const entry = new DirectoryEntry({
             name: 'test.txt',
             path: 'test',
-            type: 'file',                  
+            type: 'file',
         })
 
         let config: Record<string, any> = {}
-        
+
         const local = new InMemoryDrive()
-        
+
         local.list = async function () {
             config = this.config
 
@@ -96,6 +95,5 @@ test.group('drive-manager', () => {
         await drive.write(entry.path, Buffer.from(''))
 
         expect(localDrive.entries[0]).toEqual(entry)
-
     })
 })

@@ -4,15 +4,15 @@ import { computed } from 'vue'
 const props = defineProps({
     size: {
         type: String,
-        default: 'md'
+        default: 'md',
     },
     color: {
         type: String,
-        default: 'info'
+        default: 'info',
     },
     text: {
         type: Boolean,
-        default: false
+        default: false,
     },
 })
 
@@ -34,7 +34,6 @@ const textColors = {
 }
 
 const colors = computed(() => {
-
     const result = defaultColors
 
     if (props.text) {
@@ -44,7 +43,6 @@ const colors = computed(() => {
     return result
 })
 
-
 const classes = computed(() => {
     const result: string[] = ['rounded transition-all']
 
@@ -53,7 +51,6 @@ const classes = computed(() => {
 
     return result
 })
-
 </script>
 <template>
     <button :class="classes">

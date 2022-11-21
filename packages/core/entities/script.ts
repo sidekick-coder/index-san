@@ -9,6 +9,5 @@ export default class Script {
         Object.assign(this, props)
 
         this.id = id ?? uuid()
-
     }
 }

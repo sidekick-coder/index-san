@@ -3,10 +3,9 @@ import WorkspaceService from '../../services/workspace-service'
 import WriteDirectoryEntryDTO from './write-directory-entry.dto'
 
 export default class WriteDirectoryEntry {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public async execute({ workspaceId, path, data }: WriteDirectoryEntryDTO.Input) {
-
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const exists = await workspace.drive.exists(path)
@@ -18,6 +17,5 @@ export default class WriteDirectoryEntry {
         }
 
         await workspace.drive.write(path, data)
-
     }
 }

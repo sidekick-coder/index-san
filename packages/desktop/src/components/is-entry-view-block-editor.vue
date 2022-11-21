@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import debounce from 'lodash/debounce'
 
 import { useDirectoryEntry } from '@/composables/directory-entry'
@@ -19,7 +19,7 @@ const repository = useDirectoryEntry(props.workspaceId)
 const decoder = new TextDecoder('utf-8')
 const content = ref({})
 
-async function load(){
+async function load() {
     const arrayBuffer = await repository.read(props.path)
 
     const json = decoder.decode(arrayBuffer)
@@ -29,16 +29,10 @@ async function load(){
 
 load()
 
-const onSave = debounce(async (data: any) => {    
+const onSave = debounce(async (data: any) => {
     await repository.write(props.path, JSON.stringify(data))
 }, 1000)
-
-
 </script>
 <template>
-    <is-editorjs
-        class="pb-5"
-        :content="content"
-        @save="onSave"
-    />
+    <is-editorjs class="pb-5" :content="content" @save="onSave" />
 </template>

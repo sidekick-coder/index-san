@@ -6,10 +6,8 @@ declare namespace CreateWorkspaceDTO {
         driveName: string
         config: Record<string, string>
     }
-    
-    export interface Output {
 
-    }
+    export interface Output {}
 }
 
 export default CreateWorkspaceDTO

@@ -9,22 +9,19 @@ import AppService from './app-service'
 test.group('app-service (service)', () => {
     const memoryDrive = new InMemoryDrive()
     const memoryCrud = new InMemoryCrud()
-    const driveManager = new DriveManager({ memory: memoryDrive })    
-    const crudManger = new CrudManager({ memory: memoryCrud  })
+    const driveManager = new DriveManager({ memory: memoryDrive })
+    const crudManger = new CrudManager({ memory: memoryCrud })
     const workspaceRepository = new InMemoryWorkspaceRepository()
 
     test('should instantiate', async ({ expect }) => {
-
         const service = new AppService({
             workspaceRepository,
             driveManager,
-            crudManger
+            crudManger,
         })
 
         expect(service.managers.crud).toEqual(crudManger)
         expect(service.managers.drive).toEqual(driveManager)
         expect(service.repositories.workspace).toEqual(workspaceRepository)
     })
-
-  
 })

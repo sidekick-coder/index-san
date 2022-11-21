@@ -11,9 +11,8 @@ const CollectionFactory = new Factory<Collection>((data) => {
         path: '/' + id,
         crudName: 'memory',
         columns: [],
-        ...data
+        ...data,
     })
 })
-
 
 export default CollectionFactory

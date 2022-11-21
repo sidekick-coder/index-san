@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { useDirectoryEntry } from '@/composables/directory-entry'
 import DirectoryEntry from '@core/entities/directory-entry'
 import { ref } from 'vue'
@@ -17,15 +17,13 @@ const props = defineProps({
 const entry = ref<DirectoryEntry>()
 const repository = useDirectoryEntry(props.workspaceId)
 
-async function load(){
-    
+async function load() {
     const data = await repository.show(props.path)
 
     entry.value = data
 }
 
 load()
-
 </script>
 <template>
     <div class="bg-gray-700 p-5 rounded">

@@ -3,10 +3,9 @@ import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
 
 export default class UpdateScript {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppService) {}
 
     public async execute({ workspaceId, content, name }: UpdateScriptDTO.Input): Promise<void> {
-
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
         const filename = `.is/scripts/${name}.js`

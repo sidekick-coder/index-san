@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import get from 'lodash/get'
 
 import Collection from '@core/entities/collection'
@@ -9,15 +9,15 @@ import { useCollectionRepository } from '@/composables/collection'
 const props = defineProps({
     workspaceId: {
         type: String,
-        required: true
+        required: true,
     },
     collectionId: {
         type: String,
-        required: true
+        required: true,
     },
     itemId: {
         type: String,
-        default: null
+        default: null,
     },
 })
 
@@ -32,18 +32,18 @@ const payload = ref({})
 
 const columns = computed<Collection['columns']>(() => collection.value?.columns || [])
 
-async function loadItem(){
+async function loadItem() {
     if (props.itemId) {
-        await itemRepository.show(props.itemId).then(i => (item.value = i))
+        await itemRepository.show(props.itemId).then((i) => (item.value = i))
     }
 
-    columns.value.forEach(c => {
-        payload.value[c.field] = get(item, `value.${c.field}`,  undefined)
+    columns.value.forEach((c) => {
+        payload.value[c.field] = get(item, `value.${c.field}`, undefined)
     })
 }
 
-async function load(){
-    await collectionRepository.show(props.collectionId).then(r => (collection.value = r.data))
+async function load() {
+    await collectionRepository.show(props.collectionId).then((r) => (collection.value = r.data))
 
     if (props.itemId) {
         await loadItem()
@@ -52,22 +52,16 @@ async function load(){
 
 watch(props, load, { deep: true, immediate: true })
 
-async function save(){
+async function save() {
     const data = payload.value
-    
+
     await itemRepository.update(props.itemId, data)
 
-    emit('save')    
+    emit('save')
 }
-
-
 </script>
 <template>
-    <div v-for="column in columns" :key="column.id" class="mb-4 last:mb-0" >
-        <w-input
-            v-model="payload[column.field]"
-            :label="column.label"
-            @change="save"
-        />
+    <div v-for="column in columns" :key="column.id" class="mb-4 last:mb-0">
+        <w-input v-model="payload[column.field]" :label="column.label" @change="save" />
     </div>
 </template>

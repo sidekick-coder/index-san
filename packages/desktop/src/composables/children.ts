@@ -1,14 +1,14 @@
 import { ComponentInternalInstance, Slot, VNode } from 'vue'
 
-export function findAllChildren(children: VNode[]){
+export function findAllChildren(children: VNode[]) {
     const result: VNode[] = []
     const toCheck = children
 
-    while(toCheck.length) {
+    while (toCheck.length) {
         const current = toCheck[0]
 
         if (Array.isArray(current.children)) {
-            toCheck.push(...current.children as VNode[])
+            toCheck.push(...(current.children as VNode[]))
         }
 
         result.push(current)
@@ -17,18 +17,17 @@ export function findAllChildren(children: VNode[]){
     }
 
     return result
-
 }
 
 export function useChildren(slots: ComponentInternalInstance['slots']) {
     let children: VNode[] = []
 
-    function load(){
+    function load() {
         children = []
 
         Object.keys(slots)
-            .map(key => slots[key])
-            .filter(slot => !!slot)
+            .map((key) => slots[key])
+            .filter((slot) => !!slot)
             .map((slot: Slot) => slot())
             .forEach((c) => {
                 children.push(...findAllChildren(c))
@@ -37,14 +36,12 @@ export function useChildren(slots: ComponentInternalInstance['slots']) {
 
     function findComponent(...names: string[]) {
         return children
-            .filter(c => typeof c.type === 'object')
-            .filter(c => names.includes((c.type as any).name))
-    }   
+            .filter((c) => typeof c.type === 'object')
+            .filter((c) => names.includes((c.type as any).name))
+    }
 
     return {
         load,
-        findComponent
+        findComponent,
     }
-
-
 }

@@ -13,36 +13,36 @@ test.group('update-directory-entry (use-case)', (group) => {
     group.each.teardown(() => app.memoryDrive.clear())
 
     test('should update an entry using drive', async ({ expect }) => {
-
         const workspace = await app.workspaceRepository.createFake()
 
         await app.memoryDrive.write('text.txt', Buffer.from(''))
-        
+
         await useCase.execute({
             workspaceId: workspace.id,
             path: 'text.txt',
-            newPath: 'update.txt'
+            newPath: 'update.txt',
         })
 
         expect(app.memoryDrive.entries[0].path).toEqual('update.txt')
     })
-    
+
     test('should trigger an error if the entry not exist', async ({ expect }) => {
         expect.assertions(1)
 
-        const workspace = await app.workspaceRepository.createFake()  
-        
+        const workspace = await app.workspaceRepository.createFake()
+
         const entry = new DirectoryEntry({
             name: 'text.txt',
             path: 'text.txt',
-            type: 'file'
+            type: 'file',
         })
 
-        await useCase.execute({
-            workspaceId: workspace.id,
-            path: entry.path,
-            newPath: 'update.txt'
-        }).catch(err => expect(err.message).toEqual('DirectoryEntry not exists'))
+        await useCase
+            .execute({
+                workspaceId: workspace.id,
+                path: entry.path,
+                newPath: 'update.txt',
+            })
+            .catch((err) => expect(err.message).toEqual('DirectoryEntry not exists'))
     })
-
 })

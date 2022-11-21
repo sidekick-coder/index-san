@@ -16,9 +16,9 @@ export default class JSONService<T = Record<string, string>> {
 
     constructor(public filename: string) {}
 
-    public async  load() {
+    public async load() {
         this.items = []
-        
+
         const exists = await fs.promises
             .stat(this.filename)
             .then(() => true)
@@ -39,18 +39,18 @@ export default class JSONService<T = Record<string, string>> {
         this.items = JSON.parse(text)
     }
 
-    public async save(){
+    public async save() {
         await fs.promises.writeFile(this.filename, JSON.stringify(this.items))
     }
 
     public findBy(key: string, value: string) {
-        const item = this.items.find(i => i[key] === value)
+        const item = this.items.find((i) => i[key] === value)
 
         return item ?? null
     }
-    
+
     public updateOrCreateBy(key: string, data: any) {
-        const index = this.items.findIndex(i => i[key] === data[key])
+        const index = this.items.findIndex((i) => i[key] === data[key])
 
         if (index !== -1) this.items[index] = data
 

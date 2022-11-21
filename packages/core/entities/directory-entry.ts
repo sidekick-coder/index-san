@@ -9,7 +9,7 @@ export default class DirectoryEntry {
 
     public static directory(...paths: string[]) {
         const path = paths
-            .map(p => p.split('/'))
+            .map((p) => p.split('/'))
             .reduce((all, p) => all.concat(p), [])
             .join('/')
 
@@ -24,7 +24,7 @@ export default class DirectoryEntry {
 
     public static file(...paths: string[]) {
         const path = paths
-            .map(p => p.split('/'))
+            .map((p) => p.split('/'))
             .reduce((all, p) => all.concat(p), [])
             .join('/')
 

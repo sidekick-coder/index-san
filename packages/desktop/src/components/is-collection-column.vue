@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { CollectionColumn } from '@core/entities/collection'
 
-import { useCollection, updateCollectionColumn, deleteCollectionColumn } from '@/composables/collection'
+import { updateCollectionColumn, deleteCollectionColumn } from '@/composables/collection'
 
 import { ref, watch } from 'vue'
-
 
 const props = defineProps({
     workspaceId: {
@@ -18,29 +17,29 @@ const props = defineProps({
     column: {
         type: Object as () => CollectionColumn,
         required: true,
-    }
+    },
 })
 
 const types = [
     {
-        label:'Text',
-        value: 'text'
+        label: 'Text',
+        value: 'text',
     },
     {
-        label:'Number',
-        value: 'number'
+        label: 'Number',
+        value: 'number',
     },
     {
-        label:'Select',
-        value: 'select'
+        label: 'Select',
+        value: 'select',
     },
     {
-        label:'Entry',
-        value: 'entry'
+        label: 'Entry',
+        value: 'entry',
     },
     {
-        label:'Relation',
-        value: 'relation'
+        label: 'Relation',
+        value: 'relation',
     },
 ]
 
@@ -58,44 +57,44 @@ const icons = {
     text: 'font',
     number: 'hashtag',
     select: 'fa-regular fa-square-caret-down',
-    relation: 'arrow-up'
+    relation: 'arrow-up',
 }
 
-function load(){
-    Object.keys(payload.value).forEach(key => {
+function load() {
+    Object.keys(payload.value).forEach((key) => {
         payload.value[key] = props.column[key]
     })
 }
 
 watch(() => props.column, load, { immediate: true, deep: true })
 
-async function submit(){
-
-    if (payload.value.type !==  'select') {
+async function submit() {
+    if (payload.value.type !== 'select') {
         payload.value.options = undefined
     }
 
-    await updateCollectionColumn(props.workspaceId, props.collectionId, props.column.id, payload.value)
+    await updateCollectionColumn(
+        props.workspaceId,
+        props.collectionId,
+        props.column.id,
+        payload.value
+    )
 
     dialog.value = false
 }
 
-async function deleteColumn(){
+async function deleteColumn() {
     await deleteCollectionColumn(props.workspaceId, props.collectionId, props.column.id)
 
     dialog.value = false
 }
-
-
 </script>
 <template>
     <w-dialog v-model="dialog">
         <template #content>
             <w-form class="w-full bg-gray-800 max-w-[500px] p-4" @click.stop="" @submit="submit">
-                <div class="flex items-center mb-5 ">
-                    <div class="text-xl text-gray-500">
-                        Edit column
-                    </div>
+                <div class="flex items-center mb-5">
+                    <div class="text-xl text-gray-500">Edit column</div>
 
                     <div class="ml-auto text-sm text-gray-500">
                         <i class="cursor-pointer" @click="deleteColumn">
@@ -107,7 +106,7 @@ async function deleteColumn(){
                 <div class="mb-4">
                     <w-input v-model="payload.label" label="Label" />
                 </div>
-                
+
                 <div class="mb-4">
                     <w-select
                         v-model="payload.type"
@@ -118,7 +117,7 @@ async function deleteColumn(){
                     />
                 </div>
 
-                <div class="mb-4" v-if="payload.type === 'select'">
+                <div v-if="payload.type === 'select'" class="mb-4">
                     <w-input
                         v-model="payload.options"
                         label="Options (separate by comma)"
@@ -127,31 +126,28 @@ async function deleteColumn(){
                 </div>
 
                 <template v-if="payload.type === 'relation'">
-                    
-                    <div class="mb-4" >
+                    <div class="mb-4">
                         <w-input v-model="payload.collectionId" label="Collection id" />
                     </div>
-                    
-                    <div class="mb-4" >
+
+                    <div class="mb-4">
                         <w-input v-model="payload.displayField" label="Collection display field" />
                     </div>
-
                 </template>
-                
 
                 <div class="mb-4">
                     <w-input v-model="payload.field" label="Field" />
                 </div>
-        
+
                 <div>
-                    <w-btn class="w-full" >Submit</w-btn>
+                    <w-btn class="w-full">Submit</w-btn>
                 </div>
             </w-form>
         </template>
     </w-dialog>
 
-    <div @click="dialog = true" class="cursor-pointer text-gray-500 text-sm ">
-        <fa-icon :icon="icons[column.type] || 'font' " class="mr-1 text-xs" />
+    <div class="cursor-pointer text-gray-500 text-sm" @click="dialog = true">
+        <fa-icon :icon="icons[column.type] || 'font'" class="mr-1 text-xs" />
 
         {{ column.label }}
     </div>

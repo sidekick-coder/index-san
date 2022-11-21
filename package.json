@@ -3,7 +3,7 @@
     "version": "0.4.0",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
-        "lint": "eslint .",
+        "lint": "eslint . --ext .vue,.ts,.js",
         "dev": "npm -w desktop run dev",
         "build": "node scripts/build.js",
         "new:version": "node scripts/version.js",
@@ -17,10 +17,12 @@
         ]
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.36.1",
-        "@typescript-eslint/parser": "^5.36.1",
-        "eslint": "^8.23.0",
-        "eslint-plugin-vue": "^9.4.0",
+        "@typescript-eslint/eslint-plugin": "^5.44.0",
+        "@typescript-eslint/parser": "^5.44.0",
+        "eslint": "^8.28.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-vue": "^9.7.0",
         "fast-glob": "^3.2.12",
         "lodash": "^4.17.21"
     }

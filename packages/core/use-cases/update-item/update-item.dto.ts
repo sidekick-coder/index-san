@@ -5,7 +5,7 @@ declare namespace UpdateItemDTO {
         itemId: string
         data: any
     }
-    
+
     // export interface Output {}
 }
 

@@ -1,7 +1,7 @@
 import colors from 'tailwindcss/colors'
 
-export function useTheme(){
-    function chartColors(){
+export function useTheme() {
+    function chartColors() {
         return [
             colors.amber[500],
             colors.blue[500],
@@ -24,6 +24,6 @@ export function useTheme(){
     }
 
     return {
-        chartColors
+        chartColors,
     }
 }

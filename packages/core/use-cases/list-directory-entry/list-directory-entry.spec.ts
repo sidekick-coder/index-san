@@ -8,7 +8,7 @@ test.group('list-directory-entry (use-case)', (group) => {
 
     const useCase = new ListDirectoryEntry(app)
 
-    group.tap(t => t.teardown(() => app.memoryDrive.clear()))
+    group.tap((t) => t.teardown(() => app.memoryDrive.clear()))
 
     test('should list a directory using workspace', async ({ expect }) => {
         const workspace = await app.workspaceRepository.create(WorkspaceFactory.create())
@@ -18,7 +18,7 @@ test.group('list-directory-entry (use-case)', (group) => {
         app.memoryDrive.createFile('file-03.txt', '')
 
         const result = await useCase.execute({
-            workspaceId: workspace.id
+            workspaceId: workspace.id,
         })
 
         expect(result.data.length).toEqual(3)

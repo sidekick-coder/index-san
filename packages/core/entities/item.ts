@@ -3,7 +3,7 @@ import uuid from 'uuid-random'
 export default class Item {
     public id: string
     public workspaceId?: string
-    public collectionId?: string
+    public collectionId?: string;
 
     [key: string]: any
 

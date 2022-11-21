@@ -4,7 +4,6 @@ import InMemoryApp from '../../__tests__/app'
 import CreateScript from './create-script'
 
 test.group('create-script (use-case)', (group) => {
-
     const app = new InMemoryApp()
 
     const useCase = new CreateScript(app)
@@ -16,12 +15,12 @@ test.group('create-script (use-case)', (group) => {
 
         const data = {
             name: 'my-script',
-            content: 'export default (workspace) => "Hello word" '
+            content: 'export default (workspace) => "Hello word" ',
         }
 
         await useCase.execute({
             workspaceId: workspace.id,
-            data
+            data,
         })
 
         const content = await app.memoryDrive.read(`.is/scripts/${data.name}.js`)
@@ -29,4 +28,5 @@ test.group('create-script (use-case)', (group) => {
         expect(content).not.toBeNull()
 
         expect(content?.toString()).toEqual(data.content)
-    })})
+    })
+})

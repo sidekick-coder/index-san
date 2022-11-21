@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 definePageMeta({
-    title: 'Scripts list'
+    title: 'Scripts list',
 })
 
 const props = defineProps({
@@ -26,35 +26,35 @@ const search = ref('')
 const dialog = ref(false)
 const payload = ref({
     name: '',
-    content: ''
+    content: '',
 })
 
-const filteredItems = computed(() => items.value.filter(i => i.name.match(search.value)))
-
+const filteredItems = computed(() => items.value.filter((i) => i.name.match(search.value)))
 
 const columns = [
     {
         name: 'name',
         label: tm.t('name'),
-        field: 'name'
+        field: 'name',
     },
     {
         name: 'actions',
-        width: 100
-    }
+        width: 100,
+    },
 ]
 
-async function setItems(){
-    await useCase('list-scripts', { workspaceId: props.workspaceId })
-        .then(({ data }) => items.value = data)
+async function setItems() {
+    await useCase('list-scripts', { workspaceId: props.workspaceId }).then(
+        ({ data }) => (items.value = data)
+    )
 }
 
 setItems()
 
-async function submit(){
+async function submit() {
     await useCase('create-script', {
         workspaceId: props.workspaceId,
-        data: payload.value
+        data: payload.value,
     })
 
     payload.value.name = ''
@@ -64,23 +64,20 @@ async function submit(){
     dialog.value = false
 }
 
-
 async function onItemDelete(item: Script) {
     await useCase('delete-script', {
         workspaceId: props.workspaceId,
-        name: item.name
+        name: item.name,
     })
 
     await setItems()
 }
 
-async function onItemShow(item: Script){
+async function onItemShow(item: Script) {
     await router.push(`/workspaces/${props.workspaceId}/scripts/${item.name}`)
 }
-
 </script>
 <template>
-
     <is-dialog v-model="dialog">
         <w-form @submit="submit">
             <div class="mb-4">
@@ -93,12 +90,8 @@ async function onItemShow(item: Script){
         </w-form>
     </is-dialog>
 
-    <div class="w-full mt-5 pb-5 border-b border-zinc-700 flex items-center">        
-        <is-input
-            v-model="search"
-            placeholder="Search..." 
-            class="max-w-[300px]"
-        />
+    <div class="w-full mt-5 pb-5 border-b border-zinc-700 flex items-center">
+        <is-input v-model="search" placeholder="Search..." class="max-w-[300px]" />
 
         <w-btn class="ml-auto" @click="dialog = true">
             {{ $t('addEntity', ['script']) }}
@@ -106,17 +99,15 @@ async function onItemShow(item: Script){
     </div>
 
     <is-table :columns="columns" :items="filteredItems">
-
-    <template #item-actions="{ item }">
-        <div class="px-2">
-            <is-btn @click="onItemShow(item)">
-                <is-icon name="eye" />
-            </is-btn>
-            <is-btn @click="onItemDelete(item)">
-                <is-icon name="trash" />
-            </is-btn>
-        </div>
-    </template>
-
+        <template #item-actions="{ item }">
+            <div class="px-2">
+                <is-btn @click="onItemShow(item)">
+                    <is-icon name="eye" />
+                </is-btn>
+                <is-btn @click="onItemDelete(item)">
+                    <is-icon name="trash" />
+                </is-btn>
+            </div>
+        </template>
     </is-table>
 </template>

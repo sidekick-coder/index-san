@@ -1,6 +1,5 @@
-
 <script lang="ts">
-export default { name: 'IsTable'}
+export default { name: 'IsTable' }
 </script>
 
 <script setup lang="ts">
@@ -10,26 +9,26 @@ interface Column {
     name: string
     label?: string
     field?: string
-    width: | number
+    width: number
 }
 
 const props = defineProps({
     items: {
         type: Array as () => Record<string, string>[],
-        default: () => []
+        default: () => [],
     },
     columns: {
         type: Array as () => Column[],
-        default: () => []
+        default: () => [],
     },
     limit: {
         type: [Number, String],
-        default: 10
+        default: 10,
     },
     fixed: {
         type: Boolean,
-        default: true
-    }
+        default: true,
+    },
 })
 
 const pagination = ref({ limit: +props.limit })
@@ -45,52 +44,39 @@ const classes = computed(() => ({
 </script>
 
 <template>
-    <table
-        :class="[classes.main, fixed ? 'table-fixed' : '' ]"
-    >
+    <table :class="[classes.main, fixed ? 'table-fixed' : '']">
         <thead>
-            <slot name="column" :classes="classes" :columns="columns" >
+            <slot name="column" :classes="classes" :columns="columns">
                 <tr :class="classes.tr" class="relative">
                     <th
                         v-for="column in columns"
                         :key="column.name"
                         :class="classes.th"
-                        :style="column.width ? `width: ${column.width}px` : '' "
+                        :style="column.width ? `width: ${column.width}px` : ''"
                     >
-                        
-                        <div class="text-gray-500"> {{ column.label }}</div>
-                    </th>                   
+                        <div class="text-gray-500">{{ column.label }}</div>
+                    </th>
                 </tr>
             </slot>
         </thead>
 
-        <slot
-            v-for="item in visibleItems"
-            name="item"
-            :key="item"
-            :item="item"
-            :classes="classes"
-        >
-            <tr :class="classes.tr" >    
+        <slot v-for="item in visibleItems" :key="item" name="item" :item="item" :classes="classes">
+            <tr :class="classes.tr">
                 <td
                     v-for="column in columns"
                     :key="`${item.id}-${column.name}`"
                     :class="classes.td"
                     class="relative"
                 >
-    
                     <slot :name="`item-${column.name}`" :item="item" :column="column">
-                        <div class="p-2 bg-transparent  w-full" >
+                        <div class="p-2 bg-transparent w-full">
                             {{ column.field ? item[column.field] : '' }}
                         </div>
-                    </slot>     
-    
+                    </slot>
                 </td>
-    
             </tr>
         </slot>
 
-        
         <tr v-if="!visibleItems.length">
             <td
                 :class="classes.td"
@@ -110,12 +96,10 @@ const classes = computed(() => ({
             >
                 <fa-icon icon="arrow-down" class="mr-2" />
 
-                <span>Load more {{`(${visibleItems.length}/${items.length})`}}</span>
-
+                <span>Load more {{ `(${visibleItems.length}/${items.length})` }}</span>
             </td>
         </tr>
 
         <slot name="append-body" :classes="classes" />
-
-    </table>  
+    </table>
 </template>

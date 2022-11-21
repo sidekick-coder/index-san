@@ -9,7 +9,7 @@ const WorkspaceFactory = new Factory<Workspace>((data) => {
         name: id,
         driveName: 'memory',
         config: {},
-        ...data
+        ...data,
     })
 })
 

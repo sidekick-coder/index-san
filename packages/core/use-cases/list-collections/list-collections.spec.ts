@@ -10,7 +10,7 @@ test.group('list-collections (use-case)', (group) => {
 
     const useCase = new ListCollections(app)
 
-    group.tap(t => t.teardown(() => app.memoryDrive.clear()))
+    group.tap((t) => t.teardown(() => app.memoryDrive.clear()))
 
     test('should return a list of collections of the workspace', async ({ expect }) => {
         const collections = CollectionFactory.createMany()
@@ -20,20 +20,19 @@ test.group('list-collections (use-case)', (group) => {
         const workspace = await app.workspaceRepository.create(WorkspaceFactory.create())
 
         const result = await useCase.execute({
-            workspaceId: workspace.id
+            workspaceId: workspace.id,
         })
 
         expect(result.data.length).toEqual(collections.length)
     })
-    
-    test('should return an empty array if collections.json not exist', async ({expect}) => {
+
+    test('should return an empty array if collections.json not exist', async ({ expect }) => {
         const workspace = await app.workspaceRepository.create(WorkspaceFactory.create())
 
         const result = await useCase.execute({
-            workspaceId: workspace.id
+            workspaceId: workspace.id,
         })
 
         expect(result.data.length).toEqual(0)
     })
-
 })

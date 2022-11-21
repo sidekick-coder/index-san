@@ -1,4 +1,4 @@
-import { computed, ref, WritableComputedRef } from 'vue'
+import { computed, ref } from 'vue'
 
 interface Options {
     localStorage?: boolean
@@ -31,20 +31,19 @@ function getLocalStorage<T = any>(key: string) {
 }
 
 export function useState<T = any>(key: string, defaultValue?: T, options?: Options) {
-
     if (options?.localStorage && !states.value.has(key)) {
         states.value.set(key, getLocalStorage(key))
     }
-    
+
     if (!states.value.has(key)) {
         states.value.set(key, defaultValue)
     }
 
     return computed<T>({
-        get(){
+        get() {
             return states.value.get(key) as T
         },
-        set(v){
+        set(v) {
             if (options?.localStorage) {
                 setLocalStorage(key, v)
             }
@@ -54,15 +53,14 @@ export function useState<T = any>(key: string, defaultValue?: T, options?: Optio
     })
 }
 
-
-export function useStateV2<T = any>(defaultValue?: T){
+export function useStateV2<T = any>(defaultValue?: T) {
     const key = ref('')
 
     const state = computed<T>({
-        get(){
+        get() {
             return states.value.get(key.value) || defaultValue
         },
-        set(value){
+        set(value) {
             states.value.set(key.value, value)
         },
     })

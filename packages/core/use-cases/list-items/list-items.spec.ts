@@ -12,38 +12,36 @@ import ListItems from './list-items'
 test.group('list-items (use-case)', (group) => {
     const memoryDrive = new InMemoryDrive()
     const memoryCrud = new InMemoryCrud()
-    const driveManager = new DriveManager({ memory: memoryDrive })    
-    const crudManger = new CrudManager({ memory: memoryCrud  })
+    const driveManager = new DriveManager({ memory: memoryDrive })
+    const crudManger = new CrudManager({ memory: memoryCrud })
     const workspaceRepository = new InMemoryWorkspaceRepository()
 
     const appService = new AppService({
         workspaceRepository,
         driveManager,
-        crudManger
+        crudManger,
     })
-    
+
     const useCase = new ListItems(appService)
 
-    const workspace = WorkspaceFactory.create({ drive: 'memory' })    
+    const workspace = WorkspaceFactory.create({ drive: 'memory' })
     const collection = CollectionFactory.create({ crudName: 'memory' })
-    
-    
+
     group.each.setup(() => {
         memoryDrive.write('.is/collections.json', Buffer.from(JSON.stringify([collection])))
         workspaceRepository.createSync(workspace)
     })
 
     group.each.teardown(() => memoryDrive.clear())
-    
 
     test('should return a list of items', async ({ expect }) => {
         for (let i = 0; i < 20; i++) {
             memoryDrive.mkdir(`${collection.path}/${i}`)
         }
-        
+
         const result = await useCase.execute({
             workspaceId: workspace.id,
-            collectionId: collection.id
+            collectionId: collection.id,
         })
 
         expect(result.data.length).toEqual(20)

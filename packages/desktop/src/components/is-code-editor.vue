@@ -12,8 +12,8 @@ import { useVModel } from 'vue-wind/composables/v-model'
 const props = defineProps({
     modelValue: {
         type: String,
-        default: ''
-    }
+        default: '',
+    },
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -23,13 +23,16 @@ let editor: monaco.editor.IStandaloneCodeEditor
 
 const model = useVModel(props, 'modelValue', emit)
 
-watch(() => props.modelValue, value => {
-    if (!editor) return
+watch(
+    () => props.modelValue,
+    (value) => {
+        if (!editor) return
 
-    if (value !== editor.getValue()) {
-        editor.setValue(value)
+        if (value !== editor.getValue()) {
+            editor.setValue(value)
+        }
     }
-})
+)
 
 onMounted(() => {
     if (!root.value) return
@@ -41,17 +44,13 @@ onMounted(() => {
         language: 'javascript',
         theme: 'app-theme',
         padding: {
-            top: 20
-        }
+            top: 20,
+        },
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
 })
 
-// import * as monaco from 'monaco-editor'
-
-
-// @ts-ignore
 self.MonacoEnvironment = {
     getWorker(_: any, label: string) {
         if (label === 'json') {
@@ -67,13 +66,11 @@ self.MonacoEnvironment = {
             return new tsWorker()
         }
         return new editorWorker()
-    }
+    },
 }
 
 monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
-
-
 </script>
-<template>    
-    <div ref="root" class="w-full h-full" ></div>    
+<template>
+    <div ref="root" class="w-full h-full"></div>
 </template>

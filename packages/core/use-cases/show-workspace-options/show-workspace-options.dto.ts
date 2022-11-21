@@ -1,5 +1,4 @@
 declare namespace ShowWorkspaceOptionsDTO {
-    
     export interface Input {
         workspaceId: string
     }

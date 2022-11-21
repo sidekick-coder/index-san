@@ -2,22 +2,19 @@ import path from 'path'
 import fs from 'fs'
 
 export default class TestFS {
-    
-    constructor(
-        public tmpdir = path.resolve(__dirname, '..', '..', 'tmp', 'tests')
-    ){
+    constructor(public tmpdir = path.resolve(__dirname, '..', '..', 'tmp', 'tests')) {
         fs.mkdirSync(tmpdir, { recursive: true })
     }
 
-    public resolve(...args: string[]) {        
+    public resolve(...args: string[]) {
         return args
-            .map(a => a.split(/\\|\//))
+            .map((a) => a.split(/\\|\//))
             .reduce((all, a) => all.concat(a), [])
-            .filter(a => a !== '')
+            .filter((a) => a !== '')
             .join(path.sep)
     }
 
-    public async clear(){
+    public async clear() {
         const exists = await fs.promises
             .stat(this.tmpdir)
             .then(() => true)
@@ -28,7 +25,6 @@ export default class TestFS {
         }
 
         await new Promise((resolve) => setTimeout(resolve, 100))
-
 
         await fs.promises.mkdir(this.tmpdir, { recursive: true })
     }
@@ -50,19 +46,19 @@ export default class TestFS {
 
         await Promise.all(items.map((i) => this.createFile(i)))
     }
-    
+
     public async createManyDir(length = 5, filename = 'item-') {
         const items = Array.from({ length }).map((_, i) => [filename, i].join(''))
 
         await Promise.all(items.map((i) => this.createDir(i)))
     }
 
-    public async exists(filename: string, type?: 'file' | 'directory'){
+    public async exists(filename: string, type?: 'file' | 'directory') {
         const stats = await fs.promises
             .stat(this.resolve(this.tmpdir, filename))
             .then((e) => e)
             .catch(() => null)
-            
+
         if (!stats || !type) {
             return !!stats
         }

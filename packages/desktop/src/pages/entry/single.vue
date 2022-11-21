@@ -9,7 +9,7 @@ import { definePageMeta } from '@/composables/page-meta'
 const props = defineProps({
     workspaceId: {
         type: String,
-        required: true
+        required: true,
     },
     entryId: {
         type: String,
@@ -25,7 +25,7 @@ const views = {
     text: 'is-entry-view-text',
     markdown: 'is-entry-view-markdown',
     image: 'is-entry-view-image',
-    blockEditor: 'is-entry-view-block-editor'
+    blockEditor: 'is-entry-view-block-editor',
 }
 
 const entry = ref<DirectoryEntry>()
@@ -39,15 +39,14 @@ function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views 
     if (/.(txt|json)/.test(path)) {
         return 'text'
     }
-    
+
     if (/.(jpeg|jpg|png)/.test(path)) {
         return 'image'
     }
-    
+
     if (/.(is)/.test(path)) {
         return 'blockEditor'
     }
-    
 
     if (type === 'directory') {
         return 'folder'
@@ -56,7 +55,7 @@ function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views 
     return 'default'
 }
 
-async function load(){
+async function load() {
     entry.value = undefined
 
     const data = await useDirectoryEntry(props.workspaceId).show(props.entryId)
@@ -65,20 +64,12 @@ async function load(){
     meta.value.title = data.name ?? 'Entry'
 
     current.value = getRecommendedView(data)
-
-    
 }
 
 watch(() => props.entryId, load, {
-    immediate: true
+    immediate: true,
 })
-
 </script>
 <template>
-    <component
-        v-if="entry"
-        :workspace-id="workspaceId"
-        :path="entry.path"
-        :is="views[current]" 
-    />
+    <component :is="views[current]" v-if="entry" :workspace-id="workspaceId" :path="entry.path" />
 </template>

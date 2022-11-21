@@ -4,11 +4,10 @@ import AppService from './app-service'
 import CollectionService from './collection-service'
 
 export default class WorkspaceService extends Workspace {
-    
     public app: AppService
     public collections: Collection[]
 
-    public get drive(){
+    public get drive() {
         return this.app.managers.drive.use(this.driveName).config(this.config)
     }
 
@@ -18,15 +17,17 @@ export default class WorkspaceService extends Workspace {
         this.app = appService
     }
 
-    public static async from(service: AppService, id: string){
-        const data = await service.repositories.workspace.findById.bind(service.repositories.workspace)(id)
+    public static async from(service: AppService, id: string) {
+        const data = await service.repositories.workspace.findById.bind(
+            service.repositories.workspace
+        )(id)
 
         if (!data) {
             throw new Error('Workspace not found')
         }
 
         const workspace = new WorkspaceService(data, service)
-        
+
         const content = await workspace.drive.read('.is/collections.json')
 
         const collections: Collection[] = []
@@ -42,16 +43,16 @@ export default class WorkspaceService extends Workspace {
         return workspace
     }
 
-    public toObject(){
+    public toObject() {
         return {
             id: this.id,
             name: this.name,
             driveName: this.driveName,
-            config: this.config
+            config: this.config,
         }
     }
 
-    public async save(){
+    public async save() {
         const payload = this.toObject()
 
         this.app.repositories.workspace.updateById(this.id, payload)
@@ -70,5 +71,4 @@ export default class WorkspaceService extends Workspace {
 
         return this.collection(data.id)
     }
-    
 }

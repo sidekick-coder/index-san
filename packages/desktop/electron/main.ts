@@ -30,13 +30,14 @@ const crudManger = new CrudManager({ fsFolder: fsCrudFolder })
 const indexSan = new IndexSan({
     crudManger,
     driveManager,
-    workspaceRepository
+    workspaceRepository,
 })
 
-
 app.whenReady().then(async () => {
-    const preferences = new JSONService<Preference>(path.resolve(app.getPath('userData'), 'preferences.json'))
-    
+    const preferences = new JSONService<Preference>(
+        path.resolve(app.getPath('userData'), 'preferences.json')
+    )
+
     await preferences.load()
 
     const boundPreference = preferences.findBy('name', 'window:bounds')
@@ -51,21 +52,21 @@ app.whenReady().then(async () => {
             preload: path.join(__dirname, './preload.js'),
             contextIsolation: true,
             nodeIntegration: true,
-            spellcheck: true
+            spellcheck: true,
         },
-        icon: path.resolve(__dirname, '..', 'resources', 'icons', 'logo.ico')
+        icon: path.resolve(__dirname, '..', 'resources', 'icons', 'logo.ico'),
     })
 
     window.on(
         'resize',
         debounce(async () => {
             const bounds = window.getBounds()
-            
+
             await preferences.load()
 
             preferences.updateOrCreateBy('name', {
                 name: 'window:bounds',
-                value: bounds
+                value: bounds,
             })
 
             await preferences.save()
@@ -84,32 +85,37 @@ app.whenReady().then(async () => {
 
     window.webContents.on('context-menu', (event, params) => {
         const menu = new Menu()
-      
+
         // Add each spelling suggestion
         for (const suggestion of params.dictionarySuggestions) {
-            menu.append(new MenuItem({
-                label: suggestion,
-                click: () => window.webContents.replaceMisspelling(suggestion)
-            }))
+            menu.append(
+                new MenuItem({
+                    label: suggestion,
+                    click: () => window.webContents.replaceMisspelling(suggestion),
+                })
+            )
         }
-      
+
         // Allow users to add the misspelled word to the dictionary
         if (params.misspelledWord) {
             menu.append(
                 new MenuItem({
                     label: 'Add to dictionary',
-                    click: () => window.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord)
+                    click: () =>
+                        window.webContents.session.addWordToSpellCheckerDictionary(
+                            params.misspelledWord
+                        ),
                 })
             )
         }
-      
+
         menu.popup()
     })
-      
+
     if (process.env.VITE_DEV_SERVER_URL) {
         window.loadURL(process.env.VITE_DEV_SERVER_URL)
         process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
     } else {
-        window.loadFile(path.resolve(__dirname, '..', 'dist',  'index.html'))
+        window.loadFile(path.resolve(__dirname, '..', 'dist', 'index.html'))
     }
 })

@@ -4,7 +4,7 @@ declare namespace UpdateDirectoryEntryDTO {
         path: string
         newPath: string
     }
-    
+
     // export interface Output {}
 }
 

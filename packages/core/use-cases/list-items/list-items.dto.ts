@@ -10,7 +10,7 @@ declare namespace ListItemsDTO {
         workspaceId: string
         collectionId: string
     }
-    
+
     export interface Output {
         data: ItemWithWorkspace[]
     }

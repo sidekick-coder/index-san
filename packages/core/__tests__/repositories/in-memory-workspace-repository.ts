@@ -10,52 +10,49 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
     }
 
     public findById(id: string): Promise<Workspace | null> {
-        const item = this.items.find(i => i.id === id)
+        const item = this.items.find((i) => i.id === id)
 
         return Promise.resolve(item ?? null)
     }
 
     public create(workspace: Workspace): Promise<Workspace> {
-        
         this.items.push(workspace)
 
         return Promise.resolve(workspace)
     }
-    
-    public createSync(workspace: Workspace): Workspace {        
+
+    public createSync(workspace: Workspace): Workspace {
         this.items.push(workspace)
 
         return workspace
     }
-    
-    public createFake(payload?: Partial<Workspace>): Promise<Workspace> {        
+
+    public createFake(payload?: Partial<Workspace>): Promise<Workspace> {
         return this.create(WorkspaceFactory.create(payload))
     }
-    
+
     public createFakeSync(payload?: Partial<Workspace>): Workspace {
         return this.createSync(WorkspaceFactory.create(payload))
     }
-    
 
-    public async updateById(id: string, data: Partial<Workspace>){
-        const index = this.items.findIndex(w => w.id === id)
+    public async updateById(id: string, data: Partial<Workspace>) {
+        const index = this.items.findIndex((w) => w.id === id)
 
         if (index === -1) return
-
 
         this.items[index].name = data.name ?? this.items[index].name
         this.items[index].config = data.config ?? this.items[index].config
     }
 
     public async delete(id: string) {
-        const index = this.items.findIndex(i => i.id === id)
+        const index = this.items.findIndex((i) => i.id === id)
 
         if (index !== -1) {
             this.items.splice(index, 1)
         }
     }
 
-    public clear(){
+    public clear() {
         this.items = []
     }
 }

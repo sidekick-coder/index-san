@@ -1,8 +1,8 @@
-<script setup lang="ts">    
+<script setup lang="ts">
 defineProps({
     workspaceId: {
         type: String,
-        required: true
+        required: true,
     },
     entryId: {
         type: String,
@@ -10,7 +10,7 @@ defineProps({
     },
 })
 </script>
-    
+
 <template>
-        <is-entry-view-folder :workspace-id="workspaceId" :path="entryId" />
+    <is-entry-view-folder :workspace-id="workspaceId" :path="entryId" />
 </template>
