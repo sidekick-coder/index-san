@@ -10,6 +10,7 @@ configure({
             './gateways/*.spec.ts',
             './entities/*.spec.ts',
             './services/*.spec.ts',
+            './exceptions/*.spec.ts',
             './use-cases/**/*.spec.ts',
         ],
         plugins: [expect()],

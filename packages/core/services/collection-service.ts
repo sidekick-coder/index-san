@@ -1,5 +1,7 @@
 import Collection from '../entities/collection'
 import Item from '../entities/item'
+import CollectionNotFound from '../exceptions/collection-not-found'
+import ItemNotFound from '../exceptions/item-not-found'
 import WorkspaceService from './workspace-service'
 
 export default class CollectionService extends Collection {
@@ -18,7 +20,7 @@ export default class CollectionService extends Collection {
     public static async from(workspace: WorkspaceService, collectionId: string) {
         const collection = workspace.collections.find((c) => c.id === collectionId)
 
-        if (!collection) throw new Error('Collection not found')
+        if (!collection) throw new CollectionNotFound(workspace.id, collectionId)
 
         return new CollectionService(collection, workspace)
     }
@@ -41,11 +43,11 @@ export default class CollectionService extends Collection {
         return item ? true : false
     }
 
-    public async show(id: string) {
-        const item = await this.crud.findById(this.path, id)
+    public async show(itemId: string) {
+        const item = await this.crud.findById(this.path, itemId)
 
         if (!item) {
-            throw new Error('Item not found')
+            throw new ItemNotFound(this.workspace.id, this.id, itemId)
         }
 
         const data = {
@@ -54,7 +56,7 @@ export default class CollectionService extends Collection {
             collectionId: this.id,
         }
 
-        return new Item(data, id)
+        return new Item(data, itemId)
     }
 
     public async create(data: Item) {

@@ -1,5 +1,6 @@
 import Collection from '../entities/collection'
 import Workspace from '../entities/workspace'
+import WorkspaceNotFound from '../exceptions/workspace-not-found'
 import AppService from './app-service'
 import CollectionService from './collection-service'
 
@@ -23,7 +24,7 @@ export default class WorkspaceService extends Workspace {
         )(id)
 
         if (!data) {
-            throw new Error('Workspace not found')
+            throw new WorkspaceNotFound(id)
         }
 
         const workspace = new WorkspaceService(data, service)
