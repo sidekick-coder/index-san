@@ -184,11 +184,11 @@ watch(props, load, { immediate: true, deep: true })
             </div>
     
             <div class="ml-auto">
-                <is-btn @click="drawers.columns = true">
+                <is-btn @click="drawers.columns = true" text>
                     <is-icon name="table-columns" />
                 </is-btn>
 
-                <is-btn @click="drawers.filters = true">
+                <is-btn @click="drawers.filters = true" text>
                     <is-icon name="filter" />                
                 </is-btn>
             </div>

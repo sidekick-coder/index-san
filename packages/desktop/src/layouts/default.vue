@@ -7,9 +7,7 @@
                 <is-app-toolbar />
 
                 <w-content>
-                    <div class="h-full w-full px-10 overflow-auto">
-                        <slot></slot>
-                    </div>
+                    <slot></slot>
                 </w-content>
             </w-layout>
 

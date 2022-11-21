@@ -5,6 +5,9 @@ export default {
     listEntity: '{0} list',
     addEntity: 'Add {0}',
     name: 'Name',
-    path: 'Path'
+    path: 'Path',
+    editMode: 'Edit mode',
+    viewMode: 'View mode',
+    reload: 'Reload',
 
 }
