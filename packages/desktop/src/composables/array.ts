@@ -1,4 +1,6 @@
 import _map from 'lodash/map'
+import { evaluate } from 'mathjs'
+import moment from 'moment'
 
 export interface ArrayFilter {
     type: string
@@ -93,5 +95,60 @@ export function useArray<T extends Array<any>>(source: T) {
         filter,
         map,
         value,
+    }
+}
+
+function isExpression(expression: string, scope: any) {
+    try {
+        evaluate(expression, scope)
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+function evaluateString(expression: string, scope: any = {}) {
+    let result = expression
+
+    Object.keys(scope).forEach((key) => {
+        result = result.replaceAll(key, scope[key])
+    })
+
+    const [a, operator, b] = result.split(' ')
+
+    const operations = {
+        '>': () => a > b,
+        '<': () => a < b,
+        '<=': () => a <= b,
+        '>=': () => a >= b,
+        '==': () => a === b,
+        'match': () => a.match(b),
+        'includes': () => a.includes(b),
+    }
+
+    if (operations[operator]) {
+        return operations[operator]()
+    }
+
+    return false
+}
+
+export class ISArray<T extends Object> {
+    constructor(protected items: T[] = []) {}
+
+    public filter(pattern: string) {
+        this.items = this.items.filter((item) => {
+            if (isExpression(pattern, item)) {
+                return evaluate(pattern, item)
+            }
+
+            return evaluateString(pattern, item)
+        })
+
+        return this
+    }
+
+    public get value() {
+        return this.items
     }
 }

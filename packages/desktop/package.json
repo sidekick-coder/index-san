@@ -37,6 +37,7 @@
     "highlight.js": "^11.6.0",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
+    "mathjs": "^11.4.0",
     "mime": "^3.0.0",
     "moment": "^2.29.4",
     "monaco-editor": "^0.34.1",
