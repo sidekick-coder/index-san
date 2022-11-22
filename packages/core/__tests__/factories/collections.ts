@@ -8,9 +8,10 @@ const CollectionFactory = new Factory<Collection>((data) => {
     return new Collection({
         id,
         name: id,
-        path: '/' + id,
+        path: id,
         crudName: 'memory',
         columns: [],
+        views: [],
         ...data,
     })
 })

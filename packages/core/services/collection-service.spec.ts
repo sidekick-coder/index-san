@@ -78,7 +78,7 @@ test.group('collection-service (service)', (group) => {
         const service = await CollectionService.from(workspace, collection.id)
 
         for (let i = 0; i < 20; i++) {
-            memoryDrive.createDir([service.path, 'item-', i].join('/'))
+            memoryDrive.createDir([service.path, `item-${i}`].join('/'))
         }
 
         const result = await service.list()

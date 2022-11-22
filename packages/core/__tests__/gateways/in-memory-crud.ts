@@ -1,4 +1,5 @@
 import path from 'path'
+import DirectoryEntry from '../../entities/directory-entry'
 import Item from '../../entities/item'
 import { Crud } from '../../gateways/crud-manager'
 import { Drive } from '../../gateways/drive-manager'
@@ -38,7 +39,7 @@ export default class InMemoryCrud implements Crud {
     }
 
     public async create(collectionPath: string, data: Item): Promise<Item> {
-        const entryPath = [collectionPath, data.id].join('/')
+        const entryPath = DirectoryEntry.normalize(collectionPath, data.id)
 
         await this.drive.mkdir(entryPath)
 

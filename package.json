@@ -5,6 +5,7 @@
     "scripts": {
         "lint": "eslint . --ext .vue,.ts,.js",
         "dev": "npm -w desktop run dev",
+        "test": "npm -ws test --if-present",
         "build": "node scripts/build.js",
         "new:version": "node scripts/version.js",
         "new:use-case": "node scripts/new-use-case"

@@ -7,11 +7,21 @@ export default class DirectoryEntry {
         Object.assign(this, props)
     }
 
-    public static directory(...paths: string[]) {
-        const path = paths
+    public static normalize(...paths: string[]) {
+        let result = paths
             .map((p) => p.split('/'))
             .reduce((all, p) => all.concat(p), [])
             .join('/')
+
+        if (result[0] === '/') {
+            result = result.slice(1)
+        }
+
+        return result
+    }
+
+    public static directory(...paths: string[]) {
+        const path = this.normalize(...paths)
 
         const basename = path.split('/').pop()
 
@@ -23,10 +33,7 @@ export default class DirectoryEntry {
     }
 
     public static file(...paths: string[]) {
-        const path = paths
-            .map((p) => p.split('/'))
-            .reduce((all, p) => all.concat(p), [])
-            .join('/')
+        const path = this.normalize(...paths)
 
         const basename = path.split('/').pop()
 

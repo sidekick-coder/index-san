@@ -13,7 +13,11 @@ export default class InMemoryDrive implements Drive {
     }
 
     public async list(path: string): Promise<DirectoryEntry[]> {
-        return this.entries.filter((e) => e.path === [path, e.name].join('/'))
+        if (path === '/') {
+            return this.entries.filter((e) => !e.path.includes('/'))
+        }
+
+        return this.entries.filter((e) => [path, e.name].join('/') === e.path)
     }
 
     public async get(path: string) {
@@ -47,7 +51,7 @@ export default class InMemoryDrive implements Drive {
     }
 
     public async write(path: string, content: Buffer) {
-        this.content.set(path, content)
+        this.content.set(DirectoryEntry.normalize(path), content)
 
         this.entries.push(DirectoryEntry.file(path))
     }
@@ -82,7 +86,7 @@ export default class InMemoryDrive implements Drive {
         }
 
         this.entries.push(entry)
-        this.content.set(entryPath, Buffer.from(content))
+        this.content.set(entry.path, Buffer.from(content))
     }
 
     public createDir(entryPath: string) {
