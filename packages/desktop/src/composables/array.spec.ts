@@ -35,7 +35,7 @@ describe('array.ts', () => {
 
         expect(result.value).toEqual(output)
     })
-    test.only.each([
+    test.each([
         ['date > 2022-01-08', [data[9]]],
         ['date < 2022-01-02', [data[0], data[1]]],
         ['date < 2022-02-01', data],
