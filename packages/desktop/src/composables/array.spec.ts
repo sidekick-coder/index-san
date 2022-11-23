@@ -35,6 +35,7 @@ describe('array.ts', () => {
 
         expect(result.value).toEqual(output)
     })
+
     test.each([
         ['date > 2022-01-08', [data[9]]],
         ['date < 2022-01-02', [data[0], data[1]]],
@@ -45,5 +46,39 @@ describe('array.ts', () => {
         const result = items.filter(input)
 
         expect(result.value).toEqual(output)
+    })
+
+    test('show map items by pattern', () => {
+        const items = new ISArray(data)
+
+        const expected = data.map((i) => ({ ...i, amount: i.amount * 2 }))
+
+        const result = items.map('amount * 2').value
+
+        expect(result).toEqual(expected)
+    })
+
+    test('show transform amount field in positive numbers', () => {
+        const data = [{ amount: -3.99 }, { amount: -5.99 }, { amount: -6.99 }]
+
+        const items = new ISArray([{ amount: -3.99 }, { amount: -5.99 }, { amount: -6.99 }])
+
+        const expected = data.map((i) => ({ ...i, amount: i.amount * -1 }))
+
+        const result = items.map('amount * -1').value
+
+        expect(result).toEqual(expected)
+    })
+
+    test('show add field array', () => {
+        const data = [{ amount: -3.99 }, { amount: -5.99 }, { amount: -6.99 }]
+
+        const items = new ISArray([{ amount: -3.99 }, { amount: -5.99 }, { amount: -6.99 }])
+
+        const expected = data.map((i) => ({ ...i, type: i.amount < 0 ? 'outcome' : 'income' }))
+
+        const result = items.map('type amount < 0 ? "outcome" : "income" ').value
+
+        expect(result).toEqual(expected)
     })
 })

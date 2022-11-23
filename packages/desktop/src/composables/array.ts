@@ -148,6 +148,24 @@ export class ISArray<T extends Object> {
         return this
     }
 
+    public map(pattern: string) {
+        const [field, ...operator] = pattern.split(' ')
+
+        this.items = this.items.map((item) => {
+            if (isExpression(pattern, item)) {
+                item[field] = evaluate(pattern, item)
+            }
+
+            if (isExpression(operator.join(' '), item)) {
+                item[field] = evaluate(operator.join(' '), item)
+            }
+
+            return item
+        })
+
+        return this
+    }
+
     public get value() {
         return this.items
     }
