@@ -75,16 +75,15 @@ async function save() {
 
         <w-content>
             <div class="h-full w-full flex">
-                <is-container v-show="edit" class="min-h-full w-6/12 border-r border-zinc-700 pt-5">
-                    <is-textarea
+                <div v-show="edit" class="min-h-full w-6/12 border-r border-zinc-700 pt-5">
+                    <is-code-editor
                         ref="root"
                         v-model="content"
-                        class="min-h-full w-full bg-transparent outline-none"
-                        autofocus
-                        spellcheck
+                        language="markdown"
+                        :minimap="false"
                         @keydown.ctrl.s="save"
                     />
-                </is-container>
+                </div>
 
                 <div
                     ref="previewRef"

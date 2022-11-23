@@ -14,6 +14,14 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    language: {
+        type: String,
+        default: 'javascript',
+    },
+    minimap: {
+        type: Boolean,
+        default: true,
+    },
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -41,11 +49,11 @@ onMounted(() => {
 
     editor = monaco.editor.create(root.value!, {
         value: model.value,
-        language: 'javascript',
+        language: props.language,
         theme: 'app-theme',
-        padding: {
-            top: 20,
-        },
+        automaticLayout: true,
+        padding: { top: 20 },
+        minimap: { enabled: props.minimap },
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
