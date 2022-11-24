@@ -22,51 +22,39 @@ if (!menu.value.length) {
 <template>
     <w-drawer v-model="drawer" class="bg-zinc-800 text-white border-r border-zinc-700 group">
         <div class="flex flex-wrap items-start">
-            <div class="flex items-center w-full justify-between">
-                <router-link to="/" class="sidebar-list-item">
+            <div class="flex items-stretch w-full justify-between">
+                <is-list-item to="/">
                     <h1 class="text-lg font-bold">Index-san</h1>
-                </router-link>
-
-                <is-icon
-                    name="chevron-left"
-                    class="px-4 cursor-pointer opacity-0 group-hover:opacity-100"
+                </is-list-item>
+                <is-btn
+                    text
+                    class="opacity-0 h-[52px] group-hover:opacity-100"
                     @click="drawer = false"
-                />
+                >
+                    <is-icon name="chevron-left" />
+                </is-btn>
             </div>
 
-            <router-link to="/workspaces" class="sidebar-list-item clickable text-sm">
+            <is-list-item to="/workspaces">
                 <i class="mr-2"> <fa-icon icon="cubes" /></i>
                 <div>Workspaces</div>
-            </router-link>
+            </is-list-item>
 
-            <router-link to="/settings/menu" class="sidebar-list-item clickable text-sm">
+            <is-list-item to="/settings/menu">
                 <i class="mr-2"> <fa-icon icon="cog" /></i>
                 <div>{{ $t('settings') }}</div>
-            </router-link>
+            </is-list-item>
         </div>
 
         <div v-for="(items, name) in sections" :key="name" class="flex flex-wrap items-start">
-            <div class="sidebar-list-item text-gray-500 text-sm font-bold">{{ name }}</div>
+            <is-list-item class="text-gray-500 font-bold">
+                {{ name }}
+            </is-list-item>
 
-            <router-link
-                v-for="(item, index) in items"
-                :key="index"
-                :to="item.to"
-                class="sidebar-list-item clickable text-sm"
-            >
+            <is-list-item v-for="(item, index) in items" :key="index" :to="item.to">
                 <is-icon :name="item.icon || 'circle'" class="mr-4" />
                 <div>{{ item.label }}</div>
-            </router-link>
+            </is-list-item>
         </div>
     </w-drawer>
 </template>
-
-<style>
-.sidebar-list-item {
-    @apply px-4 py-2 w-full flex items-center;
-}
-
-.sidebar-list-item.clickable {
-    @apply hover:bg-gray-800;
-}
-</style>

@@ -288,3 +288,20 @@ watch(props, load, { immediate: true, deep: true })
         </is-table>
     </is-card>
 </template>
+
+<style lang="scss">
+.collection-table {
+    .collection-table-item {
+        position: relative;
+        .actions {
+            opacity: 0;
+        }
+
+        &:hover {
+            .actions {
+                opacity: 1;
+            }
+        }
+    }
+}
+</style>

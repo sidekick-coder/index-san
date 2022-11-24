@@ -30,9 +30,12 @@ watch(() => props, load, {
 })
 </script>
 <template>
-    <is-collection-table
-        :workspace-id="workspaceId"
-        :collection-id="collectionId"
-        view-id="default"
-    />
+    <is-container>
+        <is-collection-table
+            :workspace-id="workspaceId"
+            :collection-id="collectionId"
+            :title="meta.title"
+            view-id="default"
+        />
+    </is-container>
 </template>

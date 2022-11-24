@@ -125,10 +125,20 @@ export async function updateCollection(
     data: Partial<Collection>
 ) {
     const [, setCollection] = useCollection()
+    const [, setColumns] = useCollectionColumns()
+    const [, setViews] = useCollectionViews()
 
     await useCase('update-collection', { workspaceId, collectionId, data })
 
     await setCollection(workspaceId, collectionId, true)
+
+    if (data.columns) {
+        await setColumns(workspaceId, collectionId)
+    }
+
+    if (data.views) {
+        await setViews(workspaceId, collectionId)
+    }
 
     hooks.emit(createCollectionKey(workspaceId, collectionId, 'update'))
 }

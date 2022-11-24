@@ -72,7 +72,7 @@ async function deleteItem(id: string) {
 }
 </script>
 <template>
-    <div>
+    <is-container>
         <is-dialog v-model="dialog">
             <w-form class="mb-4" @submit="submit">
                 <div class="mb-4">
@@ -143,5 +143,5 @@ async function deleteItem(id: string) {
                 </div>
             </template>
         </is-table>
-    </div>
+    </is-container>
 </template>
