@@ -1,26 +1,51 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
-
 const props = defineProps({
     modelValue: {
         type: Boolean,
-        default: false,
+        default: null,
+    },
+})
+const emit = defineEmits(['update:modelValue'])
+
+const innerModel = ref(false)
+const model = useVModel(props, 'modelValue', emit)
+
+const show = computed({
+    get() {
+        if (model.value !== null) {
+            return model.value
+        }
+
+        return innerModel.value
+    },
+    set(value) {
+        if (model.value !== null) {
+            model.value = value
+            return
+        }
+
+        innerModel.value = value
     },
 })
 
-const emit = defineEmits(['update:modelValue', 'save', 'delete'])
-
-const model = useVModel(props, 'modelValue', emit)
+function onClick() {
+    show.value = !show.value
+}
 </script>
 <template>
-    <w-dialog v-model="model">
-        <template #content>
-            <div
-                class="p-5 w-full max-w-[500px] transition ease-in-out bg-gray-800 text-white rounded"
-                @click.stop=""
-            >
+    <slot name="activator" :on="{ onClick }" />
+
+    <teleport to="body">
+        <div
+            v-if="show"
+            class="fixed inset-0 flex h-screen w-screen bg-black/30 flex items-center justify-center"
+            @click="show = false"
+        >
+            <div class="min-w-[500px]" @click.stop="">
                 <slot />
             </div>
-        </template>
-    </w-dialog>
+        </div>
+    </teleport>
 </template>

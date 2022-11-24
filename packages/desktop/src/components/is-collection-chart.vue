@@ -93,6 +93,7 @@ const chart = ref({
     options: {
         type: props.type,
         data: {
+            labels: [] as string[],
             datasets: [] as any[],
         },
     },
@@ -101,24 +102,36 @@ const chart = ref({
 function setChart() {
     chart.value.loading = true
 
+    chart.value.options.type = view.value.type
+
     chart.value.options.data.datasets = []
 
     view.value.datasets.forEach((dataset) => {
         const data = new ISArray(items.value).apply(dataset.rules)
 
-        const yData = new ISArray<number[]>(data.value).apply(dataset.yRules)
-        const xData = new ISArray<string[]>(data.value).apply(dataset.xRules)
+        const yData = data.apply(dataset.yRules)
+        const xData = data.apply(dataset.xRules)
 
-        const axis = xData.value.map((x, i) => ({
+        const result = {
+            label: dataset.label ?? '-',
+            data: [] as any[],
+            backgroundColor: dataset.colors ? dataset.colors.split(',') : theme.chartColors(),
+        }
+
+        if (['pie'].includes(view.value.type)) {
+            result.data = xData.value
+            chart.value.options.data.labels = yData.value
+
+            chart.value.options.data.datasets.push(result)
+            return
+        }
+
+        result.data = xData.value.map((x, i) => ({
             x,
             y: yData.value[i],
         }))
 
-        chart.value.options.data.datasets.push({
-            label: dataset.label ?? '-',
-            data: axis,
-            backgroundColor: dataset.colors ? dataset.colors.split(',') : theme.chartColors(),
-        })
+        chart.value.options.data.datasets.push(result)
     })
 
     setTimeout(() => (chart.value.loading = false), 500)
@@ -133,6 +146,22 @@ watch(view, setChart, { deep: true })
 
             <div class="grow" />
 
+            <is-dialog>
+                <template #activator="{ on }">
+                    <is-btn text v-bind="on">
+                        <is-icon name="bug" />
+                    </is-btn>
+                </template>
+
+                <is-card color="gray" class="w-[800px] h-[500px]">
+                    <is-code-editor
+                        :model-value="JSON.stringify(chart.options, null, 4)"
+                        language="json"
+                        readonly
+                    />
+                </is-card>
+            </is-dialog>
+
             <is-collection-chart-config :edited-item="view" @save="updateOptions" />
 
             <is-btn text @click="setChart">
@@ -143,7 +172,10 @@ watch(view, setChart, { deep: true })
         <is-card-content v-if="chart.loading"> Loading... </is-card-content>
 
         <template v-else>
-            <is-card-content v-if="!chart.options.data.datasets.length">
+            <is-card-content
+                v-if="!chart.options.data.datasets.length"
+                class="py-5 text-gray-500 justify-center"
+            >
                 {{ $t('noEntity', [$t('dataset', 2)]) }}
             </is-card-content>
 

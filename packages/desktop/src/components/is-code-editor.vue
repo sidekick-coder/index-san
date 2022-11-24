@@ -22,6 +22,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    readonly: {
+        type: Boolean,
+        default: false,
+    },
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -45,11 +49,12 @@ watch(
 onMounted(() => {
     if (!root.value) return
 
-    monaco.editor.defineTheme('app-theme', dracula)
+    monaco.editor.defineTheme('app-theme', dracula as any)
 
     editor = monaco.editor.create(root.value!, {
         value: model.value,
         language: props.language,
+        readOnly: props.readonly,
         theme: 'app-theme',
         automaticLayout: true,
         padding: { top: 20 },
