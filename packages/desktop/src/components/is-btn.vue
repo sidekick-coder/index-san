@@ -14,23 +14,27 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    rounded: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const sizes = {
     sm: 'px-3 py-1 text-xs',
-    md: 'px-4 py-2 text-sm',
+    md: 'px-4 py-2',
 }
 
 const defaultColors = {
     accent: 'bg-teal-500 hover:bg-teal-500/75',
-    error: 'bg-red-500 hover:bg-red-500/75',
-    info: 'bg-blue-500 hover:bg-blue-500/75',
+    error: 'bg-red-500 hover:bg-red-500/75 text-white',
+    info: 'bg-blue-500 hover:bg-blue-500/75 text-white',
 }
 
 const textColors = {
-    accent: 'hover:border-teal-500 border border-transparent hover:text-teal-500',
-    error: 'hover:border-red-500 border border-transparent hover:text-red-500',
-    info: 'hover:border-blue-500 border border-transparent hover:text-blue-500',
+    accent: 'hover:border-teal-500/5 hover:bg-teal-500/5 border border-transparent hover:text-teal-500',
+    error: 'hover:border-red-500/5 hover:bg-red-500/5 border border-transparent hover:text-red-500',
+    info: 'hover:border-blue-500/5 hover:bg-blue-500/5 border border-transparent hover:text-blue-500',
 }
 
 const colors = computed(() => {
@@ -44,7 +48,9 @@ const colors = computed(() => {
 })
 
 const classes = computed(() => {
-    const result: string[] = ['rounded transition-all']
+    const result: string[] = ['transition-all']
+
+    result.push(props.rounded ? 'rounded-full' : 'rounded')
 
     result.push(sizes[props.size])
     result.push(colors.value[props.color])

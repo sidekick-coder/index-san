@@ -6,6 +6,20 @@ import { useHooks, HookEventListener } from '../plugins/hooks'
 import { useStateV2 } from './state'
 import { CollectionFolderItem } from './item'
 
+export interface ViewChartDataset {
+    label: string
+    rules: [string, string][]
+    xRules: [string, string][]
+    yRules: [string, string][]
+    colors: string
+}
+
+export interface ViewChart {
+    title: string
+    type: string
+    datasets: ViewChartDataset[]
+}
+
 const hooks = useHooks()
 
 function waitFor(cb: () => boolean) {
@@ -97,7 +111,12 @@ export function useCollectionItems() {
             .finally(() => (loading.value = false))
     }
 
-    return [items, setItems] as [typeof items, typeof setItems]
+    return [items, setItems, loading, setLoadingKey] as [
+        typeof items,
+        typeof setItems,
+        typeof loading,
+        typeof setLoadingKey
+    ]
 }
 
 export async function updateCollection(

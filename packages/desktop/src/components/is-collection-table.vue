@@ -163,7 +163,7 @@ watch(props, load, { immediate: true, deep: true })
 </script>
 
 <template>
-    <div class="overflow-auto w-full">
+    <is-card>
         <is-collection-table-filters
             v-model="drawers.filters"
             :columns="columns"
@@ -178,10 +178,10 @@ watch(props, load, { immediate: true, deep: true })
             @submit="setHiddenColumns"
         />
 
-        <div class="w-full py-3 flex items-center border-b border-gray-700">
-            <div v-if="title" class="text-lg font-bold">
+        <is-card-head>
+            <is-card-title v-if="title">
                 {{ title }}
-            </div>
+            </is-card-title>
 
             <div class="ml-auto">
                 <is-btn text @click="drawers.columns = true">
@@ -192,7 +192,7 @@ watch(props, load, { immediate: true, deep: true })
                     <is-icon name="filter" />
                 </is-btn>
             </div>
-        </div>
+        </is-card-head>
 
         <is-table
             v-if="!loading"
@@ -286,5 +286,5 @@ watch(props, load, { immediate: true, deep: true })
                 </tr>
             </template>
         </is-table>
-    </div>
+    </is-card>
 </template>
