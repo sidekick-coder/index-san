@@ -39,6 +39,4 @@ onMounted(() => {
     <component :is="layouts[currentLayout] || layouts.default">
         <router-view />
     </component>
-
-    <is-item-dialog />
 </template>
