@@ -69,7 +69,7 @@ watch(() => props, setItem, {
 </script>
 <template>
     <w-layout use-percentage>
-        <w-toolbar>
+        <w-toolbar class="border-b border-gray-700">
             <is-container>
                 <div class="grow" />
 

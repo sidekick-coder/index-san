@@ -37,8 +37,8 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
 
 const classes = computed(() => ({
     main: 'is-table w-full border-gray-700',
-    th: 'text-left p-2 border-r relative border-gray-700',
-    td: 'text-left p-0 border-r border-gray-700',
+    th: 'text-left p-2 border-r last:border-r-0 relative border-gray-700',
+    td: 'text-left p-0 border-r last:border-r-0 border-gray-700',
     tr: 'item border-b border-gray-700',
 }))
 </script>

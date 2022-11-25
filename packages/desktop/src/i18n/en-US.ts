@@ -22,4 +22,8 @@ export default {
     yAxisRules: 'Y Axis rules',
     xAxisRules: 'X Axis rules',
     color: 'Color | Colors',
+    viewEntity: 'View {0}',
+    deleteEntity: 'Delete {0}',
+    item: 'Item | Items',
+    column: 'Column | Columns',
 }

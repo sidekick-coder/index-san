@@ -184,11 +184,15 @@ watch(props, load, { immediate: true, deep: true })
             </is-card-title>
 
             <div class="ml-auto">
-                <is-btn text @click="drawers.columns = true">
+                <is-btn text size="sm" @click="onColumnNew">
+                    {{ $t('addEntity', [$t('column')]) }}
+                </is-btn>
+
+                <is-btn text size="sm" @click="drawers.columns = true">
                     <is-icon name="table-columns" />
                 </is-btn>
 
-                <is-btn text @click="drawers.filters = true">
+                <is-btn text size="sm" @click="drawers.filters = true">
                     <is-icon name="filter" />
                 </is-btn>
             </div>
@@ -203,7 +207,7 @@ watch(props, load, { immediate: true, deep: true })
             <template #column="data">
                 <tr :class="data.classes.tr" class="relative">
                     <th
-                        v-for="(column, index) in data.columns"
+                        v-for="column in data.columns"
                         :key="column.name"
                         :class="data.classes.th"
                         :style="column.width ? `width: ${column.width}px` : ''"
@@ -212,13 +216,6 @@ watch(props, load, { immediate: true, deep: true })
                             :workspace-id="workspaceId"
                             :collection-id="collectionId"
                             :column="column"
-                        />
-
-                        <is-icon
-                            v-if="index === data.columns.length - 1"
-                            class="absolute cursor-pointer -mr-[36px] w-[36px] text-gray-500 flex items-center justify-center h-full right-0 top-0"
-                            name="plus"
-                            @click="onColumnNew"
                         />
 
                         <is-resize-line
@@ -245,12 +242,33 @@ watch(props, load, { immediate: true, deep: true })
                         :class="classes.td"
                         class="relative"
                     >
-                        <is-icon
-                            v-if="index === 0"
-                            class="absolute text-gray-500 cursor-pointer w-[36px] -ml-[36px] flex items-center justify-center h-full top-0 actions"
-                            name="ellipsis-vertical"
-                            @click="onItemShow(item)"
-                        />
+                        <is-menu offset-y>
+                            <template #activator="{ on }">
+                                <is-btn
+                                    class="w-[36px] -ml-[36px] absolute h-full top-0"
+                                    text
+                                    v-bind="on"
+                                >
+                                    <is-icon
+                                        v-if="index === 0"
+                                        class="text-gray-500 cursor-pointer flex items-center justify-center actions"
+                                        name="ellipsis-vertical"
+                                    />
+                                </is-btn>
+                            </template>
+
+                            <is-card color="b-primary">
+                                <is-list-item
+                                    size="xs"
+                                    color="danger"
+                                    dark
+                                    @click="onItemDelete(item)"
+                                >
+                                    <is-icon name="trash" class="mr-2" />
+                                    {{ $t('deleteEntity', [$t('item')]) }}
+                                </is-list-item>
+                            </is-card>
+                        </is-menu>
 
                         <is-collection-column-value
                             :workspace-id="workspaceId"
@@ -259,14 +277,6 @@ watch(props, load, { immediate: true, deep: true })
                             :column="c"
                             :item="item"
                         />
-
-                        <i
-                            v-if="index === filteredColumns.length - 1"
-                            class="absolute text-gray-500 cursor-pointer -mr-[36px] h-full flex items-center justify-center actions right-0 top-0"
-                            @click="onItemDelete(item.id)"
-                        >
-                            <fa-icon icon="trash" />
-                        </i>
                     </td>
                 </tr>
             </template>
