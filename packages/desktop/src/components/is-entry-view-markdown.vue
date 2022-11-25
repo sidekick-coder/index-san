@@ -75,12 +75,13 @@ async function save() {
 
         <w-content>
             <div class="h-full w-full flex">
-                <div v-show="edit" class="min-h-full w-6/12 border-r border-zinc-700 pt-5">
+                <div v-show="edit" class="min-h-full w-6/12">
                     <is-code-editor
                         ref="root"
                         v-model="content"
                         language="markdown"
                         :minimap="false"
+                        :padding="{ top: 20 }"
                         @keydown.ctrl.s="save"
                     />
                 </div>

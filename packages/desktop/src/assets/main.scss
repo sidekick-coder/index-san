@@ -20,3 +20,48 @@
     transform: translateY(-10%);
     opacity: 0;
 }
+
+// Scrollbar
+
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #27272a #18181b;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #18181b;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #27272a;
+    border-radius: 0px;
+    border: 0px none #18181b;
+}
+
+.bg-zinc-800 {
+    * {
+        scrollbar-width: auto;
+        scrollbar-color: #18181b#27272a ;
+    }
+    
+    /* Chrome, Edge, and Safari */
+    *::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    *::-webkit-scrollbar-track {
+        background: #27272a;
+    }
+    
+    *::-webkit-scrollbar-thumb {
+        background-color: #18181b;
+        border-radius: 0px;
+        border: 0px none #27272a;
+    }
+}

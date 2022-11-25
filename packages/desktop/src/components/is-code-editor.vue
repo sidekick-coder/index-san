@@ -6,7 +6,7 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-import dracula from '@/assets/themes/dracula.json'
+import defaultTheme from '@/assets/themes/default.json'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
@@ -25,6 +25,10 @@ const props = defineProps({
     readonly: {
         type: Boolean,
         default: false,
+    },
+    padding: {
+        type: Object,
+        default: undefined,
     },
 })
 const emit = defineEmits(['update:modelValue'])
@@ -49,7 +53,7 @@ watch(
 onMounted(() => {
     if (!root.value) return
 
-    monaco.editor.defineTheme('app-theme', dracula as any)
+    monaco.editor.defineTheme('app-theme', defaultTheme as any)
 
     editor = monaco.editor.create(root.value!, {
         value: model.value,
@@ -57,8 +61,15 @@ onMounted(() => {
         readOnly: props.readonly,
         theme: 'app-theme',
         automaticLayout: true,
-        padding: { top: 20 },
         minimap: { enabled: props.minimap },
+        padding: props.padding,
+        scrollbar: {
+            verticalScrollbarSize: 10,
+            horizontalScrollbarSize: 10,
+            useShadows: false,
+            horizontal: 'visible',
+            vertical: 'visible',
+        },
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
