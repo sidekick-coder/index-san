@@ -208,7 +208,6 @@
       
       "scrollbarSlider.background": "#27272A",
       "scrollbarSlider.activeBackground": "#27272A",
-      "scrollbarSlider.hoverBackground": "#27272A",
-      "editorOverviewRuler.border": "#191C22"
+      "scrollbarSlider.hoverBackground": "#27272A"     
     }
 }

@@ -63,6 +63,7 @@ onMounted(() => {
         automaticLayout: true,
         minimap: { enabled: props.minimap },
         padding: props.padding,
+        overviewRulerBorder: false,
         scrollbar: {
             verticalScrollbarSize: 10,
             horizontalScrollbarSize: 10,
