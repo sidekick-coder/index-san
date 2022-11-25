@@ -140,7 +140,7 @@ function saveDataset() {
             </is-list-item>
 
             <div class="mt-auto flex justify-end w-full px-4">
-                <is-btn class="mr-4" color="error">
+                <is-btn class="mr-4" color="danger">
                     {{ $t('cancel') }}
                 </is-btn>
 
@@ -193,7 +193,7 @@ function saveDataset() {
                     size="sm"
                     rounded
                     text
-                    color="error"
+                    color="danger"
                     @click="editedData.rules.splice(index, 1)"
                 >
                     <is-icon name="times" />
@@ -227,7 +227,7 @@ function saveDataset() {
                     size="sm"
                     rounded
                     text
-                    color="error"
+                    color="danger"
                     @click="editedData.yRules.splice(index, 1)"
                 >
                     <is-icon name="times" />
@@ -261,7 +261,7 @@ function saveDataset() {
                     size="sm"
                     rounded
                     text
-                    color="error"
+                    color="danger"
                     @click="editedData.xRules.splice(index, 1)"
                 >
                     <is-icon name="times" />
@@ -279,7 +279,7 @@ function saveDataset() {
             </is-list-item>
 
             <div class="mt-auto flex justify-end w-full px-4 mb-4">
-                <is-btn class="mr-4" color="error" @click="editedIndex = undefined">
+                <is-btn class="mr-4" color="danger" @click="editedIndex = undefined">
                     {{ $t('cancel') }}
                 </is-btn>
 
