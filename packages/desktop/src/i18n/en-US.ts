@@ -39,4 +39,6 @@ export default {
     dangerColor: 'Danger color',
     current: 'Current',
     default: 'Default',
+    general: 'General',
+    language: 'Language',
 }

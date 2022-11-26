@@ -1,3 +1,8 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
@@ -18,6 +23,10 @@ const props = defineProps({
     flat: {
         type: Boolean,
         default: false,
+    },
+    wrapperAttrs: {
+        type: Object,
+        default: () => ({}),
     },
 })
 
@@ -90,7 +99,7 @@ const labelClasses = computed(() => {
 })
 </script>
 <template>
-    <div class="w-full">
+    <div class="w-full" v-bind="wrapperAttrs">
         <label v-if="label" :for="label" :class="labelClasses">{{ label }}</label>
 
         <input

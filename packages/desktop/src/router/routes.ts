@@ -39,8 +39,12 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/settings',
         component: () => import('../pages/settings/index.vue'),
-        redirect: '/settings/menu',
+        redirect: '/settings/general',
         children: [
+            {
+                path: 'general',
+                component: () => import('../pages/settings/general.vue'),
+            },
             {
                 path: 'menu',
                 component: () => import('../pages/settings/menu.vue'),
