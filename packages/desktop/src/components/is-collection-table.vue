@@ -183,7 +183,7 @@ watch(props, load, { immediate: true, deep: true })
                 {{ title }}
             </is-card-title>
 
-            <div class="ml-auto">
+            <div class="ml-auto flex">
                 <is-btn text size="sm" @click="onColumnNew">
                     {{ $t('addEntity', [$t('column')]) }}
                 </is-btn>

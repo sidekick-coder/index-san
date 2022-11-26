@@ -1,12 +1,41 @@
 import colors from 'tailwindcss/colors'
+import { useState } from './state'
+
+const defaultTheme = {
+    colors: {
+        'b-primary': '24 24 27',
+        'b-secondary': '39 39 42',
+        'lines': '55 65 81',
+
+        't-primary': '255 255 255',
+        't-secondary': '107 114 128',
+
+        'accent': '20 184 166',
+        'info': '59 130 246',
+        'warn': '250 204 21',
+        'danger': '239 68 68',
+    },
+}
 
 export function useTheme() {
+    const theme = useState('app:theme', defaultTheme, {
+        localStorage: true,
+    })
+
     function get() {
-        return {
-            accent: 'var(--accent-color)',
-            danger: 'var(--danger-color)',
-            info: 'var(--info-color)',
-        }
+        return theme.value || defaultTheme
+    }
+
+    function set(value: typeof defaultTheme) {
+        theme.value = value
+    }
+
+    function load() {
+        const { colors } = get()
+
+        Object.keys(colors).forEach((key) => {
+            document.documentElement.style.setProperty(`--${key}`, colors[key])
+        })
     }
 
     function chartColors() {
@@ -32,6 +61,9 @@ export function useTheme() {
     }
 
     return {
+        get,
+        set,
+        load,
         chartColors,
     }
 }

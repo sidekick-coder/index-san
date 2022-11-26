@@ -18,6 +18,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    to: {
+        type: String,
+        default: null,
+    },
 })
 
 const sizes = {
@@ -48,7 +52,7 @@ const colors = computed(() => {
 })
 
 const classes = computed(() => {
-    const result: string[] = ['transition-all']
+    const result: string[] = ['transition-all flex w-max']
 
     result.push(props.rounded ? 'rounded-full' : 'rounded')
 
@@ -59,7 +63,11 @@ const classes = computed(() => {
 })
 </script>
 <template>
-    <button :class="classes">
+    <router-link v-if="to" :to="to" :class="classes">
+        <slot />
+    </router-link>
+
+    <button v-else :class="classes">
         <slot />
     </button>
 </template>

@@ -6,6 +6,15 @@ interface Options {
 
 const states = ref(new Map<string, any>())
 
+function isJSON(value: string) {
+    try {
+        JSON.parse(value)
+        return true
+    } catch {
+        return false
+    }
+}
+
 function setLocalStorage(key: string, payload: any) {
     let value = payload
 
@@ -25,6 +34,10 @@ function getLocalStorage<T = any>(key: string) {
 
     if (['true', 'false'].includes(value)) {
         value = value === 'true'
+    }
+
+    if (isJSON(value)) {
+        value = JSON.parse(value)
     }
 
     return value as T

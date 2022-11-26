@@ -3,13 +3,13 @@ import { computed, defineAsyncComponent, onMounted, watch } from 'vue'
 import { providePageMeta } from '@/composables/page-meta'
 import { useRoute, useRouter } from 'vue-router'
 import { useHooks } from './plugins/hooks'
+import { useTheme } from './composables/theme'
 
 const meta = providePageMeta()
-
 const hooks = useHooks()
-
 const route = useRoute()
 const router = useRouter()
+const theme = useTheme()
 
 const layouts: Record<string, any> = {
     default: defineAsyncComponent(() => import('@/layouts/default.vue')),
@@ -30,6 +30,8 @@ onMounted(() => {
     const lastRoute = localStorage.getItem('app:last-route')
 
     if (lastRoute) router.push(lastRoute)
+
+    theme.load()
 
     hooks.emit('app:boot')
 })

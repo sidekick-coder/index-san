@@ -37,8 +37,19 @@ const routes: RouteRecordRaw[] = [
     },
     // settings
     {
-        path: '/settings/menu',
-        component: () => import('../pages/settings/menu.vue'),
+        path: '/settings',
+        component: () => import('../pages/settings/index.vue'),
+        redirect: '/settings/menu',
+        children: [
+            {
+                path: 'menu',
+                component: () => import('../pages/settings/menu.vue'),
+            },
+            {
+                path: 'theme',
+                component: () => import('../pages/settings/theme.vue'),
+            },
+        ],
     },
     // scripts
     {

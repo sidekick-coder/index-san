@@ -78,7 +78,7 @@ setItems()
 <template>
     <is-table :columns="columns" :items="menu" limit="100">
         <template #item-order="{ item, column }">
-            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
+            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
         </template>
 
         <template #item-workspace="{ item }">
@@ -88,15 +88,15 @@ setItems()
         </template>
 
         <template #item-label="{ item, column }">
-            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
+            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
         </template>
 
         <template #item-section="{ item, column }">
-            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
+            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
         </template>
 
         <template #item-icon="{ item, column }">
-            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
+            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
         </template>
 
         <template #item-actions="{ item }">

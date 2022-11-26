@@ -43,7 +43,7 @@ if (!menu.value.length) {
                 <div>Workspaces</div>
             </is-list-item>
 
-            <is-list-item to="/settings/menu">
+            <is-list-item to="/settings">
                 <i class="mr-2"> <fa-icon icon="cog" /></i>
                 <div>{{ $t('settings') }}</div>
             </is-list-item>
