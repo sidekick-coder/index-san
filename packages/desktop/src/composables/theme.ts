@@ -1,6 +1,14 @@
 import colors from 'tailwindcss/colors'
 
 export function useTheme() {
+    function get() {
+        return {
+            accent: 'var(--accent-color)',
+            danger: 'var(--danger-color)',
+            info: 'var(--info-color)',
+        }
+    }
+
     function chartColors() {
         return [
             colors.amber[500],

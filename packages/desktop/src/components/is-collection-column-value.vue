@@ -52,8 +52,8 @@ function load() {
 
 builder
     .add('p-2 bg-transparent w-full h-[40px]')
-    .add('hover:bg-gray-800')
-    .add('focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500')
+    .add('hover:bg-b-secondary')
+    .add('focus:bg-b-secondary focus:outline focus:outline-2 focus:outline-accent')
 
 const onChange = throttle(async () => {
     await updateItem(props.workspaceId, props.collectionId, props.itemId, {
@@ -89,7 +89,7 @@ watch(() => props.item, load, {
             <w-btn
                 v-if="payload"
                 size="sm"
-                custom:color="bg-zinc-800"
+                custom:color="bg-b-primary"
                 @click="$router.push(`/workspaces/${workspaceId}/entries/${payload}`)"
             >
                 {{ payload }}

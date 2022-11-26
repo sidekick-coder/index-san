@@ -53,7 +53,7 @@ async function save() {
 </script>
 <template>
     <w-layout use-percentage>
-        <w-toolbar class="border-b border-zinc-700">
+        <w-toolbar class="border-b border-b-lines">
             <is-container class="-mr-3 flex justify-end w-full">
                 <template v-if="edit">
                     <is-btn size="sm" class="mr-2" text @click="setPreview">

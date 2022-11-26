@@ -69,7 +69,7 @@ const view = {
     }
 
     pre {
-        @apply bg-zinc-800 text-sm p-4 rounded my-4;
+        @apply bg-b-primary text-sm p-4 rounded my-4;
     }
 
     ul {

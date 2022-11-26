@@ -45,7 +45,7 @@ function onClick() {
             @click="show = false"
         >
             <aside
-                class="fixed right-0 top-0 h-full border-l border-gray-700 w-[500px] bg-zinc-800 overflow-y-auto"
+                class="fixed right-0 top-0 h-full border-l border-lines w-[500px] bg-b-primary overflow-y-auto"
                 @click.stop=""
             >
                 <slot />

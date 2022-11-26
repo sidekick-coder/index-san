@@ -36,10 +36,10 @@ const pagination = ref({ limit: +props.limit })
 const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
 
 const classes = computed(() => ({
-    main: 'is-table w-full border-gray-700',
-    th: 'text-left p-2 border-r last:border-r-0 relative border-gray-700',
-    td: 'text-left p-0 border-r last:border-r-0 border-gray-700',
-    tr: 'item border-b border-gray-700',
+    main: 'is-table w-full border-lines',
+    th: 'text-left p-2 border-r last:border-r-0 relative border-lines',
+    td: 'text-left p-0 border-r last:border-r-0 border-lines',
+    tr: 'item border-b border-lines',
 }))
 </script>
 
@@ -54,7 +54,7 @@ const classes = computed(() => ({
                         :class="classes.th"
                         :style="column.width ? `width: ${column.width}px` : ''"
                     >
-                        <div class="text-gray-500">{{ column.label }}</div>
+                        <div class="text-t-secondary">{{ column.label }}</div>
                     </th>
                 </tr>
             </slot>
@@ -81,7 +81,7 @@ const classes = computed(() => ({
             <td
                 :class="classes.td"
                 :colspan="columns.length + 2"
-                class="p-2 cursor-pointer hover:bg-gray-800 text-gray-500 text-sm text-center"
+                class="p-2 cursor-pointer hover:bg-b-secondary text-t-secondary text-sm text-center"
             >
                 No items
             </td>
@@ -91,7 +91,7 @@ const classes = computed(() => ({
             <td
                 :class="classes.td"
                 :colspan="columns.length + 2"
-                class="p-2 cursor-pointer hover:bg-gray-800 text-gray-500 text-sm border-r-0"
+                class="p-2 cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
                 @click="pagination.limit = pagination.limit + Number(limit)"
             >
                 <fa-icon icon="arrow-down" class="mr-2" />

@@ -3,7 +3,7 @@
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
-    class="flex w-full bg-zinc-800 rounded p-4"
+    class="flex w-full bg-b-primary rounded p-4"
     style="max-width:1000px"  
 >
     <is-chart-pie 
@@ -21,7 +21,7 @@
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
-    class="flex w-full bg-zinc-800 rounded p-4"
+    class="flex w-full bg-b-primary rounded p-4"
     style="max-width:1000px"  
 >
     <is-chart-bar value-key="value" group-by="asset" width="100%" />

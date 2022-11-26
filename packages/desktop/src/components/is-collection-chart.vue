@@ -174,7 +174,7 @@ watch(view, setChart, { deep: true })
         <template v-else>
             <is-card-content
                 v-if="!chart.options.data.datasets.length"
-                class="py-5 text-gray-500 justify-center"
+                class="py-5 text-lines justify-center"
             >
                 {{ $t('noEntity', [$t('dataset', 2)]) }}
             </is-card-content>

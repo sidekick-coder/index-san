@@ -14,9 +14,9 @@ const props = defineProps({
 // colors
 
 const defaultColors = {
-    'b-primary': 'bg-zinc-800',
+    'b-primary': 'bg-b-primary',
 
-    'accent': 'bg-teal-500 hover:bg-teal-500/75',
+    'accent': 'bg-accent hover:bg-accent/75',
     'error': 'bg-red-500 hover:bg-red-500/75',
     'info': 'bg-blue-500 hover:bg-blue-500/75',
 }

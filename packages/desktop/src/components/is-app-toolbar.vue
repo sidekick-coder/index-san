@@ -93,20 +93,20 @@ watch(
 </script>
 
 <template>
-    <w-toolbar class="px-10 border-b border-gray-700 text-sm" :height="40">
+    <w-toolbar class="px-10 border-b border-lines text-sm" :height="40">
         <is-icon v-if="!drawer" name="bars" class="mr-4 cursor-pointer" @click="drawer = true" />
 
         <is-icon
             name="arrow-left"
             class="mr-2"
-            :class="haveBack ? 'cursor-pointer' : 'text-gray-500'"
+            :class="haveBack ? 'cursor-pointer' : 'text-lines'"
             @click="$router.go(-1)"
         />
 
         <is-icon
             name="arrow-right"
             class="mr-4"
-            :class="haveForward ? 'cursor-pointer' : 'text-gray-500'"
+            :class="haveForward ? 'cursor-pointer' : 'text-lines'"
             @click="$router.go(1)"
         />
 

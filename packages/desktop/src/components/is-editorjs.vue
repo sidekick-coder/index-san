@@ -55,82 +55,82 @@ onUnmounted(() => editor.value?.destroy())
 </template>
 
 <style lang="scss">
-.ce-toolbar {
-    .ce-toolbar__content {
-        max-width: unset;
-    }
+// .ce-toolbar {
+//     .ce-toolbar__content {
+//         max-width: unset;
+//     }
 
-    svg {
-        @apply text-white;
-    }
+//     svg {
+//         @apply text-t-primary;
+//     }
 
-    .ce-toolbar__plus:hover {
-        @apply bg-zinc-700;
-    }
+//     .ce-toolbar__plus:hover {
+//         @apply bg-b-primary;
+//     }
 
-    .cdx-search-field input::placeholder {
-        @apply text-white/50;
-    }
+//     .cdx-search-field input::placeholder {
+//         @apply text-t-primary/50;
+//     }
 
-    .cdx-search-field__icon .icon {
-        @apply text-white;
-    }
-    .ce-popover {
-        @apply bg-zinc-700 border-zinc-500;
-    }
+//     .cdx-search-field__icon .icon {
+//         @apply text-t-primary;
+//     }
+//     .ce-popover {
+//         @apply bg-b-primary bg-b-primary;
+//     }
 
-    .ce-popover__item-icon {
-        @apply bg-zinc-700 border-zinc-500;
-    }
+//     .ce-popover__item-icon {
+//         @apply bg-b-primary bg-b-primary;
+//     }
 
-    .ce-popover__item {
-        @apply bg-zinc-500 border border-zinc-500;
-    }
+//     .ce-popover__item {
+//         @apply bg-b-primary border bg-b-primary;
+//     }
 
-    .ce-toolbar__settings-btn {
-        &:hover {
-            @apply bg-zinc-500;
-        }
-    }
+//     .ce-toolbar__settings-btn {
+//         &:hover {
+//             @apply bg-b-primary;
+//         }
+//     }
 
-    .ce-toolbar__actions {
-        padding-right: 20px;
-    }
-}
-.ce-inline-toolbar {
-    @apply bg-zinc-700 border-zinc-500;
+//     .ce-toolbar__actions {
+//         padding-right: 20px;
+//     }
+// }
+// .ce-inline-toolbar {
+//     @apply bg-b-primary bg-b-primary;
 
-    button {
-        @apply text-white;
-    }
+//     button {
+//         @apply text-t-primary;
+//     }
 
-    input {
-        @apply bg-zinc-700 text-white;
+//     input {
+//         @apply bg-b-primary text-t-primary;
 
-        &::placeholder {
-            @apply text-white/50;
-        }
-    }
-}
+//         &::placeholder {
+//             @apply text-t-primary/50;
+//         }
+//     }
+// }
 
-.ce-block {
-    .ce-block__content {
-        @apply w-full;
-        max-width: unset;
-    }
+// .ce-block {
+//     .ce-block__content {
+//         @apply w-full;
+//         max-width: unset;
+//     }
 
-    &.ce-block--selected {
-        .ce-block__content {
-            @apply bg-zinc-800 px-4 -ml-4;
-        }
-    }
+//     &.ce-block--selected {
+//         .ce-block__content {
+//             @apply bg-b-primary px-4 -ml-4;
+//         }
+//     }
 
-    ::selection {
-        @apply bg-zinc-700;
-    }
-}
+//     ::selection {
+//         @apply bg-b-primary;
+//     }
+// }
 
-.ce-settings {
-    @apply bg-zinc-700 border-zinc-500;
-}
+// .ce-settings {
+//     @apply bg-b-primary bg-b-primary;
+// }
 </style>

@@ -8,7 +8,7 @@ const props = defineProps({
     },
     color: {
         type: String,
-        default: 'info',
+        default: 'accent',
     },
     text: {
         type: Boolean,
@@ -26,15 +26,15 @@ const sizes = {
 }
 
 const defaultColors = {
-    accent: 'bg-teal-500 hover:bg-teal-500/75',
-    danger: 'bg-red-500 hover:bg-red-500/75 text-white',
-    info: 'bg-blue-500 hover:bg-blue-500/75 text-white',
+    accent: 'bg-accent hover:bg-accent/75',
+    danger: 'bg-danger hover:bg-danger/75 text-t-primary',
+    info: 'bg-info hover:bg-info/75 text-t-primary',
 }
 
 const textColors = {
-    accent: 'hover:border-teal-500/5 hover:bg-teal-500/5 border border-transparent hover:text-teal-500',
-    danger: 'hover:border-red-500/5 hover:bg-red-500/5 border border-transparent hover:text-red-500',
-    info: 'hover:border-blue-500/5 hover:bg-blue-500/5 border border-transparent hover:text-blue-500',
+    accent: 'hover:border-accent/5 hover:bg-accent/5 border border-transparent hover:text-accent',
+    danger: 'hover:border-danger/5 hover:bg-danger/5 border border-transparent hover:text-danger',
+    info: 'hover:border-info/5 hover:bg-info/5 border border-transparent hover:text-info',
 }
 
 const colors = computed(() => {

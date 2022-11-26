@@ -26,7 +26,7 @@ async function load() {
 load()
 </script>
 <template>
-    <div class="bg-gray-700 p-5 rounded">
+    <div class="bg-lines p-5 rounded">
         <template v-if="entry">
             <div><b>Name: </b> {{ entry.name }}</div>
             <div><b>Path: </b> {{ entry.path }}</div>

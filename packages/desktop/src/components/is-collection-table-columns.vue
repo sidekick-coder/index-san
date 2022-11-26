@@ -68,14 +68,14 @@ watch(
             @click="model = false"
         >
             <aside
-                class="fixed right-0 top-0 h-full border-l border-gray-700 w-[500px] bg-zinc-800"
+                class="fixed right-0 top-0 h-full border-l border-lines w-[500px] bg-b-primary"
                 @click.stop=""
             >
                 <w-form class="flex flex-wrap" @submit="submit">
                     <div
                         v-for="(column, index) in columns"
                         :key="index"
-                        class="w-full mb-4 flex items-center text-white hover:bg-gray-500 px-4 py-2 cursor-pointer"
+                        class="w-full mb-4 flex items-center text-t-primary hover:bg-lines px-4 py-2 cursor-pointer"
                         @click="toggle(column)"
                     >
                         <is-icon v-if="payload.includes(column.id)" name="eye-slash" />

@@ -66,7 +66,7 @@ watch(() => props.filters, load, { immediate: true, deep: true })
             @click="model = false"
         >
             <aside
-                class="fixed right-0 top-0 h-full border-l border-gray-700 w-[500px] bg-zinc-800"
+                class="fixed right-0 top-0 h-full border-l border-lines w-[500px] bg-b-primary"
                 @click.stop=""
             >
                 <w-form class="flex flex-wrap px-4 py-4" @submit="submit">
@@ -82,7 +82,7 @@ watch(() => props.filters, load, { immediate: true, deep: true })
                             v-else
                             v-model="payload[column.field]"
                             :label="column.label"
-                            class="text-white"
+                            class="text-t-primary"
                         />
                     </div>
 

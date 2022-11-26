@@ -99,7 +99,7 @@ function saveDataset() {
         </template>
 
         <is-card v-if="editedIndex === undefined">
-            <is-card-head class="text-white">
+            <is-card-head class="text-t-primary">
                 <is-card-title> Chart config </is-card-title>
 
                 <is-btn class="ml-auto" text rounded @click="drawer = false">
@@ -120,22 +120,22 @@ function saveDataset() {
                 </div>
             </is-card-content>
 
-            <is-list-item class="text-gray-500 font-bold"> Datasets </is-list-item>
+            <is-list-item class="text-lines font-bold"> Datasets </is-list-item>
 
             <is-list-item
                 v-for="(dataset, index) in payload.datasets"
                 :key="index"
-                class="text-white"
+                class="text-t-primary"
                 @click="editDataset(index)"
             >
                 {{ dataset.label }}
             </is-list-item>
 
-            <is-list-item v-if="!payload.datasets.length" class="text-white text-xs text-gray-500">
+            <is-list-item v-if="!payload.datasets.length" class="text-t-primary text-xs text-lines">
                 {{ $t('noEntity', [$t('dataset')]) }}
             </is-list-item>
 
-            <is-list-item class="text-white mb-4" @click="addDataset">
+            <is-list-item class="text-t-primary mb-4" @click="addDataset">
                 {{ $t('addEntity', [$t('dataset')]) }}
             </is-list-item>
 
@@ -151,7 +151,7 @@ function saveDataset() {
         </is-card>
 
         <is-card v-else>
-            <is-card-head class="text-white">
+            <is-card-head class="text-t-primary">
                 <is-btn text rounded @click="editedIndex = undefined">
                     <is-icon name="arrow-left" />
                 </is-btn>
@@ -172,14 +172,14 @@ function saveDataset() {
                 />
             </is-card-content>
 
-            <is-list-item class="text-gray-500 font-bold">
+            <is-list-item class="text-lines font-bold">
                 {{ `${$t('itemRules')}` }}
             </is-list-item>
 
             <is-list-item
                 v-for="(rule, index) in editedData.rules"
                 :key="index"
-                class="text-white flex gap-x-4 items-center"
+                class="text-t-primary flex gap-x-4 items-center"
             >
                 <div class="w-[130px]">
                     <w-select v-model="rule[0]" :options="rulesOptions" />
@@ -200,20 +200,20 @@ function saveDataset() {
                 </is-btn>
             </is-list-item>
 
-            <is-list-item class="text-white mb-4">
+            <is-list-item class="text-t-primary mb-4">
                 <is-btn size="sm" @click="editedData.rules.push(['filter', ''])">
                     {{ $t('addEntity', [$t('rule')]) }}
                 </is-btn>
             </is-list-item>
 
-            <is-list-item class="text-gray-500 font-bold">
+            <is-list-item class="text-lines font-bold">
                 {{ `${$t('yAxisRules')}` }}
             </is-list-item>
 
             <is-list-item
                 v-for="(rule, index) in editedData.yRules"
                 :key="index"
-                class="text-white flex gap-x-4 items-center"
+                class="text-t-primary flex gap-x-4 items-center"
             >
                 <div class="w-[130px]">
                     <w-select v-model="rule[0]" :options="rulesOptions" />
@@ -234,20 +234,20 @@ function saveDataset() {
                 </is-btn>
             </is-list-item>
 
-            <is-list-item class="text-white mb-4">
+            <is-list-item class="text-t-primary mb-4">
                 <is-btn size="sm" @click="editedData.yRules.push(['filter', ''])">
                     {{ $t('addEntity', [$t('rule')]) }}
                 </is-btn>
             </is-list-item>
 
-            <is-list-item class="text-gray-500 font-bold">
+            <is-list-item class="text-lines font-bold">
                 {{ `${$t('xAxisRules')}` }}
             </is-list-item>
 
             <is-list-item
                 v-for="(rule, index) in editedData.xRules"
                 :key="index"
-                class="text-white flex gap-x-4 items-center"
+                class="text-t-primary flex gap-x-4 items-center"
             >
                 <div class="w-[130px]">
                     <w-select v-model="rule[0]" :options="rulesOptions" />
@@ -268,13 +268,13 @@ function saveDataset() {
                 </is-btn>
             </is-list-item>
 
-            <is-list-item class="text-white mb-4">
+            <is-list-item class="text-t-primary mb-4">
                 <is-btn size="sm" @click="editedData.xRules.push(['filter', ''])">
                     {{ $t('addEntity', [$t('rule')]) }}
                 </is-btn>
             </is-list-item>
 
-            <is-list-item v-if="!editedData.rules.length" class="text-white text-xs text-gray-500">
+            <is-list-item v-if="!editedData.rules.length" class="text-t-primary text-xs text-lines">
                 {{ $t('noEntity', [$t('rule', 2)]) }}
             </is-list-item>
 

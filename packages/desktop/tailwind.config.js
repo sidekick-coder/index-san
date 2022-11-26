@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
@@ -12,6 +14,22 @@ module.exports = {
         { pattern: /items-*/ },
         { pattern: /justify-*/ },
     ],
-    theme: {},
+    theme: {
+        colors: {
+            'transparent': colors.transparent,
+
+            'b-primary': 'rgb(var(--b-primary))',
+            'b-secondary': 'rgb(var(--b-secondary))',
+
+            't-primary': 'rgb(var(--t-primary))',
+            't-secondary': 'rgb(var(--t-secondary))',
+
+            'lines': 'rgb(var(--lines))',
+
+            'accent': 'rgb(var(--accent) / 1)',
+            'danger': 'rgb(var(--danger))',
+            'info': 'rgb(var(--info))',
+        },
+    },
     plugins: [],
 }

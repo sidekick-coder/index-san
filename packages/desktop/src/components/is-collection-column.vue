@@ -92,11 +92,11 @@ async function deleteColumn() {
 <template>
     <w-dialog v-model="dialog">
         <template #content>
-            <w-form class="w-full bg-gray-800 max-w-[500px] p-4" @click.stop="" @submit="submit">
+            <w-form class="w-full bg-b-secondary max-w-[500px] p-4" @click.stop="" @submit="submit">
                 <div class="flex items-center mb-5">
-                    <div class="text-xl text-gray-500">Edit column</div>
+                    <div class="text-xl text-t-secondary">Edit column</div>
 
-                    <div class="ml-auto text-sm text-gray-500">
+                    <div class="ml-auto text-sm text-t-secondary">
                         <i class="cursor-pointer" @click="deleteColumn">
                             <fa-icon icon="trash" />
                         </i>
@@ -146,7 +146,7 @@ async function deleteColumn() {
         </template>
     </w-dialog>
 
-    <div class="cursor-pointer text-gray-500 text-sm" @click="dialog = true">
+    <div class="cursor-pointer text-t-secondary text-sm" @click="dialog = true">
         <fa-icon :icon="icons[column.type] || 'font'" class="mr-1 text-xs" />
 
         {{ column.label }}

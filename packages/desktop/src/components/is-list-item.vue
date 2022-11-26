@@ -12,7 +12,7 @@ const props = defineProps({
     },
     color: {
         type: String,
-        default: 'info',
+        default: 'accent',
     },
     size: {
         type: String,
@@ -23,9 +23,9 @@ const props = defineProps({
 const attrs = useAttrs()
 
 const defaultColors = {
-    accent: 'hover:bg-teal-500/5 hover:text-teal-500',
-    danger: 'hover:bg-red-500/5 hover:text-red-500',
-    info: 'hover:bg-blue-500/5 hover:text-blue-500',
+    accent: 'hover:bg-accent/5 hover:text-accent',
+    danger: 'hover:bg-danger/5 hover:text-danger',
+    info: 'hover:bg-info/5 hover:text-info',
 }
 
 const sizes = {
@@ -43,7 +43,7 @@ const classes = computed(() => {
     }
 
     if (props.dark) {
-        result.push('text-white')
+        result.push('text-t-primary')
     }
 
     return result

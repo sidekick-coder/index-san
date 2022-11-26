@@ -90,7 +90,7 @@ async function onItemShow(item: Script) {
         </w-form>
     </is-dialog>
 
-    <div class="w-full mt-5 pb-5 border-b border-zinc-700 flex items-center">
+    <div class="w-full mt-5 pb-5 border-b border-b-primary flex items-center">
         <is-input v-model="search" placeholder="Search..." class="max-w-[300px]" />
 
         <w-btn class="ml-auto" @click="dialog = true">

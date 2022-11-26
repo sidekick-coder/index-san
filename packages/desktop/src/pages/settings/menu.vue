@@ -78,11 +78,7 @@ setItems()
 <template>
     <is-table :columns="columns" :items="menu" limit="100">
         <template #item-order="{ item, column }">
-            <input
-                v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
-                @change="onItemUpdate(item)"
-            />
+            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
         </template>
 
         <template #item-workspace="{ item }">
@@ -92,27 +88,15 @@ setItems()
         </template>
 
         <template #item-label="{ item, column }">
-            <input
-                v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
-                @change="onItemUpdate(item)"
-            />
+            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
         </template>
 
         <template #item-section="{ item, column }">
-            <input
-                v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
-                @change="onItemUpdate(item)"
-            />
+            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
         </template>
 
         <template #item-icon="{ item, column }">
-            <input
-                v-model="item[column.field]"
-                class="p-2 bg-transparent hover:bg-gray-800 focus:bg-gray-800 focus:outline focus:outline-2 focus:outline-teal-500 w-full"
-                @change="onItemUpdate(item)"
-            />
+            <is-input v-model="item[column.field]" @change="onItemUpdate(item)" />
         </template>
 
         <template #item-actions="{ item }">

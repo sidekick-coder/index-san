@@ -69,13 +69,13 @@ watch(() => props, setItem, {
 </script>
 <template>
     <w-layout use-percentage>
-        <w-toolbar class="border-b border-gray-700">
+        <w-toolbar class="border-b border-lines">
             <is-container>
                 <div class="grow" />
 
                 <is-btn
                     :disabled="script.content === content"
-                    class="mr-3 disabled:bg-gray-500"
+                    class="mr-3 disabled:bg-lines"
                     color="info"
                     size="sm"
                     @click="save"
@@ -94,14 +94,14 @@ watch(() => props, setItem, {
                     @keydown.ctrl.enter="execute"
                 />
 
-                <div v-show="output" class="h-full w-[500px] border-l border-zinc-700 p-3">
+                <div v-show="output" class="h-full w-[500px] border-l border-b-primary p-3">
                     <div class="flex">
                         <div class="font-bold text-xl mb-4 mr-auto">Output</div>
 
                         <is-icon name="times" @click="output = ''" />
                     </div>
 
-                    <div class="whitespace-pre-line bg-gray-700 rounded py-2 px-4 leading-7">
+                    <div class="whitespace-pre-line bg-lines rounded py-2 px-4 leading-7">
                         {{ output }}
                     </div>
                 </div>

@@ -111,7 +111,7 @@ async function viewItem(collectionId: string) {
             </w-form>
         </is-dialog>
 
-        <div class="w-full py-5 border-b border-gray-700 flex items-center">
+        <div class="w-full py-5 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>

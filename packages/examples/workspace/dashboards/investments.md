@@ -15,7 +15,7 @@ Investments management template
 <is-collection
     workspace-id="example"
     collection-id="investments-extract"
-    class="flex w-full bg-zinc-800 rounded p-4"
+    class="flex w-full bg-b-primary rounded p-4"
     style="max-width:1000px"  
 >
     <is-chart-pie 
@@ -35,7 +35,7 @@ Investments management template
     workspace-id="example"
     collection-id="investments-extract"
     view-id="portifolio"
-   class="flex w-full bg-zinc-800 rounded p-4"
+   class="flex w-full bg-b-primary rounded p-4"
     style="max-width:1000px"  
 >
     <is-chart-pie
@@ -56,7 +56,7 @@ Investments management template
     workspace-id="example"
     collection-id="investments-extract"
     view-id="real-state"
-   class="flex w-full bg-zinc-800 rounded p-4"
+   class="flex w-full bg-b-primary rounded p-4"
     style="max-width:500px"  
 >
     <is-chart-pie value-key="value" group-by="asset" width="100%" />
@@ -68,7 +68,7 @@ Investments management template
     workspace-id="example"
     collection-id="investments-extract"
     view-id="crypto"
-   class="flex w-full bg-zinc-800 rounded p-4"
+   class="flex w-full bg-b-primary rounded p-4"
     style="max-width:500px"  
 >
     <is-chart-pie value-key="value" group-by="asset" width="50%" />

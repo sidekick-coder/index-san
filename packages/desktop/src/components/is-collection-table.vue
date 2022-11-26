@@ -251,7 +251,7 @@ watch(props, load, { immediate: true, deep: true })
                                 >
                                     <is-icon
                                         v-if="index === 0"
-                                        class="text-gray-500 cursor-pointer flex items-center justify-center actions"
+                                        class="text-lines cursor-pointer flex items-center justify-center actions"
                                         name="ellipsis-vertical"
                                     />
                                 </is-btn>
@@ -286,7 +286,7 @@ watch(props, load, { immediate: true, deep: true })
                     <td
                         :class="[classes.td]"
                         :colspan="filteredColumns.length + 2"
-                        class="p-2 cursor-pointer hover:bg-gray-800 text-gray-500 text-sm border-r-0"
+                        class="p-2 cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
                         @click="onItemNew"
                     >
                         <fa-icon icon="plus" class="mr-2" />

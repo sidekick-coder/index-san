@@ -2,7 +2,7 @@
     <w-layout>
         <is-app-drawer />
 
-        <w-content class="bg-zinc-900 text-white">
+        <w-content class="bg-b-primary text-t-primary">
             <w-layout use-percentage>
                 <is-app-toolbar />
 

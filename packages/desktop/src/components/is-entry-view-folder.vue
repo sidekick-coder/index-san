@@ -113,7 +113,7 @@ async function deleteEntry(path: string) {
                 :to="item.to"
                 class="flex items-center w-full border-b p-3 text-sm"
             >
-                <fa-icon :icon="item.icon" class="mr-4 text-gray-400" />
+                <fa-icon :icon="item.icon" class="mr-4 text-lines" />
 
                 <div>{{ item.name }}</div>
 

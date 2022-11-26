@@ -20,7 +20,10 @@ if (!menu.value.length) {
 </script>
 
 <template>
-    <w-drawer v-model="drawer" class="bg-zinc-800 text-white border-r border-zinc-700 group">
+    <w-drawer
+        v-model="drawer"
+        class="bg-b-secondary text-t-primary border-r border-b-primary group"
+    >
         <div class="flex flex-wrap items-start">
             <div class="flex items-stretch w-full justify-between">
                 <is-list-item to="/">
@@ -47,7 +50,7 @@ if (!menu.value.length) {
         </div>
 
         <div v-for="(items, name) in sections" :key="name" class="flex flex-wrap items-start">
-            <is-list-item class="text-gray-500 font-bold">
+            <is-list-item class="text-t-secondary font-bold">
                 {{ name }}
             </is-list-item>
 

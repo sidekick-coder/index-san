@@ -1,3 +1,3 @@
 <template>
-    <div class="w-full bg-gray-500 h-[1px]"></div>
+    <div class="w-full bg-lines h-[1px]"></div>
 </template>

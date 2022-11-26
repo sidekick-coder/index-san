@@ -27,11 +27,11 @@ onMounted(setItem)
 </script>
 <template>
     <div class="is-tab">
-        <header class="flex gap-x-4 border-b border-zinc-700 bg-zinc-900">
+        <header class="flex gap-x-4 border-b border-b-primary bg-b-primary">
             <div
                 v-for="(item, index) in items"
                 :key="index"
-                class="cursor-pointer text-white hover:bg-zinc-700 h-full p-2 w-full"
+                class="cursor-pointer text-t-primary hover:bg-b-primary h-full p-2 w-full"
                 @click="current = index"
             >
                 {{ item.label }}
