@@ -16,6 +16,9 @@ const columns = [
         label: 'Id',
         name: 'id',
         field: 'id',
+        padding: {
+            left: 40,
+        },
     },
     {
         label: tm.t('name'),
@@ -72,37 +75,44 @@ async function deleteItem(id: string) {
 }
 </script>
 <template>
-    <is-container>
+    <div>
         <is-dialog v-model="dialog">
-            <w-form class="mb-4" @submit="submit">
-                <div class="mb-4">
-                    <is-input v-model="payload.id" label="Id" placeholder="my-workspace" />
-                </div>
+            <is-card color="b-secondary">
+                <is-card-head>
+                    <is-card-title>
+                        {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
+                    </is-card-title>
+                </is-card-head>
+                <is-card-content>
+                    <w-form class="mb-4 w-full" @submit="submit">
+                        <div class="mb-4">
+                            <is-input v-model="payload.id" label="Id" />
+                        </div>
 
-                <div class="mb-4">
-                    <is-input v-model="payload.name" label="Name" placeholder="My Workspace" />
-                </div>
+                        <div class="mb-4">
+                            <is-input v-model="payload.name" label="Name" />
+                        </div>
 
-                <div class="mb-4">
-                    <is-input
-                        v-model="payload.path"
-                        label="Path"
-                        placeholder="C:\Users\Work\Desktop\My-Workspace"
-                    />
-                </div>
+                        <div class="mb-4">
+                            <is-input v-model="payload.path" label="Path" />
+                        </div>
 
-                <w-btn :disabled="!payload.name || !payload.path" class="w-full">Add</w-btn>
-            </w-form>
+                        <is-btn :disabled="!payload.name || !payload.path" class="w-full">
+                            {{ $t('create') }}
+                        </is-btn>
+                    </w-form>
+                </is-card-content>
+            </is-card>
         </is-dialog>
 
-        <div class="w-full py-5 border-b border-lines flex items-center">
+        <is-container class="w-full py-5 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
-            <w-btn class="ml-auto" color="teal" @click="dialog = true">
+            <is-btn class="ml-auto" @click="dialog = true">
                 {{ $t('addEntity', [$t('workspace')]) }}
-            </w-btn>
-        </div>
+            </is-btn>
+        </is-container>
 
         <is-table :columns="columns" :items="store.all" :fixed="false">
             <template #item-path="{ item }">
@@ -113,35 +123,38 @@ async function deleteItem(id: string) {
 
             <template #item-actions="{ item }">
                 <div class="flex gap-x-2 p-2">
-                    <w-btn
+                    <is-btn
                         size="sm"
+                        text
                         class="mr-2"
                         @click="$router.push(`/workspaces/${item.id}/scripts`)"
                     >
                         <is-icon name="code" />
-                    </w-btn>
+                    </is-btn>
 
-                    <w-btn
+                    <is-btn
                         size="sm"
+                        text
                         class="mr-2"
                         @click="$router.push(`/workspaces/${item.id}/collections`)"
                     >
                         <is-icon name="database" />
-                    </w-btn>
+                    </is-btn>
 
-                    <w-btn
+                    <is-btn
                         size="sm"
+                        text
                         class="mr-2"
                         @click="$router.push(`/workspaces/${item.id}/entries`)"
                     >
                         <is-icon name="folder" />
-                    </w-btn>
+                    </is-btn>
 
-                    <w-btn size="sm" @click="deleteItem(item.id)">
+                    <is-btn size="sm" text color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
-                    </w-btn>
+                    </is-btn>
                 </div>
             </template>
         </is-table>
-    </is-container>
+    </div>
 </template>

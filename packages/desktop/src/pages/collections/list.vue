@@ -28,6 +28,9 @@ const columns = [
         label: 'ID',
         name: 'id',
         field: 'id',
+        padding: {
+            left: 40,
+        },
     },
     {
         label: tm.t('name'),
@@ -90,35 +93,50 @@ async function viewItem(collectionId: string) {
 <template>
     <div>
         <is-dialog v-model="dialog">
-            <w-form class="mb-4" @submit="submit">
-                <div class="mb-4">
-                    <is-input v-model="payload.id" label="ID" placeholder="collection-01" />
-                </div>
+            <is-card color="b-secondary">
+                <is-card-head>
+                    <is-card-title>
+                        {{ $t('addEntity', [$t('collection')]) }}
+                    </is-card-title>
+                </is-card-head>
+                <is-card-content>
+                    <w-form class="w-full" @submit="submit">
+                        <div class="mb-4">
+                            <is-input v-model="payload.id" label="ID" placeholder="collection-01" />
+                        </div>
 
-                <div class="mb-4">
-                    <is-input v-model="payload.name" label="Name" placeholder="Collection 01" />
-                </div>
+                        <div class="mb-4">
+                            <is-input
+                                v-model="payload.name"
+                                label="Name"
+                                placeholder="Collection 01"
+                            />
+                        </div>
 
-                <div class="mb-4">
-                    <is-input
-                        v-model="payload.path"
-                        label="Path"
-                        placeholder="/collections/collection-01"
-                    />
-                </div>
+                        <div class="mb-4">
+                            <is-input
+                                v-model="payload.path"
+                                label="Path"
+                                placeholder="/collections/collection-01"
+                            />
+                        </div>
 
-                <w-btn :disabled="!payload.name || !payload.path" class="w-full">Add</w-btn>
-            </w-form>
+                        <is-btn :disabled="!payload.name || !payload.path" class="w-full">
+                            {{ $t('create') }}
+                        </is-btn>
+                    </w-form>
+                </is-card-content>
+            </is-card>
         </is-dialog>
 
-        <div class="w-full py-5 border-b border-lines flex items-center">
+        <is-container class="w-full py-5 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
-            <w-btn class="ml-auto" color="teal" @click="dialog = true">
+            <is-btn class="ml-auto" @click="dialog = true">
                 {{ $t('addEntity', [$t('collection')]) }}
-            </w-btn>
-        </div>
+            </is-btn>
+        </is-container>
 
         <is-table
             :columns="columns"
@@ -129,13 +147,13 @@ async function viewItem(collectionId: string) {
         >
             <template #item-actions="{ item }">
                 <div class="flex gap-x-4 p-2">
-                    <w-btn @click="viewItem(item.id)">
+                    <is-btn text size="sm" @click="viewItem(item.id)">
                         <fa-icon icon="eye" />
-                    </w-btn>
+                    </is-btn>
 
-                    <w-btn @click="deleteItem(item.id)">
+                    <is-btn text size="sm" color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
-                    </w-btn>
+                    </is-btn>
                 </div>
             </template>
         </is-table>

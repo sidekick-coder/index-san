@@ -30,7 +30,7 @@ const sizes = {
 }
 
 const defaultColors = {
-    accent: 'bg-accent hover:bg-accent/75',
+    accent: 'bg-accent hover:bg-accent/75 disabled:opacity-80 disabled:cursor-not-allowed',
     danger: 'bg-danger hover:bg-danger/75 text-t-primary',
     info: 'bg-info hover:bg-info/75 text-t-primary',
 }
@@ -52,7 +52,7 @@ const colors = computed(() => {
 })
 
 const classes = computed(() => {
-    const result: string[] = ['transition-all flex w-max']
+    const result: string[] = ['transition-all flex items-center justify-center']
 
     result.push(props.rounded ? 'rounded-full' : 'rounded')
 

@@ -7,10 +7,6 @@ import { useCase } from '@/composables/use-case'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-definePageMeta({
-    title: 'Scripts list',
-})
-
 const props = defineProps({
     workspaceId: {
         type: String,
@@ -20,6 +16,9 @@ const props = defineProps({
 
 const router = useRouter()
 const tm = useI18n()
+const meta = definePageMeta({
+    title: 'Scripts list',
+})
 
 const items = ref<Script[]>([])
 const search = ref('')
@@ -36,10 +35,12 @@ const columns = [
         name: 'name',
         label: tm.t('name'),
         field: 'name',
+        padding: {
+            left: 40,
+        },
     },
     {
         name: 'actions',
-        width: 100,
     },
 ]
 
@@ -90,21 +91,23 @@ async function onItemShow(item: Script) {
         </w-form>
     </is-dialog>
 
-    <div class="w-full mt-5 pb-5 border-b border-b-primary flex items-center">
-        <is-input v-model="search" placeholder="Search..." class="max-w-[300px]" />
+    <is-container class="w-full py-5 border-b border-lines flex items-center">
+        <div class="text-2xl font-bold">
+            {{ meta.title }}
+        </div>
 
-        <w-btn class="ml-auto" @click="dialog = true">
+        <is-btn class="ml-auto" @click="dialog = true">
             {{ $t('addEntity', ['script']) }}
-        </w-btn>
-    </div>
+        </is-btn>
+    </is-container>
 
     <is-table :columns="columns" :items="filteredItems">
         <template #item-actions="{ item }">
-            <div class="px-2">
-                <is-btn @click="onItemShow(item)">
+            <div class="px-2 flex">
+                <is-btn text size="sm" @click="onItemShow(item)">
                     <is-icon name="eye" />
                 </is-btn>
-                <is-btn @click="onItemDelete(item)">
+                <is-btn text size="sm" color="danger" @click="onItemDelete(item)">
                     <is-icon name="trash" />
                 </is-btn>
             </div>

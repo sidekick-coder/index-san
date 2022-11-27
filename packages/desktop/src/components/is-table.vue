@@ -41,6 +41,20 @@ const classes = computed(() => ({
     td: 'text-left p-0 border-r last:border-r-0 border-lines',
     tr: 'item border-b border-lines',
 }))
+
+function getStyle(column) {
+    const result: Record<string, string> = {}
+
+    if (column.width) {
+        result.width = `${column.width}px`
+    }
+
+    if (column.padding?.left) {
+        result['padding-left'] = `${column.padding?.left}px`
+    }
+
+    return result
+}
 </script>
 
 <template>
@@ -52,7 +66,7 @@ const classes = computed(() => ({
                         v-for="column in columns"
                         :key="column.name"
                         :class="classes.th"
-                        :style="column.width ? `width: ${column.width}px` : ''"
+                        :style="getStyle(column)"
                     >
                         <div class="text-t-secondary">{{ column.label }}</div>
                     </th>
@@ -69,7 +83,7 @@ const classes = computed(() => ({
                     class="relative"
                 >
                     <slot :name="`item-${column.name}`" :item="item" :column="column">
-                        <div class="p-2 bg-transparent w-full">
+                        <div class="p-2 bg-transparent w-full" :style="getStyle(column)">
                             {{ column.field ? item[column.field] : '' }}
                         </div>
                     </slot>

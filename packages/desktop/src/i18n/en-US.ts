@@ -41,4 +41,6 @@ export default {
     default: 'Default',
     general: 'General',
     language: 'Language',
+    myEntity: 'My {0}',
+    create: 'Create',
 }

@@ -93,7 +93,7 @@ function saveDataset() {
 <template>
     <is-drawer v-model="drawer">
         <template #activator="{ on }">
-            <is-btn text v-bind="on">
+            <is-btn text size="sm" v-bind="on">
                 <is-icon name="cog" />
             </is-btn>
         </template>

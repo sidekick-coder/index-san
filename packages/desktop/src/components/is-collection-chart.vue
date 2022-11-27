@@ -148,12 +148,12 @@ watch(view, setChart, { deep: true })
 
             <is-dialog>
                 <template #activator="{ on }">
-                    <is-btn text v-bind="on">
+                    <is-btn text size="sm" v-bind="on">
                         <is-icon name="bug" />
                     </is-btn>
                 </template>
 
-                <is-card color="gray" class="w-[800px] h-[500px]">
+                <is-card color="b-primary" class="w-[800px] h-[500px] border border-lines">
                     <is-code-editor
                         :model-value="JSON.stringify(chart.options, null, 4)"
                         language="json"
@@ -164,7 +164,7 @@ watch(view, setChart, { deep: true })
 
             <is-collection-chart-config :edited-item="view" @save="updateOptions" />
 
-            <is-btn text @click="setChart">
+            <is-btn text size="sm" @click="setChart">
                 <is-icon name="arrows-rotate" />
             </is-btn>
         </is-card-head>
