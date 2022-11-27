@@ -7,9 +7,9 @@
         "dev": "npm -w desktop run dev",
         "test": "npm -ws test --if-present",
         "build": "node scripts/build.js",
-        "new:version": "node scripts/version.js",
-        "new:use-case": "node scripts/new-use-case",
-        "generate:changelog": "node scripts/changelog",
+        "make:version": "node scripts/version.js",
+        "make:use-case": "node scripts/new-use-case",
+        "make:changelog": "node scripts/changelog",
         "changelogen": "changelogen"
     },
     "author": "Henrique Oliveira",

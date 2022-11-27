@@ -10,7 +10,9 @@ async function main() {
 
     console.log('Generating changelog from: ', previous, '>', current)
 
-    await command(`npm run changelogen -- --from ${previous} --to ${current} --output CHANGELOG.md`)
+    await command(
+        `npm exec changelogen -- --from ${previous} --to ${current} --output CHANGELOG.md`
+    )
 }
 
 main().catch(console.error)

@@ -56,7 +56,7 @@ jobs:
         run: npm run build
       
       - name: notes
-        run: npm run generate:changelog
+        run: npm run make:changelog
 
       - name: Release
         uses: softprops/action-gh-release@v1
