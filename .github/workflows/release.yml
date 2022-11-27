@@ -12,16 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "16.17.0"
-
-      - name: cache-modules
-        uses: actions/cache@v3
-        id: cache-modules
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          node-version: 16
+          cache: 'npm'
 
       - name: install dependence 
         if: steps.cache.outputs.cache-hit != 'true'

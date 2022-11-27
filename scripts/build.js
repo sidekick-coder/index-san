@@ -3,8 +3,7 @@
 const path = require('path')
 const fg = require('fast-glob')
 const fs = require('fs')
-const { promisify } = require('util')
-const exec = promisify(require('child_process').exec)
+const { command } = require('./utils')
 
 const BASE_PATH = path.resolve(__dirname, '..')
 
@@ -18,19 +17,15 @@ async function main() {
 
     fs.mkdirSync(outputFolder, { recursive: true })
 
-    console.log('build desktop app')
+    // console.log('build desktop app')
 
-    await exec('npm -w desktop run build')
-        .then((r) => console.log(r.stdout))
-        .catch((r) => console.log(r.stdout))
+    await command('npm -w desktop run build', { stderr: true, stout: true })
 
-    console.log('making desktop app')
+    // console.log('making desktop app')
 
-    await exec('npm -w desktop run make')
-        .then((r) => console.log(r.stdout))
-        .catch((r) => console.log(r.stdout))
+    await command('npm -w desktop run make', { stderr: true, stout: true })
 
-    console.log('moving artifacts')
+    // console.log('moving artifacts')
 
     const pattern = path.resolve(desktopPath, 'out', 'make', '**/*').split(path.sep).join('/')
 
@@ -41,10 +36,8 @@ async function main() {
             .map((f) => f.split('/').join(path.sep))
             .map((f) => fs.promises.rename(f, path.resolve(outputFolder, path.basename(f))))
     )
-
-    console.log('operation ended')
 }
 
-main()
+main().catch(console.error)
 
 // npm version --git-tag-version false
