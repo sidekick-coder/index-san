@@ -101,7 +101,12 @@ onUnmounted(() => document.removeEventListener('click', onClickDom))
 
     <teleport to="body">
         <transition name="slide-down">
-            <div v-if="show" :style="style" class="is-menu fixed transition-all" @click.stop="">
+            <div
+                v-if="show"
+                :style="style"
+                class="is-menu z-20 fixed transition-all"
+                @click.stop=""
+            >
                 <slot />
             </div>
         </transition>

@@ -125,10 +125,19 @@ function saveDataset() {
             <is-list-item
                 v-for="(dataset, index) in payload.datasets"
                 :key="index"
-                class="text-t-primary"
+                class="text-t-primary items-center justify-between"
                 @click="editDataset(index)"
             >
                 {{ dataset.label }}
+
+                <is-btn
+                    color="danger"
+                    text
+                    size="sm"
+                    @click.stop="payload.datasets.splice(index, 1)"
+                >
+                    <is-icon name="trash" />
+                </is-btn>
             </is-list-item>
 
             <is-list-item v-if="!payload.datasets.length" class="text-t-primary text-xs text-lines">

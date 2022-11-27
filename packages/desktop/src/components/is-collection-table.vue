@@ -262,7 +262,7 @@ watch(props, load, { immediate: true, deep: true })
                                     size="xs"
                                     color="danger"
                                     dark
-                                    @click="onItemDelete(item)"
+                                    @click="onItemDelete(item.id)"
                                 >
                                     <is-icon name="trash" class="mr-2" />
                                     {{ $t('deleteEntity', [$t('item')]) }}

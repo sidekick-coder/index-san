@@ -28,6 +28,7 @@ const script = ref<Script>({
     content: '',
 })
 
+// load script
 async function setItem() {
     const { data: scripts } = await useCase('list-scripts', { workspaceId: props.workspaceId })
 
@@ -42,6 +43,12 @@ async function setItem() {
     meta.value.title = script.value.name
 }
 
+watch(() => props, setItem, {
+    immediate: true,
+    deep: true,
+})
+
+// save
 async function save() {
     await useCase('update-script', {
         workspaceId: props.workspaceId,
@@ -52,20 +59,30 @@ async function save() {
     await setItem()
 }
 
+// execute
+
+const execution = ref({
+    loading: false,
+})
+
 async function execute() {
     if (script.value.content !== content.value) {
         await save()
     }
 
-    await useCase('execute-script', {
+    execution.value.loading = true
+
+    const data = {
         workspaceId: props.workspaceId,
         name: script.value.name,
-    }).then((r) => (output.value = r.data))
+    }
+
+    await useCase('execute-script', data)
+        .then((r) => (output.value = r.data))
+        .finally(() => {
+            execution.value.loading = false
+        })
 }
-watch(() => props, setItem, {
-    immediate: true,
-    deep: true,
-})
 </script>
 <template>
     <w-layout use-percentage>
@@ -83,20 +100,18 @@ watch(() => props, setItem, {
                     Save
                 </is-btn>
 
-                <is-btn color="accent" size="sm" @click="execute">Execute</is-btn>
+                <is-btn color="accent" size="sm" :loading="execution.loading" @click="execute">
+                    {{ $t('execute') }}
+                </is-btn>
             </is-container>
         </w-toolbar>
 
         <w-content>
             <w-layout use-percentage>
                 <w-content>
-                    <is-code-editor
-                        v-model="content"
-                        @keydown.ctrl.s="save"
-                        @keydown.ctrl.enter="execute"
-                    />
+                    <is-code-editor v-model="content" @keydown.ctrl.s="save" />
                 </w-content>
-                <w-drawer :model-value="!!output" right width="400">
+                <w-drawer :model-value="!!output" right :width="400">
                     <is-card color="b-secondary" class="h-full">
                         <is-card-head class="flex items-center">
                             <div class="font-bold text-xl mr-auto">Output</div>

@@ -90,65 +90,71 @@ async function deleteColumn() {
 }
 </script>
 <template>
-    <w-dialog v-model="dialog">
-        <template #content>
-            <w-form class="w-full bg-b-secondary max-w-[500px] p-4" @click.stop="" @submit="submit">
-                <div class="flex items-center mb-5">
-                    <div class="text-xl text-t-secondary">Edit column</div>
+    <is-dialog v-model="dialog">
+        <template #activator="{ on }">
+            <div class="cursor-pointer text-t-secondary text-sm" v-bind="on">
+                <fa-icon :icon="icons[column.type] || 'font'" class="mr-1 text-xs" />
 
-                    <div class="ml-auto text-sm text-t-secondary">
-                        <i class="cursor-pointer" @click="deleteColumn">
-                            <fa-icon icon="trash" />
-                        </i>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <is-input v-model="payload.label" label="Label" />
-                </div>
-
-                <div class="mb-4">
-                    <w-select
-                        v-model="payload.type"
-                        label="Type"
-                        :options="types"
-                        label-key="label"
-                        value-key="value"
-                    />
-                </div>
-
-                <div v-if="payload.type === 'select'" class="mb-4">
-                    <is-input
-                        v-model="payload.options"
-                        label="Options (separate by comma)"
-                        placeholder="item-01,item-02"
-                    />
-                </div>
-
-                <template v-if="payload.type === 'relation'">
-                    <div class="mb-4">
-                        <is-input v-model="payload.collectionId" label="Collection id" />
-                    </div>
-
-                    <div class="mb-4">
-                        <is-input v-model="payload.displayField" label="Collection display field" />
-                    </div>
-                </template>
-
-                <div class="mb-4">
-                    <is-input v-model="payload.field" label="Field" />
-                </div>
-
-                <div>
-                    <w-btn class="w-full">Submit</w-btn>
-                </div>
-            </w-form>
+                {{ column.label }}
+            </div>
         </template>
-    </w-dialog>
 
-    <div class="cursor-pointer text-t-secondary text-sm" @click="dialog = true">
-        <fa-icon :icon="icons[column.type] || 'font'" class="mr-1 text-xs" />
+        <is-card width="500" color="b-secondary">
+            <is-card-head>
+                <is-card-title>
+                    {{ $t('editEntity', [$t('column')]) }}
+                </is-card-title>
+                <is-btn text color="danger" class="ml-auto" @click="deleteColumn">
+                    <is-icon name="trash" />
+                </is-btn>
+            </is-card-head>
 
-        {{ column.label }}
-    </div>
+            <is-card-content>
+                <w-form class="w-full" @submit="submit">
+                    <div class="mb-4">
+                        <is-input v-model="payload.label" label="Label" />
+                    </div>
+
+                    <div class="mb-4">
+                        <is-select
+                            v-model="payload.type"
+                            label="Type"
+                            :options="types"
+                            label-key="label"
+                            value-key="value"
+                        />
+                    </div>
+
+                    <div v-if="payload.type === 'select'" class="mb-4">
+                        <is-input
+                            v-model="payload.options"
+                            label="Options (separate by comma)"
+                            placeholder="item-01,item-02"
+                        />
+                    </div>
+
+                    <template v-if="payload.type === 'relation'">
+                        <div class="mb-4">
+                            <is-input v-model="payload.collectionId" label="Collection id" />
+                        </div>
+
+                        <div class="mb-4">
+                            <is-input
+                                v-model="payload.displayField"
+                                label="Collection display field"
+                            />
+                        </div>
+                    </template>
+
+                    <div class="mb-4">
+                        <is-input v-model="payload.field" label="Field" />
+                    </div>
+
+                    <div>
+                        <is-btn class="w-full">Submit</is-btn>
+                    </div>
+                </w-form>
+            </is-card-content>
+        </is-card>
+    </is-dialog>
 </template>

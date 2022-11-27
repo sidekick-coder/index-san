@@ -30,7 +30,7 @@ watch(() => props, load, {
 })
 </script>
 <template>
-    <is-container>
+    <is-container class="overflow-auto h-full pb-10">
         <is-collection-table
             :workspace-id="workspaceId"
             :collection-id="collectionId"

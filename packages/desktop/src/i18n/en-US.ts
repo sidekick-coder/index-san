@@ -4,6 +4,7 @@ export default {
     collection: 'Collection | Collections',
     listEntity: '{0} list',
     addEntity: 'Add {0}',
+    editEntity: 'Edit {0}',
     name: 'Name',
     path: 'Path',
     editMode: 'Edit mode',
@@ -43,4 +44,5 @@ export default {
     language: 'Language',
     myEntity: 'My {0}',
     create: 'Create',
+    execute: 'Execute',
 }

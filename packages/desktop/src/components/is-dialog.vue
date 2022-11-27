@@ -38,14 +38,14 @@ function onClick() {
     <slot name="activator" :on="{ onClick }" />
 
     <teleport to="body">
-        <div
-            v-if="show"
-            class="fixed inset-0 flex h-screen w-screen bg-black/30 flex items-center justify-center"
-            @click="show = false"
-        >
-            <div class="min-w-[500px]" @click.stop="">
-                <slot />
+        <transition name="fade">
+            <div v-if="show" class="fixed inset-0 flex items-center justify-center">
+                <div class="absolute z-10 inset-0 flex bg-accent/5" @click="show = false"></div>
+
+                <div class="z-20">
+                    <slot />
+                </div>
             </div>
-        </div>
+        </transition>
     </teleport>
 </template>

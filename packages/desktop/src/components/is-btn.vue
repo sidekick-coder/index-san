@@ -22,6 +22,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    loading: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const sizes = {
@@ -52,7 +56,7 @@ const colors = computed(() => {
 })
 
 const classes = computed(() => {
-    const result: string[] = ['transition-all flex items-center justify-center']
+    const result: string[] = ['transition-all flex items-center justify-center overflow-hidden']
 
     result.push(props.rounded ? 'rounded-full' : 'rounded')
 
@@ -63,11 +67,13 @@ const classes = computed(() => {
 })
 </script>
 <template>
-    <router-link v-if="to" :to="to" :class="classes">
-        <slot />
-    </router-link>
+    <component :is="to ? 'router-link' : 'button'" :to="to" :class="classes">
+        <div v-if="loading" class="absolute flex items-center justify-center">
+            <is-icon name="spinner" class="animate-spin" />
+        </div>
 
-    <button v-else :class="classes">
-        <slot />
-    </button>
+        <div :class="[loading ? 'opacity-0' : '']">
+            <slot />
+        </div>
+    </component>
 </template>

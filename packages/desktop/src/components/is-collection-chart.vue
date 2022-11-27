@@ -120,7 +120,9 @@ function setChart() {
 
         if (['pie'].includes(view.value.type)) {
             result.data = xData.value
-            chart.value.options.data.labels = yData.value
+            const labels = chart.value.options.data.labels.slice()
+
+            chart.value.options.data.labels = labels.concat(yData.value)
 
             chart.value.options.data.datasets.push(result)
             return

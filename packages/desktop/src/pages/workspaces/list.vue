@@ -141,12 +141,7 @@ async function deleteItem(id: string) {
                         <is-icon name="database" />
                     </is-btn>
 
-                    <is-btn
-                        size="sm"
-                        text
-                        class="mr-2"
-                        @click="$router.push(`/workspaces/${item.id}/entries`)"
-                    >
+                    <is-btn size="sm" text class="mr-2" :to="`/workspaces/${item.id}/entries`">
                         <is-icon name="folder" />
                     </is-btn>
 
