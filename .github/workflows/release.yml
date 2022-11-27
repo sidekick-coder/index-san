@@ -18,7 +18,6 @@ jobs:
           cache: 'npm'
 
       - name: install dependence 
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           npm install
           npm -w core install
@@ -39,19 +38,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "16.17.0"
+          node-version: 16
+          cache: 'npm'
 
-      - name: cache-modules
-        uses: actions/cache@v3
-        id: cache-modules
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       
       - name: install dependence 
-        if: steps.cache-modules.outputs.cache-hit != 'true'
         run: |
           npm install
           npm -w core install

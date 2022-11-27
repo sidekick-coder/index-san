@@ -8,6 +8,8 @@ async function main() {
         .filter((t) => t !== '')
         .reverse()
 
+    console.log('Generating changelog from: ', previous, '>', current)
+
     await command(`npm run changelogen -- --from ${previous} --to ${current} --output CHANGELOG.md`)
 }
 
