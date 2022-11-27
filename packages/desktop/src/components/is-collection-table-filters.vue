@@ -78,7 +78,7 @@ watch(() => props.filters, load, { immediate: true, deep: true })
                             :options="column.options.split(',')"
                         />
 
-                        <w-input
+                        <is-input
                             v-else
                             v-model="payload[column.field]"
                             :label="column.label"

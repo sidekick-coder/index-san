@@ -108,10 +108,10 @@ function saveDataset() {
             </is-card-head>
 
             <is-card-content class="flex flex-wrap">
-                <w-input v-model="payload.title" :label="$t('title')" class="mb-4" />
+                <is-input v-model="payload.title" :label="$t('title')" class="mb-6" />
 
-                <div class="mb-4 w-full">
-                    <w-select
+                <div class="mb-6 w-full">
+                    <is-select
                         v-model="payload.type"
                         :label="$t('type')"
                         class="w-full"
@@ -135,8 +135,10 @@ function saveDataset() {
                 {{ $t('noEntity', [$t('dataset')]) }}
             </is-list-item>
 
-            <is-list-item class="text-t-primary mb-4" @click="addDataset">
-                {{ $t('addEntity', [$t('dataset')]) }}
+            <is-list-item class="text-t-primary mb-4">
+                <is-btn size="sm" @click="addDataset">
+                    {{ $t('addEntity', [$t('dataset')]) }}
+                </is-btn>
             </is-list-item>
 
             <div class="mt-auto flex justify-end w-full px-4">
@@ -160,11 +162,11 @@ function saveDataset() {
             </is-card-head>
 
             <is-card-content class="flex flex-wrap">
-                <w-input v-model="editedData.label" :label="$t('label')" class="mb-4" />
+                <is-input v-model="editedData.label" :label="$t('label')" class="mb-4" />
             </is-card-content>
 
             <is-card-content class="flex flex-wrap">
-                <w-input
+                <is-input
                     v-model="editedData.colors"
                     :label="$t('color', 2)"
                     class="mb-4"
@@ -182,11 +184,11 @@ function saveDataset() {
                 class="text-t-primary flex gap-x-4 items-center"
             >
                 <div class="w-[130px]">
-                    <w-select v-model="rule[0]" :options="rulesOptions" />
+                    <is-select v-model="rule[0]" :options="rulesOptions" />
                 </div>
 
                 <div class="grow">
-                    <w-input v-model="rule[1]" :placeholder="$t('value')" />
+                    <is-input v-model="rule[1]" :placeholder="$t('value')" />
                 </div>
 
                 <is-btn
@@ -216,11 +218,11 @@ function saveDataset() {
                 class="text-t-primary flex gap-x-4 items-center"
             >
                 <div class="w-[130px]">
-                    <w-select v-model="rule[0]" :options="rulesOptions" />
+                    <is-select v-model="rule[0]" :options="rulesOptions" />
                 </div>
 
                 <div class="grow">
-                    <w-input v-model="rule[1]" :placeholder="$t('value')" />
+                    <is-input v-model="rule[1]" :placeholder="$t('value')" />
                 </div>
 
                 <is-btn
@@ -250,11 +252,11 @@ function saveDataset() {
                 class="text-t-primary flex gap-x-4 items-center"
             >
                 <div class="w-[130px]">
-                    <w-select v-model="rule[0]" :options="rulesOptions" />
+                    <is-select v-model="rule[0]" :options="rulesOptions" />
                 </div>
 
                 <div class="grow">
-                    <w-input v-model="rule[1]" :placeholder="$t('value')" />
+                    <is-input v-model="rule[1]" :placeholder="$t('value')" />
                 </div>
 
                 <is-btn

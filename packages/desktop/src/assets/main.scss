@@ -21,6 +21,17 @@
     opacity: 0;
 }
 
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: all 0.3s ease;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+    transform: translateX(10%);
+    opacity: 0;
+}
+
 // Scrollbar
 
 
@@ -43,4 +54,9 @@
     background-color: rgb(var(--b-secondary));
     border-radius: 0px;
     border: 0px none rgb(var(--b-primary));
+}
+
+
+body {
+    @apply text-t-primary;
 }

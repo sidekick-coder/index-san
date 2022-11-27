@@ -7,6 +7,6 @@ const options = ['en-US', 'pt-BR']
 </script>
 <template>
     <div class="py-5">
-        <is-select v-model="locale" :label="$t('language')" :options="options" />
+        <is-select v-model="locale" :label="$t('language')" :options="options" card:width="300" />
     </div>
 </template>

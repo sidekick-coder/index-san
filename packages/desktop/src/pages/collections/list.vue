@@ -92,15 +92,15 @@ async function viewItem(collectionId: string) {
         <is-dialog v-model="dialog">
             <w-form class="mb-4" @submit="submit">
                 <div class="mb-4">
-                    <w-input v-model="payload.id" label="ID" placeholder="collection-01" />
+                    <is-input v-model="payload.id" label="ID" placeholder="collection-01" />
                 </div>
 
                 <div class="mb-4">
-                    <w-input v-model="payload.name" label="Name" placeholder="Collection 01" />
+                    <is-input v-model="payload.name" label="Name" placeholder="Collection 01" />
                 </div>
 
                 <div class="mb-4">
-                    <w-input
+                    <is-input
                         v-model="payload.path"
                         label="Path"
                         placeholder="/collections/collection-01"

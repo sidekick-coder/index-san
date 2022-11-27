@@ -81,7 +81,7 @@ async function onItemShow(item: Script) {
     <is-dialog v-model="dialog">
         <w-form @submit="submit">
             <div class="mb-4">
-                <w-input v-model="payload.name" label="Name" />
+                <is-input v-model="payload.name" label="Name" />
             </div>
 
             <div>

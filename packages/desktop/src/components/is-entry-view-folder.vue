@@ -92,7 +92,7 @@ async function deleteEntry(path: string) {
         <div class="flex flex-wrap w-full">
             <w-form class="w-full mb-4" @submit="submit">
                 <div class="mb-4">
-                    <w-input v-model="payload.name" label="Name" placeholder="new-item.txt" />
+                    <is-input v-model="payload.name" label="Name" placeholder="new-item.txt" />
                 </div>
                 <div class="mb-4">
                     <w-select

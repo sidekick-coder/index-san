@@ -104,7 +104,7 @@ async function deleteColumn() {
                 </div>
 
                 <div class="mb-4">
-                    <w-input v-model="payload.label" label="Label" />
+                    <is-input v-model="payload.label" label="Label" />
                 </div>
 
                 <div class="mb-4">
@@ -118,7 +118,7 @@ async function deleteColumn() {
                 </div>
 
                 <div v-if="payload.type === 'select'" class="mb-4">
-                    <w-input
+                    <is-input
                         v-model="payload.options"
                         label="Options (separate by comma)"
                         placeholder="item-01,item-02"
@@ -127,16 +127,16 @@ async function deleteColumn() {
 
                 <template v-if="payload.type === 'relation'">
                     <div class="mb-4">
-                        <w-input v-model="payload.collectionId" label="Collection id" />
+                        <is-input v-model="payload.collectionId" label="Collection id" />
                     </div>
 
                     <div class="mb-4">
-                        <w-input v-model="payload.displayField" label="Collection display field" />
+                        <is-input v-model="payload.displayField" label="Collection display field" />
                     </div>
                 </template>
 
                 <div class="mb-4">
-                    <w-input v-model="payload.field" label="Field" />
+                    <is-input v-model="payload.field" label="Field" />
                 </div>
 
                 <div>

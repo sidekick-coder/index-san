@@ -62,6 +62,6 @@ async function save() {
 </script>
 <template>
     <div v-for="column in columns" :key="column.id" class="mb-4 last:mb-0">
-        <w-input v-model="payload[column.field]" :label="column.label" @change="save" />
+        <is-input v-model="payload[column.field]" :label="column.label" @change="save" />
     </div>
 </template>

@@ -76,15 +76,15 @@ async function deleteItem(id: string) {
         <is-dialog v-model="dialog">
             <w-form class="mb-4" @submit="submit">
                 <div class="mb-4">
-                    <w-input v-model="payload.id" label="Id" placeholder="my-workspace" />
+                    <is-input v-model="payload.id" label="Id" placeholder="my-workspace" />
                 </div>
 
                 <div class="mb-4">
-                    <w-input v-model="payload.name" label="Name" placeholder="My Workspace" />
+                    <is-input v-model="payload.name" label="Name" placeholder="My Workspace" />
                 </div>
 
                 <div class="mb-4">
-                    <w-input
+                    <is-input
                         v-model="payload.path"
                         label="Path"
                         placeholder="C:\Users\Work\Desktop\My-Workspace"

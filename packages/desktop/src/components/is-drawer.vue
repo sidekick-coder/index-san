@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
@@ -39,17 +39,18 @@ function onClick() {
     <slot name="activator" :on="{ onClick }" />
 
     <teleport to="body">
-        <div
-            v-if="show"
-            class="fixed inset-0 flex h-screen w-screen bg-black/30"
-            @click="show = false"
-        >
+        <transition name="slide-left">
+            <div v-if="show" class="fixed bg-accent/5 inset-0" @click="show = false"></div>
+        </transition>
+
+        <transition name="slide-left">
             <aside
+                v-if="show"
+                ref="root"
                 class="fixed right-0 top-0 h-full border-l border-lines w-[500px] bg-b-primary overflow-y-auto"
-                @click.stop=""
             >
                 <slot />
             </aside>
-        </div>
+        </transition>
     </teleport>
 </template>

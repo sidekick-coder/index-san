@@ -1,10 +1,11 @@
 <script lang="ts">
 export default {
-    inheritAttrs: false,
+    inheritAttrs: true,
 }
 </script>
+
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, useAttrs } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
@@ -20,13 +21,21 @@ const props = defineProps({
         type: String,
         default: 'accent',
     },
+    readonly: {
+        type: Boolean,
+        default: false,
+    },
     flat: {
         type: Boolean,
         default: false,
     },
-    wrapperAttrs: {
-        type: Object,
-        default: () => ({}),
+    type: {
+        type: String,
+        default: 'text',
+    },
+    placeholder: {
+        type: String,
+        default: '',
     },
 })
 
@@ -34,38 +43,25 @@ const emit = defineEmits(['update:modelValue'])
 
 const model = useVModel(props, 'modelValue', emit)
 
-// input colors
-const defaultColors = {
-    accent: 'outline outline-2 outline-lines focus:outline focus:outline-accent',
-    danger: 'bg-danger hover:bg-danger/75 text-t-primary',
-    info: 'bg-info hover:bg-info/75 text-t-primary',
+const attrs = useAttrs()
+
+// input
+
+const inputColors = {
+    default: {
+        accent: {
+            normal: 'outline outline-lines',
+            focus: 'outline-accent',
+        },
+        danger: 'bg-danger hover:bg-danger/75 text-t-primary',
+        info: 'bg-info hover:bg-info/75 text-t-primary',
+    },
+    flat: {
+        accent: 'focus:outline-accent',
+        danger: 'focus:outline-danger',
+        info: 'focus:outline-info',
+    },
 }
-
-const flatColors = {
-    accent: 'focus:outline-accent',
-    danger: 'focus:outline-danger',
-    info: 'focus:outline-info',
-}
-
-const colors = computed(() => {
-    const result = defaultColors
-
-    if (props.flat) {
-        Object.assign(result, flatColors)
-    }
-
-    return result
-})
-
-const classes = computed(() => {
-    const result: string[] = ['transition-all py-2 px-4 bg-transparent rounded w-full']
-
-    result.push(colors.value[props.color])
-
-    return result
-})
-
-// input state
 
 const input = ref({
     isFocus: false,
@@ -78,6 +74,20 @@ function onFocus() {
 function onBlur() {
     input.value.isFocus = false
 }
+
+const classes = computed(() => {
+    const result: string[] = ['transition-all py-2 px-4 bg-transparent rounded w-full flex']
+
+    const color = inputColors.default[props.color]
+
+    result.push(color.normal)
+
+    if (input.value.isFocus) {
+        result.push(color.focus)
+    }
+
+    return result
+})
 
 // label colors
 const labelColors = {
@@ -97,18 +107,50 @@ const labelClasses = computed(() => {
 
     return result
 })
+
+// input attrs
+
+const bindings = computed(() => {
+    const wrapper = {}
+    const label = {}
+    const input = {}
+
+    Object.keys(attrs).forEach((key) => {
+        if (key.startsWith('input:')) {
+            input[key.replace('input:', '')] = attrs[key]
+            return
+        }
+
+        if (key.startsWith('label:')) {
+            label[key.replace('label:', '')] = attrs[key]
+            return
+        }
+
+        wrapper[key] = attrs[key]
+    })
+
+    return { wrapper, label, input }
+})
 </script>
 <template>
-    <div class="w-full" v-bind="wrapperAttrs">
-        <label v-if="label" :for="label" :class="labelClasses">{{ label }}</label>
+    <div class="w-full" v-bind="bindings.wrapper">
+        <label v-if="label" :for="label" :class="labelClasses" v-bind="bindings.label">
+            {{ label }}
+        </label>
 
-        <input
-            v-bind="$attrs"
-            :id="label"
-            v-model="model"
-            :class="classes"
-            @focus="onFocus"
-            @blur="onBlur"
-        />
+        <div :class="classes">
+            <input
+                :id="label"
+                v-model="model"
+                :type="type"
+                :placeholder="placeholder"
+                :readonly="readonly"
+                v-bind="bindings.input"
+                class="bg-transparent outline-none grow max-w-[calc(100%_-_32px)]"
+                @focus="onFocus"
+                @blur="onBlur"
+            />
+            <slot name="append" />
+        </div>
     </div>
 </template>

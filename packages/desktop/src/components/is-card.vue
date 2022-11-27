@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+
 const props = defineProps({
+    width: {
+        type: String,
+        default: null,
+    },
     color: {
         type: String,
         default: null,
@@ -38,9 +43,22 @@ const classes = computed(() => {
 
     return result
 })
+
+// style
+
+const style = computed(() => {
+    const result: string[] = []
+
+    if (props.width) {
+        result.push(`width: ${props.width}px`)
+    }
+
+    return result.join(';')
+})
 </script>
+
 <template>
-    <div :class="classes">
+    <div :class="classes" :style="style">
         <slot />
     </div>
 </template>
