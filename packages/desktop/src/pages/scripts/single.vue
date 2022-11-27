@@ -86,26 +86,33 @@ watch(() => props, setItem, {
                 <is-btn color="accent" size="sm" @click="execute">Execute</is-btn>
             </is-container>
         </w-toolbar>
+
         <w-content>
-            <div class="h-full flex w-full">
-                <is-code-editor
-                    v-model="content"
-                    @keydown.ctrl.s="save"
-                    @keydown.ctrl.enter="execute"
-                />
+            <w-layout use-percentage>
+                <w-content>
+                    <is-code-editor
+                        v-model="content"
+                        @keydown.ctrl.s="save"
+                        @keydown.ctrl.enter="execute"
+                    />
+                </w-content>
+                <w-drawer :model-value="!!output" right width="400">
+                    <is-card color="b-secondary" class="h-full">
+                        <is-card-head class="flex items-center">
+                            <div class="font-bold text-xl mr-auto">Output</div>
 
-                <div v-show="output" class="h-full w-[500px] border-l border-b-primary p-3">
-                    <div class="flex">
-                        <div class="font-bold text-xl mb-4 mr-auto">Output</div>
-
-                        <is-icon name="times" @click="output = ''" />
-                    </div>
-
-                    <div class="whitespace-pre-line bg-lines rounded py-2 px-4 leading-7">
-                        {{ output }}
-                    </div>
-                </div>
-            </div>
+                            <is-btn text @click="output = ''">
+                                <is-icon name="times" />
+                            </is-btn>
+                        </is-card-head>
+                        <is-card-content>
+                            <div class="whitespace-pre-line bg-lines rounded py-2 px-4 leading-7">
+                                {{ output }}
+                            </div>
+                        </is-card-content>
+                    </is-card>
+                </w-drawer>
+            </w-layout>
         </w-content>
     </w-layout>
 </template>
