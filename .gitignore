@@ -1,4 +1,5 @@
 node_modules
 artifacts
+CHANGELOG.md
 
 packages/examples/workspace/collections

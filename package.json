@@ -8,7 +8,8 @@
         "test": "npm -ws test --if-present",
         "build": "node scripts/build.js",
         "new:version": "node scripts/version.js",
-        "new:use-case": "node scripts/new-use-case"
+        "new:use-case": "node scripts/new-use-case",
+        "generate:changelog": "changelogen --output CHANGELOG.md"
     },
     "author": "Henrique Oliveira",
     "license": "MIT",
@@ -26,5 +27,8 @@
         "eslint-plugin-vue": "^9.7.0",
         "fast-glob": "^3.2.12",
         "lodash": "^4.17.21"
+    },
+    "dependencies": {
+        "changelogen": "^0.4.0"
     }
 }
