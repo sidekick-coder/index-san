@@ -7,9 +7,9 @@
         </w-toolbar>
 
         <w-content>
-            <is-container class="h-full w-full overflow-auto">
+            <div class="h-full w-full overflow-auto">
                 <router-view />
-            </is-container>
+            </div>
         </w-content>
     </w-layout>
 </template>

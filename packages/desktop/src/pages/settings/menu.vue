@@ -18,7 +18,10 @@ const columns = [
         name: 'order',
         label: 'Order',
         field: 'order',
-        width: 80,
+        width: 120,
+        padding: {
+            left: 40,
+        },
     },
     {
         name: 'workspace',
@@ -43,7 +46,10 @@ const columns = [
     {
         name: 'actions',
         label: '',
-        width: 80,
+        width: 120,
+        padding: {
+            right: 40,
+        },
     },
 ]
 
@@ -76,33 +82,44 @@ async function onItemDelete(item: MenuItemWithWorkspace) {
 setItems()
 </script>
 <template>
-    <is-table :columns="columns" :items="menu" limit="100">
-        <template #item-order="{ item, column }">
-            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
-        </template>
+    <div>
+        <is-table :columns="columns" :items="menu" limit="100" :fixed="false">
+            <template #item-order="{ item, column, attrs }">
+                <div v-bind="attrs">
+                    <is-input
+                        v-model="item[column.field]"
+                        type="number"
+                        flat
+                        @change="onItemUpdate(item)"
+                    />
+                </div>
+            </template>
 
-        <template #item-workspace="{ item }">
-            <div class="p-2">
-                {{ item.workspace.name }}
-            </div>
-        </template>
+            <template #item-workspace="{ item }">
+                <div class="p-2">
+                    {{ item.workspace.name }}
+                </div>
+            </template>
 
-        <template #item-label="{ item, column }">
-            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
-        </template>
+            <template #item-label="{ item, column }">
+                <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
+            </template>
 
-        <template #item-section="{ item, column }">
-            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
-        </template>
+            <template #item-section="{ item, column }">
+                <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
+            </template>
 
-        <template #item-icon="{ item, column }">
-            <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
-        </template>
+            <template #item-icon="{ item, column }">
+                <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
+            </template>
 
-        <template #item-actions="{ item }">
-            <div class="flex items-center justify-center">
-                <is-icon name="trash" class="cursor-pointer" @click="onItemDelete(item)" />
-            </div>
-        </template>
-    </is-table>
+            <template #item-actions="{ item, attrs }">
+                <div v-bind="attrs" class="flex items-center justify-center">
+                    <is-btn color="danger" text size="sm">
+                        <is-icon name="trash" class="cursor-pointer" @click="onItemDelete(item)" />
+                    </is-btn>
+                </div>
+            </template>
+        </is-table>
+    </div>
 </template>

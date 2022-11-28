@@ -69,7 +69,7 @@ watch(payload, save, { deep: true })
 </script>
 
 <template>
-    <div class="gap-y-4 flex flex-wrap py-5">
+    <is-container class="gap-y-4 flex flex-wrap py-5">
         <div v-for="color in colors" :key="color.key" class="w-full flex items-end">
             <div
                 class="w-24 h-24 bg-accent mr-4 text-xs flex items-end justify-center border border-lines"
@@ -98,5 +98,5 @@ watch(payload, save, { deep: true })
 
             <is-input v-model="payload[color.key]" :label="color.label" />
         </div>
-    </div>
+    </is-container>
 </template>

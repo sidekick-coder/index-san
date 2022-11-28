@@ -93,7 +93,7 @@ const bindings = computed(() => {
                 :flat="flat"
                 readonly
                 class="cursor-pointer"
-                input:class="cursor-pointer"
+                input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
             >
                 <template #append>
                     <is-icon name="chevron-down" class="ml-auto" />

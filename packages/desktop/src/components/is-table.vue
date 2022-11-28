@@ -53,6 +53,10 @@ function getStyle(column) {
         result['padding-left'] = `${column.padding?.left}px`
     }
 
+    if (column.padding?.right) {
+        result['padding-right'] = `${column.padding?.right}px`
+    }
+
     return result
 }
 </script>
@@ -82,7 +86,12 @@ function getStyle(column) {
                     :class="classes.td"
                     class="relative"
                 >
-                    <slot :name="`item-${column.name}`" :item="item" :column="column">
+                    <slot
+                        :name="`item-${column.name}`"
+                        :item="item"
+                        :column="column"
+                        :attrs="{ style: getStyle(column) }"
+                    >
                         <div class="p-2 bg-transparent w-full" :style="getStyle(column)">
                             {{ column.field ? item[column.field] : '' }}
                         </div>

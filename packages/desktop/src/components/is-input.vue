@@ -10,7 +10,7 @@ import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
     modelValue: {
-        type: String,
+        type: [String, Number],
         default: '',
     },
     label: {
@@ -50,16 +50,31 @@ const attrs = useAttrs()
 const inputColors = {
     default: {
         accent: {
-            normal: 'outline outline-lines',
+            normal: 'rounded outline outline-lines',
             focus: 'outline-accent',
         },
-        danger: 'bg-danger hover:bg-danger/75 text-t-primary',
-        info: 'bg-info hover:bg-info/75 text-t-primary',
+        danger: {
+            normal: 'rounded outline outline-lines',
+            focus: 'outline-danger',
+        },
+        info: {
+            normal: 'rounded outline outline-lines',
+            focus: 'outline-info',
+        },
     },
     flat: {
-        accent: 'focus:outline-accent',
-        danger: 'focus:outline-danger',
-        info: 'focus:outline-info',
+        accent: {
+            normal: 'bg-transparent',
+            focus: 'bg-accent/20',
+        },
+        danger: {
+            normal: 'bg-transparent',
+            focus: 'bg-danger/20',
+        },
+        info: {
+            normal: 'bg-transparent',
+            focus: 'bg-info/20',
+        },
     },
 }
 
@@ -76,9 +91,13 @@ function onBlur() {
 }
 
 const classes = computed(() => {
-    const result: string[] = ['transition-all py-2 px-4 bg-transparent rounded w-full flex']
+    const result: string[] = ['transition-all py-2 px-4 bg-transparent w-full flex']
 
-    const color = inputColors.default[props.color]
+    let color = inputColors.default[props.color]
+
+    if (props.flat) {
+        color = inputColors.flat[props.color]
+    }
 
     result.push(color.normal)
 
@@ -146,7 +165,7 @@ const bindings = computed(() => {
                 :placeholder="placeholder"
                 :readonly="readonly"
                 v-bind="bindings.input"
-                class="bg-transparent outline-none grow max-w-[calc(100%_-_32px)]"
+                class="bg-transparent outline-none grow max-w-full"
                 @focus="onFocus"
                 @blur="onBlur"
             />

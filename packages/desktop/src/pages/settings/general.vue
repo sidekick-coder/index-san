@@ -6,7 +6,7 @@ const locale = useLocale()
 const options = ['en-US', 'pt-BR']
 </script>
 <template>
-    <div class="py-5">
+    <is-container class="py-5">
         <is-select v-model="locale" :label="$t('language')" :options="options" card:width="300" />
-    </div>
+    </is-container>
 </template>
