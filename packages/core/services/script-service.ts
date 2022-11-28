@@ -1,0 +1,47 @@
+import vm from 'vm'
+import util from 'util'
+
+export default class ScriptService {
+    protected async _evaluate(code: string, scope?: Record<string, any>) {
+        const logs: string[] = []
+
+        const sandbox = {
+            ...scope,
+            main: (): Promise<any> => Promise.resolve('Error executing script'),
+            console: {
+                log: (...args: any) => logs.push(args.map(util.inspect).join(' ')),
+            },
+        }
+
+        const executable = new vm.Script(`async function main(){ ${code} }`)
+        const context = vm.createContext(sandbox)
+
+        executable.runInContext(context, {})
+
+        let result = null
+        let error = null
+
+        await sandbox
+            .main()
+            .then((data) => (result = data))
+            .catch((err) => (error = err))
+
+        return {
+            result,
+            error,
+            logs,
+        }
+    }
+
+    public async evaluate(code: string, scope?: Record<string, any>) {
+        try {
+            return await this._evaluate(code, scope)
+        } catch (error) {
+            return {
+                result: null,
+                error,
+                logs: [],
+            }
+        }
+    }
+}

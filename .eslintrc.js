@@ -38,7 +38,7 @@ module.exports = {
     plugins: ['vue', '@typescript-eslint'],
     rules: {
         'indent': ['error', 4],
-        'quotes': ['error', 'single'],
+        'quotes': ['off'], //leave prettier handle quotes
         'no-console': ['warn', { allow: ['warn', 'error'] }],
         'no-debugger': 'warn',
         'semi': ['error', 'never'],

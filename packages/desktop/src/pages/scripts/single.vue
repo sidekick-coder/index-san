@@ -111,7 +111,7 @@ async function execute() {
                 <w-content>
                     <is-code-editor v-model="content" @keydown.ctrl.s="save" />
                 </w-content>
-                <w-drawer :model-value="!!output" right :width="400">
+                <w-drawer :model-value="!!output" right :width="400" class="border-l border-lines">
                     <is-card color="b-secondary" class="h-full">
                         <is-card-head class="flex items-center">
                             <div class="font-bold text-xl mr-auto">Output</div>
@@ -120,11 +120,8 @@ async function execute() {
                                 <is-icon name="times" />
                             </is-btn>
                         </is-card-head>
-                        <is-card-content>
-                            <div class="whitespace-pre-line bg-lines rounded py-2 px-4 leading-7">
-                                {{ output }}
-                            </div>
-                        </is-card-content>
+
+                        <is-code-editor readonly :model-value="output" language="bash" />
                     </is-card>
                 </w-drawer>
             </w-layout>

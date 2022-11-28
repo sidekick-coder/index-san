@@ -1,4 +1,5 @@
 import vm from 'vm'
+import lodash from 'lodash'
 
 import ExecuteScriptDTO from './execute-script.dto'
 import AppService from '../../services/app-service'
@@ -19,10 +20,9 @@ export default class ExecuteScript {
             try {
                 const script: ScriptSandbox = {
                     main: () => Promise.reject('Error executing script'),
+                    $lodash: lodash,
                     console: {
-                        log: (...args: string[]) => {
-                            args.forEach((a) => lines.push(`[log]: ${a}`))
-                        },
+                        log: (...args: string[]) => lines.push(args.join(' ')),
                     },
                 }
 
