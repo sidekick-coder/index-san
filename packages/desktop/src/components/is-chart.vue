@@ -6,7 +6,7 @@ export default { name: 'IsChartBar' }
 import set from 'lodash/set'
 import get from 'lodash/get'
 
-import { Chart, registerables, TooltipItem } from 'chart.js'
+import { Chart, registerables } from 'chart.js'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 Chart.register(...registerables)

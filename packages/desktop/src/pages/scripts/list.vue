@@ -81,13 +81,13 @@ async function onItemShow(item: Script) {
 <template>
     <is-dialog v-model="dialog">
         <w-form @submit="submit">
-            <div class="mb-4">
-                <is-input v-model="payload.name" label="Name" />
-            </div>
+            <is-card color="b-secondary">
+                <is-card-content class="flex flex-wrap">
+                    <is-input v-model="payload.name" class="mb-4" label="Name" />
 
-            <div>
-                <w-btn>Create</w-btn>
-            </div>
+                    <is-btn class="w-full">Create</is-btn>
+                </is-card-content>
+            </is-card>
         </w-form>
     </is-dialog>
 
