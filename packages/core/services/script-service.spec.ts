@@ -41,6 +41,6 @@ test.group('script-service (service)', () => {
             console.log([ { key: 'abc' } ])            
         `)
 
-        expect(result.logs).toEqual(["'Hello'", '{ key: 123 }', "[ { key: 'abc' } ]"])
+        expect(result.logs).toEqual(['Hello', '{ key: 123 }', "[ { key: 'abc' } ]"])
     })
 })

@@ -5,7 +5,9 @@ declare namespace ExecuteScriptDTO {
     }
 
     export interface Output {
-        data: string
+        logs: string[]
+        error: any
+        result: any
     }
 }
 

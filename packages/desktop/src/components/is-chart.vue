@@ -3,7 +3,10 @@ export default { name: 'IsChartBar' }
 </script>
 
 <script setup lang="ts">
-import { Chart, registerables } from 'chart.js'
+import set from 'lodash/set'
+import get from 'lodash/get'
+
+import { Chart, registerables, TooltipItem } from 'chart.js'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 Chart.register(...registerables)
@@ -15,11 +18,34 @@ const props = defineProps({
     },
 })
 
+const options = { ...props.options }
+
+// set helper functions
+function tooltipCallback(context: any) {
+    let datasetLabel = context.dataset.label || ''
+    let label = context.raw || ''
+
+    const prefix = get(context, 'dataset.unitPrefix')
+    const suffix = get(context, 'dataset.unitSuffix')
+
+    if (prefix) {
+        label = prefix + label
+    }
+
+    if (suffix) {
+        label = label + suffix
+    }
+
+    return datasetLabel + ': ' + label
+}
+
+set(options, 'options.plugins.tooltip.callbacks.label', tooltipCallback)
+
+// load chart
 let chart: Chart
 const root = ref()
-
 onMounted(() => {
-    chart = new Chart(root.value, props.options)
+    chart = new Chart(root.value, options)
 })
 
 onUnmounted(() => {

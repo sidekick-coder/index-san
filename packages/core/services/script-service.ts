@@ -1,6 +1,14 @@
 import vm from 'vm'
 import util from 'util'
 
+const format = (args: any) => {
+    if (typeof args === 'string') {
+        return args
+    }
+
+    return util.inspect(args)
+}
+
 export default class ScriptService {
     protected async _evaluate(code: string, scope?: Record<string, any>) {
         const logs: string[] = []
@@ -9,7 +17,7 @@ export default class ScriptService {
             ...scope,
             main: (): Promise<any> => Promise.resolve('Error executing script'),
             console: {
-                log: (...args: any) => logs.push(args.map(util.inspect).join(' ')),
+                log: (...args: any) => logs.push(args.map(format).join(' ')),
             },
         }
 

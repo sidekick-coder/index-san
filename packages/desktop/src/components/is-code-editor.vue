@@ -9,6 +9,8 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import defaultTheme from '@/assets/themes/default.json'
 import { useVModel } from 'vue-wind/composables/v-model'
 
+// Props & Emits
+
 const props = defineProps({
     modelValue: {
         type: String,
@@ -20,7 +22,7 @@ const props = defineProps({
     },
     minimap: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     readonly: {
         type: Boolean,
@@ -31,29 +33,41 @@ const props = defineProps({
         default: undefined,
     },
 })
+
 const emit = defineEmits(['update:modelValue'])
 
+// Set mona options
+monaco.editor.defineTheme('app-theme', defaultTheme as any)
+
+self.MonacoEnvironment = {
+    getWorker(_: any, label: string) {
+        if (label === 'json') {
+            return new jsonWorker()
+        }
+        if (label === 'css' || label === 'scss' || label === 'less') {
+            return new cssWorker()
+        }
+        if (label === 'html' || label === 'handlebars' || label === 'razor') {
+            return new htmlWorker()
+        }
+        if (label === 'typescript' || label === 'javascript') {
+            return new tsWorker()
+        }
+        return new editorWorker()
+    },
+}
+
+monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
+
+// mount editor
 const root = ref<HTMLElement>()
 
 let editor: monaco.editor.IStandaloneCodeEditor
 
 const model = useVModel(props, 'modelValue', emit)
 
-watch(
-    () => props.modelValue,
-    (value) => {
-        if (!editor) return
-
-        if (value !== editor.getValue()) {
-            editor.setValue(value)
-        }
-    }
-)
-
 onMounted(() => {
     if (!root.value) return
-
-    monaco.editor.defineTheme('app-theme', defaultTheme as any)
 
     editor = monaco.editor.create(root.value!, {
         value: model.value,
@@ -76,25 +90,16 @@ onMounted(() => {
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
 })
 
-self.MonacoEnvironment = {
-    getWorker(_: any, label: string) {
-        if (label === 'json') {
-            return new jsonWorker()
-        }
-        if (label === 'css' || label === 'scss' || label === 'less') {
-            return new cssWorker()
-        }
-        if (label === 'html' || label === 'handlebars' || label === 'razor') {
-            return new htmlWorker()
-        }
-        if (label === 'typescript' || label === 'javascript') {
-            return new tsWorker()
-        }
-        return new editorWorker()
-    },
-}
+watch(
+    () => props.modelValue,
+    (value) => {
+        if (!editor) return
 
-monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
+        if (value !== editor.getValue()) {
+            editor.setValue(value)
+        }
+    }
+)
 </script>
 <template>
     <div ref="root" class="w-full h-full"></div>

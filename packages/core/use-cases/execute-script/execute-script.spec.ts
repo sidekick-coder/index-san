@@ -23,70 +23,42 @@ test.group('execute-script (use-case)', (group) => {
     })
 
     test('should execute script function and return result', async ({ expect }) => {
-        app.memoryDrive.createFile(
-            '.is/scripts/hello.js',
-            'async function main(){ return "Hello word" }'
-        )
+        app.memoryDrive.createFile('.is/scripts/hello.js', 'return "Hello word"')
 
-        const result = await await useCase.execute({
+        const { result } = await await useCase.execute({
             workspaceId: workspace.id,
             name: 'hello',
         })
 
-        expect(result.data).toBe('Hello word')
-    })
-
-    test('should return an error when could not execute script', async ({ expect }) => {
-        app.memoryDrive.createFile('.is/scripts/hello.js', '')
-
-        const result = await useCase.execute({
-            workspaceId: workspace.id,
-            name: 'hello',
-        })
-
-        expect(result.data).toBe('Error executing script')
+        expect(result).toBe('Hello word')
     })
 
     test('should throw an error when trying to use require("fs")', async ({ expect }) => {
-        app.memoryDrive.createFile(
-            '.is/scripts/hello.js',
-            `
-            const fs = require('fs')            
-        `
-        )
+        app.memoryDrive.createFile('.is/scripts/hello.js', `const fs = require('fs')`)
 
         const result = await useCase.execute({
             workspaceId: workspace.id,
             name: 'hello',
         })
 
-        expect(result.data).toBe('require is not defined')
+        expect(result.error.message).toBe('require is not defined')
     })
 
     test('should throw an error when trying to use import fs from "fs"', async ({ expect }) => {
-        app.memoryDrive.createFile(
-            '.is/scripts/hello.js',
-            `
-            import fs from "fs"
-        `
-        )
+        app.memoryDrive.createFile('.is/scripts/hello.js', `import fs from "fs"`)
 
         const result = await useCase.execute({
             workspaceId: workspace.id,
             name: 'hello',
         })
 
-        expect(result.data).toBe('Cannot use import statement outside a module')
+        expect(result.error.message).toBe('Cannot use import statement outside a module')
     })
 
     test('should create a file in workspace', async ({ expect }) => {
         app.memoryDrive.createFile(
             '.is/scripts/hello.js',
-            `
-            async function main(workspace){
-                await workspace.drive.write("hello.txt", "Hello word")
-            }
-        `
+            `await workspace.drive.write("hello.txt", "Hello word")`
         )
 
         await useCase.execute({
