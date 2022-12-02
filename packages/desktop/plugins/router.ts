@@ -11,7 +11,7 @@ export function createRouter() {
         routes: [],
     })
 
-    const modulesRouter = import.meta.glob<Record<string, ModuleRouter>>('@/modules/**/*.ts', {
+    const modulesRouter = import.meta.glob<Record<string, ModuleRouter>>('@/modules/**/router.ts', {
         eager: true,
     })
 
