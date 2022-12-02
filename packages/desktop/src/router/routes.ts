@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/workspaces/:workspaceId/collections/:collectionId/items',
         props: true,
-        component: () => import('../pages/items/items.vue'),
+        component: () => import('../pages/collections/items.vue'),
     },
     // settings
     {

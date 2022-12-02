@@ -188,9 +188,13 @@ watch(props, load, { immediate: true, deep: true })
                     {{ $t('addEntity', [$t('column')]) }}
                 </is-btn>
 
-                <is-btn text size="sm" @click="drawers.columns = true">
-                    <is-icon name="table-columns" />
-                </is-btn>
+                <is-drawer>
+                    <template #activator="{ on }">
+                        <is-btn text size="sm" v-bind="on">
+                            <is-icon name="table-columns" />
+                        </is-btn>
+                    </template>
+                </is-drawer>
 
                 <is-btn text size="sm" @click="drawers.filters = true">
                     <is-icon name="filter" />
