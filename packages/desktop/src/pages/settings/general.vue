@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLocale } from '@/plugins/i18n'
+import { useLocale } from 'plugins/i18n'
 
 const locale = useLocale()
 

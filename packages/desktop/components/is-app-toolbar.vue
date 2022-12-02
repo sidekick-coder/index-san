@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import uuid from 'uuid-random'
 
-import { saveWorkspaceMenu, useWorkspaceMenu } from '@/composables/menu'
-import { usePageMeta } from '@/composables/page-meta'
-import { useState } from '@/composables/state'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useWorkspace } from '@/composables/workspaces'
+
+import { saveWorkspaceMenu, useWorkspaceMenu } from '@/src/composables/menu'
+import { useMeta } from '@/composables/metas'
+import { useState } from '@/src/composables/state'
+import { useWorkspace } from '@/src/composables/workspaces'
 
 const props = defineProps({
     title: {
@@ -16,7 +17,7 @@ const props = defineProps({
 })
 
 const route = useRoute()
-const meta = usePageMeta()
+const meta = useMeta()
 
 const [workspace, setWorkspace] = useWorkspace()
 

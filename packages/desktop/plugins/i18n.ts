@@ -1,4 +1,4 @@
-import { useState } from '@/composables/state'
+import { useState } from '../src/composables/state'
 import { App, watch } from 'vue'
 
 import { createI18n as baseCreateI18n } from 'vue-i18n'
@@ -20,14 +20,6 @@ export const i18n = baseCreateI18n({
     legacy: false,
 })
 
-export function createI18n() {
-    function install(app: App) {
-        app.use(i18n)
-    }
-
-    return { install }
-}
-
 export function useLocale() {
     const state = useState('app:i18n:locale', 'en-US', { localStorage: true })
 
@@ -40,4 +32,8 @@ export function useLocale() {
     )
 
     return state
+}
+
+export default (app: App) => {
+    app.use(i18n)
 }

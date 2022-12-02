@@ -7,10 +7,11 @@ interface ComponentItem {
     value: Component
 }
 
-export function createVWind() {
-    const modules = import.meta.glob('@root-node-modules/vue-wind/components/**/*.vue', {
+export default (app: App) => {
+    const modules = import.meta.glob('@root/node_modules/vue-wind/components/**/*.vue', {
         eager: true,
     })
+
     const components: ComponentItem[] = []
 
     Object.entries<any>(modules).forEach(([key, value]) => {
@@ -24,9 +25,5 @@ export function createVWind() {
         })
     })
 
-    function install(app: App) {
-        components.forEach((c) => app.component(c.name, c.value))
-    }
-
-    return { install }
+    components.forEach((c) => app.component(c.name, c.value))
 }

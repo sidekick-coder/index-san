@@ -7,8 +7,8 @@ interface ComponentItem {
     value: Component
 }
 
-export function createGCRegister() {
-    const modules = import.meta.glob('../components/**/*.vue', { eager: true })
+export default (app: App) => {
+    const modules = import.meta.glob('@/components/**/*.vue', { eager: true })
     const components: ComponentItem[] = []
 
     Object.entries<any>(modules).forEach(([key, value]) => {
@@ -24,9 +24,5 @@ export function createGCRegister() {
         })
     })
 
-    function install(app: App) {
-        components.forEach((c) => app.component(c.name, c.value))
-    }
-
-    return { install }
+    components.forEach((c) => app.component(c.name, c.value))
 }

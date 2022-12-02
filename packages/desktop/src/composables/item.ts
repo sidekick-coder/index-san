@@ -1,5 +1,5 @@
 import Item from '@core/entities/item'
-import { useHooks } from '../plugins/hooks'
+import { useHooks } from '../../plugins/hooks'
 import { createCollectionKey, useCollectionItems } from './collection'
 import { DataResponse, useCase } from './use-case'
 

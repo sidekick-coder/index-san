@@ -4,13 +4,17 @@ import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 
 const root = path.resolve(__dirname, '..', '..')
-const rootNodeModules = path.resolve(root, 'node_modules')
 
 const alias = {
+    // root
     '@core': path.resolve(__dirname, '..', 'core'),
-    '@root-node-modules': rootNodeModules,
-    '@': path.resolve(__dirname, 'src'),
-    'vue': path.resolve(rootNodeModules, 'vue/dist/vue.esm-bundler.js'),
+    '@root': root,
+
+    // app
+    '@': path.resolve(__dirname, '.'),
+
+    // vue bundler
+    'vue': path.resolve(root, 'node_modules', 'vue/dist/vue.esm-bundler.js'),
 }
 
 export default defineConfig({

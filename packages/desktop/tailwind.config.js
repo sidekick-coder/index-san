@@ -4,7 +4,8 @@ const colors = require('tailwindcss/colors')
 module.exports = {
     content: [
         './index.html',
-        './src/**/*.{ts,vue,scss}',
+        './components/*.vue',
+        './modules/**/**/*.{ts,vue,scss}',
         '../../node_modules/vue-wind/composables/**/*.ts',
         '../../node_modules/vue-wind/components/**/*.{ts,vue}',
     ],

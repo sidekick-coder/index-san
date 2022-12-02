@@ -2,7 +2,7 @@ import uuid from 'uuid-random'
 
 import Collection, { CollectionColumn, CollectionView } from '@core/entities/collection'
 import { DataResponse, useCase } from './use-case'
-import { useHooks, HookEventListener } from '../plugins/hooks'
+import { useHooks, HookEventListener } from '../../plugins/hooks'
 import { useStateV2 } from './state'
 import { CollectionFolderItem } from './item'
 
