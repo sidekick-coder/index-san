@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ISArray } from '@/composables/array'
+import { ISArray } from '@/src/composables/array'
 import {
     updateOrCreateCollectionView,
     useCollectionItems,
     useCollectionViews,
     ViewChart,
-} from '@/composables/collection'
-import { useTheme } from '@/composables/theme'
+} from '@/src/composables/collection'
+import { useTheme } from '@/src/composables/theme'
 import { ref, watch } from 'vue'
 
 const props = defineProps({

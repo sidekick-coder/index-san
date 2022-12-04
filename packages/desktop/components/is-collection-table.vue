@@ -9,9 +9,9 @@ import {
     useCollectionItems,
     useCollectionViews,
     updateOrCreateCollectionView,
-} from '@/composables/collection'
-import { createItem, deleteItem } from '@/composables/item'
-import { useArray, ArrayFilter } from '@/composables/array'
+} from '@/src/composables/collection'
+import { createItem, deleteItem } from '@/src/composables/item'
+import { useArray, ArrayFilter } from '@/src/composables/array'
 
 const props = defineProps({
     workspaceId: {

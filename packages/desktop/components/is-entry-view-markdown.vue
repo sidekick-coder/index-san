@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useDirectoryEntry } from '@/composables/directory-entry'
-import { useState } from '@/composables/state'
+import { useDirectoryEntry } from '@/src/composables/directory-entry'
+import { useState } from '@/src/composables/state'
 import { ref } from 'vue'
 
 const props = defineProps({

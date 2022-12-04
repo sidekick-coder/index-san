@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useDirectoryEntry } from '@/composables/directory-entry'
 import { ref, watch } from 'vue'
 import debounce from 'lodash/debounce'
+
+import { useDirectoryEntry } from '@/src/composables/directory-entry'
 
 const props = defineProps({
     workspaceId: {

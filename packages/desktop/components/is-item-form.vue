@@ -3,8 +3,8 @@ import { computed, ref, watch } from 'vue'
 import get from 'lodash/get'
 
 import Collection from '@core/entities/collection'
-import { CollectionFolderItem, useItemRepository } from '@/composables/item'
-import { useCollectionRepository } from '@/composables/collection'
+import { CollectionFolderItem, useItemRepository } from '@/src/composables/item'
+import { useCollectionRepository } from '@/src/composables/collection'
 
 const props = defineProps({
     workspaceId: {

@@ -5,9 +5,9 @@ import throttle from 'lodash/throttle'
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
 
-import { updateItem } from '@/composables/item'
+import { updateItem } from '@/src/composables/item'
 import { useBuilder } from 'vue-wind/composables/builder'
-import { useCollectionItems } from '@/composables/collection'
+import { useCollectionItems } from '@/src/composables/collection'
 
 const props = defineProps({
     workspaceId: {

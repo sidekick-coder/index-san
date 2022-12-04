@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useDirectoryEntry } from '@/composables/directory-entry'
+import { useDirectoryEntry } from '@/src/composables/directory-entry'
 import { ref } from 'vue'
 import mime from 'mime'
 

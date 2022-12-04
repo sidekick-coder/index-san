@@ -6,7 +6,7 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-import defaultTheme from '@/assets/themes/default.json'
+import defaultTheme from '@/src/assets/themes/default.json'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 // Props & Emits
