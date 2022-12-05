@@ -5,7 +5,7 @@ module.exports = {
     content: [
         './index.html',
         './components/*.vue',
-        './modules/**/**/*.{ts,vue,scss}',
+        './modules/**/**/**/*.{ts,vue,scss}',
         '../../node_modules/vue-wind/composables/**/*.ts',
         '../../node_modules/vue-wind/components/**/*.{ts,vue}',
     ],

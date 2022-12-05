@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-
-import { definePageMeta } from '@/composables/page-meta'
-import Script from '@core/entities/script'
-import { useCase } from '@/composables/use-case'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+
+import Script from '@core/entities/script'
+import { useMeta } from '@/composables/metas'
+import { useCase } from '@/src/composables/use-case'
 
 const props = defineProps({
     workspaceId: {
@@ -16,7 +16,7 @@ const props = defineProps({
 
 const router = useRouter()
 const tm = useI18n()
-const meta = definePageMeta({
+const meta = useMeta({
     title: 'Scripts list',
 })
 

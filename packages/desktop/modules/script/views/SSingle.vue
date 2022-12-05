@@ -3,8 +3,8 @@ import { computed, ref, watch } from 'vue'
 
 import Script from '@core/entities/script'
 
-import { usePageMeta } from '@/composables/page-meta'
-import { useCase } from '@/composables/use-case'
+import { useMeta } from '@/composables/metas'
+import { useCase } from '@/src/composables/use-case'
 
 const props = defineProps({
     workspaceId: {
@@ -17,7 +17,7 @@ const props = defineProps({
     },
 })
 
-const meta = usePageMeta()
+const meta = useMeta()
 const content = ref('')
 
 const script = ref<Script>({

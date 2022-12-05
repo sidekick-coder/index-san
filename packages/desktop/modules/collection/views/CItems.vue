@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useCollection } from '@/composables/collection'
-import { usePageMeta } from '@/composables/page-meta'
+import { useCollection } from '@/src/composables/collection'
+import { useMeta } from '@/composables/metas'
 import { watch } from 'vue'
 
 const props = defineProps({
@@ -14,7 +14,7 @@ const props = defineProps({
     },
 })
 
-const meta = usePageMeta()
+const meta = useMeta()
 
 const [collection, setCollection] = useCollection()
 
