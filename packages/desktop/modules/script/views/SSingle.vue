@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue'
 import Script from '@core/entities/script'
 
 import { useMeta } from '@/composables/metas'
-import { useCase } from '@/src/composables/use-case'
+import { useCase } from '@/composables/use-case'
 
 const props = defineProps({
     workspaceId: {

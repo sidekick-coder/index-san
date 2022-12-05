@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { DataResponse, useCase } from '../composables/use-case'
+import { DataResponse, useCase } from '@/composables/use-case'
 import Workspace from '@core/entities/workspace'
 
 interface ListResponse {

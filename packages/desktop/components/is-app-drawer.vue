@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import groupBy from 'lodash/groupBy'
 
-import { useState } from '@/src/composables/state'
-import { useAllMenu, useAllMenuAsync } from '@/src/composables/menu'
+import { useState } from '@/composables/state'
+import { useAllMenu, useAllMenuAsync } from '@/composables/menu'
 
 const drawer = useState('app:drawer', true, {
     localStorage: true,

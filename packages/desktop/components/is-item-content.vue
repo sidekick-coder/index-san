@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useItemRepository } from '@/src/composables/item'
+import { useItemRepository } from '@/composables/item'
 import { ref, watch } from 'vue'
 
 const props = defineProps({

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { ViewChart, ViewChartDataset } from '@/src/composables/collection'
+import { ViewChart, ViewChartDataset } from '@/composables/collection'
 
 const emit = defineEmits(['save'])
 

@@ -3,8 +3,8 @@ import { ref, watch } from 'vue'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
-import { useDirectoryEntry } from '@/src/composables/directory-entry'
-import { definePageMeta } from '@/src/composables/page-meta'
+import { useDirectoryEntry } from '@/composables/directory-entry'
+import { definePageMeta } from '@/composables/page-meta'
 
 const props = defineProps({
     workspaceId: {

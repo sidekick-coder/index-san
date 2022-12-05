@@ -2,7 +2,7 @@
  * Page meta
  */
 
-import { useState } from '@/src/composables/state'
+import { useState } from '@/composables/state'
 
 interface Meta {
     title: string

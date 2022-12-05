@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCase } from '@/src/composables/use-case'
+import { useCase } from '@/composables/use-case'
 import Script from '@core/entities/script'
 import { computed, ref, watch } from 'vue'
 

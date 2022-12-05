@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import debounce from 'lodash/debounce'
 
-import { useDirectoryEntry } from '@/src/composables/directory-entry'
+import { useDirectoryEntry } from '@/composables/directory-entry'
 
 const props = defineProps({
     workspaceId: {

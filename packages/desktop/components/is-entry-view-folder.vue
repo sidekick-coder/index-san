@@ -3,10 +3,10 @@ import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import orderBy from 'lodash/orderBy'
 
-import { useDirectoryEntry } from '@/src/composables/directory-entry'
+import { useDirectoryEntry } from '@/composables/directory-entry'
 import DirectoryEntry from '@core/entities/directory-entry'
-import { definePageMeta } from '@/src/composables/page-meta'
-import { useWorkspace } from '@/src/stores/workspaces'
+import { definePageMeta } from '@/composables/page-meta'
+import { useWorkspace } from '@/stores/workspaces'
 
 const props = defineProps({
     workspaceId: {

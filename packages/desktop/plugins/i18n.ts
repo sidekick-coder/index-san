@@ -1,4 +1,4 @@
-import { useState } from '../src/composables/state'
+import { useState } from '@/composables/state'
 import { App, watch } from 'vue'
 
 import { createI18n as baseCreateI18n } from 'vue-i18n'

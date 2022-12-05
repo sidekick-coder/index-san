@@ -5,7 +5,7 @@ import {
     useAllMenuAsync,
     saveWorkspaceMenu,
     MenuItemWithWorkspace,
-} from '@/src/composables/menu'
+} from '@/composables/menu'
 
 useMeta({
     title: 'Menu settings',

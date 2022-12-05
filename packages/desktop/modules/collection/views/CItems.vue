@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCollection } from '@/src/composables/collection'
+import { useCollection } from '@/composables/collection'
 import { useMeta } from '@/composables/metas'
 import { watch } from 'vue'
 

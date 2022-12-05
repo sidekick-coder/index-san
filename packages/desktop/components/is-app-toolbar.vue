@@ -4,10 +4,10 @@ import uuid from 'uuid-random'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { saveWorkspaceMenu, useWorkspaceMenu } from '@/src/composables/menu'
+import { saveWorkspaceMenu, useWorkspaceMenu } from '@/composables/menu'
 import { useMeta } from '@/composables/metas'
-import { useState } from '@/src/composables/state'
-import { useWorkspace } from '@/src/composables/workspaces'
+import { useState } from '@/composables/state'
+import { useWorkspace } from '@/composables/workspaces'
 
 const props = defineProps({
     title: {

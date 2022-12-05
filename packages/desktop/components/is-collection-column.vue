@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CollectionColumn } from '@core/entities/collection'
 
-import { updateCollectionColumn, deleteCollectionColumn } from '@/src/composables/collection'
+import { updateCollectionColumn, deleteCollectionColumn } from '@/composables/collection'
 
 import { ref, watch } from 'vue'
 
