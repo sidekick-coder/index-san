@@ -1,5 +1,5 @@
-import './src/assets/tailwind.scss'
-import './src/assets/main.scss'
+import './assets/tailwind.scss'
+import './assets/main.scss'
 import 'highlight.js/scss/base16/dracula.scss'
 
 import { App as VueApp, createApp as baseCreateApp } from 'vue'
