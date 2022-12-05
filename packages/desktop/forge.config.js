@@ -1,7 +1,7 @@
 module.exports = {
     packagerConfig: {
         name: 'index-san',
-        icon: 'resources/icons/logo.ico',
+        icon: 'assets/logo.ico',
     },
     rebuildConfig: {},
     makers: [
