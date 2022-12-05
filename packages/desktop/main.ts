@@ -4,7 +4,7 @@ import 'highlight.js/scss/base16/dracula.scss'
 
 import { App as VueApp, createApp as baseCreateApp } from 'vue'
 
-import App from './src/App.vue'
+import App from './App.vue'
 
 interface Plugin {
     default?: (app: VueApp) => void

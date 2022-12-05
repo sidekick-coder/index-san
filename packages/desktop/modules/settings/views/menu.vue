@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { definePageMeta } from '@/composables/page-meta'
+import { useMeta } from '@/composables/metas'
 import {
     useAllMenu,
     useAllMenuAsync,
     saveWorkspaceMenu,
     MenuItemWithWorkspace,
-} from '@/composables/menu'
+} from '@/src/composables/menu'
 
-definePageMeta({
+useMeta({
     title: 'Menu settings',
 })
 
