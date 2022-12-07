@@ -1,5 +1,5 @@
 export default {
-    settings: 'Settings',
+    option: 'Option | Options',
     workspace: 'Workspace | Workspaces',
     collection: 'Collection | Collections',
     listEntity: '{0} list',

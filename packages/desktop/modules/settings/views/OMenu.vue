@@ -1,32 +1,25 @@
 <script setup lang="ts">
 import { useMeta } from '@/composables/metas'
-import {
-    useAllMenu,
-    useAllMenuAsync,
-    saveWorkspaceMenu,
-    MenuItemWithWorkspace,
-} from '@/composables/menu'
+import { useAllMenu, MenuItemWithWorkspace } from '@/composables/menu'
+import { useStore } from '@/modules/menu/store'
 
-useMeta({
-    title: 'Menu settings',
-})
+// metas
+useMeta({ title: 'Menu settings' })
+
+const store = useStore()
 
 const menu = useAllMenu()
 
+// Table columns
 const columns = [
     {
         name: 'order',
         label: 'Order',
         field: 'order',
-        width: 120,
+        width: 80,
         padding: {
             left: 40,
         },
-    },
-    {
-        name: 'workspace',
-        label: 'Workspace',
-        field: 'workspace',
     },
     {
         name: 'label',
@@ -54,51 +47,41 @@ const columns = [
 ]
 
 async function setItems() {
-    await useAllMenuAsync()
+    // await useAllMenuAsync()
 }
 
 async function update(workspaceId: string) {
-    const items = menu.value.filter((m) => m.workspace.id === workspaceId)
-
-    await saveWorkspaceMenu(workspaceId, items)
+    // const items = menu.value.filter((m) => m.workspace.id === workspaceId)
+    // await saveWorkspaceMenu(workspaceId, items)
 }
 
-async function onItemUpdate(item: MenuItemWithWorkspace) {
-    await update(item.workspace.id)
-
-    await setItems()
+async function onItemUpdate() {
+    await store.save()
+    // await update(item.workspace.id)
+    // await setItems()
 }
 
 async function onItemDelete(item: MenuItemWithWorkspace) {
-    const items = menu.value
-        .filter((m) => m.workspace.id === item.workspace.id)
-        .filter((m) => m.id !== item.id)
-
-    await saveWorkspaceMenu(item.workspace.id, items)
-
-    await setItems()
+    // const items = menu.value
+    //     .filter((m) => m.workspace.id === item.workspace.id)
+    //     .filter((m) => m.id !== item.id)
+    // await saveWorkspaceMenu(item.workspace.id, items)
+    // await setItems()
 }
 
 setItems()
 </script>
 <template>
     <div>
-        <is-table :columns="columns" :items="menu" limit="100" :fixed="false">
-            <template #item-order="{ item, column, attrs }">
-                <div v-bind="attrs">
-                    <is-input
-                        v-model="item[column.field]"
-                        type="number"
-                        flat
-                        @change="onItemUpdate(item)"
-                    />
-                </div>
-            </template>
-
-            <template #item-workspace="{ item }">
-                <div class="p-2">
-                    {{ item.workspace.name }}
-                </div>
+        <is-table :columns="columns" :items="store.menu" limit="100" :fixed="false">
+            <template #item-order="{ item, column }">
+                <is-input
+                    v-model="item[column.field]"
+                    type="number"
+                    flat
+                    input:class="pl-10 w-[80px]"
+                    @change="onItemUpdate(item)"
+                />
             </template>
 
             <template #item-label="{ item, column }">

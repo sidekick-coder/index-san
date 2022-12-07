@@ -56,9 +56,9 @@ const title = computed(() => {
                 <div>Workspaces</div>
             </is-list-item>
 
-            <is-list-item to="/settings">
+            <is-list-item to="/options">
                 <i class="mr-2"> <fa-icon icon="cog" /></i>
-                <div>{{ $t('settings') }}</div>
+                <div>{{ $t('option', 2) }}</div>
             </is-list-item>
         </div>
 

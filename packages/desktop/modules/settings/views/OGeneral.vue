@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { useStore } from '@/modules/options/store'
 import { useLocale } from '@/plugins/i18n'
+import { watch } from 'vue'
+
+const store = useStore()
 
 const locale = useLocale()
 

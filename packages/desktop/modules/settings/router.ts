@@ -2,17 +2,17 @@ import { Router } from 'vue-router'
 
 export default (router: Router) => {
     router.addRoute({
-        path: '/settings',
+        path: '/options',
         component: () => import('./SLayout.vue'),
-        redirect: '/settings/general',
+        redirect: '/options/general',
         children: [
             {
                 path: 'general',
-                component: () => import('./views/general.vue'),
+                component: () => import('./views/OGeneral.vue'),
             },
             {
                 path: 'menu',
-                component: () => import('./views/menu.vue'),
+                component: () => import('./views/OMenu.vue'),
             },
             {
                 path: 'theme',

@@ -1,11 +1,9 @@
+import orderBy from 'lodash/orderBy'
+
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
-import get from 'lodash/get'
+import { computed } from 'vue'
 
-import ShowWorkspaceOptionsDTO from '@core/use-cases/show-workspace-options/show-workspace-options.dto'
-
-import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useCase } from '@/composables/use-case'
+import { useStore as useOptions } from '@/modules/options/store'
 
 interface Menu {
     label: string
@@ -16,21 +14,20 @@ interface Menu {
 }
 
 export const useStore = defineStore('menu', () => {
-    const menu = ref<Menu[]>([])
+    const option = useOptions()
 
-    const workspace = useWorkspace()
+    const menu = computed<Menu[]>(() => {
+        return orderBy(option.options.menu || [], 'order')
+    })
 
-    async function setMenu(workspaceId: string) {
-        await useCase<ShowWorkspaceOptionsDTO.Output>('show-workspace-options', {
-            workspaceId,
+    async function save() {
+        await option.save({
+            data: { menu: menu.value.slice() },
         })
-            .then((r) => (menu.value = get(r, 'data.menu.items', [])))
-            .catch(() => (menu.value = []))
     }
-
-    watch(() => workspace.currentId, setMenu, { immediate: true })
 
     return {
         menu,
+        save,
     }
 })
