@@ -11,34 +11,19 @@ test.group('execute-script (use-case)', (group) => {
 
     group.each.teardown(() => app.memoryDrive.clear())
 
-    test('should throw error when script not exists', async ({ expect }) => {
-        expect.assertions(1)
-
-        await useCase
-            .execute({
-                workspaceId: workspace.id,
-                name: 'invalid',
-            })
-            .catch((err) => expect(err.message).toBe('Script not found'))
-    })
-
     test('should execute script function and return result', async ({ expect }) => {
-        app.memoryDrive.createFile('.is/scripts/hello.js', 'return "Hello word"')
-
-        const { result } = await await useCase.execute({
+        const { result } = await useCase.execute({
             workspaceId: workspace.id,
-            name: 'hello',
+            content: 'return "Hello word"',
         })
 
         expect(result).toBe('Hello word')
     })
 
     test('should throw an error when trying to use require("fs")', async ({ expect }) => {
-        app.memoryDrive.createFile('.is/scripts/hello.js', `const fs = require('fs')`)
-
         const result = await useCase.execute({
             workspaceId: workspace.id,
-            name: 'hello',
+            content: 'const fs = require("fs")',
         })
 
         expect(result.error.message).toBe('require is not defined')
@@ -49,21 +34,16 @@ test.group('execute-script (use-case)', (group) => {
 
         const result = await useCase.execute({
             workspaceId: workspace.id,
-            name: 'hello',
+            content: `import fs from "fs"`,
         })
 
         expect(result.error.message).toBe('Cannot use import statement outside a module')
     })
 
     test('should create a file in workspace', async ({ expect }) => {
-        app.memoryDrive.createFile(
-            '.is/scripts/hello.js',
-            `await workspace.drive.write("hello.txt", "Hello word")`
-        )
-
         await useCase.execute({
             workspaceId: workspace.id,
-            name: 'hello',
+            content: `await workspace.drive.write("hello.txt", "Hello word")`,
         })
 
         const content = await app.memoryDrive.read('hello.txt')

@@ -1,7 +1,7 @@
 declare namespace ExecuteScriptDTO {
     export interface Input {
         workspaceId: string
-        name: string
+        content: string
     }
 
     export interface Output {

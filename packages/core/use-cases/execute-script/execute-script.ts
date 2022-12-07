@@ -9,21 +9,13 @@ export default class ExecuteScript {
 
     public async execute({
         workspaceId,
-        name,
+        content,
     }: ExecuteScriptDTO.Input): Promise<ExecuteScriptDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const filename = `.is/scripts/${name}.js`
-
-        const content = await workspace.drive.read(filename)
-
-        if (!content) {
-            throw new Error('Script not found')
-        }
-
         const service = new ScriptService()
 
-        const result = await service.evaluate(content.toString(), {
+        const result = await service.evaluate(content, {
             workspace,
             lodash,
         })
