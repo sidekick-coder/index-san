@@ -16,10 +16,15 @@ async function createApp() {
 
     const plugins = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
 
-    Object.values(plugins)
-        .filter((p) => !!p.default)
-        .sort((a: Plugin, b: Plugin) => (a.order || 99) - (b.order || 99))
-        .forEach((plugin: Plugin) => plugin.default!(app))
+    Object.entries(plugins)
+        .filter(([, p]) => !!p.default)
+        .sort(
+            ([, a]: [string, Plugin], [, b]: [string, Plugin]) => (a.order || 99) - (b.order || 99)
+        )
+        .forEach(([name, plugin]: [string, Plugin]) => {
+            console.debug(`[app] plugin ${name.replace('./plugins/', '')} loaded`)
+            plugin.default!(app)
+        })
 
     return { app }
 }

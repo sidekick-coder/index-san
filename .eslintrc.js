@@ -39,7 +39,7 @@ module.exports = {
     rules: {
         'indent': ['error', 4],
         'quotes': ['off'], //leave prettier handle quotes
-        'no-console': ['warn', { allow: ['warn', 'error'] }],
+        'no-console': ['warn', { allow: ['warn', 'error', 'debug'] }],
         'no-debugger': 'warn',
         'semi': ['error', 'never'],
         'prettier/prettier': [

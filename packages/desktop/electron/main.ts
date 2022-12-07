@@ -73,14 +73,32 @@ app.whenReady().then(async () => {
         }, 1000)
     )
 
-    ipcMain.handle('use-case', (_, name, args) => {
+    ipcMain.handle('use-case', async (_, name, args) => {
         const option = indexSan.cases[name]
 
         if (!option) {
-            throw new Error(`use-case "${name}" not found`)
+            return {
+                error: new Error(`use-case "${name}" not found`),
+            }
         }
 
-        return option.execute(args)
+        let result: any = undefined
+        let error: any = undefined
+
+        await option
+            .execute(args)
+            .then((r: any) => (result = r))
+            .catch((e: any) => (error = e))
+
+        if (error) {
+            console.error(error)
+        }
+
+        if (error && error.serialize) {
+            error = error.serialize()
+        }
+
+        return { error, result }
     })
 
     window.webContents.on('context-menu', (event, params) => {

@@ -44,7 +44,7 @@ export const useStore = defineStore('option', () => {
         })
     }
 
-    watch(() => workspace.currentId, setOptions, { immediate: true })
+    watch(() => workspace.currentId, setOptions)
 
     return {
         options,

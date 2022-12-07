@@ -5,4 +5,8 @@ export default class BaseException extends Error {
     constructor(message = 'Internal server error') {
         super(message)
     }
+
+    public serialize() {
+        return JSON.parse(JSON.stringify(this, Object.getOwnPropertyNames(this)))
+    }
 }
