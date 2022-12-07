@@ -11,5 +11,7 @@ store.setScrips().finally(() => (loading.value = false))
 </script>
 
 <template>
-    <LLayout v-if="!loading" />
+    <LLayout>
+        <router-view v-if="!loading"></router-view>
+    </LLayout>
 </template>

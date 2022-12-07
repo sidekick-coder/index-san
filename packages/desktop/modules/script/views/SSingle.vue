@@ -94,7 +94,7 @@ async function execute() {
     reset()
 
     await store
-        .execute({ name: script.value.name })
+        .execute({ content: script.value.content })
         .then((r) => {
             execution.value.logs = r.logs
             execution.value.error = r.error
