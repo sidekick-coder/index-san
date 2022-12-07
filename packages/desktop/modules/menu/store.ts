@@ -3,7 +3,7 @@ import orderBy from 'lodash/orderBy'
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
 
-import { useStore as useOptions } from '@/modules/options/store'
+import { useStore as useOptions } from '@/modules/option/store'
 
 interface Menu {
     label: string

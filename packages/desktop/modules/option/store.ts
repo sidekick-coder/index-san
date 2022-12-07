@@ -24,7 +24,7 @@ interface SaveArgs {
     data: any
 }
 
-export const useStore = defineStore('options', () => {
+export const useStore = defineStore('option', () => {
     const options = ref<Options>({})
 
     const workspace = useWorkspace()
@@ -48,6 +48,8 @@ export const useStore = defineStore('options', () => {
 
     return {
         options,
+
+        setOptions,
         save,
     }
 })

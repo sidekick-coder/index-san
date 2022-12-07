@@ -1,10 +1,8 @@
-import { useState } from '@/composables/state'
-import { App, watch } from 'vue'
+import { App } from 'vue'
 
 import { createI18n as baseCreateI18n } from 'vue-i18n'
 
 const files = import.meta.glob('../i18n/*.ts', { eager: true })
-
 const messages = {}
 
 Object.entries(files).forEach(([filename, value]: any) => {
@@ -21,17 +19,11 @@ export const i18n = baseCreateI18n({
 })
 
 export function useLocale() {
-    const state = useState('app:i18n:locale', 'en-US', { localStorage: true })
+    return i18n.global.locale
+}
 
-    watch(
-        state,
-        (value) => {
-            i18n.global.locale.value = value
-        },
-        { immediate: true }
-    )
-
-    return state
+export function useLanguages() {
+    return Object.keys(messages)
 }
 
 export default (app: App) => {

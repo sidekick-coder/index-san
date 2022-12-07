@@ -1,0 +1,29 @@
+<script setup lang="ts">
+import { useStore } from '@/modules/option/store'
+import { useLocale, useLanguages } from '@/plugins/i18n'
+
+const store = useStore()
+
+const locale = useLocale()
+
+const languages = useLanguages()
+
+async function save() {
+    await store.save({
+        data: {
+            locale: locale.value,
+        },
+    })
+}
+</script>
+<template>
+    <is-container class="py-5">
+        <is-select
+            v-model="locale"
+            :label="$t('language')"
+            :options="languages"
+            card:width="300"
+            @update:model-value="save"
+        />
+    </is-container>
+</template>
