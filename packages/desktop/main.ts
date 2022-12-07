@@ -19,9 +19,7 @@ async function createApp() {
     Object.values(plugins)
         .filter((p) => !!p.default)
         .sort((a: Plugin, b: Plugin) => (a.order || 99) - (b.order || 99))
-        .forEach((plugin: Plugin) => {
-            plugin.default!(app)
-        })
+        .forEach((plugin: Plugin) => plugin.default!(app))
 
     return { app }
 }
