@@ -3,12 +3,10 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import debounce from 'lodash/debounce'
 
-import { useTheme } from '@/composables/theme'
+import { useTheme, defaultTheme } from '@/modules/option/composables/theme'
+import { useStore } from '@/modules/option/store'
 
 const tm = useI18n()
-const theme = useTheme()
-
-const payload = ref(theme.get().colors)
 
 const colors = [
     {
@@ -58,12 +56,32 @@ const colors = [
     },
 ]
 
+// set payload
+const payload = ref(defaultTheme.colors)
+
+// set document styles
+const theme = useTheme()
+
+watch(payload, theme.setCSSVariables, {
+    deep: true,
+})
+
+// set workspace colors
+const store = useStore()
+
+if (store.options.theme) {
+    Object.entries(store.options.theme).forEach(([key, value]) => {
+        payload.value[key] = value
+    })
+}
+
 // save colors
-
 const save = debounce(() => {
-    theme.set({ colors: payload.value })
-
-    theme.load()
+    store.save({
+        data: {
+            theme: payload.value,
+        },
+    })
 }, 1000)
 
 watch(payload, save, { deep: true })

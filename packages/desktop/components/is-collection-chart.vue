@@ -6,7 +6,6 @@ import {
     useCollectionViews,
     ViewChart,
 } from '@/composables/collection'
-import { useTheme } from '@/composables/theme'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
@@ -86,7 +85,6 @@ watch(
 )
 
 // chart config
-const theme = useTheme()
 
 const chart = ref({
     loading: false,
@@ -115,7 +113,7 @@ function setChart() {
         const result = {
             label: dataset.label ?? '-',
             data: [] as any[],
-            backgroundColor: dataset.colors ? dataset.colors.split(',') : theme.chartColors(),
+            backgroundColor: dataset.colors ? dataset.colors.split(',') : ['red', 'blue', 'yellow'],
         }
 
         if (['pie'].includes(view.value.type)) {

@@ -16,7 +16,7 @@ export default (router: Router) => {
             },
             {
                 path: 'theme',
-                component: () => import('./views/theme.vue'),
+                component: () => import('./views/OTheme.vue'),
             },
         ],
     })
