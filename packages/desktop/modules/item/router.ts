@@ -2,12 +2,12 @@ import { Router } from 'vue-router'
 
 export default (router: Router) => {
     router.addRoute({
-        path: '/collections',
-        component: () => import('@/modules/workspace/WLayout.vue'),
+        path: '/collections/:collectionId/items',
+        component: () => import('./ILayout.vue'),
         children: [
             {
                 path: '',
-                component: () => import('./views/CList.vue'),
+                component: () => import('./views/IList.vue'),
                 props: true,
             },
         ],
