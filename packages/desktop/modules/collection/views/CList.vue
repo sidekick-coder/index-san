@@ -1,28 +1,17 @@
 <script setup lang="ts">
-import Collection from '@core/entities/collection'
-
-import { useCollectionRepository } from '@/composables/collection'
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import { useMeta } from '@/composables/metas'
+import { useStore } from '@/modules/collection/store'
 
-const props = defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
-})
-
-const router = useRouter()
 const tm = useI18n()
-const repository = useCollectionRepository(props.workspaceId)
+
 const meta = useMeta({
     title: tm.t('listEntity', [tm.t('collection', 2)]),
 })
 
 const dialog = ref(false)
-const items = ref<Collection[]>([])
 const columns = [
     {
         label: 'ID',
@@ -48,52 +37,42 @@ const columns = [
     },
 ]
 
-const payload = ref<any>({
+// set collections
+const store = useStore()
+
+// create new collection
+const payload = ref({
     id: '',
     name: '',
     path: '',
 })
 
-async function load() {
-    await repository.list().then(({ data }) => (items.value = data))
-}
-
-onMounted(load)
-
 async function submit() {
-    const { name, path } = payload.value
-
-    await repository.create({
-        id: payload.value.id,
-        crudName: 'fsFolder',
-        name,
-        path,
-        columns: [],
+    await store.create({
+        data: {
+            id: payload.value.id,
+            crudName: 'fsFolder',
+            name: payload.value.name,
+            path: payload.value.path,
+            columns: [],
+            views: [],
+        },
     })
-
-    await load()
 
     Object.keys(payload.value).forEach((key) => {
         payload.value[key] = ''
     })
 }
 
-async function deleteItem(id: string) {
-    await repository.destroy(id)
-
-    await load()
-}
-
-async function viewItem(collectionId: string) {
-    const { workspaceId } = props
-
-    await router.push(`/workspaces/${workspaceId}/collections/${collectionId}/items`)
+// Delete collection
+async function deleteItem(collectionId: string) {
+    await store.destroy({ collectionId })
 }
 </script>
 <template>
     <div>
         <is-dialog v-model="dialog">
-            <is-card color="b-secondary">
+            <is-card color="b-secondary" width="500">
                 <is-card-head>
                     <is-card-title>
                         {{ $t('addEntity', [$t('collection')]) }}
@@ -140,14 +119,14 @@ async function viewItem(collectionId: string) {
 
         <is-table
             :columns="columns"
-            :items="items"
+            :items="store.collections"
             disable-add-column
             disable-view-item
             disable-new-item
         >
             <template #item-actions="{ item }">
                 <div class="flex gap-x-4 p-2">
-                    <is-btn text size="sm" @click="viewItem(item.id)">
+                    <is-btn text size="sm" :to="`/collections/${item.id}/items`">
                         <fa-icon icon="eye" />
                     </is-btn>
 
