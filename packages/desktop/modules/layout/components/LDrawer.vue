@@ -65,6 +65,11 @@ const title = computed(() => {
                 <is-icon name="database" class="mr-2" />
                 <div>{{ $t('collection', 2) }}</div>
             </is-list-item>
+
+            <is-list-item to="/scripts">
+                <is-icon name="code" class="mr-2" />
+                <div>{{ $t('script', 2) }}</div>
+            </is-list-item>
         </div>
 
         <div v-for="(items, name) in sections" :key="name" class="flex flex-wrap items-start">

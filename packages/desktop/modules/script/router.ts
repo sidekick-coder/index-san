@@ -2,8 +2,8 @@ import { Router } from 'vue-router'
 
 export default (router: Router) => {
     router.addRoute({
-        path: '/workspaces/:workspaceId/scripts',
-        component: () => import('@/modules/workspace/WLayout.vue'),
+        path: '/scripts',
+        component: () => import('./SLayout.vue'),
         children: [
             {
                 path: '',
@@ -11,7 +11,7 @@ export default (router: Router) => {
                 props: true,
             },
             {
-                path: ':name',
+                path: ':id',
                 props: true,
                 component: () => import('./views/SSingle.vue'),
             },

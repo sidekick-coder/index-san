@@ -1,34 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import Script from '@core/entities/script'
 import { useMeta } from '@/composables/metas'
-import { useCase } from '@/composables/use-case'
+import { useStore } from '@/modules/script/store'
 
-const props = defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
-})
-
-const router = useRouter()
+// set table columns
 const tm = useI18n()
-const meta = useMeta({
-    title: 'Scripts list',
-})
-
-const items = ref<Script[]>([])
-const search = ref('')
-const dialog = ref(false)
-const payload = ref({
-    name: '',
-    content: '',
-})
-
-const filteredItems = computed(() => items.value.filter((i) => i.name.match(search.value)))
 
 const columns = [
     {
@@ -44,38 +23,37 @@ const columns = [
     },
 ]
 
-async function setItems() {
-    await useCase('list-scripts', { workspaceId: props.workspaceId }).then(
-        ({ data }) => (items.value = data)
-    )
-}
+// set meta
+const meta = useMeta({
+    title: 'Scripts list',
+})
 
-setItems()
+// Create script
+const store = useStore()
+
+const dialog = ref(false)
+
+const payload = ref({
+    name: '',
+})
 
 async function submit() {
-    await useCase('create-script', {
-        workspaceId: props.workspaceId,
-        data: payload.value,
+    await store.create({
+        data: {
+            name: payload.value.name,
+            content: '// write script bellow',
+        },
     })
 
     payload.value.name = ''
-
-    await setItems()
-
     dialog.value = false
 }
 
+// delete item
 async function onItemDelete(item: Script) {
-    await useCase('delete-script', {
-        workspaceId: props.workspaceId,
+    await store.destroy({
         name: item.name,
     })
-
-    await setItems()
-}
-
-async function onItemShow(item: Script) {
-    await router.push(`/workspaces/${props.workspaceId}/scripts/${item.name}`)
 }
 </script>
 <template>
@@ -101,10 +79,10 @@ async function onItemShow(item: Script) {
         </is-btn>
     </is-container>
 
-    <is-table :columns="columns" :items="filteredItems">
+    <is-table :columns="columns" :items="store.scripts">
         <template #item-actions="{ item }">
             <div class="px-2 flex">
-                <is-btn text size="sm" @click="onItemShow(item)">
+                <is-btn text size="sm" :to="`/scripts/${item.id}`">
                     <is-icon name="eye" />
                 </is-btn>
                 <is-btn text size="sm" color="danger" @click="onItemDelete(item)">

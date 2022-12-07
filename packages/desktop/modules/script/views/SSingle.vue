@@ -4,14 +4,10 @@ import { computed, ref, watch } from 'vue'
 import Script from '@core/entities/script'
 
 import { useMeta } from '@/composables/metas'
-import { useCase } from '@/composables/use-case'
+import { useStore } from '@/modules/script/store'
 
 const props = defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
-    name: {
+    id: {
         type: String,
         required: true,
     },
@@ -26,11 +22,11 @@ const script = ref<Script>({
     content: '',
 })
 
-// load script
-async function setItem() {
-    const { data: scripts } = await useCase('list-scripts', { workspaceId: props.workspaceId })
+// set script
+const store = useStore()
 
-    const search = scripts.find((s: Script) => s.name === props.name)
+async function setItem() {
+    const search = store.scripts.find((s: Script) => s.id === props.id)
 
     if (!search) return
 
@@ -41,20 +37,18 @@ async function setItem() {
     meta.value.title = script.value.name
 }
 
-watch(() => props, setItem, {
+watch(() => props.id, setItem, {
     immediate: true,
-    deep: true,
 })
 
 // save
 async function save() {
-    await useCase('update-script', {
-        workspaceId: props.workspaceId,
-        name: script.value.name,
+    await store.update({
         content: content.value,
+        name: script.value.name,
     })
 
-    await setItem()
+    setItem()
 }
 
 // execute
@@ -99,12 +93,8 @@ async function execute() {
 
     reset()
 
-    const data = {
-        workspaceId: props.workspaceId,
-        name: script.value.name,
-    }
-
-    await useCase('execute-script', data)
+    await store
+        .execute({ name: script.value.name })
         .then((r) => {
             execution.value.logs = r.logs
             execution.value.error = r.error
@@ -140,7 +130,11 @@ async function execute() {
         <w-content>
             <w-layout use-percentage>
                 <w-content>
-                    <is-code-editor v-model="content" @keydown.ctrl.s="save" />
+                    <is-code-editor
+                        v-model="content"
+                        @keydown.ctrl.s="save"
+                        @keyup.ctrl.e="execute"
+                    />
                 </w-content>
                 <w-drawer :model-value="!!output" right :width="500" class="border-l border-lines">
                     <is-card color="b-secondary" class="h-full">
