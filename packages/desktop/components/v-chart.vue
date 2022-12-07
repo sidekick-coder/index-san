@@ -6,8 +6,10 @@ export default { name: 'IsChartBar' }
 import set from 'lodash/set'
 import get from 'lodash/get'
 
+import { isJSON } from '@/composables/utils'
+
 import { Chart, registerables } from 'chart.js'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, useSlots } from 'vue'
 
 Chart.register(...registerables)
 
@@ -18,7 +20,7 @@ const props = defineProps({
     },
 })
 
-const options = { ...props.options }
+let options: any = null
 
 // set helper functions
 function tooltipCallback(context: any) {
@@ -39,13 +41,40 @@ function tooltipCallback(context: any) {
     return datasetLabel + ': ' + label
 }
 
-set(options, 'options.plugins.tooltip.callbacks.label', tooltipCallback)
+if (options) {
+    set(options, 'options.plugins.tooltip.callbacks.label', tooltipCallback)
+}
 
-// load chart
+// set options using props
 let chart: Chart
-const root = ref()
+
+if (props.options) {
+    options = { ...props.options }
+}
+
+// set options using slots
+const slots = useSlots()
 onMounted(() => {
-    chart = new Chart(root.value, options)
+    if (!slots.default || options) return
+
+    const [child] = slots.default()
+
+    if (!child) return
+
+    const content = child.children as string
+
+    if (!isJSON(content)) return
+
+    options = JSON.parse(content)
+})
+
+// set chart
+const root = ref()
+
+onMounted(() => {
+    if (options && root.value) {
+        chart = new Chart(root.value, options)
+    }
 })
 
 onUnmounted(() => {
