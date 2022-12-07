@@ -4,17 +4,21 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '../store'
 
-const store = useStore()
+// set columns
 const tm = useI18n()
 
 const columns = [
     {
-        label: 'Id',
-        name: 'id',
-        field: 'id',
+        name: 'active',
+        width: 80,
         padding: {
             left: 40,
         },
+    },
+    {
+        label: 'Id',
+        name: 'id',
+        field: 'id',
     },
     {
         label: tm.t('name'),
@@ -32,6 +36,17 @@ const columns = [
     },
 ]
 
+// set meta
+const meta = useMeta({
+    title: tm.t('listEntity', [tm.t('workspace', 2)]),
+})
+
+// load workspaces
+const store = useStore()
+
+store.setWorkspaces()
+
+// create new workspace
 const dialog = ref(false)
 
 const payload = ref<any>({
@@ -39,16 +54,6 @@ const payload = ref<any>({
     name: '',
     path: '',
 })
-
-const meta = useMeta({
-    title: tm.t('listEntity', [tm.t('workspace', 2)]),
-})
-
-function load() {
-    return store.setAll()
-}
-
-load()
 
 async function submit() {
     await store.create({
@@ -60,7 +65,7 @@ async function submit() {
         },
     })
 
-    await load()
+    await store.setWorkspaces()
 
     Object.keys(payload.value).forEach((key) => {
         payload.value[key] = ''
@@ -69,16 +74,18 @@ async function submit() {
     dialog.value = false
 }
 
-async function deleteItem(id: string) {
-    await store.delete(id)
+// delete workspace
 
-    load()
+async function deleteItem(id: string) {
+    await store.destroy(id)
+
+    await store.setWorkspaces()
 }
 </script>
 <template>
     <div>
         <is-dialog v-model="dialog">
-            <is-card color="b-secondary">
+            <is-card color="b-secondary" width="500">
                 <is-card-head>
                     <is-card-title>
                         {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
@@ -115,7 +122,16 @@ async function deleteItem(id: string) {
             </is-btn>
         </is-container>
 
-        <is-table :columns="columns" :items="store.all" :fixed="false">
+        <is-table :columns="columns" :items="store.workspaces" :fixed="false">
+            <template #item-active="{ item }">
+                <div class="pl-10">
+                    <v-checkbox
+                        :model-value="item.id === store.currentId"
+                        @click="store.currentId = item.id"
+                    />
+                </div>
+            </template>
+
             <template #item-path="{ item }">
                 <div class="p-2">
                     {{ item.config.path }}

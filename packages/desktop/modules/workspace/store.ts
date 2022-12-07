@@ -1,37 +1,43 @@
 import { defineStore } from 'pinia'
-import { DataResponse, useCase } from '@/composables/use-case'
+
+import { ListWorkspacesDTO } from '@core/use-cases/list-workspaces/list-workspaces.dto'
+
+import { useCase } from '@/composables/use-case'
 
 import Workspace from '@core/entities/workspace'
+import { computed, ref } from 'vue'
+import { useState } from '@/composables/state'
 
-interface ListResponse {
-    data: Workspace[]
-}
+export const useStore = defineStore('workspace', () => {
+    const workspaces = ref<Workspace[]>([])
 
-export const useStore = defineStore('workspace', {
-    state: () => ({
-        all: [] as Workspace[],
-    }),
-    actions: {
-        async setAll() {
-            return useCase<ListResponse>('list-workspaces')
-                .then(({ data }) => (this.all = data))
-                .catch(() => (this.all = []))
-        },
-        async create(data: Partial<Workspace>) {
-            return useCase('create-workspace', data)
-        },
-        async delete(id: string) {
-            await useCase('delete-workspace', { id })
-        },
-        async findOptions(workspaceId: string) {
-            return useCase<DataResponse<any>>('show-workspace-options', {
-                workspaceId,
-            })
-                .then((r) => r.data)
-                .catch(() => ({}))
-        },
-        async updateOptions(workspaceId: string, data: any) {
-            await useCase('update-workspace-options', { workspaceId, data })
-        },
-    },
+    const currentId = useState('workspaces:currentId', null, {
+        localStorage: true,
+    })
+
+    const current = computed(() => workspaces.value.find((w) => w.id === currentId.value))
+
+    async function setWorkspaces() {
+        await useCase<ListWorkspacesDTO.Output>('list-workspaces')
+            .then(({ data }) => (workspaces.value = data))
+            .catch(() => (workspaces.value = []))
+    }
+
+    async function create(data: Partial<Workspace>) {
+        return useCase('create-workspace', data)
+    }
+
+    async function destroy(id: string) {
+        await useCase('delete-workspace', { id })
+    }
+
+    return {
+        workspaces,
+        currentId,
+        current,
+
+        setWorkspaces,
+        create,
+        destroy,
+    }
 })
