@@ -8,6 +8,8 @@ import { useAllMenu, useAllMenuAsync } from '@/composables/menu'
 const drawer = useState('app:drawer', true, {
     localStorage: true,
 })
+
+// menu
 const menu = useAllMenu()
 
 const sections = computed(() => {
