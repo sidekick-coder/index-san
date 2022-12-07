@@ -3,22 +3,31 @@ import { computed } from 'vue'
 import groupBy from 'lodash/groupBy'
 
 import { useState } from '@/composables/state'
-import { useAllMenu, useAllMenuAsync } from '@/composables/menu'
+import { useStore as useMenu } from '@/modules/menu/store'
+import { useStore as useWorkspace } from '@/modules/workspace/store'
 
 const drawer = useState('app:drawer', true, {
     localStorage: true,
 })
 
 // menu
-const menu = useAllMenu()
+const menuStore = useMenu()
 
 const sections = computed(() => {
-    return groupBy(menu.value, (i) => i.section || 'Favorites')
+    return groupBy(menuStore.menu, (i) => i.section || 'Favorites')
 })
 
-if (!menu.value.length) {
-    useAllMenuAsync()
-}
+// title
+
+const workspaceStore = useWorkspace()
+
+const title = computed(() => {
+    if (workspaceStore.current) {
+        return workspaceStore.current.name
+    }
+
+    return 'Index-san'
+})
 </script>
 
 <template>
@@ -29,7 +38,9 @@ if (!menu.value.length) {
         <div class="flex flex-wrap items-start">
             <div class="flex items-stretch w-full justify-between">
                 <is-list-item to="/">
-                    <h1 class="text-lg font-bold">Index-san</h1>
+                    <h1 class="text-lg font-bold">
+                        {{ title }}
+                    </h1>
                 </is-list-item>
                 <is-btn
                     text

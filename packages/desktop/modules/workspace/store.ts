@@ -11,7 +11,7 @@ import { useState } from '@/composables/state'
 export const useStore = defineStore('workspace', () => {
     const workspaces = ref<Workspace[]>([])
 
-    const currentId = useState('workspaces:currentId', null, {
+    const currentId = useState<string | null>('workspaces:currentId', null, {
         localStorage: true,
     })
 
