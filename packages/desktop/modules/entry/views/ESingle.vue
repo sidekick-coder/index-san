@@ -6,6 +6,8 @@ import DirectoryEntry from '@core/entities/directory-entry'
 import { useDirectoryEntry } from '@/composables/directory-entry'
 import { definePageMeta } from '@/composables/page-meta'
 
+import EMarkdown from './EMarkdown.vue'
+
 const props = defineProps({
     workspaceId: {
         type: String,
@@ -23,7 +25,7 @@ const views = {
     default: 'is-entry-view-default',
     folder: 'is-entry-view-folder',
     text: 'is-entry-view-text',
-    markdown: 'is-entry-view-markdown',
+    markdown: EMarkdown,
     image: 'is-entry-view-image',
     blockEditor: 'is-entry-view-block-editor',
 }

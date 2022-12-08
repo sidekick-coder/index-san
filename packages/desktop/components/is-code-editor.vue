@@ -32,6 +32,10 @@ const props = defineProps({
         type: Object,
         default: undefined,
     },
+    lineNumbers: {
+        type: String,
+        default: 'on',
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -78,6 +82,7 @@ onMounted(() => {
         minimap: { enabled: props.minimap },
         padding: props.padding,
         overviewRulerBorder: false,
+        lineNumbers: props.lineNumbers as any,
         scrollbar: {
             verticalScrollbarSize: 10,
             horizontalScrollbarSize: 10,

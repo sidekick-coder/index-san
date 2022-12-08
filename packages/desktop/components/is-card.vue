@@ -6,6 +6,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    height: {
+        type: String,
+        default: null,
+    },
     color: {
         type: String,
         default: null,
@@ -51,6 +55,10 @@ const style = computed(() => {
 
     if (props.width) {
         result.push(`width: ${props.width}px`)
+    }
+
+    if (props.height) {
+        result.push(`height: ${props.height}px`)
     }
 
     return result.join(';')

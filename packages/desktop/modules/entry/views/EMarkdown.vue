@@ -1,24 +1,19 @@
 <script setup lang="ts">
-import { useDirectoryEntry } from '@/composables/directory-entry'
 import { useState } from '@/composables/state'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useStore } from '@/modules/entry/store'
+
+import EMarkdownDoc from '../components/EMarkdownDoc.vue'
 
 const props = defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
     path: {
         type: String,
         required: true,
     },
 })
 
-const repository = useDirectoryEntry(props.workspaceId)
 const root = ref<HTMLTextAreaElement>()
 const previewRef = ref<HTMLTextAreaElement>()
-
-const decoder = new TextDecoder('utf-8')
 
 const content = ref('')
 const edit = useState('app:markdown:preview', false, {
@@ -27,11 +22,21 @@ const edit = useState('app:markdown:preview', false, {
 const loading = ref(false)
 const previewHeight = ref(100)
 
-async function load() {
-    const contentBuffer = await repository.read(props.path)
+// set content
+const store = useStore()
+async function setContent() {
+    const decoder = new TextDecoder('utf-8')
+
+    const contentBuffer = await store.read({
+        path: props.path,
+    })
 
     content.value = decoder.decode(contentBuffer)
 }
+
+watch(() => props.path, setContent, {
+    immediate: true,
+})
 
 async function setPreview() {
     loading.value = true
@@ -39,14 +44,16 @@ async function setPreview() {
     setTimeout(() => (loading.value = false), 500)
 }
 
-load()
-
+// save entry
 async function save() {
     if (previewRef.value) {
         previewHeight.value = previewRef.value.clientHeight
     }
 
-    await repository.write(props.path, content.value)
+    await store.write({
+        data: content.value,
+        path: props.path,
+    })
 
     setPreview()
 }
@@ -75,13 +82,14 @@ async function save() {
 
         <w-content>
             <div class="h-full w-full flex">
-                <div v-show="edit" class="min-h-full w-6/12">
+                <div v-show="edit" class="min-h-full w-6/12 pl-[calc(40px_-_26px)]">
                     <is-code-editor
                         ref="root"
                         v-model="content"
                         language="markdown"
                         :minimap="false"
                         :padding="{ top: 20 }"
+                        line-numbers="off"
                         @keydown.ctrl.s="save"
                     />
                 </div>
@@ -93,7 +101,7 @@ async function save() {
                     :style="`min-height: ${previewHeight}px`"
                 >
                     <is-container>
-                        <is-markdown
+                        <e-markdown-doc
                             v-if="!loading && content"
                             class="w-full pb-32"
                             :content="content"

@@ -44,10 +44,13 @@ export default class ScriptService {
     public async evaluate(code: string, scope?: Record<string, any>) {
         try {
             return await this._evaluate(code, scope)
-        } catch (error) {
+        } catch (error: any) {
             return {
                 result: null,
-                error,
+                error: {
+                    message: error.message,
+                    stack: error.stack,
+                },
                 logs: [],
             }
         }

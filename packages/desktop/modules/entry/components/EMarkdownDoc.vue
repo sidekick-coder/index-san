@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
-import { componentPlugin } from '@mdit-vue/plugin-component'
+import { parseMarkdown } from '../composables/markdown'
+
+import SChart from '@/modules/script/components/SChart.vue'
 
 const props = defineProps({
     content: {
@@ -10,27 +10,9 @@ const props = defineProps({
     },
 })
 
-const md = MarkdownIt({
-    html: true,
-    // linkify: true,
-    // typographer: true,
-    highlight: (str: string, lang: string) => {
-        if (lang && hljs.getLanguage(lang)) {
-            try {
-                return hljs.highlight(str, { language: lang }).value
-            } catch (__) {
-                console.error('highlight error')
-            }
-        }
-
-        return ''
-    },
-})
-
-md.use(componentPlugin)
-
 const view = {
-    template: md.render(props.content),
+    components: { SChart },
+    template: parseMarkdown(props.content),
 }
 </script>
 
@@ -49,7 +31,7 @@ const view = {
     h5,
     h6 {
         @apply font-bold;
-        @apply my-4;
+        @apply my-4 first:mt-0;
     }
 
     h1 {
