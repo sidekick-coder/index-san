@@ -107,7 +107,9 @@ function refresh() {
             </is-btn>
         </is-card-head>
 
-        <s-output v-if="debug" :output="output" class="border-b border-l border-r border-lines" />
+        <is-card-content v-if="debug" style="height: calc(100% - 54px)">
+            <s-output :output="output" class="border-b border-l border-r border-lines" />
+        </is-card-content>
 
         <is-card-content
             v-if="chart.loading"
@@ -119,7 +121,7 @@ function refresh() {
 
         <transition name="fade">
             <is-card-content
-                v-if="!chart.loading && chart.options"
+                v-if="!chart.loading && chart.options && !debug"
                 style="height: calc(100% - 54px)"
             >
                 <v-chart ref="chartRef" :options="chart.options" />
