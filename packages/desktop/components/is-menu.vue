@@ -12,6 +12,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    maxHeight: {
+        type: String,
+        default: null,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -43,19 +47,31 @@ function onClick() {
     show.value = !show.value
 }
 
+// set max y & x position
+const max = ref({
+    el: null as null | HTMLElement,
+    x: window.innerWidth,
+    y: window.innerHeight - 300,
+})
+
+watch(show, (value) => {
+    if (!value) return
+
+    if (!max.value.el) return
+
+    const el = max.value.el
+
+    setTimeout(() => {
+        max.value.y = window.innerHeight - el.clientHeight
+    }, 50)
+})
+
 // track mouse position
 
 const mouse = ref({
     el: null as null | HTMLElement,
     x: 0,
     y: 0,
-})
-
-const style = computed(() => {
-    return {
-        top: `${mouse.value.y}px`,
-        left: `${mouse.value.x}px`,
-    }
 })
 
 function onMouseenter(event: MouseEvent) {
@@ -94,6 +110,24 @@ watch(show, (value) => {
 })
 
 onUnmounted(() => document.removeEventListener('click', onClickDom))
+
+// style
+const style = computed(() => {
+    const result = {
+        top: `${Math.min(mouse.value.y, max.value.y)}px`,
+        left: `${mouse.value.x}px`,
+    }
+
+    if (props.maxHeight) {
+        result['max-height'] = `${props.maxHeight}px`
+    }
+
+    if (mouse.value.el) {
+        result['min-width'] = `${mouse.value.el.clientWidth}px`
+    }
+
+    return result
+})
 </script>
 
 <template>
@@ -102,9 +136,10 @@ onUnmounted(() => document.removeEventListener('click', onClickDom))
     <teleport to="body">
         <transition name="slide-down">
             <div
-                v-if="show"
+                v-show="show"
+                :ref="(el: any) => (max.el = el)"
                 :style="style"
-                class="is-menu z-20 fixed transition-all"
+                class="is-menu z-20 fixed transition-all overflow-auto"
                 @click.stop=""
             >
                 <slot />
