@@ -1,7 +1,7 @@
 const { command } = require('./utils')
 
 async function main() {
-    const tags = await command('git --no-pager tag -l --sort=creatordate')
+    const tags = await command('git --no-pager tag -l --sort=creatordate', false)
 
     const [current, previous] = tags
         .split('\n')
@@ -15,4 +15,8 @@ async function main() {
     )
 }
 
-main().catch(console.error)
+main().catch((err) => {
+    if (err) console.error(err)
+
+    process.exit(1)
+})

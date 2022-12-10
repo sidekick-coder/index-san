@@ -25,6 +25,8 @@ async function main() {
     await command(`git tag v${versionName} `)
 }
 
-main().catch(console.error)
+main().catch((err) => {
+    if (err) console.error(err)
 
-// npm version --git-tag-version false
+    process.exit(1)
+})

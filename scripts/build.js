@@ -19,11 +19,11 @@ async function main() {
 
     // build desktop app
 
-    await command('npm -w desktop run build', { stderr: true, stout: true })
+    await command('npm -w desktop run build')
 
     // making desktop app
 
-    await command('npm -w desktop run make', { stderr: true, stout: true })
+    await command('npm -w desktop run make')
 
     // moving artifacts
 
@@ -38,4 +38,8 @@ async function main() {
     )
 }
 
-main().catch(() => process.exit(1))
+main().catch((err) => {
+    if (err) console.error(err)
+
+    process.exit(1)
+})
