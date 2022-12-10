@@ -9,6 +9,8 @@ import { updateItem } from '@/composables/item'
 import { useBuilder } from 'vue-wind/composables/builder'
 import { useCollectionItems } from '@/composables/collection'
 
+import SOutput from '@/modules/script/components/SOutput.vue'
+
 const props = defineProps({
     workspaceId: {
         type: String,
@@ -36,7 +38,7 @@ const [relatedItems, setRelatedItems] = useCollectionItems()
 
 const edit = ref(false)
 const builder = useBuilder()
-const payload = ref('')
+const payload = ref<any>()
 
 if (props.column.type === 'relation') {
     setRelatedItems(props.workspaceId, props.column.collectionId)
@@ -64,6 +66,30 @@ const onChange = throttle(async () => {
 watch(() => props.item, load, {
     immediate: true,
     deep: true,
+})
+
+// get script label
+
+const scriptLabel = computed(() => {
+    if (props.column.type !== 'script') return null
+
+    if (!payload.value) return null
+
+    if (payload.value.result) return payload.value.result
+
+    if (payload.value.error) return payload.value.error.message
+
+    return null
+})
+
+// get select options
+
+const select = ref({
+    options: computed(() => {
+        if (props.column.type !== 'select') return []
+
+        return props.column.options.split(',').map((o) => o.trim())
+    }),
 })
 </script>
 
@@ -97,18 +123,14 @@ watch(() => props.item, load, {
         </div>
     </template>
 
-    <select
+    <is-select
         v-else-if="column.type === 'select'"
         v-model="payload"
         :class="classes.input"
-        @change="onChange"
-    >
-        <option value="">-</option>
-
-        <option v-for="o in column.options.split(',')" :key="o" :value="o">
-            {{ o }}
-        </option>
-    </select>
+        :options="select.options"
+        flat
+        @update:model-value="onChange"
+    />
 
     <is-select
         v-else-if="column.type === 'relation'"
@@ -128,5 +150,25 @@ watch(() => props.item, load, {
         </option>
     </is-select>
 
-    <input v-else v-model="payload" :class="classes.input" @change="onChange" />
+    <is-dialog v-else-if="column.type === 'script'">
+        <template #activator="{ attrs }">
+            <is-input
+                v-bind="attrs"
+                :model-value="scriptLabel"
+                readonly
+                flat
+                input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
+            />
+        </template>
+
+        <is-card width="500" height="500" color="b-secondary">
+            <is-card-head>
+                {{ $t('output') }}
+            </is-card-head>
+
+            <s-output :output="payload" />
+        </is-card>
+    </is-dialog>
+
+    <is-input v-else v-model="payload" flat @change="onChange" />
 </template>

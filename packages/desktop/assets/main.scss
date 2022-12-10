@@ -50,13 +50,11 @@
     background: rgb(var(--b-primary));
 }
 
-*::-webkit-scrollbar-thumb {
-    background-color: rgb(var(--b-secondary));
-    border-radius: 0px;
-    border: 0px none rgb(var(--b-primary));
+::-webkit-scrollbar-thumb {
+    @apply bg-lines/60;
 }
 
 
 body {
-    @apply text-t-primary;
+    @apply text-t-primary bg-b-primary;
 }

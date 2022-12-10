@@ -136,7 +136,7 @@ const style = computed(() => {
     <teleport to="body">
         <transition name="slide-down">
             <div
-                v-show="show"
+                v-if="show"
                 :ref="(el: any) => (max.el = el)"
                 :style="style"
                 class="is-menu z-20 fixed transition-all overflow-auto"

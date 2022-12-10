@@ -57,7 +57,7 @@ async function execute() {
         content: content.value,
     })
 
-    if (output.value.error) {
+    if (output.value.error || !output.value.result) {
         debug.value = true
     }
 }
@@ -95,7 +95,7 @@ function refresh() {
             <slot />
         </div>
         <is-card-head>
-            <is-card-title v-if="title">
+            <is-card-title v-if="title" class="px-4">
                 {{ title }}
             </is-card-title>
 

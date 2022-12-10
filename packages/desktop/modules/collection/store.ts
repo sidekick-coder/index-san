@@ -53,7 +53,7 @@ export const useStore = defineStore('collections', () => {
         await setCollections()
     }
 
-    watch(() => workspace.currentId, setCollections, { immediate: true })
+    watch(() => workspace.currentId, setCollections)
 
     return {
         collections,

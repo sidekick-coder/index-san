@@ -45,6 +45,7 @@ watch(() => props.collectionId, load, {
             :collection-id="collectionId"
             :title="meta.title"
             view-id="default"
+            limit="100"
         />
     </is-container>
 </template>

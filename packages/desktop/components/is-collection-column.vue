@@ -6,6 +6,8 @@ import { updateCollectionColumn, deleteCollectionColumn } from '@/composables/co
 import { computed, ref, watch } from 'vue'
 import { useStore } from '@/modules/collection/store'
 
+import MEditor from '@/modules/monaco/components/MEditor.vue'
+
 const props = defineProps({
     workspaceId: {
         type: String,
@@ -42,6 +44,10 @@ const types = [
         label: 'Relation',
         value: 'relation',
     },
+    {
+        label: 'Script',
+        value: 'script',
+    },
 ]
 
 const dialog = ref(false)
@@ -50,6 +56,7 @@ const payload = ref({
     label: '',
     field: '',
     type: 'text',
+    content: '',
     options: undefined,
     collectionId: undefined,
     displayField: undefined,
@@ -60,6 +67,7 @@ const icons = {
     number: 'hashtag',
     select: 'fa-regular fa-square-caret-down',
     relation: 'arrow-up',
+    script: 'code',
 }
 
 function load() {
@@ -110,9 +118,12 @@ const options = computed(() => {
 </script>
 <template>
     <is-dialog v-model="dialog">
-        <template #activator="{ on }">
-            <div class="cursor-pointer text-t-secondary text-sm" v-bind="on">
-                <fa-icon :icon="icons[column.type] || 'font'" class="mr-1 text-xs" />
+        <template #activator="{ attrs }">
+            <div
+                class="cursor-pointer text-t-secondary text-sm flex items-center overflow-hidden"
+                v-bind="attrs"
+            >
+                <fa-icon :icon="icons[column.type] || 'font'" class="mr-2 text-xs" />
 
                 {{ column.label }}
             </div>
@@ -143,6 +154,10 @@ const options = computed(() => {
                             value-key="value"
                             card:color="b-primary"
                         />
+                    </div>
+
+                    <div class="mb-4">
+                        <is-input v-model="payload.field" label="Field" />
                     </div>
 
                     <div v-if="payload.type === 'select'" class="mb-4">
@@ -177,12 +192,29 @@ const options = computed(() => {
                         </div>
                     </template>
 
-                    <div class="mb-4">
-                        <is-input v-model="payload.field" label="Field" />
-                    </div>
+                    <is-drawer v-if="payload.type === 'script'" width="800">
+                        <template #activator="{ attrs }">
+                            <is-input
+                                v-bind="attrs"
+                                :model-value="$t('editEntity', [$t('script')])"
+                                :label="$t('content')"
+                                readonly
+                                class="cursor-pointer mb-4"
+                                input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
+                            >
+                                <template #append>
+                                    <is-icon name="code" class="ml-auto" />
+                                </template>
+                            </is-input>
+                        </template>
+
+                        <is-card color="b-secondary" class="h-full">
+                            <m-editor v-model="payload.content" />
+                        </is-card>
+                    </is-drawer>
 
                     <div>
-                        <is-btn class="w-full">Submit</is-btn>
+                        <is-btn class="w-full">{{ $t('save') }}</is-btn>
                     </div>
                 </w-form>
             </is-card-content>

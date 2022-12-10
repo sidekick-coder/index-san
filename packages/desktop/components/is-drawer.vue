@@ -7,6 +7,10 @@ const props = defineProps({
         type: Boolean,
         default: null,
     },
+    width: {
+        type: String,
+        default: '500',
+    },
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -31,12 +35,24 @@ const show = computed({
     },
 })
 
-function onClick() {
+function onClick(e: MouseEvent) {
+    e.preventDefault()
+
     show.value = !show.value
 }
+
+// style
+
+const style = computed(() => {
+    const result = {}
+
+    result['width'] = `${props.width}px`
+
+    return result
+})
 </script>
 <template>
-    <slot name="activator" :on="{ onClick }" />
+    <slot name="activator" :attrs="{ onClick }" />
 
     <teleport to="body">
         <transition name="slide-left">
@@ -48,6 +64,7 @@ function onClick() {
                 v-if="show"
                 ref="root"
                 class="fixed right-0 top-0 h-full border-l border-lines w-[500px] bg-b-primary overflow-y-auto"
+                :style="style"
             >
                 <slot />
             </aside>

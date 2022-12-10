@@ -35,7 +35,7 @@ function onClick() {
 }
 </script>
 <template>
-    <slot name="activator" :on="{ onClick }" />
+    <slot name="activator" :attrs="{ onClick }" />
 
     <teleport to="body">
         <transition name="fade">
