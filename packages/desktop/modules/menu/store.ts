@@ -40,6 +40,8 @@ export const useStore = defineStore('menu', () => {
 
     async function create(item: Menu) {
         option.options.menu?.push(item)
+
+        await save()
     }
 
     return {
