@@ -5,7 +5,7 @@ import { computed } from 'vue'
 
 import { useStore as useOptions } from '@/modules/option/store'
 
-interface Menu {
+export interface Menu {
     label: string
     to: string
     icon?: string
@@ -26,8 +26,27 @@ export const useStore = defineStore('menu', () => {
         })
     }
 
+    async function destroy(item: Menu) {
+        if (!option.options.menu) return
+
+        const index = option.options.menu.indexOf(item)
+
+        if (index === -1) return
+
+        option.options.menu.splice(index, 1)
+
+        await save()
+    }
+
+    async function create(item: Menu) {
+        option.options.menu?.push(item)
+    }
+
     return {
         menu,
+
         save,
+        create,
+        destroy,
     }
 })

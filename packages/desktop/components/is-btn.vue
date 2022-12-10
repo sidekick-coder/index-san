@@ -18,6 +18,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
     to: {
         type: String,
         default: null,
@@ -34,7 +38,7 @@ const sizes = {
 }
 
 const defaultColors = {
-    accent: 'bg-accent hover:bg-accent/75 disabled:opacity-80 disabled:cursor-not-allowed',
+    accent: 'bg-accent hover:bg-accent/75 disabled:opacity-80',
     danger: 'bg-danger hover:bg-danger/75 text-t-primary',
     info: 'bg-info hover:bg-info/75 text-t-primary',
 }
@@ -58,6 +62,10 @@ const colors = computed(() => {
 const classes = computed(() => {
     const result: string[] = ['transition-all flex items-center justify-center overflow-hidden']
 
+    if (props.disabled) {
+        result.push('disabled:opacity-60')
+    }
+
     result.push(props.rounded ? 'rounded-full' : 'rounded')
 
     result.push(sizes[props.size])
@@ -67,7 +75,7 @@ const classes = computed(() => {
 })
 </script>
 <template>
-    <component :is="to ? 'router-link' : 'button'" :to="to" :class="classes">
+    <component :is="to ? 'router-link' : 'button'" :to="to" :class="classes" :disabled="disabled">
         <div v-if="loading" class="absolute flex items-center justify-center">
             <is-icon name="spinner" class="animate-spin" />
         </div>

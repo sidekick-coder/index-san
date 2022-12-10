@@ -140,25 +140,15 @@ async function deleteItem(id: string) {
 
             <template #item-actions="{ item }">
                 <div class="flex gap-x-2 p-2">
-                    <is-btn
-                        size="sm"
-                        text
-                        class="mr-2"
-                        @click="$router.push(`/workspaces/${item.id}/scripts`)"
-                    >
+                    <is-btn size="sm" text class="mr-2" to="/scripts">
                         <is-icon name="code" />
                     </is-btn>
 
-                    <is-btn
-                        size="sm"
-                        text
-                        class="mr-2"
-                        @click="$router.push(`/workspaces/${item.id}/collections`)"
-                    >
+                    <is-btn size="sm" text class="mr-2" to="/collections">
                         <is-icon name="database" />
                     </is-btn>
 
-                    <is-btn size="sm" text class="mr-2" :to="`/workspaces/${item.id}/entries`">
+                    <is-btn size="sm" text class="mr-2" to="/entries">
                         <is-icon name="folder" />
                     </is-btn>
 

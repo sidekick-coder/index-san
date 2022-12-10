@@ -25,7 +25,9 @@ interface SaveArgs {
 }
 
 export const useStore = defineStore('option', () => {
-    const options = ref<Options>({})
+    const options = ref<Options>({
+        menu: [],
+    })
 
     const workspace = useWorkspace()
 

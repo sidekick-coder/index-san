@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { useMeta } from '@/composables/metas'
-import { useAllMenu, MenuItemWithWorkspace } from '@/composables/menu'
-import { useStore } from '@/modules/menu/store'
+import { useStore, Menu } from '@/modules/menu/store'
 
 // metas
 useMeta({ title: 'Menu settings' })
 
 const store = useStore()
-
-const menu = useAllMenu()
 
 // Table columns
 const columns = [
@@ -50,23 +47,20 @@ async function setItems() {
     // await useAllMenuAsync()
 }
 
-async function update(workspaceId: string) {
-    // const items = menu.value.filter((m) => m.workspace.id === workspaceId)
-    // await saveWorkspaceMenu(workspaceId, items)
-}
-
 async function onItemUpdate() {
     await store.save()
     // await update(item.workspace.id)
     // await setItems()
 }
 
-async function onItemDelete(item: MenuItemWithWorkspace) {
-    // const items = menu.value
-    //     .filter((m) => m.workspace.id === item.workspace.id)
-    //     .filter((m) => m.id !== item.id)
-    // await saveWorkspaceMenu(item.workspace.id, items)
-    // await setItems()
+async function onItemDelete(item: Menu) {
+    const index = store.menu.indexOf(item)
+
+    if (index !== -1) {
+        store.menu.splice(index, 1)
+
+        // await store.save()
+    }
 }
 
 setItems()
@@ -80,26 +74,26 @@ setItems()
                     type="number"
                     flat
                     input:class="pl-10 w-[80px]"
-                    @change="onItemUpdate(item)"
+                    @change="onItemUpdate"
                 />
             </template>
 
             <template #item-label="{ item, column }">
-                <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
+                <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
             </template>
 
             <template #item-section="{ item, column }">
-                <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
+                <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
             </template>
 
             <template #item-icon="{ item, column }">
-                <is-input v-model="item[column.field]" flat @change="onItemUpdate(item)" />
+                <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
             </template>
 
             <template #item-actions="{ item, attrs }">
                 <div v-bind="attrs" class="flex items-center justify-center">
-                    <is-btn color="danger" text size="sm">
-                        <is-icon name="trash" class="cursor-pointer" @click="onItemDelete(item)" />
+                    <is-btn color="danger" text size="sm" @click="store.destroy(item)">
+                        <is-icon name="trash" class="cursor-pointer" />
                     </is-btn>
                 </div>
             </template>

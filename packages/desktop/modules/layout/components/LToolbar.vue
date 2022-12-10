@@ -1,133 +1,107 @@
 <script setup lang="ts">
-import uuid from 'uuid-random'
-
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
-import { saveWorkspaceMenu, useWorkspaceMenu } from '@/composables/menu'
 import { useMeta } from '@/composables/metas'
 import { useState } from '@/composables/state'
-import { useWorkspace } from '@/composables/workspaces'
 
-const props = defineProps({
-    title: {
-        type: String,
-        default: null,
-    },
-})
+import { useStore } from '@/modules/menu/store'
 
 const route = useRoute()
-const meta = useMeta()
-
-const [workspace, setWorkspace] = useWorkspace()
+const router = useRouter()
 
 const drawer = useState('app:drawer', true, { localStorage: true })
-const haveForward = ref(!!window.history.state.forward)
-const haveBack = ref(!!window.history.state.back)
 
-const workspaceId = computed(() => route.params.workspaceId)
+// links
 
-const menu = computed(() => {
-    if (!route.params.workspaceId) return []
+const links = computed(() =>
+    route.path
+        .split('/')
+        .filter((p) => p !== '')
+        .map((label, index, array) => {
+            let to: string | null = array.slice(0, index + 1).join('/')
 
-    return useWorkspaceMenu(route.params.workspaceId as string).value
-})
+            to = '/' + to
 
-const item = computed(() => menu.value.find((i) => i.to === route.path))
+            const { matched } = router.resolve(to)
 
-const label = computed(() => {
-    if (props.title) return props.title
+            if (matched[0].name === 'error') {
+                to = null
+            }
 
-    return meta.value.title
-})
+            if (to === route.path) {
+                to = null
+            }
 
-const links = computed(() => {
-    const result = [{ label: label.value, to: '' }]
-
-    if (workspace.value) {
-        result.unshift({
-            label: workspace.value.name,
-            to: `/workspaces/${workspace.value.id}/entries`,
+            return {
+                label,
+                to,
+            }
         })
-    }
+)
 
-    return result
+// navigation
+
+const navigation = ref({
+    haveBack: !!window.history.state.forward,
+    haveForward: !!window.history.state.forward,
 })
-
-async function toggleFavorite() {
-    const items = menu.value.slice()
-
-    const index = items.findIndex((i) => i.id === item.value?.id)
-
-    if (index !== -1) {
-        items.splice(index, 1)
-    }
-
-    if (index === -1) {
-        items.push({
-            label: label.value,
-            to: route.path,
-            order: 10,
-            id: uuid(),
-        })
-    }
-
-    await saveWorkspaceMenu(route.params.workspaceId as string, items)
-}
 
 watch(
     () => route.fullPath,
-    async () => {
-        haveBack.value = !!window.history.state.back
-        haveForward.value = !!window.history.state.forward
-
-        if (!workspaceId.value) {
-            workspace.value = null
-        }
-
-        if (workspaceId.value) {
-            await setWorkspace(workspaceId.value as string)
-        }
+    () => {
+        navigation.value.haveBack = !!window.history.state.back
+        navigation.value.haveForward = !!window.history.state.forward
     },
     { immediate: true }
 )
+
+// add page to menu
+
+const store = useStore()
+const meta = useMeta()
+const menuItem = computed(() => store.menu.find((i) => i.to === route.path))
+
+async function toggle() {
+    if (menuItem.value) {
+        return await store.destroy(menuItem.value)
+    }
+
+    await store.create({
+        label: meta.value.title,
+        to: route.path,
+    })
+}
 </script>
 
 <template>
-    <w-toolbar class="px-10 border-b border-lines text-sm" :height="40">
-        <is-icon v-if="!drawer" name="bars" class="mr-4 cursor-pointer" @click="drawer = true" />
+    <w-toolbar class="px-7 border-b border-lines text-sm" :height="40">
+        <is-btn v-if="!drawer" text size="sm" @click="drawer = true">
+            <is-icon name="bars" />
+        </is-btn>
 
-        <is-icon
-            name="arrow-left"
-            class="mr-2"
-            :class="haveBack ? 'cursor-pointer' : 'text-lines'"
-            @click="$router.go(-1)"
-        />
+        <is-btn :disabled="!navigation.haveBack" text size="sm" @click="$router.go(-1)">
+            <is-icon name="arrow-left" />
+        </is-btn>
 
-        <is-icon
-            name="arrow-right"
-            class="mr-4"
-            :class="haveForward ? 'cursor-pointer' : 'text-lines'"
-            @click="$router.go(1)"
-        />
+        <is-btn :disabled="!navigation.haveForward" text size="sm" @click="$router.go(1)">
+            <is-icon name="arrow-right" />
+        </is-btn>
 
         <template v-for="(link, index) in links" :key="index">
-            <router-link v-if="link.to" class="text-sm" :to="link.to">
+            <is-btn v-if="link.to" size="sm" text :to="link.to">
                 {{ link.label }}
-            </router-link>
+            </is-btn>
 
-            <div v-else class="text-sm">
+            <div v-else class="text-xs px-3 py-1">
                 {{ link.label }}
             </div>
 
-            <div v-if="index !== links.length - 1" class="mx-2">/</div>
+            <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
         </template>
 
-        <is-icon
-            v-if="workspaceId"
-            :name="item ? 'star' : 'fa-regular fa-star'"
-            class="ml-auto cursor-pointer"
-            @click="toggleFavorite"
-        />
+        <is-btn class="ml-auto" text size="sm" @click="toggle">
+            <is-icon :name="menuItem ? 'star' : 'fa-regular fa-star'" />
+        </is-btn>
     </w-toolbar>
 </template>
