@@ -13,18 +13,28 @@ const props = defineProps({
     },
 })
 
-const root = ref<HTMLTextAreaElement>()
-const previewRef = ref<HTMLTextAreaElement>()
-
-const content = ref('')
-const edit = useState('app:markdown:preview', false, {
-    localStorage: true,
+// set preview
+const preview = ref({
+    el: null as null | InstanceType<typeof EMarkdownDoc>,
+    loading: false,
+    height: 100,
 })
-const loading = ref(false)
-const previewHeight = ref(100)
+
+async function setPreview() {
+    if (preview.value.el) {
+        preview.value.height = preview.value.el.$el.clientHeight
+    }
+
+    preview.value.loading = true
+
+    setTimeout(() => (preview.value.loading = false), 800)
+}
 
 // set content
 const store = useStore()
+
+const content = ref('')
+
 async function setContent() {
     const decoder = new TextDecoder('utf-8')
 
@@ -33,24 +43,21 @@ async function setContent() {
     })
 
     content.value = decoder.decode(contentBuffer)
+
+    setPreview()
 }
 
 watch(() => props.path, setContent, {
     immediate: true,
 })
 
-async function setPreview() {
-    loading.value = true
+// update entry
 
-    setTimeout(() => (loading.value = false), 500)
-}
+const edit = useState('app:markdown:preview', false, {
+    localStorage: true,
+})
 
-// save entry
 async function save() {
-    if (previewRef.value) {
-        previewHeight.value = previewRef.value.clientHeight
-    }
-
     await store.write({
         data: content.value,
         path: props.path,
@@ -63,12 +70,11 @@ async function save() {
     <w-layout use-percentage>
         <w-toolbar class="border-b border-b-lines">
             <is-container class="-mr-3 flex justify-end w-full">
+                <is-btn size="sm" class="mr-2" text @click="setPreview">
+                    <is-icon name="arrows-rotate" class="mr-2" />
+                    {{ $t('reload') }}
+                </is-btn>
                 <template v-if="edit">
-                    <is-btn size="sm" class="mr-2" text @click="setPreview">
-                        <is-icon name="arrows-rotate" class="mr-2" />
-                        {{ $t('reload') }}
-                    </is-btn>
-
                     <is-btn size="sm" class="mr-2" text @click="save">
                         <is-icon name="save" class="mr-2" />
                         {{ $t('save') }}
@@ -82,10 +88,9 @@ async function save() {
         </w-toolbar>
 
         <w-content>
-            <div class="h-full w-full flex">
+            <div class="h-full flex">
                 <div v-show="edit" class="min-h-full w-6/12 pl-[calc(40px_-_26px)]">
                     <m-editor
-                        ref="root"
                         v-model="content"
                         language="markdown"
                         :minimap="false"
@@ -95,19 +100,24 @@ async function save() {
                     />
                 </div>
 
-                <div
-                    ref="previewRef"
-                    class="overflow-auto pt-5"
-                    :class="edit ? 'w-6/12' : 'w-full'"
-                    :style="`min-height: ${previewHeight}px`"
-                >
-                    <is-container>
-                        <e-markdown-doc
-                            v-if="!loading && content"
-                            class="w-full pb-32"
-                            :content="content"
+                <div class="pt-5 overflow-auto px-10" :class="[edit ? 'w-6/12' : 'w-full']">
+                    <div
+                        v-if="preview.loading"
+                        :style="`min-height: ${preview.height}px`"
+                        class="flex w-full h-full items-center justify-center"
+                    >
+                        <is-icon
+                            name="fa-brands fa-markdown"
+                            class="text-[5rem] text-t-secondary animate-pulse"
                         />
-                    </is-container>
+                    </div>
+
+                    <e-markdown-doc
+                        v-else-if="content"
+                        :ref="(r: any) => (preview.el = r)"
+                        class="w-full pb-32"
+                        :content="content"
+                    />
                 </div>
             </div>
         </w-content>
