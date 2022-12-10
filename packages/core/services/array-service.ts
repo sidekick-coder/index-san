@@ -27,6 +27,10 @@ class ArrayService<T = Record<string, any>> extends Array<T> {
 
         return array
     }
+
+    public sumBy<K extends keyof T>(key: K) {
+        return sumBy(this, String(key))
+    }
 }
 
 class ArrayGroupService<T extends GroupArray> extends ArrayService<T> {

@@ -2,6 +2,7 @@ import Collection from '../entities/collection'
 import Item from '../entities/item'
 import CollectionNotFound from '../exceptions/collection-not-found'
 import ItemNotFound from '../exceptions/item-not-found'
+import ArrayService from './array-service'
 import WorkspaceService from './workspace-service'
 
 export default class CollectionService extends Collection {
@@ -34,7 +35,7 @@ export default class CollectionService extends Collection {
             workspaceId: this.workspace.id,
         }))
 
-        return data
+        return ArrayService.from(data)
     }
 
     public async exists(id: string) {

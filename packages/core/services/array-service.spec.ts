@@ -15,6 +15,21 @@ test.group('array-service (service)', () => {
         expect(result[0]).toEqual({ id: 2, name: 'item 02' })
     })
 
+    test('should return sum of items amount', ({ expect }) => {
+        const items = [
+            { id: 1, amount: 5 },
+            { id: 2, amount: 5 },
+            { id: 3, amount: 5 },
+            { id: 4, amount: 5 },
+            { id: 5, amount: 5 },
+            { id: 6, amount: 5 },
+        ]
+
+        const result = ArrayService.from(items).sumBy('amount')
+
+        expect(result).toBe(items.length * 5)
+    })
+
     test('should return items grouped by key', ({ expect }) => {
         const items = [
             { id: 1, tag: 'group-1' },
