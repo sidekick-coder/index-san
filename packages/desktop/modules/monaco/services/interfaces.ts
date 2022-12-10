@@ -40,6 +40,7 @@ class CollectionService {
 
 class WorkspaceService extends Workspace {
     collection(collectionId: string): Promise<CollectionService>
+    items<T = Item>(collectionId: string): Promise<ArrayService<T>>
 }
 
 declare const workspace: WorkspaceService

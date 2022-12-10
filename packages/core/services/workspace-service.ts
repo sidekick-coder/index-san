@@ -65,6 +65,12 @@ export default class WorkspaceService extends Workspace {
         return CollectionService.from(this, collectionId)
     }
 
+    public async items(collectionId: string) {
+        const collection = await this.collection(collectionId)
+
+        return collection.list()
+    }
+
     public async createCollection(data: Collection) {
         this.collections.push(data)
 
