@@ -6,6 +6,12 @@ import ArrayService from './array-service'
 import ScriptService from './script-service'
 import WorkspaceService from './workspace-service'
 
+type ListOptionsInclude = 'relations' | 'scripts'
+
+export interface ListOptions {
+    include: ListOptionsInclude[]
+}
+
 export default class CollectionService extends Collection {
     public workspace: WorkspaceService
 
@@ -29,7 +35,7 @@ export default class CollectionService extends Collection {
         return new CollectionService(collection, workspace)
     }
 
-    public async list() {
+    public async list(options?: ListOptions) {
         const items = await this.crud.list(this.path)
 
         // add workspace
@@ -39,29 +45,31 @@ export default class CollectionService extends Collection {
         }
 
         // add relations
-        const relations = this.columns.filter((c) => c.type === 'relation')
+        if (options?.include.includes('relations')) {
+            const relations = this.columns.filter((c) => c.type === 'relation')
 
-        for await (const column of relations) {
-            const relatedItems = await this.workspace.items(column.collectionId)
+            for await (const column of relations) {
+                const relatedItems = await this.workspace.items(column.collectionId)
 
-            items.forEach((item) => {
-                const relation = relatedItems.find((r) => r.id === item[column.field])
+                items.forEach((item) => {
+                    const relation = relatedItems.find((r) => r.id === item[column.field])
 
-                item[column.field] = relation || null
-            })
+                    item[column.field] = relation || null
+                })
+            }
         }
 
-        // add script executions
-        const scripts = this.columns.filter((c) => c.type === 'script')
+        if (options?.include.includes('scripts')) {
+            // add script executions
+            const scripts = this.columns.filter((c) => c.type === 'script')
 
-        for await (const column of scripts) {
-            for await (const item of items) {
-                const { result, error } = await this.scriptService.evaluate(column.content, {
-                    item,
-                    workspace: this.workspace,
-                })
-
-                item[column.field] = result || error
+            for await (const column of scripts) {
+                for await (const item of items) {
+                    item[column.field] = await this.scriptService.evaluate(column.content, {
+                        item,
+                        workspace: this.workspace,
+                    })
+                }
             }
         }
 

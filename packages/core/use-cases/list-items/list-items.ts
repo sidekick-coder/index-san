@@ -13,10 +13,12 @@ export default class ListItems {
 
         const collection = await workspace.collection(collectionId)
 
-        const items = await collection.list()
+        const items = await collection.list({
+            include: ['relations', 'scripts'],
+        })
 
         return {
             data: items,
-        }
+        } as ListItemsDTO.Output
     }
 }

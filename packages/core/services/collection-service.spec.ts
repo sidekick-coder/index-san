@@ -99,7 +99,9 @@ test.group('collection-service (service)', (group) => {
             parent: parent.id,
         })
 
-        const result = await relation.list()
+        const result = await relation.list({
+            include: ['relations'],
+        })
 
         expect(result[0].parent).toBeDefined()
 
@@ -124,9 +126,11 @@ test.group('collection-service (service)', (group) => {
             name: 'Will',
         })
 
-        const result = await collection.list()
+        const result = await collection.list({
+            include: ['scripts'],
+        })
 
-        expect(result[0].message).toEqual('Will is a nice guy')
+        expect(result[0].message.result).toEqual('Will is a nice guy')
     })
 
     test('should return items with complex function executed', async ({ expect }) => {
@@ -164,9 +168,11 @@ test.group('collection-service (service)', (group) => {
 
         await app.memoryCrud.create(collection.path, { id: '01' })
 
-        const result = await collection.list()
+        const result = await collection.list({
+            include: ['scripts'],
+        })
 
-        expect(result[0].sum).toBe(`sum is: 15`)
+        expect(result[0].sum.result).toBe(`sum is: 15`)
     })
 
     test('should return a collection by id', async ({ expect }) => {
