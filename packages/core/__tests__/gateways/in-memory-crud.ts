@@ -20,6 +20,12 @@ export default class InMemoryCrud implements Crud {
             .filter((e) => e.type === 'directory')
             .map((e) => new Item({}, path.basename(e.path)))
 
+        items.forEach((item) => {
+            const meta = this.metas.find((m) => m.id === item.id)
+
+            Object.assign(item, meta)
+        })
+
         return items
     }
 
@@ -72,5 +78,9 @@ export default class InMemoryCrud implements Crud {
         if (metaIndex === -1) return
 
         this.metas.splice(metaIndex, 1)
+    }
+
+    public clear() {
+        this.metas = []
     }
 }

@@ -1,46 +1,30 @@
 import { test } from '@japa/runner'
 import Collection from '../entities/collection'
 import Item from '../entities/item'
-import CrudManager from '../gateways/crud-manager'
-import DriveManager from '../gateways/drive-manager'
+import InMemoryApp from '../__tests__/app'
 import CollectionFactory from '../__tests__/factories/collections'
 import WorkspaceFactory from '../__tests__/factories/workspace-factory'
-import InMemoryCrud from '../__tests__/gateways/in-memory-crud'
-import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
-import InMemoryWorkspaceRepository from '../__tests__/repositories/in-memory-workspace-repository'
-import AppService from './app-service'
 import CollectionService from './collection-service'
 import WorkspaceService from './workspace-service'
 
 test.group('collection-service (service)', (group) => {
-    const memoryDrive = new InMemoryDrive()
-    const memoryCrud = new InMemoryCrud()
-    const driveManager = new DriveManager({ memory: memoryDrive })
-    const crudManger = new CrudManager({ memory: memoryCrud })
-    const workspaceRepository = new InMemoryWorkspaceRepository()
-
     let workspace: WorkspaceService
     let collection: Collection
+
+    const app = new InMemoryApp()
 
     group.each.setup(async () => {
         collection = CollectionFactory.create()
 
-        memoryDrive.createFile('.is/collections.json', [collection])
+        app.memoryDrive.createFile('.is/collections.json', [collection])
 
-        const data = workspaceRepository.createSync(WorkspaceFactory.create())
+        const data = app.workspaceRepository.createSync(WorkspaceFactory.create())
 
-        workspace = await WorkspaceService.from(appService, data.id)
+        workspace = await WorkspaceService.from(app, data.id)
 
         return () => {
-            workspaceRepository.clear()
-            memoryDrive.clear()
+            app.clear()
         }
-    })
-
-    const appService = new AppService({
-        workspaceRepository,
-        driveManager,
-        crudManger,
     })
 
     test('should trigger an error if collection was not found', async ({ expect }) => {
@@ -52,7 +36,7 @@ test.group('collection-service (service)', (group) => {
     })
 
     test('should instantiate collection', async ({ expect }) => {
-        memoryDrive.createFile('.is/collections.json', [collection])
+        app.memoryDrive.createFile('.is/collections.json', [collection])
 
         const service = await CollectionService.from(workspace, collection.id)
 
@@ -63,13 +47,46 @@ test.group('collection-service (service)', (group) => {
     test('should list collection items', async ({ expect }) => {
         const service = await CollectionService.from(workspace, collection.id)
 
-        memoryDrive.createDir([service.path, 'item-01'].join('/'))
-        memoryDrive.createDir([service.path, 'item-02'].join('/'))
-        memoryDrive.createDir([service.path, 'item-03'].join('/'))
+        app.memoryDrive.createDir([service.path, 'item-01'].join('/'))
+        app.memoryDrive.createDir([service.path, 'item-02'].join('/'))
+        app.memoryDrive.createDir([service.path, 'item-03'].join('/'))
 
         const result = await service.list()
 
         expect(result.length).toBe(3)
+    })
+
+    test('should return items with relations', async ({ expect }) => {
+        const main = await CollectionService.from(workspace, collection.id)
+
+        const relation = await main.workspace.createCollection(
+            CollectionFactory.create({
+                columns: [
+                    {
+                        id: '1',
+                        label: 'Parent',
+                        field: 'parent',
+                        type: 'relation',
+                        collectionId: main.id,
+                    },
+                ],
+            })
+        )
+
+        const parent = await app.memoryCrud.create(main.path, {
+            id: 'parent-01',
+        })
+
+        await app.memoryCrud.create(relation.path, {
+            id: 'child-01',
+            parent: parent.id,
+        })
+
+        const result = await relation.list()
+
+        expect(result[0].parent).toBeDefined()
+
+        expect(result[0].parent.id).toEqual(parent.id)
     })
 
     test('should returned items have workspaceId & collectionId defined', async ({ expect }) => {
@@ -78,7 +95,7 @@ test.group('collection-service (service)', (group) => {
         const service = await CollectionService.from(workspace, collection.id)
 
         for (let i = 0; i < 20; i++) {
-            memoryDrive.createDir([service.path, `item-${i}`].join('/'))
+            app.memoryDrive.createDir([service.path, `item-${i}`].join('/'))
         }
 
         const result = await service.list()
@@ -90,7 +107,7 @@ test.group('collection-service (service)', (group) => {
     test('should return a collection by id', async ({ expect }) => {
         const service = await CollectionService.from(workspace, collection.id)
 
-        const item = await memoryCrud.create(
+        const item = await app.memoryCrud.create(
             collection.path,
             new Item({
                 message: 'hello word',
@@ -126,7 +143,7 @@ test.group('collection-service (service)', (group) => {
     test('should update a item by id', async ({ expect }) => {
         const service = await CollectionService.from(workspace, collection.id)
 
-        const item = await memoryCrud.create(
+        const item = await app.memoryCrud.create(
             collection.path,
             new Item({
                 message: 'hello word',
@@ -145,7 +162,7 @@ test.group('collection-service (service)', (group) => {
     test('should delete a item by id', async ({ expect }) => {
         const service = await CollectionService.from(workspace, collection.id)
 
-        const item = await memoryCrud.create(
+        const item = await app.memoryCrud.create(
             collection.path,
             new Item({
                 name: 'test',

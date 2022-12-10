@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import Workspace from '../../entities/workspace'
 
 import InMemoryApp from '../../__tests__/app'
 import DeleteScript from './delete-script'
@@ -6,9 +7,14 @@ import DeleteScript from './delete-script'
 test.group('delete-script (use-case)', (group) => {
     const app = new InMemoryApp()
     const useCase = new DeleteScript(app)
-    const workspace = app.workspaceRepository.createFakeSync()
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    let workspace: Workspace
+
+    group.each.setup(() => {
+        workspace = app.workspaceRepository.createFakeSync()
+
+        return () => app.clear()
+    })
 
     test('should throw an error if script not exists', async ({ expect }) => {
         expect.assertions(1)

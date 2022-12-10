@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import Workspace from '../entities/workspace'
 
 import InMemoryApp from '../__tests__/app'
 import CollectionFactory from '../__tests__/factories/collections'
@@ -7,9 +8,14 @@ import WorkspaceService from './workspace-service'
 
 test.group('workspace-service (service)', (group) => {
     const app = new InMemoryApp()
-    const workspace = app.workspaceRepository.createFakeSync()
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    let workspace: Workspace
+
+    group.each.setup(() => {
+        workspace = app.workspaceRepository.createFakeSync()
+
+        return () => app.clear()
+    })
 
     test('should throw an error if a workspace not exists', async ({ expect }) => {
         expect.assertions(1)

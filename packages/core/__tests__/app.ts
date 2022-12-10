@@ -29,6 +29,7 @@ export default class InMemoryApp extends AppService {
 
     public clear() {
         this.memoryDrive.clear()
+        this.memoryCrud.clear()
         this.workspaceRepository.clear()
     }
 }

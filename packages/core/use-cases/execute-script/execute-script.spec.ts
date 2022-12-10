@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import Workspace from '../../entities/workspace'
 
 import InMemoryApp from '../../__tests__/app'
 import ExecuteScript from './execute-script'
@@ -7,9 +8,13 @@ test.group('execute-script (use-case)', (group) => {
     const app = new InMemoryApp()
     const useCase = new ExecuteScript(app)
 
-    const workspace = app.workspaceRepository.createFakeSync()
+    let workspace: Workspace
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    group.each.setup(() => {
+        workspace = app.workspaceRepository.createFakeSync()
+
+        return () => app.clear()
+    })
 
     test('should execute script function and return result', async ({ expect }) => {
         const { result } = await useCase.execute({

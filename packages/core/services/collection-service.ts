@@ -29,13 +29,26 @@ export default class CollectionService extends Collection {
     public async list() {
         const items = await this.crud.list(this.path)
 
-        const data = items.map((i) => ({
-            ...i,
-            collectionId: this.id,
-            workspaceId: this.workspace.id,
-        }))
+        // add workspace
+        for (const item of items) {
+            item.collectionId = this.id
+            item.workspaceId = this.workspace.id
+        }
 
-        return ArrayService.from(data)
+        // add relations
+        const relations = this.columns.filter((c) => c.type === 'relation')
+
+        for await (const column of relations) {
+            const relatedItems = await this.workspace.items(column.collectionId)
+
+            items.forEach((item) => {
+                const relation = relatedItems.find((r) => r.id === item[column.field])
+
+                item[column.field] = relation || null
+            })
+        }
+
+        return ArrayService.from<Item>(items)
     }
 
     public async exists(id: string) {
