@@ -3,7 +3,8 @@ import { CollectionColumn } from '@core/entities/collection'
 
 import { updateCollectionColumn, deleteCollectionColumn } from '@/composables/collection'
 
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useStore } from '@/modules/collection/store'
 
 const props = defineProps({
     workspaceId: {
@@ -44,6 +45,7 @@ const types = [
 ]
 
 const dialog = ref(false)
+
 const payload = ref({
     label: '',
     field: '',
@@ -88,6 +90,23 @@ async function deleteColumn() {
 
     dialog.value = false
 }
+
+// collections
+const store = useStore()
+
+// selected collection options
+
+const options = computed(() => {
+    const { collectionId } = payload.value
+
+    if (!collectionId) return []
+
+    const collection = store.collections.find((c) => c.id === collectionId)
+
+    if (!collection) return []
+
+    return collection.columns
+})
 </script>
 <template>
     <is-dialog v-model="dialog">
@@ -122,6 +141,7 @@ async function deleteColumn() {
                             :options="types"
                             label-key="label"
                             value-key="value"
+                            card:color="b-primary"
                         />
                     </div>
 
@@ -135,13 +155,24 @@ async function deleteColumn() {
 
                     <template v-if="payload.type === 'relation'">
                         <div class="mb-4">
-                            <is-input v-model="payload.collectionId" label="Collection id" />
+                            <is-select
+                                v-model="payload.collectionId"
+                                label="Collection"
+                                :options="store.collections"
+                                label-key="name"
+                                value-key="id"
+                                card:color="b-primary"
+                            />
                         </div>
 
-                        <div class="mb-4">
-                            <is-input
+                        <div v-if="payload.collectionId" class="mb-4">
+                            <is-select
                                 v-model="payload.displayField"
                                 label="Collection display field"
+                                :options="options"
+                                label-key="label"
+                                value-key="field"
+                                card:color="b-primary"
                             />
                         </div>
                     </template>
