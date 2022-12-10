@@ -14,7 +14,7 @@ test.group('execute-script (use-case)', (group) => {
     test('should execute script function and return result', async ({ expect }) => {
         const { result } = await useCase.execute({
             workspaceId: workspace.id,
-            content: 'return "Hello word"',
+            content: 'setResult("Hello word")',
         })
 
         expect(result).toBe('Hello word')

@@ -5,13 +5,17 @@ test.group('script-service (service)', () => {
     const service = new ScriptService()
 
     test('should execute script and return result', async ({ expect }) => {
-        const result = await service.evaluate('return 4')
+        const result = await service.evaluate('setResult(4)')
 
         expect(result.result).toBe(4)
     })
 
-    test('should execute Promise script and return result', async ({ expect }) => {
-        const result = await service.evaluate('return Promise.resolve(4)')
+    test('should execute Promise script and set result', async ({ expect }) => {
+        const result = await service.evaluate(`
+            const main = () => Promise.resolve(4)
+
+            setResult(await main())
+        `)
 
         expect(result.result).toBe(4)
     })
@@ -29,7 +33,11 @@ test.group('script-service (service)', () => {
     })
 
     test('should return error if have one', async ({ expect }) => {
-        const result = await service.evaluate('return Promise.reject("Error in script")')
+        const result = await service.evaluate(`
+            const main = () => Promise.reject('Error in script')
+
+            setResult(await main())
+        `)
 
         expect(result.error).toEqual('Error in script')
     })

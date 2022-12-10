@@ -12,13 +12,16 @@ const format = (args: any) => {
 export default class ScriptService {
     protected async _evaluate(code: string, scope?: Record<string, any>) {
         const logs: string[] = []
+        let result = null
+        let error = null
 
         const sandbox = {
-            ...scope,
-            main: (): Promise<any> => Promise.resolve('Error executing script'),
+            setResult: (data: any) => (result = data),
             console: {
                 log: (...args: any) => logs.push(args.map(format).join(' ')),
             },
+            ...scope,
+            main: (): Promise<any> => Promise.resolve('Error executing script'),
         }
 
         const executable = new vm.Script(`async function main(){ ${code} }`)
@@ -26,13 +29,7 @@ export default class ScriptService {
 
         executable.runInContext(context, {})
 
-        let result = null
-        let error = null
-
-        await sandbox
-            .main()
-            .then((data) => (result = data))
-            .catch((err) => (error = err))
+        await sandbox.main().catch((err) => (error = err))
 
         return {
             result,
