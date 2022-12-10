@@ -12,7 +12,7 @@ if (!versionName) {
 }
 
 async function main() {
-    const packages = await fs.promises.readdir(path.resolve(BASE_PATH, 'packages'))
+    const packages = ['core', 'desktop']
 
     for await (const name of packages) {
         await command(`npm -w ${name} version ${versionName}`)
