@@ -1,5 +1,3 @@
-import lodash from 'lodash'
-
 import ExecuteScriptDTO from './execute-script.dto'
 import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
@@ -15,10 +13,7 @@ export default class ExecuteScript {
 
         const service = new ScriptService()
 
-        const result = await service.evaluate(content, {
-            workspace,
-            lodash,
-        })
+        const result = await service.evaluate(content, { workspace })
 
         return result
     }

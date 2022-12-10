@@ -27,6 +27,10 @@ test.group('collection-service (service)', (group) => {
         }
     })
 
+    function createCollection(data: Partial<Collection>) {
+        return workspace.createCollection(CollectionFactory.create(data))
+    }
+
     test('should trigger an error if collection was not found', async ({ expect }) => {
         expect.assertions(1)
 
@@ -56,22 +60,35 @@ test.group('collection-service (service)', (group) => {
         expect(result.length).toBe(3)
     })
 
+    test('should returned items have workspaceId & collectionId defined', async ({ expect }) => {
+        expect.assertions(40)
+
+        const service = await CollectionService.from(workspace, collection.id)
+
+        for (let i = 0; i < 20; i++) {
+            app.memoryDrive.createDir([service.path, `item-${i}`].join('/'))
+        }
+
+        const result = await service.list()
+
+        result.forEach((i) => expect(i.collectionId).toBeDefined())
+        result.forEach((i) => expect(i.workspaceId).toBeDefined())
+    })
+
     test('should return items with relations', async ({ expect }) => {
         const main = await CollectionService.from(workspace, collection.id)
 
-        const relation = await main.workspace.createCollection(
-            CollectionFactory.create({
-                columns: [
-                    {
-                        id: '1',
-                        label: 'Parent',
-                        field: 'parent',
-                        type: 'relation',
-                        collectionId: main.id,
-                    },
-                ],
-            })
-        )
+        const relation = await createCollection({
+            columns: [
+                {
+                    id: '1',
+                    label: 'Parent',
+                    field: 'parent',
+                    type: 'relation',
+                    collectionId: main.id,
+                },
+            ],
+        })
 
         const parent = await app.memoryCrud.create(main.path, {
             id: 'parent-01',
@@ -89,19 +106,67 @@ test.group('collection-service (service)', (group) => {
         expect(result[0].parent.id).toEqual(parent.id)
     })
 
-    test('should returned items have workspaceId & collectionId defined', async ({ expect }) => {
-        expect.assertions(40)
+    test('should return items with simple function executed', async ({ expect }) => {
+        const collection = await createCollection({
+            columns: [
+                {
+                    id: '1',
+                    label: 'Message',
+                    field: 'message',
+                    type: 'script',
+                    content: 'setResult(`${item.name} is a nice guy`)',
+                },
+            ],
+        })
 
-        const service = await CollectionService.from(workspace, collection.id)
+        await app.memoryCrud.create(collection.path, {
+            id: '01',
+            name: 'Will',
+        })
 
-        for (let i = 0; i < 20; i++) {
-            app.memoryDrive.createDir([service.path, `item-${i}`].join('/'))
-        }
+        const result = await collection.list()
 
-        const result = await service.list()
+        expect(result[0].message).toEqual('Will is a nice guy')
+    })
 
-        result.forEach((i) => expect(i.collectionId).toBeDefined())
-        result.forEach((i) => expect(i.workspaceId).toBeDefined())
+    test('should return items with complex function executed', async ({ expect }) => {
+        const extract = await createCollection({
+            id: 'extract',
+            columns: [
+                {
+                    id: '1',
+                    label: 'amount',
+                    field: 'amount',
+                    type: 'number',
+                },
+            ],
+        })
+
+        const collection = await createCollection({
+            columns: [
+                {
+                    id: '1',
+                    label: 'Sum',
+                    field: 'sum',
+                    type: 'script',
+                    content: `
+                        const items = await workspace.items('extract')
+
+                        setResult('sum is: ' + String(items.sumBy('amount')))
+                    `,
+                },
+            ],
+        })
+
+        await app.memoryCrud.create(extract.path, { id: '1', amount: 5 })
+        await app.memoryCrud.create(extract.path, { id: '2', amount: 5 })
+        await app.memoryCrud.create(extract.path, { id: '3', amount: 5 })
+
+        await app.memoryCrud.create(collection.path, { id: '01' })
+
+        const result = await collection.list()
+
+        expect(result[0].sum).toBe(`sum is: 15`)
     })
 
     test('should return a collection by id', async ({ expect }) => {
