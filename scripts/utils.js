@@ -1,28 +1,18 @@
-const { exec } = require('child_process')
+const { spawn } = require('child_process')
 
-exports.command = (arg, options) => {
+exports.command = (param, options) => {
     return new Promise((resolve, reject) => {
-        const child = exec(arg)
+        const [command, ...args] = param.split(' ')
 
-        const result = {
-            stderr: '',
-            stdout: '',
-        }
-
-        child.stdout.on('data', (data) => {
-            result.stdout = data
+        const child = spawn(command, args, {
+            shell: true,
+            stdio: 'inherit',
         })
 
-        child.on('error', reject)
+        child.on('exit', (error) => {
+            if (error) reject()
 
-        child.on('close', () => resolve(result.stdout))
-
-        if (options?.stdout) {
-            child.stdout.pipe(process.stdout)
-        }
-
-        if (options?.stderr) {
-            child.stdout.pipe(process.stderr)
-        }
+            if (!error) resolve()
+        })
     })
 }

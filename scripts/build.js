@@ -17,15 +17,15 @@ async function main() {
 
     fs.mkdirSync(outputFolder, { recursive: true })
 
-    // console.log('build desktop app')
+    // build desktop app
 
     await command('npm -w desktop run build', { stderr: true, stout: true })
 
-    // console.log('making desktop app')
+    // making desktop app
 
     await command('npm -w desktop run make', { stderr: true, stout: true })
 
-    // console.log('moving artifacts')
+    // moving artifacts
 
     const pattern = path.resolve(desktopPath, 'out', 'make', '**/*').split(path.sep).join('/')
 
@@ -38,6 +38,4 @@ async function main() {
     )
 }
 
-main().catch(console.error)
-
-// npm version --git-tag-version false
+main().catch(() => process.exit(1))
