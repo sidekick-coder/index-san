@@ -240,13 +240,8 @@ watch(props, load, { immediate: true, deep: true })
 
             <template #item="{ item, classes }">
                 <tr :class="classes.tr" class="collection-table-item">
-                    <td
-                        v-for="(c, index) in filteredColumns"
-                        :key="c.id"
-                        :class="classes.td"
-                        class="relative"
-                    >
-                        <is-menu offset-y>
+                    <td v-for="(c, index) in filteredColumns" :key="c.id" :class="classes.td">
+                        <is-menu v-if="index === 0" offset-y>
                             <template #activator="{ on }">
                                 <is-btn
                                     class="w-[36px] -ml-[36px] absolute h-full top-0"
