@@ -65,7 +65,7 @@ export default class WorkspaceService extends Workspace {
         return CollectionService.from(this, collectionId)
     }
 
-    public async items(collectionId: string, options: ListOptions) {
+    public async items(collectionId: string, options?: ListOptions) {
         const key = `collection:${collectionId}:items`
 
         if (cache.has(key)) {
