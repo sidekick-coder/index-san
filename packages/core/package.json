@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "scripts": {
     "test": "node -r ts-node/register/transpile-only bin/test.ts",
