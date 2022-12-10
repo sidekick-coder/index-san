@@ -9,7 +9,7 @@ import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
     modelValue: {
-        type: String,
+        type: [String, Number, Object],
         default: '',
     },
     label: {
@@ -36,6 +36,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    returnObject: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -45,20 +49,33 @@ const emit = defineEmits(['update:modelValue'])
 const menu = ref(false)
 const model = useVModel(props, 'modelValue', emit)
 
+function getValue(option: any) {
+    if (props.returnObject) {
+        return option
+    }
+
+    if (props.valueKey) {
+        return option[props.valueKey]
+    }
+
+    return option
+}
+
 function onSelect(option: any) {
-    model.value = option.value
+    model.value = getValue(option)
 
     menu.value = false
 }
 
-// Options
+// display options
 
-const optionsFormatted = computed(() => {
-    return props.options.map((option) => ({
-        label: props.labelKey ? option[props.labelKey] : option,
-        value: props.valueKey ? option[props.valueKey] : option,
-    }))
-})
+function getLabel(option: any) {
+    if (props.labelKey) {
+        return option[props.labelKey]
+    }
+
+    return option
+}
 
 // Elements attrs
 
@@ -81,13 +98,29 @@ const bindings = computed(() => {
         card,
     }
 })
+
+// display label
+
+const displayLabel = computed(() => {
+    let label: any = model.value
+
+    if (!label) {
+        return label
+    }
+
+    if (props.returnObject) {
+        label = model.value[props.labelKey]
+    }
+
+    return label
+})
 </script>
 <template>
-    <is-menu v-model="menu" offset-y>
+    <is-menu v-model="menu" max-height="132">
         <template #activator="{ on }">
             <is-input
                 v-bind="on"
-                v-model="model"
+                :model-value="displayLabel"
                 :label="label"
                 :color="color"
                 :flat="flat"
@@ -102,13 +135,8 @@ const bindings = computed(() => {
         </template>
 
         <is-card color="b-secondary" v-bind="bindings.card">
-            <is-list-item
-                v-for="option in optionsFormatted"
-                :key="option"
-                dark
-                @click="onSelect(option)"
-            >
-                {{ option.label }}
+            <is-list-item v-for="option in options" :key="option" dark @click="onSelect(option)">
+                {{ getLabel(option) }}
             </is-list-item>
         </is-card>
     </is-menu>

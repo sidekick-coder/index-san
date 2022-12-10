@@ -110,10 +110,15 @@ watch(() => props.item, load, {
         </option>
     </select>
 
-    <select
+    <is-select
         v-else-if="column.type === 'relation'"
         v-model="payload"
         :class="classes.input"
+        :label-key="column.displayField"
+        :options="relatedItems"
+        return-object
+        value-key="id"
+        flat
         @change="onChange"
     >
         <option value="">-</option>
@@ -121,7 +126,7 @@ watch(() => props.item, load, {
         <option v-for="related in relatedItems" :key="related.id" :value="related.id">
             {{ related[column.displayField] }}
         </option>
-    </select>
+    </is-select>
 
     <input v-else v-model="payload" :class="classes.input" @change="onChange" />
 </template>
