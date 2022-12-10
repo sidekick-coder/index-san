@@ -2,6 +2,8 @@
 import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 import { computed } from 'vue'
 
+import MEditor from '@/modules/monaco/components/MEditor.vue'
+
 const props = defineProps({
     output: {
         type: Object as () => ExecuteScriptDTO.Output,
@@ -36,5 +38,5 @@ const content = computed(() => {
 </script>
 
 <template>
-    <is-code-editor readonly :model-value="content" language="shell" />
+    <m-editor readonly :model-value="content" language="shell" />
 </template>

@@ -37,7 +37,7 @@ test.group('execute-script (use-case)', (group) => {
             content: `import fs from "fs"`,
         })
 
-        expect(result.error.message).toBe('Cannot use import statement outside a module')
+        expect(result.error.message).toBe('exports is not defined')
     })
 
     test('should create a file in workspace', async ({ expect }) => {

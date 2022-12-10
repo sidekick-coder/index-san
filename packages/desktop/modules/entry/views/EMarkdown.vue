@@ -4,6 +4,7 @@ import { ref, watch } from 'vue'
 import { useStore } from '@/modules/entry/store'
 
 import EMarkdownDoc from '../components/EMarkdownDoc.vue'
+import MEditor from '@/modules/monaco/components/MEditor.vue'
 
 const props = defineProps({
     path: {
@@ -83,7 +84,7 @@ async function save() {
         <w-content>
             <div class="h-full w-full flex">
                 <div v-show="edit" class="min-h-full w-6/12 pl-[calc(40px_-_26px)]">
-                    <is-code-editor
+                    <m-editor
                         ref="root"
                         v-model="content"
                         language="markdown"

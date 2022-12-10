@@ -8,6 +8,7 @@ export default (router: Router) => {
         children: [
             {
                 path: '',
+                name: '404',
                 component: () => import('./views/404.vue'),
             },
         ],

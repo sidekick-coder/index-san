@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test": "node -r ts-node/register/transpile-only bin/test.ts",
-    "test:watch": "nodemon --quiet -r ts-node/register/transpile-only bin/test.ts"
+    "test:watch": "nodemon --quiet -r ts-node/register/transpile-only bin/test.ts",
+    "make:types": "tsc --outDir dist-types"
   },
   "repository": {
     "type": "git",

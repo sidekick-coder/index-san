@@ -6,6 +6,8 @@ import Script from '@core/entities/script'
 import { useMeta } from '@/composables/metas'
 import { useStore } from '@/modules/script/store'
 
+import MEditor from '@/modules/monaco/components/MEditor.vue'
+
 const props = defineProps({
     id: {
         type: String,
@@ -130,11 +132,7 @@ async function execute() {
         <w-content>
             <w-layout use-percentage>
                 <w-content>
-                    <is-code-editor
-                        v-model="content"
-                        @keydown.ctrl.s="save"
-                        @keyup.ctrl.e="execute"
-                    />
+                    <m-editor v-model="content" @keydown.ctrl.s="save" @keyup.ctrl.e="execute" />
                 </w-content>
                 <w-drawer :model-value="!!output" right :width="500" class="border-l border-lines">
                     <is-card color="b-secondary" class="h-full">
@@ -146,7 +144,7 @@ async function execute() {
                             </is-btn>
                         </is-card-head>
 
-                        <is-code-editor readonly :model-value="output" language="shell" />
+                        <m-editor readonly :model-value="output" language="shell" />
                     </is-card>
                 </w-drawer>
             </w-layout>

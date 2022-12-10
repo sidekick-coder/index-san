@@ -2,3 +2,4 @@ dist
 dist-electron
 out
 artifacts
+packages/core/dist-types

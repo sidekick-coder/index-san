@@ -1,6 +1,16 @@
 import vm from 'vm'
 import util from 'util'
 
+import * as ts from 'typescript'
+
+function tsCompile(source: string, options: ts.TranspileOptions = {}): string {
+    // Default options -- you could also perform a merge, or use the project tsconfig.json
+    if (null === options) {
+        options = { compilerOptions: { module: ts.ModuleKind.CommonJS } }
+    }
+    return ts.transpileModule(source, options).outputText
+}
+
 const format = (args: any) => {
     if (typeof args === 'string') {
         return args
@@ -24,7 +34,7 @@ export default class ScriptService {
             main: (): Promise<any> => Promise.resolve('Error executing script'),
         }
 
-        const executable = new vm.Script(`async function main(){ ${code} }`)
+        const executable = new vm.Script(`async function main(){ ${tsCompile(code)} }`)
         const context = vm.createContext(sandbox)
 
         executable.runInContext(context, {})
