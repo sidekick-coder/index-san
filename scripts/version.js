@@ -15,17 +15,14 @@ async function main() {
     const packages = await fs.promises.readdir(path.resolve(BASE_PATH, 'packages'))
 
     for await (const name of packages) {
-        await command(`npm -w ${name} version ${versionName}`, { stout: true, stderr: true })
+        await command(`npm -w ${name} version ${versionName}`)
     }
 
-    await command(`npm version ${versionName} --git-tag-version false `, {
-        stout: true,
-        stderr: true,
-    })
+    await command(`npm version ${versionName} --git-tag-version false `)
 
-    await command('git add .', { stout: true, stderr: true })
-    await command(`git commit -m "feat: v${versionName}" `, { stout: true, stderr: true })
-    await command(`git tag v${versionName} `, { stout: true, stderr: true })
+    await command('git add .')
+    await command(`git commit -m "feat: v${versionName}" `)
+    await command(`git tag v${versionName} `)
 }
 
 main().catch(console.error)
