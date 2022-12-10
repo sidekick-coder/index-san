@@ -21,6 +21,13 @@ export default class FSDrive implements Drive {
     public async list(path: string): Promise<DirectoryEntry[]> {
         const systemPath = this.resolve([this.config.path, path])
 
+        const isValid = await fs.promises
+            .stat(systemPath)
+            .then((s) => s.isDirectory())
+            .catch(() => false)
+
+        if (!isValid) return []
+
         const entries = await fs.promises.readdir(systemPath, { withFileTypes: true })
 
         return entries.map((e) => {

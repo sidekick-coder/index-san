@@ -46,5 +46,8 @@ export default {
     myEntity: 'My {0}',
     create: 'Create',
     execute: 'Execute',
-    errors: { workspaceNotFound: '@:workspace not found {0}' },
+    errors: {
+        workspaceNotFound: '@:workspace not found: {0}',
+        collectionNotFound: '@:collection not found: {1}',
+    },
 }
