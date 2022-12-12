@@ -115,7 +115,7 @@ async function execute() {
 
                 <v-btn
                     :disabled="script.content === content"
-                    class="mr-3 disabled:bg-lines"
+                    class="mr-3"
                     color="info"
                     size="sm"
                     @click="save"

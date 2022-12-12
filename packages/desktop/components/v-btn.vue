@@ -37,39 +37,38 @@ const sizes = {
     md: 'px-4 py-2',
 }
 
-const defaultColors = {
-    accent: 'bg-accent hover:bg-accent/75 disabled:opacity-80',
-    danger: 'bg-danger hover:bg-danger/75 text-t-primary',
-    info: 'bg-info hover:bg-info/75 text-t-primary',
+const variations = {
+    default: {
+        accent: 'bg-accent hover:bg-accent/75',
+        danger: 'bg-danger hover:bg-danger/75 text-t-primary',
+        info: 'bg-info hover:bg-info/75 text-t-primary',
+    },
+    text: {
+        accent: 'hover:border-accent/5 hover:bg-accent/5 border border-transparent hover:text-accent',
+        danger: 'hover:border-danger/5 hover:bg-danger/5 border border-transparent hover:text-danger',
+        info: 'hover:border-info/5 hover:bg-info/5 border border-transparent hover:text-info',
+    },
 }
-
-const textColors = {
-    accent: 'hover:border-accent/5 hover:bg-accent/5 border border-transparent hover:text-accent',
-    danger: 'hover:border-danger/5 hover:bg-danger/5 border border-transparent hover:text-danger',
-    info: 'hover:border-info/5 hover:bg-info/5 border border-transparent hover:text-info',
-}
-
-const colors = computed(() => {
-    const result = defaultColors
-
-    if (props.text) {
-        Object.assign(result, textColors)
-    }
-
-    return result
-})
 
 const classes = computed(() => {
-    const result: string[] = ['transition-all flex items-center justify-center overflow-hidden']
+    const result: string[] = [
+        'transition-all flex items-center justify-center overflow-hidden cursor-pointer',
+    ]
+
+    let colors = variations.default
+
+    if (props.text) {
+        colors = variations.text
+    }
 
     if (props.disabled) {
-        result.push('disabled:opacity-60')
+        result.push('opacity-60 pointer-events-none')
     }
 
     result.push(props.rounded ? 'rounded-full' : 'rounded')
 
     result.push(sizes[props.size])
-    result.push(colors.value[props.color])
+    result.push(colors[props.color])
 
     return result
 })
