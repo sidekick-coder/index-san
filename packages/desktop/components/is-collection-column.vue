@@ -131,9 +131,9 @@ const options = computed(() => {
 
         <v-card width="500" color="b-secondary">
             <is-card-head>
-                <is-card-title>
+                <v-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
-                </is-card-title>
+                </v-card-title>
                 <v-btn text color="danger" class="ml-auto" @click="deleteColumn">
                     <is-icon name="trash" />
                 </v-btn>

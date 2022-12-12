@@ -95,9 +95,9 @@ function refresh() {
             <slot />
         </div>
         <is-card-head>
-            <is-card-title v-if="title" class="px-4">
+            <v-card-title v-if="title" class="px-4">
                 {{ title }}
-            </is-card-title>
+            </v-card-title>
 
             <v-btn text size="sm" class="ml-auto" @click="refresh">
                 <is-icon name="rotate" />

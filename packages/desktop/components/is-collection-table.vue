@@ -179,9 +179,9 @@ watch(props, load, { immediate: true, deep: true })
         />
 
         <is-card-head>
-            <is-card-title v-if="title">
+            <v-card-title v-if="title">
                 {{ title }}
-            </is-card-title>
+            </v-card-title>
 
             <div class="ml-auto flex">
                 <v-btn text size="sm" @click="onColumnNew">
