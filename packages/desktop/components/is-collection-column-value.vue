@@ -162,9 +162,9 @@ const select = ref({
         </template>
 
         <v-card width="500" height="500" color="b-secondary">
-            <is-card-head>
+            <v-card-head>
                 {{ $t('output') }}
-            </is-card-head>
+            </v-card-head>
 
             <s-output :output="payload" />
         </v-card>

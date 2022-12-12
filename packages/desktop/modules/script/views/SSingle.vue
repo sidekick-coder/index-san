@@ -136,13 +136,13 @@ async function execute() {
                 </w-content>
                 <w-drawer :model-value="!!output" right :width="500" class="border-l border-lines">
                     <v-card color="b-secondary" class="h-full">
-                        <is-card-head class="flex items-center">
+                        <v-card-head class="flex items-center">
                             <div class="font-bold text-xl mr-auto">Output</div>
 
                             <v-btn text @click="reset">
                                 <is-icon name="times" />
                             </v-btn>
-                        </is-card-head>
+                        </v-card-head>
 
                         <m-editor readonly :model-value="output" language="shell" />
                     </v-card>

@@ -178,7 +178,7 @@ watch(props, load, { immediate: true, deep: true })
             @submit="setHiddenColumns"
         />
 
-        <is-card-head>
+        <v-card-head>
             <v-card-title v-if="title">
                 {{ title }}
             </v-card-title>
@@ -200,7 +200,7 @@ watch(props, load, { immediate: true, deep: true })
                     <is-icon name="filter" />
                 </v-btn>
             </div>
-        </is-card-head>
+        </v-card-head>
 
         <is-table
             v-if="!loading"

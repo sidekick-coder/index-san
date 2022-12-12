@@ -94,7 +94,7 @@ function refresh() {
         <div ref="contentEl" class="hidden">
             <slot />
         </div>
-        <is-card-head>
+        <v-card-head>
             <v-card-title v-if="title" class="px-4">
                 {{ title }}
             </v-card-title>
@@ -105,7 +105,7 @@ function refresh() {
             <v-btn text size="sm" @click="debug = !debug">
                 <is-icon name="bug" />
             </v-btn>
-        </is-card-head>
+        </v-card-head>
 
         <is-card-content v-if="debug" style="height: calc(100% - 54px)">
             <s-output :output="output" class="border-b border-l border-r border-lines" />

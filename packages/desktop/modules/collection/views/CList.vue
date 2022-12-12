@@ -73,11 +73,11 @@ async function deleteItem(collectionId: string) {
     <div>
         <is-dialog v-model="dialog">
             <v-card color="b-secondary" width="500">
-                <is-card-head>
+                <v-card-head>
                     <v-card-title>
                         {{ $t('addEntity', [$t('collection')]) }}
                     </v-card-title>
-                </is-card-head>
+                </v-card-head>
                 <is-card-content>
                     <w-form class="w-full" @submit="submit">
                         <div class="mb-4">

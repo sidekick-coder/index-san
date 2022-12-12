@@ -130,14 +130,14 @@ const options = computed(() => {
         </template>
 
         <v-card width="500" color="b-secondary">
-            <is-card-head>
+            <v-card-head>
                 <v-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
                 </v-card-title>
                 <v-btn text color="danger" class="ml-auto" @click="deleteColumn">
                     <is-icon name="trash" />
                 </v-btn>
-            </is-card-head>
+            </v-card-head>
 
             <is-card-content>
                 <w-form class="w-full" @submit="submit">
