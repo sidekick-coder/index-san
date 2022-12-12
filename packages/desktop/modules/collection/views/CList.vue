@@ -108,7 +108,7 @@ async function deleteItem(collectionId: string) {
             </v-card>
         </v-dialog>
 
-        <is-container class="w-full py-5 border-b border-lines flex items-center">
+        <is-container class="w-full py-4 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
@@ -117,7 +117,7 @@ async function deleteItem(collectionId: string) {
             </v-btn>
         </is-container>
 
-        <is-table
+        <v-table
             :columns="columns"
             :items="store.collections"
             disable-add-column
@@ -135,6 +135,6 @@ async function deleteItem(collectionId: string) {
                     </v-btn>
                 </div>
             </template>
-        </is-table>
+        </v-table>
     </div>
 </template>

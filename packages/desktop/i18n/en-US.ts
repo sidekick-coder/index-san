@@ -48,6 +48,7 @@ export default {
     execute: 'Execute',
     output: 'Output',
     content: 'Content',
+    loadMore: 'Load more',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

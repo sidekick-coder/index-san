@@ -67,27 +67,35 @@ setItems()
 </script>
 <template>
     <div>
-        <is-table :columns="columns" :items="store.menu" limit="100" :fixed="false">
+        <v-table :columns="columns" :items="store.menu" limit="100" :fixed="false">
             <template #item-order="{ item, column }">
-                <is-input
-                    v-model="item[column.field]"
-                    type="number"
-                    flat
-                    input:class="pl-10 w-[80px]"
-                    @change="onItemUpdate"
-                />
+                <v-td no-padding>
+                    <is-input
+                        v-model="item[column.field]"
+                        type="number"
+                        flat
+                        input:class="pl-10 w-[80px]"
+                        @change="onItemUpdate"
+                    />
+                </v-td>
             </template>
 
             <template #item-label="{ item, column }">
-                <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
+                <v-td no-padding>
+                    <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
+                </v-td>
             </template>
 
             <template #item-section="{ item, column }">
-                <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
+                <v-td no-padding>
+                    <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
+                </v-td>
             </template>
 
             <template #item-icon="{ item, column }">
-                <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
+                <v-td no-padding>
+                    <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
+                </v-td>
             </template>
 
             <template #item-actions="{ item, attrs }">
@@ -97,6 +105,6 @@ setItems()
                     </v-btn>
                 </div>
             </template>
-        </is-table>
+        </v-table>
     </div>
 </template>

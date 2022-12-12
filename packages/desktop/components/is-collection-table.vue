@@ -163,7 +163,7 @@ watch(props, load, { immediate: true, deep: true })
 </script>
 
 <template>
-    <is-card>
+    <v-card>
         <is-collection-table-filters
             v-model="drawers.filters"
             :columns="columns"
@@ -202,18 +202,17 @@ watch(props, load, { immediate: true, deep: true })
             </div>
         </v-card-head>
 
-        <is-table
+        <v-table
             v-if="!loading"
             :items="filteredItems"
             :columns="filteredColumns"
             class="collection-table"
         >
             <template #column="data">
-                <tr :class="data.classes.tr" class="relative">
-                    <th
+                <v-tr class="relative">
+                    <v-th
                         v-for="column in data.columns"
                         :key="column.name"
-                        :class="data.classes.th"
                         :style="column.width ? `width: ${column.width}px` : ''"
                     >
                         <is-collection-column
@@ -227,20 +226,20 @@ watch(props, load, { immediate: true, deep: true })
                             :min-width="100"
                             @update:model-value="(value: number) => options[`column:${column.id}:width`] = value"
                         />
-                    </th>
+                    </v-th>
 
-                    <th v-if="!columns.length" :class="data.classes.th">
+                    <v-th v-if="!columns.length">
                         <div class="flex cursor-pointer" @click="onColumnNew">
                             Add column
                             <is-icon class="cursor-pointer ml-2" name="plus" @click="onColumnNew" />
                         </div>
-                    </th>
-                </tr>
+                    </v-th>
+                </v-tr>
             </template>
 
-            <template #item="{ item, classes }">
-                <tr :class="classes.tr" class="collection-table-item">
-                    <td v-for="(c, index) in filteredColumns" :key="c.id" :class="classes.td">
+            <template #item="{ item }">
+                <v-tr class="collection-table-item">
+                    <v-td v-for="(c, index) in filteredColumns" :key="c.id" no-padding>
                         <is-menu v-if="index === 0" offset-y>
                             <template #activator="{ on }">
                                 <v-btn
@@ -276,26 +275,25 @@ watch(props, load, { immediate: true, deep: true })
                             :column="c"
                             :item="item"
                         />
-                    </td>
-                </tr>
+                    </v-td>
+                </v-tr>
             </template>
 
-            <template #append-body="{ classes }">
-                <tr :class="classes.tr">
-                    <td
-                        :class="[classes.td]"
+            <template #append>
+                <v-tr>
+                    <v-td
                         :colspan="filteredColumns.length + 2"
-                        class="p-2 cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
+                        class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
                         @click="onItemNew"
                     >
                         <fa-icon icon="plus" class="mr-2" />
 
                         <span>New</span>
-                    </td>
-                </tr>
+                    </v-td>
+                </v-tr>
             </template>
-        </is-table>
-    </is-card>
+        </v-table>
+    </v-card>
 </template>
 
 <style lang="scss">

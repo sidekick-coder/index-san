@@ -113,7 +113,7 @@ async function deleteItem(id: string) {
             </v-card>
         </v-dialog>
 
-        <is-container class="w-full py-5 border-b border-lines flex items-center">
+        <is-container class="w-full py-4 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
@@ -122,24 +122,24 @@ async function deleteItem(id: string) {
             </v-btn>
         </is-container>
 
-        <is-table :columns="columns" :items="store.workspaces" :fixed="false">
+        <v-table :columns="columns" :items="store.workspaces" :fixed="false">
             <template #item-active="{ item }">
-                <div class="pl-10">
+                <v-td class="pl-10">
                     <v-checkbox
                         :model-value="item.id === store.currentId"
                         @click="store.currentId = item.id"
                     />
-                </div>
+                </v-td>
             </template>
 
             <template #item-path="{ item }">
-                <div class="p-2">
+                <v-td>
                     {{ item.config.path }}
-                </div>
+                </v-td>
             </template>
 
             <template #item-actions="{ item }">
-                <div class="flex gap-x-2 p-2">
+                <v-td class="flex gap-x-2 p-2">
                     <v-btn size="sm" text class="mr-2" to="/scripts">
                         <is-icon name="code" />
                     </v-btn>
@@ -155,8 +155,8 @@ async function deleteItem(id: string) {
                     <v-btn size="sm" text color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
                     </v-btn>
-                </div>
+                </v-td>
             </template>
-        </is-table>
+        </v-table>
     </div>
 </template>

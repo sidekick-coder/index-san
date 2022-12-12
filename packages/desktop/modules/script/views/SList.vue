@@ -69,7 +69,7 @@ async function onItemDelete(item: Script) {
         </w-form>
     </v-dialog>
 
-    <is-container class="w-full py-5 border-b border-lines flex items-center">
+    <is-container class="w-full py-4 border-b border-lines flex items-center">
         <div class="text-2xl font-bold">
             {{ meta.title }}
         </div>
@@ -79,16 +79,16 @@ async function onItemDelete(item: Script) {
         </v-btn>
     </is-container>
 
-    <is-table :columns="columns" :items="store.scripts">
+    <v-table :columns="columns" :items="store.scripts">
         <template #item-actions="{ item }">
-            <div class="px-2 flex">
+            <v-td class="px-2 flex">
                 <v-btn text size="sm" :to="`/scripts/${item.id}`">
                     <is-icon name="eye" />
                 </v-btn>
                 <v-btn text size="sm" color="danger" @click="onItemDelete(item)">
                     <is-icon name="trash" />
                 </v-btn>
-            </div>
+            </v-td>
         </template>
-    </is-table>
+    </v-table>
 </template>
