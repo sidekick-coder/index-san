@@ -139,7 +139,7 @@ const options = computed(() => {
                 </v-btn>
             </v-card-head>
 
-            <is-card-content>
+            <v-card-content>
                 <w-form class="w-full" @submit="submit">
                     <div class="mb-4">
                         <is-input v-model="payload.label" label="Label" />
@@ -217,7 +217,7 @@ const options = computed(() => {
                         <v-btn class="w-full">{{ $t('save') }}</v-btn>
                     </div>
                 </w-form>
-            </is-card-content>
+            </v-card-content>
         </v-card>
     </is-dialog>
 </template>

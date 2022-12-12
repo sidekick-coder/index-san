@@ -91,7 +91,7 @@ async function deleteItem(id: string) {
                         {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
                     </v-card-title>
                 </v-card-head>
-                <is-card-content>
+                <v-card-content>
                     <w-form class="mb-4 w-full" @submit="submit">
                         <div class="mb-4">
                             <is-input v-model="payload.id" label="Id" />
@@ -109,7 +109,7 @@ async function deleteItem(id: string) {
                             {{ $t('create') }}
                         </v-btn>
                     </w-form>
-                </is-card-content>
+                </v-card-content>
             </v-card>
         </is-dialog>
 

@@ -107,25 +107,25 @@ function refresh() {
             </v-btn>
         </v-card-head>
 
-        <is-card-content v-if="debug" style="height: calc(100% - 54px)">
+        <v-card-content v-if="debug" style="height: calc(100% - 54px)">
             <s-output :output="output" class="border-b border-l border-r border-lines" />
-        </is-card-content>
+        </v-card-content>
 
-        <is-card-content
+        <v-card-content
             v-if="chart.loading"
             style="height: calc(100% - 54px)"
             class="flex items-center justify-center animate-pulse"
         >
             <is-icon name="chart-pie" class="text-[10rem] text-lines" />
-        </is-card-content>
+        </v-card-content>
 
         <transition name="fade">
-            <is-card-content
+            <v-card-content
                 v-if="!chart.loading && chart.options && !debug"
                 style="height: calc(100% - 54px)"
             >
                 <v-chart ref="chartRef" :options="chart.options" />
-            </is-card-content>
+            </v-card-content>
         </transition>
     </v-card>
 </template>

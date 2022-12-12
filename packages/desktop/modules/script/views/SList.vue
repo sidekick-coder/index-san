@@ -60,11 +60,11 @@ async function onItemDelete(item: Script) {
     <is-dialog v-model="dialog">
         <w-form @submit="submit">
             <v-card color="b-secondary">
-                <is-card-content class="flex flex-wrap">
+                <v-card-content class="flex flex-wrap">
                     <is-input v-model="payload.name" class="mb-4" label="Name" />
 
                     <v-btn class="w-full">Create</v-btn>
-                </is-card-content>
+                </v-card-content>
             </v-card>
         </w-form>
     </is-dialog>
