@@ -129,7 +129,7 @@ const options = computed(() => {
             </div>
         </template>
 
-        <is-card width="500" color="b-secondary">
+        <v-card width="500" color="b-secondary">
             <is-card-head>
                 <is-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
@@ -208,9 +208,9 @@ const options = computed(() => {
                             </is-input>
                         </template>
 
-                        <is-card color="b-secondary" class="h-full">
+                        <v-card color="b-secondary" class="h-full">
                             <m-editor v-model="payload.content" />
-                        </is-card>
+                        </v-card>
                     </is-drawer>
 
                     <div>
@@ -218,6 +218,6 @@ const options = computed(() => {
                     </div>
                 </w-form>
             </is-card-content>
-        </is-card>
+        </v-card>
     </is-dialog>
 </template>

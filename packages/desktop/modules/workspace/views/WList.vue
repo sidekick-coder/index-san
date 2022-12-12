@@ -85,7 +85,7 @@ async function deleteItem(id: string) {
 <template>
     <div>
         <is-dialog v-model="dialog">
-            <is-card color="b-secondary" width="500">
+            <v-card color="b-secondary" width="500">
                 <is-card-head>
                     <is-card-title>
                         {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
@@ -110,7 +110,7 @@ async function deleteItem(id: string) {
                         </v-btn>
                     </w-form>
                 </is-card-content>
-            </is-card>
+            </v-card>
         </is-dialog>
 
         <is-container class="w-full py-5 border-b border-lines flex items-center">

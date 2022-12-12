@@ -256,7 +256,7 @@ watch(props, load, { immediate: true, deep: true })
                                 </v-btn>
                             </template>
 
-                            <is-card color="b-primary">
+                            <v-card color="b-primary">
                                 <is-list-item
                                     size="xs"
                                     color="danger"
@@ -266,7 +266,7 @@ watch(props, load, { immediate: true, deep: true })
                                     <is-icon name="trash" class="mr-2" />
                                     {{ $t('deleteEntity', [$t('item')]) }}
                                 </is-list-item>
-                            </is-card>
+                            </v-card>
                         </is-menu>
 
                         <is-collection-column-value

@@ -161,13 +161,13 @@ const select = ref({
             />
         </template>
 
-        <is-card width="500" height="500" color="b-secondary">
+        <v-card width="500" height="500" color="b-secondary">
             <is-card-head>
                 {{ $t('output') }}
             </is-card-head>
 
             <s-output :output="payload" />
-        </is-card>
+        </v-card>
     </is-dialog>
 
     <is-input v-else v-model="payload" flat @change="onChange" />

@@ -90,7 +90,7 @@ function refresh() {
 }
 </script>
 <template>
-    <is-card :height="height" :width="width" :color="color">
+    <v-card :height="height" :width="width" :color="color">
         <div ref="contentEl" class="hidden">
             <slot />
         </div>
@@ -127,5 +127,5 @@ function refresh() {
                 <v-chart ref="chartRef" :options="chart.options" />
             </is-card-content>
         </transition>
-    </is-card>
+    </v-card>
 </template>

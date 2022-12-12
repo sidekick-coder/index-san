@@ -135,7 +135,7 @@ async function execute() {
                     <m-editor v-model="content" @keydown.ctrl.s="save" @keyup.ctrl.e="execute" />
                 </w-content>
                 <w-drawer :model-value="!!output" right :width="500" class="border-l border-lines">
-                    <is-card color="b-secondary" class="h-full">
+                    <v-card color="b-secondary" class="h-full">
                         <is-card-head class="flex items-center">
                             <div class="font-bold text-xl mr-auto">Output</div>
 
@@ -145,7 +145,7 @@ async function execute() {
                         </is-card-head>
 
                         <m-editor readonly :model-value="output" language="shell" />
-                    </is-card>
+                    </v-card>
                 </w-drawer>
             </w-layout>
         </w-content>
