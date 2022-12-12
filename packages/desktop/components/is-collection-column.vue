@@ -117,7 +117,7 @@ const options = computed(() => {
 })
 </script>
 <template>
-    <is-dialog v-model="dialog">
+    <v-dialog v-model="dialog">
         <template #activator="{ attrs }">
             <div
                 class="cursor-pointer text-t-secondary text-sm flex items-center overflow-hidden"
@@ -219,5 +219,5 @@ const options = computed(() => {
                 </w-form>
             </v-card-content>
         </v-card>
-    </is-dialog>
+    </v-dialog>
 </template>

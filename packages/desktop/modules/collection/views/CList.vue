@@ -71,7 +71,7 @@ async function deleteItem(collectionId: string) {
 </script>
 <template>
     <div>
-        <is-dialog v-model="dialog">
+        <v-dialog v-model="dialog">
             <v-card color="b-secondary" width="500">
                 <v-card-head>
                     <v-card-title>
@@ -106,7 +106,7 @@ async function deleteItem(collectionId: string) {
                     </w-form>
                 </v-card-content>
             </v-card>
-        </is-dialog>
+        </v-dialog>
 
         <is-container class="w-full py-5 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">

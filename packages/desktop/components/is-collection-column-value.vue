@@ -150,7 +150,7 @@ const select = ref({
         </option>
     </is-select>
 
-    <is-dialog v-else-if="column.type === 'script'">
+    <v-dialog v-else-if="column.type === 'script'">
         <template #activator="{ attrs }">
             <is-input
                 v-bind="attrs"
@@ -168,7 +168,7 @@ const select = ref({
 
             <s-output :output="payload" />
         </v-card>
-    </is-dialog>
+    </v-dialog>
 
     <is-input v-else v-model="payload" flat @change="onChange" />
 </template>

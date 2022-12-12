@@ -57,7 +57,7 @@ async function onItemDelete(item: Script) {
 }
 </script>
 <template>
-    <is-dialog v-model="dialog">
+    <v-dialog v-model="dialog">
         <w-form @submit="submit">
             <v-card color="b-secondary">
                 <v-card-content class="flex flex-wrap">
@@ -67,7 +67,7 @@ async function onItemDelete(item: Script) {
                 </v-card-content>
             </v-card>
         </w-form>
-    </is-dialog>
+    </v-dialog>
 
     <is-container class="w-full py-5 border-b border-lines flex items-center">
         <div class="text-2xl font-bold">
