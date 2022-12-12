@@ -76,22 +76,22 @@ async function toggle() {
 
 <template>
     <w-toolbar class="px-7 border-b border-lines text-sm" :height="40">
-        <is-btn v-if="!drawer" text size="sm" @click="drawer = true">
+        <v-btn v-if="!drawer" text size="sm" @click="drawer = true">
             <is-icon name="bars" />
-        </is-btn>
+        </v-btn>
 
-        <is-btn :disabled="!navigation.haveBack" text size="sm" @click="$router.go(-1)">
+        <v-btn :disabled="!navigation.haveBack" text size="sm" @click="$router.go(-1)">
             <is-icon name="arrow-left" />
-        </is-btn>
+        </v-btn>
 
-        <is-btn :disabled="!navigation.haveForward" text size="sm" @click="$router.go(1)">
+        <v-btn :disabled="!navigation.haveForward" text size="sm" @click="$router.go(1)">
             <is-icon name="arrow-right" />
-        </is-btn>
+        </v-btn>
 
         <template v-for="(link, index) in links" :key="index">
-            <is-btn v-if="link.to" size="sm" text :to="link.to">
+            <v-btn v-if="link.to" size="sm" text :to="link.to">
                 {{ link.label }}
-            </is-btn>
+            </v-btn>
 
             <div v-else class="text-xs px-3 py-1">
                 {{ link.label }}
@@ -100,8 +100,8 @@ async function toggle() {
             <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
         </template>
 
-        <is-btn class="ml-auto" text size="sm" @click="toggle">
+        <v-btn class="ml-auto" text size="sm" @click="toggle">
             <is-icon :name="menuItem ? 'star' : 'fa-regular fa-star'" />
-        </is-btn>
+        </v-btn>
     </w-toolbar>
 </template>

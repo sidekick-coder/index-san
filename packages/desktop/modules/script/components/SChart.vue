@@ -99,12 +99,12 @@ function refresh() {
                 {{ title }}
             </is-card-title>
 
-            <is-btn text size="sm" class="ml-auto" @click="refresh">
+            <v-btn text size="sm" class="ml-auto" @click="refresh">
                 <is-icon name="rotate" />
-            </is-btn>
-            <is-btn text size="sm" @click="debug = !debug">
+            </v-btn>
+            <v-btn text size="sm" @click="debug = !debug">
                 <is-icon name="bug" />
-            </is-btn>
+            </v-btn>
         </is-card-head>
 
         <is-card-content v-if="debug" style="height: calc(100% - 54px)">

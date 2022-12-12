@@ -63,7 +63,7 @@ async function onItemDelete(item: Script) {
                 <is-card-content class="flex flex-wrap">
                     <is-input v-model="payload.name" class="mb-4" label="Name" />
 
-                    <is-btn class="w-full">Create</is-btn>
+                    <v-btn class="w-full">Create</v-btn>
                 </is-card-content>
             </is-card>
         </w-form>
@@ -74,20 +74,20 @@ async function onItemDelete(item: Script) {
             {{ meta.title }}
         </div>
 
-        <is-btn class="ml-auto" @click="dialog = true">
+        <v-btn class="ml-auto" @click="dialog = true">
             {{ $t('addEntity', ['script']) }}
-        </is-btn>
+        </v-btn>
     </is-container>
 
     <is-table :columns="columns" :items="store.scripts">
         <template #item-actions="{ item }">
             <div class="px-2 flex">
-                <is-btn text size="sm" :to="`/scripts/${item.id}`">
+                <v-btn text size="sm" :to="`/scripts/${item.id}`">
                     <is-icon name="eye" />
-                </is-btn>
-                <is-btn text size="sm" color="danger" @click="onItemDelete(item)">
+                </v-btn>
+                <v-btn text size="sm" color="danger" @click="onItemDelete(item)">
                     <is-icon name="trash" />
-                </is-btn>
+                </v-btn>
             </div>
         </template>
     </is-table>

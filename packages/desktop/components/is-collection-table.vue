@@ -184,21 +184,21 @@ watch(props, load, { immediate: true, deep: true })
             </is-card-title>
 
             <div class="ml-auto flex">
-                <is-btn text size="sm" @click="onColumnNew">
+                <v-btn text size="sm" @click="onColumnNew">
                     {{ $t('addEntity', [$t('column')]) }}
-                </is-btn>
+                </v-btn>
 
                 <is-drawer>
                     <template #activator="{ on }">
-                        <is-btn text size="sm" v-bind="on">
+                        <v-btn text size="sm" v-bind="on">
                             <is-icon name="table-columns" />
-                        </is-btn>
+                        </v-btn>
                     </template>
                 </is-drawer>
 
-                <is-btn text size="sm" @click="drawers.filters = true">
+                <v-btn text size="sm" @click="drawers.filters = true">
                     <is-icon name="filter" />
-                </is-btn>
+                </v-btn>
             </div>
         </is-card-head>
 
@@ -243,7 +243,7 @@ watch(props, load, { immediate: true, deep: true })
                     <td v-for="(c, index) in filteredColumns" :key="c.id" :class="classes.td">
                         <is-menu v-if="index === 0" offset-y>
                             <template #activator="{ on }">
-                                <is-btn
+                                <v-btn
                                     class="w-[36px] -ml-[36px] absolute h-full top-0"
                                     text
                                     v-bind="on"
@@ -253,7 +253,7 @@ watch(props, load, { immediate: true, deep: true })
                                         class="text-lines cursor-pointer flex items-center justify-center actions"
                                         name="ellipsis-vertical"
                                     />
-                                </is-btn>
+                                </v-btn>
                             </template>
 
                             <is-card color="b-primary">

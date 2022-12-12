@@ -100,9 +100,9 @@ async function deleteItem(collectionId: string) {
                             />
                         </div>
 
-                        <is-btn :disabled="!payload.name || !payload.path" class="w-full">
+                        <v-btn :disabled="!payload.name || !payload.path" class="w-full">
                             {{ $t('create') }}
-                        </is-btn>
+                        </v-btn>
                     </w-form>
                 </is-card-content>
             </is-card>
@@ -112,9 +112,9 @@ async function deleteItem(collectionId: string) {
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
-            <is-btn class="ml-auto" @click="dialog = true">
+            <v-btn class="ml-auto" @click="dialog = true">
                 {{ $t('addEntity', [$t('collection')]) }}
-            </is-btn>
+            </v-btn>
         </is-container>
 
         <is-table
@@ -126,13 +126,13 @@ async function deleteItem(collectionId: string) {
         >
             <template #item-actions="{ item }">
                 <div class="flex gap-x-4 p-2">
-                    <is-btn text size="sm" :to="`/collections/${item.id}/items`">
+                    <v-btn text size="sm" :to="`/collections/${item.id}/items`">
                         <fa-icon icon="eye" />
-                    </is-btn>
+                    </v-btn>
 
-                    <is-btn text size="sm" color="danger" @click="deleteItem(item.id)">
+                    <v-btn text size="sm" color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
-                    </is-btn>
+                    </v-btn>
                 </div>
             </template>
         </is-table>

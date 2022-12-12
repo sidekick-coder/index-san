@@ -113,7 +113,7 @@ async function execute() {
             <is-container>
                 <div class="grow" />
 
-                <is-btn
+                <v-btn
                     :disabled="script.content === content"
                     class="mr-3 disabled:bg-lines"
                     color="info"
@@ -121,11 +121,11 @@ async function execute() {
                     @click="save"
                 >
                     Save
-                </is-btn>
+                </v-btn>
 
-                <is-btn color="accent" size="sm" :loading="execution.loading" @click="execute">
+                <v-btn color="accent" size="sm" :loading="execution.loading" @click="execute">
                     {{ $t('execute') }}
-                </is-btn>
+                </v-btn>
             </is-container>
         </w-toolbar>
 
@@ -139,9 +139,9 @@ async function execute() {
                         <is-card-head class="flex items-center">
                             <div class="font-bold text-xl mr-auto">Output</div>
 
-                            <is-btn text @click="reset">
+                            <v-btn text @click="reset">
                                 <is-icon name="times" />
-                            </is-btn>
+                            </v-btn>
                         </is-card-head>
 
                         <m-editor readonly :model-value="output" language="shell" />

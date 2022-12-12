@@ -134,9 +134,9 @@ const options = computed(() => {
                 <is-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
                 </is-card-title>
-                <is-btn text color="danger" class="ml-auto" @click="deleteColumn">
+                <v-btn text color="danger" class="ml-auto" @click="deleteColumn">
                     <is-icon name="trash" />
-                </is-btn>
+                </v-btn>
             </is-card-head>
 
             <is-card-content>
@@ -214,7 +214,7 @@ const options = computed(() => {
                     </is-drawer>
 
                     <div>
-                        <is-btn class="w-full">{{ $t('save') }}</is-btn>
+                        <v-btn class="w-full">{{ $t('save') }}</v-btn>
                     </div>
                 </w-form>
             </is-card-content>

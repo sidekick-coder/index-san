@@ -70,20 +70,20 @@ async function save() {
     <w-layout use-percentage>
         <w-toolbar class="border-b border-b-lines">
             <is-container class="-mr-3 flex justify-end w-full">
-                <is-btn size="sm" class="mr-2" text @click="setPreview">
+                <v-btn size="sm" class="mr-2" text @click="setPreview">
                     <is-icon name="arrows-rotate" class="mr-2" />
                     {{ $t('reload') }}
-                </is-btn>
+                </v-btn>
                 <template v-if="edit">
-                    <is-btn size="sm" class="mr-2" text @click="save">
+                    <v-btn size="sm" class="mr-2" text @click="save">
                         <is-icon name="save" class="mr-2" />
                         {{ $t('save') }}
-                    </is-btn>
+                    </v-btn>
                 </template>
-                <is-btn size="sm" text @click="edit = !edit">
+                <v-btn size="sm" text @click="edit = !edit">
                     <is-icon :name="!edit ? 'pen' : 'eye'" class="mr-2" />
                     {{ !edit ? $t('editMode') : $t('viewMode') }}
-                </is-btn>
+                </v-btn>
             </is-container>
         </w-toolbar>
 

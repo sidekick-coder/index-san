@@ -92,9 +92,9 @@ setItems()
 
             <template #item-actions="{ item, attrs }">
                 <div v-bind="attrs" class="flex items-center justify-center">
-                    <is-btn color="danger" text size="sm" @click="store.destroy(item)">
+                    <v-btn color="danger" text size="sm" @click="store.destroy(item)">
                         <is-icon name="trash" class="cursor-pointer" />
-                    </is-btn>
+                    </v-btn>
                 </div>
             </template>
         </is-table>

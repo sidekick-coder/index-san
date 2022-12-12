@@ -42,13 +42,13 @@ const title = computed(() => {
                         {{ title }}
                     </h1>
                 </is-list-item>
-                <is-btn
+                <v-btn
                     text
                     class="opacity-0 h-[52px] group-hover:opacity-100"
                     @click="drawer = false"
                 >
                     <is-icon name="chevron-left" />
-                </is-btn>
+                </v-btn>
             </div>
 
             <is-list-item to="/workspaces">

@@ -105,9 +105,9 @@ async function deleteItem(id: string) {
                             <is-input v-model="payload.path" label="Path" />
                         </div>
 
-                        <is-btn :disabled="!payload.name || !payload.path" class="w-full">
+                        <v-btn :disabled="!payload.name || !payload.path" class="w-full">
                             {{ $t('create') }}
-                        </is-btn>
+                        </v-btn>
                     </w-form>
                 </is-card-content>
             </is-card>
@@ -117,9 +117,9 @@ async function deleteItem(id: string) {
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
-            <is-btn class="ml-auto" @click="dialog = true">
+            <v-btn class="ml-auto" @click="dialog = true">
                 {{ $t('addEntity', [$t('workspace')]) }}
-            </is-btn>
+            </v-btn>
         </is-container>
 
         <is-table :columns="columns" :items="store.workspaces" :fixed="false">
@@ -140,21 +140,21 @@ async function deleteItem(id: string) {
 
             <template #item-actions="{ item }">
                 <div class="flex gap-x-2 p-2">
-                    <is-btn size="sm" text class="mr-2" to="/scripts">
+                    <v-btn size="sm" text class="mr-2" to="/scripts">
                         <is-icon name="code" />
-                    </is-btn>
+                    </v-btn>
 
-                    <is-btn size="sm" text class="mr-2" to="/collections">
+                    <v-btn size="sm" text class="mr-2" to="/collections">
                         <is-icon name="database" />
-                    </is-btn>
+                    </v-btn>
 
-                    <is-btn size="sm" text class="mr-2" to="/entries">
+                    <v-btn size="sm" text class="mr-2" to="/entries">
                         <is-icon name="folder" />
-                    </is-btn>
+                    </v-btn>
 
-                    <is-btn size="sm" text color="danger" @click="deleteItem(item.id)">
+                    <v-btn size="sm" text color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
-                    </is-btn>
+                    </v-btn>
                 </div>
             </template>
         </is-table>
