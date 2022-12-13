@@ -34,6 +34,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    headerStick: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 // Pagination
@@ -68,10 +72,13 @@ const parsedColumns = computed(() =>
 const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
 </script>
 <template>
-    <table class="w-full border-lines" :class="[fixed ? 'table-fixed' : '']">
+    <table
+        class="w-full border-lines border-separate border-spacing-0"
+        :class="[fixed ? 'table-fixed' : '']"
+    >
         <thead>
             <slot name="column" :columns="parsedColumns">
-                <v-tr>
+                <v-tr :class="[headerStick ? 'sticky top-0' : '']" class="bg-b-primary">
                     <slot
                         v-for="column in parsedColumns"
                         :key="column.name"

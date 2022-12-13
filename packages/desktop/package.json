@@ -22,7 +22,6 @@
     "build:debug": "electron-forge start --inspect-electron"
   },
   "dependencies": {
-    "@editorjs/editorjs": "^2.26.2",
     "@editorjs/header": "^2.7.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
@@ -31,13 +30,10 @@
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@mdit-vue/plugin-component": "^0.11.1",
     "chart.js": "^4.0.1",
-    "editorjs-drag-drop": "^1.1.10",
-    "editorjs-toggle-block": "^0.3.6",
     "electron-squirrel-startup": "^1.0.0",
     "highlight.js": "^11.7.0",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
-    "mathjs": "^11.5.0",
     "mime": "^3.0.0",
     "moment": "^2.29.4",
     "monaco-editor": "^0.34.1",

@@ -28,6 +28,13 @@ const items = computed(() => {
             icon: 'cubes',
         },
         {
+            label: tm.t('entry', 2),
+            to: '/entries',
+            children: [],
+            id: 'entries',
+            icon: 'folder',
+        },
+        {
             label: tm.t('option', 2),
             to: '/options',
             children: [],

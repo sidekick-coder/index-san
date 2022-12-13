@@ -2,7 +2,7 @@ import { Router } from 'vue-router'
 
 export default (router: Router) => {
     router.addRoute({
-        path: '/workspaces/:workspaceId/entries',
+        path: '/entries',
         component: () => import('@/modules/workspace/WLayout.vue'),
         children: [
             {

@@ -1,9 +1,7 @@
 <script setup lang="ts">
+import EFolder from './EFolder.vue'
+
 defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
     entryId: {
         type: String,
         default: '/',
@@ -12,5 +10,5 @@ defineProps({
 </script>
 
 <template>
-    <is-entry-view-folder :workspace-id="workspaceId" :path="entryId" />
+    <e-folder :path="entryId" />
 </template>

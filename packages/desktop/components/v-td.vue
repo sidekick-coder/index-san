@@ -8,7 +8,7 @@ defineProps({
 </script>
 <template>
     <td
-        class="text-left border-r last:border-r-0 border-lines"
+        class="text-left border-b border-r last:border-r-0 border-lines"
         :class="[noPadding ? 'p-0' : 'p-2']"
     >
         <slot></slot>

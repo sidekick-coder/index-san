@@ -3,75 +3,97 @@ import { ref, watch } from 'vue'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
-import { useDirectoryEntry } from '@/composables/directory-entry'
-import { definePageMeta } from '@/composables/page-meta'
+import { useMeta } from '@/composables/metas'
 
+import { useStore } from '../store'
+import { useRouter } from 'vue-router'
+
+import EFolder from './EFolder.vue'
+import EInfo from './EInfo.vue'
+import EJson from './EJson.vue'
 import EMarkdown from './EMarkdown.vue'
+import EJs from './EJs.vue'
+import EText from './EText.vue'
 
 const props = defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
     entryId: {
         type: String,
         default: '/',
     },
 })
 
-const meta = definePageMeta({ title: props.entryId })
+// async function load() {
+//     entry.value = undefined
 
-const views = {
-    default: 'is-entry-view-default',
-    folder: 'is-entry-view-folder',
-    text: 'is-entry-view-text',
-    markdown: EMarkdown,
-    image: 'is-entry-view-image',
-    blockEditor: 'is-entry-view-block-editor',
-}
+//     const data = await useDirectoryEntry(props.workspaceId).show(props.entryId)
+
+//     entry.value = data
+//     meta.value.title = data.name ?? 'Entry'
+
+//     current.value = getRecommendedView(data)
+// }
+
+// set meta
+useMeta({ title: props.entryId })
+
+// set entry
+const store = useStore()
+const router = useRouter()
 
 const entry = ref<DirectoryEntry>()
+
+async function setEntry() {
+    await store
+        .show({ path: props.entryId })
+        .then((r) => (entry.value = r.data))
+        .catch(() => router.push('/404'))
+}
+
+watch(() => props.entryId, setEntry, { immediate: true })
+
+// set view
+const views = {
+    default: EInfo,
+    folder: EFolder,
+    json: EJson,
+    js: EJs,
+    text: EText,
+    markdown: EMarkdown,
+    // image: 'is-entry-view-image',
+}
+
 const current = ref<keyof typeof views>('default')
 
-function getRecommendedView({ path, type }: DirectoryEntry): keyof typeof views {
+async function setView() {
+    if (!entry.value) {
+        return
+    }
+
+    const { path, type } = entry.value
+
     if (/.(md)/.test(path)) {
-        return 'markdown'
+        current.value = 'markdown'
     }
 
-    if (/.(txt|json)/.test(path)) {
-        return 'text'
+    if (/.(js)/.test(path)) {
+        current.value = 'js'
     }
 
-    if (/.(jpeg|jpg|png)/.test(path)) {
-        return 'image'
+    if (/.(json)/.test(path)) {
+        current.value = 'json'
     }
 
-    if (/.(is)/.test(path)) {
-        return 'blockEditor'
+    if (/.(txt|csv)/.test(path)) {
+        current.value = 'text'
     }
 
     if (type === 'directory') {
-        return 'folder'
+        current.value = 'folder'
     }
-
-    return 'default'
 }
 
-async function load() {
-    entry.value = undefined
-
-    const data = await useDirectoryEntry(props.workspaceId).show(props.entryId)
-
-    entry.value = data
-    meta.value.title = data.name ?? 'Entry'
-
-    current.value = getRecommendedView(data)
-}
-
-watch(() => props.entryId, load, {
-    immediate: true,
-})
+watch(entry, setView, { deep: true })
 </script>
 <template>
-    <component :is="views[current]" v-if="entry" :workspace-id="workspaceId" :path="entry.path" />
+    <component :is="views[current]" v-if="entry" :path="entry.path" />
 </template>
