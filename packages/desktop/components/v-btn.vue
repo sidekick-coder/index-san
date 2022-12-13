@@ -33,8 +33,9 @@ const props = defineProps({
 })
 
 const sizes = {
+    none: '',
     sm: 'px-3 py-1 text-xs',
-    md: 'px-4 py-2',
+    md: 'px-4 py-2 text-sm',
 }
 
 const variations = {
@@ -44,9 +45,16 @@ const variations = {
         info: 'bg-info hover:bg-info/75 text-t-primary',
     },
     text: {
-        accent: 'hover:border-accent/5 hover:bg-accent/5 border border-transparent hover:text-accent',
-        danger: 'hover:border-danger/5 hover:bg-danger/5 border border-transparent hover:text-danger',
-        info: 'hover:border-info/5 hover:bg-info/5 border border-transparent hover:text-info',
+        'accent':
+            'hover:border-accent/5 hover:bg-accent/5 border border-transparent hover:text-accent',
+        'danger':
+            'hover:border-danger/5 hover:bg-danger/5 border border-transparent hover:text-danger',
+        'info': 'hover:border-info/5 hover:bg-info/5 border border-transparent hover:text-info',
+        'lines': 'hover:border-lines/5 hover:bg-lines/5 border border-transparent hover:text-lines',
+        'b-primary':
+            'hover:border-b-primary/5 hover:bg-b-primary/5 border border-transparent hover:text-b-primary',
+        'b-secondary':
+            'hover:border-b-secondary/5 hover:bg-b-secondary/5 border border-transparent hover:text-b-secondary',
     },
 }
 

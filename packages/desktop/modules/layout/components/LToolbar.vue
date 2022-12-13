@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import uuid from 'uuid-random'
+
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -70,6 +72,8 @@ async function toggle() {
     await store.create({
         label: meta.value.title,
         to: route.path,
+        children: [],
+        id: uuid(),
     })
 }
 </script>

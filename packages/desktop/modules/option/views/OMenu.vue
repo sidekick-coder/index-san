@@ -1,56 +1,18 @@
 <script setup lang="ts">
+import Menu from '@core/entities/menu'
 import { useMeta } from '@/composables/metas'
-import { useStore, Menu } from '@/modules/menu/store'
+import { useStore } from '@/modules/menu/store'
+
+import OMenuItem from '@/modules/option/components/OMenuItem.vue'
+import Draggable from 'vuedraggable'
 
 // metas
 useMeta({ title: 'Menu settings' })
 
 const store = useStore()
 
-// Table columns
-const columns = [
-    {
-        name: 'order',
-        label: 'Order',
-        field: 'order',
-        width: 80,
-        padding: {
-            left: 40,
-        },
-    },
-    {
-        name: 'label',
-        label: 'Label',
-        field: 'label',
-    },
-    {
-        name: 'section',
-        label: 'section',
-        field: 'section',
-    },
-    {
-        name: 'icon',
-        label: 'icon',
-        field: 'icon',
-    },
-    {
-        name: 'actions',
-        label: '',
-        width: 120,
-        padding: {
-            right: 40,
-        },
-    },
-]
-
-async function setItems() {
-    // await useAllMenuAsync()
-}
-
-async function onItemUpdate() {
+async function onUpdate() {
     await store.save()
-    // await update(item.workspace.id)
-    // await setItems()
 }
 
 async function onItemDelete(item: Menu) {
@@ -59,52 +21,51 @@ async function onItemDelete(item: Menu) {
     if (index !== -1) {
         store.menu.splice(index, 1)
 
-        // await store.save()
+        await store.save()
     }
 }
 
-setItems()
+// add section
+
+function addSection() {
+    store.menu.push({
+        id: String(Math.random() * 9999),
+        label: 'Label',
+        icon: 'code',
+        isSection: true,
+        children: [],
+    })
+}
+
+// dragging
+const drag = {
+    options: {
+        emptyInsertThreshold: 22,
+        handle: '.drag-handle',
+        itemKey: 'id',
+        group: 'menu',
+    },
+}
 </script>
 <template>
-    <div>
-        <v-table :columns="columns" :items="store.menu" limit="100" :fixed="false">
-            <template #item-order="{ item, column }">
-                <v-td no-padding>
-                    <is-input
-                        v-model="item[column.field]"
-                        type="number"
-                        flat
-                        input:class="pl-10 w-[80px]"
-                        @change="onItemUpdate"
-                    />
-                </v-td>
+    <is-container class="py-4">
+        <div v-if="!store.menu.length" class="my-4 py-2 w-full text-center border border-lines">
+            {{ $t('noEntity', [$t('item', 2)]) }}
+        </div>
+
+        <Draggable :list="store.menu" v-bind="drag.options" class="w-full">
+            <template #item="{ index }">
+                <o-menu-item
+                    v-model="store.menu[index]"
+                    :drag-options="drag.options"
+                    @update="onUpdate"
+                    @destroy="onItemDelete"
+                />
             </template>
 
-            <template #item-label="{ item, column }">
-                <v-td no-padding>
-                    <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
-                </v-td>
+            <template #footer>
+                <v-btn @click="addSection">{{ $t('addEntity', [$t('section')]) }}</v-btn>
             </template>
-
-            <template #item-section="{ item, column }">
-                <v-td no-padding>
-                    <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
-                </v-td>
-            </template>
-
-            <template #item-icon="{ item, column }">
-                <v-td no-padding>
-                    <is-input v-model="item[column.field]" flat @change="onItemUpdate" />
-                </v-td>
-            </template>
-
-            <template #item-actions="{ item, attrs }">
-                <div v-bind="attrs" class="flex items-center justify-center">
-                    <v-btn color="danger" text size="sm" @click="store.destroy(item)">
-                        <is-icon name="trash" class="cursor-pointer" />
-                    </v-btn>
-                </div>
-            </template>
-        </v-table>
-    </div>
+        </Draggable>
+    </is-container>
 </template>

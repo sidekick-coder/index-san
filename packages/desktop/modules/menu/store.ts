@@ -1,52 +1,52 @@
-import orderBy from 'lodash/orderBy'
-
 import { defineStore } from 'pinia'
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
 
-import { useStore as useOptions } from '@/modules/option/store'
+import { useStore as useWorkspace } from '@/modules/workspace/store'
 
-export interface Menu {
-    label: string
-    to: string
-    icon?: string
-    section?: string
-    children?: []
-}
+import ShowMenuDTO from '@core/use-cases/show-menu/show-menu.dto'
+import { useCase } from '@/composables/use-case'
+import Menu from '@core/entities/menu'
 
 export const useStore = defineStore('menu', () => {
-    const option = useOptions()
+    const menu = ref<Menu[]>([])
 
-    const menu = computed<Menu[]>(() => {
-        return orderBy(option.options.menu || [], 'order')
-    })
+    const workspace = useWorkspace()
+
+    async function setMenu(workspaceId = workspace.currentId) {
+        await useCase<ShowMenuDTO.Output>('show-menu', {
+            workspaceId,
+        })
+            .then((r) => (menu.value = r.data))
+            .catch(() => (menu.value = []))
+    }
 
     async function save() {
-        await option.save({
-            data: { menu: menu.value.slice() },
+        await useCase('update-menu', {
+            workspaceId: workspace.currentId,
+            data: menu.value,
         })
     }
 
     async function destroy(item: Menu) {
-        if (!option.options.menu) return
-
-        const index = option.options.menu.indexOf(item)
-
-        if (index === -1) return
-
-        option.options.menu.splice(index, 1)
-
-        await save()
+        // if (!option.options.menu) return
+        // const index = option.options.menu.indexOf(item)
+        // if (index === -1) return
+        // option.options.menu.splice(index, 1)
+        // await save()
     }
 
     async function create(item: Menu) {
-        option.options.menu?.push(item)
+        menu.value.push(item)
 
         await save()
     }
+
+    watch(() => workspace.currentId, setMenu)
 
     return {
         menu,
 
+        setMenu,
         save,
         create,
         destroy,

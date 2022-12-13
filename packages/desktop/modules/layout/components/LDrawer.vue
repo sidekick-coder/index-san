@@ -6,15 +6,51 @@ import { useState } from '@/composables/state'
 import { useStore as useMenu } from '@/modules/menu/store'
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 
+import LDrawerItem from './LDrawerItem.vue'
+import { useI18n } from 'vue-i18n'
+import Menu from '@core/entities/menu'
+
 const drawer = useState('app:drawer', true, {
     localStorage: true,
 })
 
 // menu
+const tm = useI18n()
 const menuStore = useMenu()
 
-const sections = computed(() => {
-    return groupBy(menuStore.menu, (i) => i.section || 'Favorites')
+const items = computed(() => {
+    const result: Menu[] = [
+        {
+            label: tm.t('workspace', 2),
+            to: '/workspaces',
+            children: [],
+            id: 'workspaces',
+            icon: 'cubes',
+        },
+        {
+            label: tm.t('option', 2),
+            to: '/options',
+            children: [],
+            id: 'options',
+            icon: 'cog',
+        },
+        {
+            label: tm.t('collection', 2),
+            to: '/collections',
+            children: [],
+            id: 'collections',
+            icon: 'database',
+        },
+        {
+            label: tm.t('script', 2),
+            to: '/scripts',
+            children: [],
+            id: 'scripts',
+            icon: 'code',
+        },
+    ]
+
+    return result.concat(menuStore.menu)
 })
 
 // title
@@ -35,52 +71,20 @@ const title = computed(() => {
         v-model="drawer"
         class="bg-b-secondary text-t-primary border-r border-b-primary group"
     >
-        <div class="flex flex-wrap items-start">
-            <div class="flex items-stretch w-full justify-between">
-                <is-list-item to="/">
-                    <h1 class="text-lg font-bold">
-                        {{ title }}
-                    </h1>
-                </is-list-item>
-                <v-btn
-                    text
-                    class="opacity-0 h-[52px] group-hover:opacity-100"
-                    @click="drawer = false"
-                >
-                    <is-icon name="chevron-left" />
-                </v-btn>
-            </div>
+        <is-list-item to="/" class="pl-7 border-b border-lines">
+            <h1 class="text-lg font-bold mr-auto">
+                {{ title }}
+            </h1>
+            <v-btn
+                text
+                class="opacity-0 group-hover:opacity-100"
+                size="sm"
+                @click.prevent.stop="drawer = false"
+            >
+                <is-icon name="chevron-left" />
+            </v-btn>
+        </is-list-item>
 
-            <is-list-item to="/workspaces">
-                <i class="mr-2"> <fa-icon icon="cubes" /></i>
-                <div>Workspaces</div>
-            </is-list-item>
-
-            <is-list-item to="/options">
-                <i class="mr-2"> <fa-icon icon="cog" /></i>
-                <div>{{ $t('option', 2) }}</div>
-            </is-list-item>
-
-            <is-list-item to="/collections">
-                <is-icon name="database" class="mr-2" />
-                <div>{{ $t('collection', 2) }}</div>
-            </is-list-item>
-
-            <is-list-item to="/scripts">
-                <is-icon name="code" class="mr-2" />
-                <div>{{ $t('script', 2) }}</div>
-            </is-list-item>
-        </div>
-
-        <div v-for="(items, name) in sections" :key="name" class="flex flex-wrap items-start">
-            <is-list-item class="text-t-secondary font-bold">
-                {{ name }}
-            </is-list-item>
-
-            <is-list-item v-for="(item, index) in items" :key="index" :to="item.to">
-                <is-icon :name="item.icon || 'circle'" class="mr-4" />
-                <div>{{ item.label }}</div>
-            </is-list-item>
-        </div>
+        <l-drawer-item v-for="(item, index) in items" :key="index" :item="item" />
     </w-drawer>
 </template>

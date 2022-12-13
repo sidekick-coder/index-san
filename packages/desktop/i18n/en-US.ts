@@ -49,6 +49,8 @@ export default {
     output: 'Output',
     content: 'Content',
     loadMore: 'Load more',
+    search: 'Search',
+    section: 'Section',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

@@ -1,7 +1,9 @@
 export default class Menu {
+    id: string
     label: string
-    to: string
+    children: []
+
+    isSection?: boolean
+    to?: string
     icon?: string
-    section?: string
-    children?: []
 }

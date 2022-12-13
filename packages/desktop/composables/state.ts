@@ -45,7 +45,7 @@ function getLocalStorage<T = any>(key: string) {
 
 export function useState<T = any>(key: string, defaultValue?: T, options?: Options) {
     if (options?.localStorage && !states.value.has(key)) {
-        states.value.set(key, getLocalStorage(key))
+        states.value.set(key, getLocalStorage(key) || defaultValue)
     }
 
     if (!states.value.has(key)) {

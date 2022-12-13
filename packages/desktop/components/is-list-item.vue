@@ -29,12 +29,13 @@ const defaultColors = {
 }
 
 const sizes = {
+    none: '',
     xs: 'text-xs py-3 px-4',
     sm: 'text-sm py-3 px-4',
 }
 
 const classes = computed(() => {
-    const result: string[] = ['w-full transition-all flex']
+    const result: string[] = ['w-full transition-all flex items-center']
 
     result.push(sizes[props.size])
 

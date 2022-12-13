@@ -135,9 +135,13 @@ const displayLabel = computed(() => {
         </template>
 
         <v-card color="b-secondary" v-bind="bindings.card">
-            <is-list-item v-for="option in options" :key="option" dark @click="onSelect(option)">
-                {{ getLabel(option) }}
-            </is-list-item>
+            <template v-for="option in options" :key="option">
+                <slot name="option" :option="option">
+                    <is-list-item dark @click="onSelect(option)">
+                        {{ getLabel(option) }}
+                    </is-list-item>
+                </slot>
+            </template>
         </v-card>
     </is-menu>
 </template>
