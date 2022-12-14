@@ -11,6 +11,7 @@ export default {
     rule: 'Rule | Rules',
     file: 'File | Files',
     folder: 'Folder | Folders',
+    filter: 'Filter | Filters',
     listEntity: '{0} list',
     addEntity: 'Add {0}',
     editEntity: 'Edit {0}',
@@ -54,6 +55,9 @@ export default {
     loadMore: 'Load more',
     search: 'Search',
     section: 'Section',
+    equal: 'Equal',
+    notEqual: 'Not equal',
+    apply: 'Apply',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

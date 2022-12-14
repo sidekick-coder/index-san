@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref, watch } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 // Props & Emits
@@ -15,6 +15,10 @@ const props = defineProps({
     maxHeight: {
         type: String,
         default: null,
+    },
+    closeOnContentClick: {
+        type: Boolean,
+        default: false,
     },
 })
 
@@ -128,6 +132,13 @@ const style = computed(() => {
 
     return result
 })
+
+// click on content
+function onContentClick() {
+    if (props.closeOnContentClick) {
+        show.value = false
+    }
+}
 </script>
 
 <template>
@@ -140,7 +151,7 @@ const style = computed(() => {
                 :ref="(el: any) => (max.el = el)"
                 :style="style"
                 class="is-menu z-20 fixed transition-all overflow-auto"
-                @click.stop=""
+                @click.stop="onContentClick"
             >
                 <slot />
             </div>

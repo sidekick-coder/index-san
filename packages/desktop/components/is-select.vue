@@ -24,6 +24,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    readonly: {
+        type: Boolean,
+        default: false,
+    },
     options: {
         type: Array as () => any[],
         default: () => [],
@@ -82,19 +86,27 @@ function getLabel(option: any) {
 const attrs = useAttrs()
 
 const bindings = computed(() => {
-    const wrapper = {}
+    const main = {}
     const card = {}
+    const menu = {}
 
-    Object.keys(attrs)
-        .filter((key) => key.startsWith('card:'))
-        .forEach((key) => {
-            if (key.startsWith('card:')) {
-                card[key.replace('card:', '')] = attrs[key]
-            }
-        })
+    Object.keys(attrs).forEach((key) => {
+        if (key.startsWith('card:')) {
+            card[key.replace('card:', '')] = attrs[key]
+            return
+        }
+
+        if (key.startsWith('menu:')) {
+            menu[key.replace('menu:', '')] = attrs[key]
+            return
+        }
+
+        main[key] = attrs[key]
+    })
 
     return {
-        wrapper,
+        menu,
+        main,
         card,
     }
 })
@@ -109,17 +121,34 @@ const displayLabel = computed(() => {
     }
 
     if (props.returnObject) {
-        label = model.value[props.labelKey]
+        return model.value[props.labelKey]
     }
 
-    return label
+    if (!props.labelKey || !props.valueKey) {
+        return label
+    }
+
+    const option = props.options.find((o) => o[props.valueKey] === model.value)
+
+    return option[props.labelKey]
 })
+
+function onShowMenu(value: boolean) {
+    if (props.readonly) return
+
+    menu.value = value
+}
 </script>
 <template>
-    <is-menu v-model="menu" max-height="132">
+    <is-menu
+        :model-value="menu"
+        max-height="132"
+        v-bind="bindings.menu"
+        @update:model-value="onShowMenu"
+    >
         <template #activator="{ on }">
             <is-input
-                v-bind="on"
+                v-bind="{ ...on, ...bindings.main }"
                 :model-value="displayLabel"
                 :label="label"
                 :color="color"
@@ -129,7 +158,7 @@ const displayLabel = computed(() => {
                 input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
             >
                 <template #append>
-                    <is-icon name="chevron-down" class="ml-auto" />
+                    <is-icon name="chevron-down" class="ml-auto text-t-secondary" />
                 </template>
             </is-input>
         </template>

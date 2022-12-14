@@ -66,7 +66,7 @@ const style = computed(() => {
                 class="fixed right-0 top-0 h-full border-l border-lines w-[500px] bg-b-primary overflow-y-auto"
                 :style="style"
             >
-                <slot />
+                <slot :close="onClick" />
             </aside>
         </transition>
     </teleport>

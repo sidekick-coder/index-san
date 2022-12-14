@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, resolveComponent } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import debounce from 'lodash/debounce'
@@ -7,11 +7,13 @@ import debounce from 'lodash/debounce'
 import Item from '@core/entities/item'
 import Collection, { CollectionColumn } from '@core/entities/collection'
 
-import { useStore } from '../store'
 import { useNonReactive } from '@/composables/utils'
+import { useStore } from '@/modules/collection/store'
+import { Filter, filter } from '@/modules/collection/composables/filter'
 
 import Draggable from 'vuedraggable'
 import CColumn from './CColumn.vue'
+import CFilter from './CFilter.vue'
 import IValue from '@/modules/item/components/IValue.vue'
 
 const props = defineProps({
@@ -97,7 +99,7 @@ async function setColumns() {
         field: '_actions',
         label: '',
         width: '100%',
-        type: 'string',
+        type: 'text',
     })
 
     column.value.loading = false
@@ -121,7 +123,7 @@ async function setItems() {
 
 watch(collection, setItems)
 
-// search items
+// search bar
 const search = ref({
     input: '',
     show: false,
@@ -130,17 +132,45 @@ const search = ref({
     }, 100),
 })
 
+// filters
+const filters = ref({
+    drawer: false,
+    payload: [] as Filter[],
+    current: [] as Filter[],
+})
+
 const filteredItems = computed(() =>
     items.value.filter((i) => {
-        let valid = true
+        let valid = filters.value.current.reduce((r, f) => r && filter(i, f), true)
 
         if (search.value.input) {
-            valid = !!JSON.stringify(i).includes(search.value.input)
+            valid = valid && !!JSON.stringify(i).includes(search.value.input)
         }
 
         return valid
     })
 )
+
+function addFilter(column: CollectionColumn) {
+    filters.value.payload.push({
+        column: column.id,
+        type: column.type,
+        config: {},
+        value: '',
+    })
+}
+
+function applyFilters() {
+    filters.value.current = useNonReactive(filters.value.payload)
+
+    filters.value.drawer = false
+}
+
+function cancelFilters() {
+    filters.value.payload = useNonReactive(filters.value.current)
+
+    filters.value.drawer = false
+}
 </script>
 
 <template>
@@ -177,89 +207,104 @@ const filteredItems = computed(() =>
                 <v-btn text size="sm" @click="search.show = !search.show">
                     <is-icon name="search" />
                 </v-btn>
-                <v-btn text size="sm" @click="drawers.filters = true">
-                    <is-icon name="filter" />
-                </v-btn>
+
+                <is-drawer v-model="filters.drawer">
+                    <template #activator="{ attrs }">
+                        <v-btn text size="sm" v-bind="attrs">
+                            <is-icon name="filter" />
+                        </v-btn>
+                    </template>
+
+                    <v-card-head class="px-4">
+                        <v-card-title class="text-t-secondary mr-auto">
+                            {{ $t('filter', 2) }}
+                        </v-card-title>
+
+                        <v-btn class="mr-4" color="danger" @click="cancelFilters">
+                            {{ $t('cancel') }}
+                        </v-btn>
+
+                        <v-btn class="mr-4" @click="applyFilters">
+                            {{ $t('apply') }}
+                        </v-btn>
+
+                        <v-btn @click="filters.drawer = false">
+                            <is-icon name="times" />
+                        </v-btn>
+                    </v-card-head>
+
+                    <c-filter
+                        v-for="(f, index) in filters.payload"
+                        :key="index"
+                        :model-value="f"
+                        :columns="collection ? collection.columns : []"
+                        @update:model-value="(v) => (filters[index] = v)"
+                        @destroy="filters.payload.splice(index, 1)"
+                    />
+
+                    <v-card-content class="flex-wrap">
+                        <div v-if="!filters.payload.length" class="w-full mb-3 text-t-secondary">
+                            {{ $t('noEntity', [$t('filter', 2)]) }}
+                        </div>
+
+                        <is-menu offset-y close-on-content-click>
+                            <template #activator="{ on }">
+                                <v-btn v-bind="on" class="mr-4" color="info">
+                                    {{ $t('addEntity', [$t('filter')]) }}
+                                </v-btn>
+                            </template>
+
+                            <v-card color="b-secondary">
+                                <is-list-item
+                                    v-for="c in collection ? collection.columns : []"
+                                    :key="c.id"
+                                    @click="addFilter(c)"
+                                >
+                                    {{ c.label }}
+                                </is-list-item>
+                            </v-card>
+                        </is-menu>
+                    </v-card-content>
+                </is-drawer>
             </div>
         </v-card-head>
 
         <v-table :items="filteredItems" :columns="column.columns">
             <template #column>
-                <transition-group name="c">
-                    <Draggable
-                        key="dragggable"
-                        v-model="column.columns"
-                        handle=".drag"
-                        item-key="id"
-                        tag="v-tr"
-                    >
+                <Draggable v-model="column.columns" handle=".drag" item-key="id" tag="v-tr">
+                    <template #item="{ element: c }">
+                        <v-th
+                            v-if="c.id !== '_actions'"
+                            :style="c.width ? `width: ${c.width}px` : ''"
                         >
-                        <template #item="{ element: c }">
-                            <v-th
-                                v-if="c.id !== '_actions'"
-                                :style="c.width ? `width: ${c.width}px` : ''"
-                            >
-                                <c-column class="drag" :collection-id="collectionId" :column="c" />
+                            <c-column class="drag" :collection-id="collectionId" :column="c" />
 
-                                <is-resize-line v-model="c.width" :min-width="100" />
+                            <is-resize-line v-model="c.width" :min-width="100" />
+                        </v-th>
+
+                        <template v-else>
+                            <v-th v-if="!column.columns.length" class="drag">
+                                <div
+                                    class="flex cursor-pointer text-t-secondary text-sm"
+                                    @click="onColumnNew"
+                                >
+                                    Add column
+                                    <is-icon
+                                        class="cursor-pointer ml-2"
+                                        name="plus"
+                                        @click="onColumnNew"
+                                    />
+                                </div>
                             </v-th>
 
-                            <template v-else>
-                                <v-th v-if="!column.columns.length" class="drag">
-                                    <div
-                                        class="flex cursor-pointer text-t-secondary text-sm"
-                                        @click="onColumnNew"
-                                    >
-                                        Add column
-                                        <is-icon
-                                            class="cursor-pointer ml-2"
-                                            name="plus"
-                                            @click="onColumnNew"
-                                        />
-                                    </div>
-                                </v-th>
-
-                                <v-th v-else class="w-full">
-                                    <v-btn
-                                        size="sm"
-                                        text
-                                        class="text-t-secondary"
-                                        @click="onColumnNew"
-                                    >
-                                        <is-icon name="plus" />
-                                    </v-btn>
-                                </v-th>
-                            </template>
+                            <v-th v-else class="w-full">
+                                <v-btn size="sm" text class="text-t-secondary" @click="onColumnNew">
+                                    <is-icon name="plus" />
+                                </v-btn>
+                            </v-th>
                         </template>
-                    </Draggable>
-                </transition-group>
-                <!-- <v-tr class="relative">
-                    <v-th
-                        v-for="column in columns"
-                        :key="column.name"
-                        :style="column.width ? `width: ${column.width}px` : ''"
-                    >
-                        <c-column :collection-id="collectionId" :column="column" />
-
-                        <is-resize-line v-model="column.width" :min-width="100" />
-                    </v-th>
-
-                    <v-th v-if="!columns.length">
-                        <div
-                            class="flex cursor-pointer text-t-secondary text-sm"
-                            @click="onColumnNew"
-                        >
-                            Add column
-                            <is-icon class="cursor-pointer ml-2" name="plus" @click="onColumnNew" />
-                        </div>
-                    </v-th>
-
-                    <v-th v-else>
-                        <v-btn size="sm" text class="text-t-secondary" @click="onColumnNew">
-                            <is-icon name="plus" />
-                        </v-btn>
-                    </v-th>
-                </v-tr> -->
+                    </template>
+                </Draggable>
             </template>
 
             <template #item="{ item }">

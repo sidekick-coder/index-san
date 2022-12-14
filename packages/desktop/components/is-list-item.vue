@@ -18,6 +18,10 @@ const props = defineProps({
         type: String,
         default: 'sm',
     },
+    align: {
+        type: String,
+        default: 'center',
+    },
 })
 
 const attrs = useAttrs()
@@ -34,10 +38,18 @@ const sizes = {
     sm: 'text-sm py-3 px-4',
 }
 
+const alignments = {
+    center: 'items-start',
+    start: 'items-start',
+    end: 'items-end',
+    baseline: 'items-baseline',
+}
+
 const classes = computed(() => {
-    const result: string[] = ['w-full transition-all flex items-center']
+    const result: string[] = ['w-full transition-all flex']
 
     result.push(sizes[props.size])
+    result.push(alignments[props.align])
 
     if (attrs.onClick || props.to) {
         result.push('cursor-pointer', defaultColors[props.color])

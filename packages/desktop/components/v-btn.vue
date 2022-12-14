@@ -40,9 +40,10 @@ const sizes = {
 
 const variations = {
     default: {
-        accent: 'bg-accent hover:bg-accent/75',
-        danger: 'bg-danger hover:bg-danger/75 text-t-primary',
-        info: 'bg-info hover:bg-info/75 text-t-primary',
+        'accent': 'bg-accent hover:bg-accent/75',
+        'danger': 'bg-danger hover:bg-danger/75 text-t-primary',
+        'info': 'bg-info hover:bg-info/75 text-t-primary',
+        'b-secondary': 'bg-b-secondary hover:bg-b-secondary/75 text-t-primary',
     },
     text: {
         'accent':
