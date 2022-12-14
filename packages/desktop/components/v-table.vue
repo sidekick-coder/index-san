@@ -117,14 +117,14 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
         </slot>
 
         <v-tr v-if="!visibleItems.length">
-            <v-td :colspan="columns.length + 2" class="text-t-secondary text-sm text-center">
-                No items
+            <v-td :colspan="columns.length" class="text-t-secondary text-sm text-center">
+                {{ $t('noEntity', [$t('item', 2)]) }}
             </v-td>
         </v-tr>
 
         <v-tr v-if="items.length > pagination.limit">
             <v-td
-                :colspan="columns.length + 2"
+                :colspan="columns.length"
                 class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
                 @click="pagination.limit = pagination.limit + Number(limit)"
             >

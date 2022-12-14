@@ -103,7 +103,7 @@ async function toggle() {
             :toggle-favorite="toggle"
             :is-favorite="!!menuItem"
         >
-            <v-btn v-if="!drawer" text size="sm" @click="drawer.toggle">
+            <v-btn v-if="!drawer.show" text size="sm" @click="drawer.toggle">
                 <is-icon name="bars" />
             </v-btn>
 

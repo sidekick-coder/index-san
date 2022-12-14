@@ -6,6 +6,8 @@ import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import CTable from '@/modules/collection/components/CTable.vue'
+
 const props = defineProps({
     collectionId: {
         type: String,
@@ -39,13 +41,7 @@ watch(() => props.collectionId, load, {
 })
 </script>
 <template>
-    <is-container v-if="collection && workspaceStore.currentId" class="overflow-auto h-full pb-10">
-        <is-collection-table
-            :workspace-id="workspaceStore.currentId"
-            :collection-id="collectionId"
-            :title="meta.title"
-            view-id="default"
-            limit="100"
-        />
+    <is-container v-if="collection" class="overflow-auto h-full pb-10">
+        <c-table :collection-id="collectionId" :title="meta.title" view-id="default" />
     </is-container>
 </template>

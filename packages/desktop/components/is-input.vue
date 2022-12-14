@@ -67,15 +67,15 @@ const sizes = {
 const inputColors = {
     default: {
         accent: {
-            normal: 'outline outline-lines',
+            normal: 'outline outline-2 outline-lines',
             focus: 'outline-accent',
         },
         danger: {
-            normal: 'outline outline-lines',
+            normal: 'outline outline-2 outline-lines',
             focus: 'outline-danger',
         },
         info: {
-            normal: 'outline outline-lines',
+            normal: 'outline outline-2 outline-lines',
             focus: 'outline-info',
         },
     },

@@ -6,7 +6,7 @@ import MEditor from '@/modules/monaco/components/MEditor.vue'
 
 const props = defineProps({
     output: {
-        type: Object as () => ExecuteScriptDTO.Output,
+        type: Object as () => ExecuteScriptDTO.Output | null,
         default: null,
     },
 })

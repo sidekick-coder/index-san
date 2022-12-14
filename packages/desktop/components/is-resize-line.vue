@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
+import debounce from 'lodash/debounce'
+
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
@@ -10,6 +13,10 @@ const props = defineProps({
     minWidth: {
         type: Number,
         default: null,
+    },
+    debounce: {
+        type: Number,
+        default: 1,
     },
 })
 
@@ -24,13 +31,13 @@ const model = useVModel(props, 'modelValue', emit)
 
 const startWidth = ref(props.modelValue)
 
-function drag(event: MouseEvent) {
+const drag = debounce((event: MouseEvent) => {
     const width = startWidth.value + event.clientX - state.value.x
 
     if (width >= props.minWidth || !props.minWidth) {
         model.value = width
     }
-}
+}, props.debounce)
 
 function stop() {
     startWidth.value = model.value

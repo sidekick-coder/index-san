@@ -9,10 +9,6 @@ import { useStore } from '@/modules/collection/store'
 import MEditor from '@/modules/monaco/components/MEditor.vue'
 
 const props = defineProps({
-    workspaceId: {
-        type: String,
-        required: true,
-    },
     collectionId: {
         type: String,
         required: true,
@@ -83,18 +79,18 @@ async function submit() {
         payload.value.options = undefined
     }
 
-    await updateCollectionColumn(
-        props.workspaceId,
-        props.collectionId,
-        props.column.id,
-        payload.value
-    )
+    // await updateCollectionColumn(
+    //     props.workspaceId,
+    //     props.collectionId,
+    //     props.column.id,
+    //     payload.value
+    // )
 
     dialog.value = false
 }
 
 async function deleteColumn() {
-    await deleteCollectionColumn(props.workspaceId, props.collectionId, props.column.id)
+    // await deleteCollectionColumn(props.workspaceId, props.collectionId, props.column.id)
 
     dialog.value = false
 }
@@ -121,7 +117,7 @@ const options = computed(() => {
         <template #activator="{ attrs }">
             <div
                 class="cursor-pointer text-t-secondary text-sm flex items-center overflow-hidden"
-                v-bind="attrs"
+                v-bind="{ ...attrs, ...$attrs }"
             >
                 <fa-icon :icon="icons[column.type] || 'font'" class="mr-2 text-xs" />
 

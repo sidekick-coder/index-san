@@ -5,16 +5,19 @@ import get from 'lodash/get'
 import Collection from '@core/entities/collection'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useStore as useItem } from '@/modules/item/store'
 import { useCase } from '@/composables/use-case'
 
 import ListCollectionsDTO from '@core/use-cases/list-collections/list-collections.dto'
 import UpdateCollectionsDTO from '@core/use-cases/update-collection/update-collection.dto'
 import CreateCollectionDTO from '@/../core/use-cases/create-collection/create-collection.dto'
 import DeleteCollectionsDTO from '@/../core/use-cases/delete-collection/delete-collection.dto'
+import ShowCollectionsDTO from '@/../core/use-cases/show-collection/show-collection.dto'
 
 export const useStore = defineStore('collections', () => {
     const collections = ref<Collection[]>([])
 
+    const item = useItem()
     const workspace = useWorkspace()
 
     async function setCollections(workspaceId = workspace.currentId) {
@@ -23,6 +26,14 @@ export const useStore = defineStore('collections', () => {
         })
             .then((r) => (collections.value = get(r, 'data', [])))
             .catch(() => (collections.value = []))
+    }
+
+    async function show(payload: Partial<ShowCollectionsDTO.Input>) {
+        if (!payload.workspaceId && workspace.currentId) {
+            payload.workspaceId = workspace.currentId
+        }
+
+        return useCase<ShowCollectionsDTO.Output>('show-collection', payload)
     }
 
     async function create(payload: Partial<CreateCollectionDTO.Input>) {
@@ -56,9 +67,13 @@ export const useStore = defineStore('collections', () => {
     watch(() => workspace.currentId, setCollections)
 
     return {
+        workspace,
+        item,
+
         collections,
 
         setCollections,
+        show,
         create,
         update,
         destroy,

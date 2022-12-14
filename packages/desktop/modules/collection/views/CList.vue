@@ -125,7 +125,7 @@ async function deleteItem(collectionId: string) {
             disable-new-item
         >
             <template #item-actions="{ item }">
-                <div class="flex gap-x-4 p-2">
+                <v-td class="flex gap-x-4 p-2">
                     <v-btn text size="sm" :to="`/collections/${item.id}/items`">
                         <fa-icon icon="eye" />
                     </v-btn>
@@ -133,7 +133,7 @@ async function deleteItem(collectionId: string) {
                     <v-btn text size="sm" color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
                     </v-btn>
-                </div>
+                </v-td>
             </template>
         </v-table>
     </div>
