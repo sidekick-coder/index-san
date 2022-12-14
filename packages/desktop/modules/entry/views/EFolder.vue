@@ -151,7 +151,7 @@ async function deleteEntry(item: DirectoryEntry) {
     <v-layout use-percentage>
         <l-toolbar>
             <template #default="data">
-                <v-btn v-if="!data.drawer" text size="sm" @click="data['toggle-drawer']">
+                <v-btn v-if="!data.drawer.show" text size="sm" @click="data.drawer.toggle">
                     <is-icon name="bars" />
                 </v-btn>
 
@@ -233,7 +233,7 @@ async function deleteEntry(item: DirectoryEntry) {
                 <v-table :columns="columns" :items="filteredEntries" :fixed="false" header-stick>
                     <template #item="{ item }">
                         <v-tr
-                            class="cursor-pointer hover:bg-b-secondary"
+                            class="cursor-pointer hover:bg-b-secondary group"
                             @click="$router.push(`/entries/${item.path}`)"
                         >
                             <v-td class="pl-10 flex pr-7">
@@ -245,6 +245,7 @@ async function deleteEntry(item: DirectoryEntry) {
                                     v-model="item.name"
                                     flat
                                     size="sm"
+                                    class="w-full max-w-[70%]"
                                     @click.prevent.stop
                                     @change="updateItem(item)"
                                 />
@@ -252,8 +253,18 @@ async function deleteEntry(item: DirectoryEntry) {
                                 <v-btn
                                     text
                                     size="sm"
+                                    color="info"
+                                    class="ml-auto text-t-secondary opacity-0 group-hover:opacity-100"
+                                    :to="`/entries/${item.path}`"
+                                >
+                                    <is-icon name="eye"></is-icon>
+                                </v-btn>
+
+                                <v-btn
+                                    text
+                                    size="sm"
                                     color="danger"
-                                    class="ml-auto"
+                                    class="text-t-secondary opacity-0 group-hover:opacity-100"
                                     @click.prevent.stop="deleteEntry(item)"
                                 >
                                     <is-icon name="trash"></is-icon>

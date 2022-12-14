@@ -12,7 +12,12 @@ import { useToggleDrawer } from '../composables/drawer'
 const route = useRoute()
 const router = useRouter()
 
-const drawer = useToggleDrawer()
+const drawer = ref({
+    show: useToggleDrawer(),
+    toggle: () => {
+        drawer.value.show = !drawer.value.show
+    },
+})
 
 // links
 
@@ -94,12 +99,11 @@ async function toggle() {
         <slot
             :links="links"
             :drawer="drawer"
-            :toggle-drawer="() => (drawer = true)"
             :navigation="navigation"
             :toggle-favorite="toggle"
             :is-favorite="!!menuItem"
         >
-            <v-btn v-if="!drawer" text size="sm" @click="drawer = true">
+            <v-btn v-if="!drawer" text size="sm" @click="drawer.toggle">
                 <is-icon name="bars" />
             </v-btn>
 

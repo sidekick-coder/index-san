@@ -34,7 +34,7 @@ const props = defineProps({
 // }
 
 // set meta
-useMeta({ title: props.entryId })
+const meta = useMeta({ title: DirectoryEntry.basename(props.entryId) })
 
 // set entry
 const store = useStore()
@@ -45,7 +45,11 @@ const entry = ref<DirectoryEntry>()
 async function setEntry() {
     await store
         .show({ path: props.entryId })
-        .then((r) => (entry.value = r.data))
+        .then((r) => {
+            entry.value = r.data
+
+            meta.value.title = entry.value.name || 'Entries'
+        })
         .catch(() => router.push('/404'))
 }
 
