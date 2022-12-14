@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { useState } from '@/composables/state'
 import { useStore as useMenu } from '@/modules/menu/store'
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 
 import LDrawerItem from './LDrawerItem.vue'
 import { useI18n } from 'vue-i18n'
 import Menu from '@core/entities/menu'
+import { useToggleDrawer } from '../composables/drawer'
 
-const drawer = useState('app:drawer', true, {
-    localStorage: true,
-})
+const drawer = useToggleDrawer()
 
 // menu
 const tm = useI18n()

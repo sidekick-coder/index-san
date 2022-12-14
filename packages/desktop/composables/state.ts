@@ -29,8 +29,12 @@ function setLocalStorage(key: string, payload: any) {
     localStorage.setItem(key, value)
 }
 
-function getLocalStorage<T = any>(key: string) {
+function getLocalStorage<T = any>(key: string, defaultValue?: any) {
     let value: any = localStorage.getItem(key)
+
+    if (value === null) {
+        return defaultValue
+    }
 
     if (['true', 'false'].includes(value)) {
         value = value === 'true'
@@ -45,7 +49,7 @@ function getLocalStorage<T = any>(key: string) {
 
 export function useState<T = any>(key: string, defaultValue?: T, options?: Options) {
     if (options?.localStorage && !states.value.has(key)) {
-        states.value.set(key, getLocalStorage(key) || defaultValue)
+        states.value.set(key, getLocalStorage(key, defaultValue))
     }
 
     if (!states.value.has(key)) {
