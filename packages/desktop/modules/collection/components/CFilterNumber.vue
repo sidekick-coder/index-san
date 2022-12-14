@@ -3,8 +3,9 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { Filter, FilterTextConfig } from '../composables/filter'
+import { Filter, FilterNumberConfig } from '../composables/filter'
 
 const props = defineProps({
     modelValue: {
@@ -18,7 +19,7 @@ const emit = defineEmits(['update:modelValue'])
 // set value
 const model = useVModel(props, 'modelValue', emit)
 
-const operation = computed<FilterTextConfig['operation']>({
+const operation = computed<FilterNumberConfig['operation']>({
     get() {
         return get(model.value, 'config.operation')
     },
@@ -30,9 +31,11 @@ const operation = computed<FilterTextConfig['operation']>({
 if (!operation.value) operation.value = '='
 
 // options
+const tm = useI18n()
+
 interface Option {
     label: string
-    value: FilterTextConfig['operation']
+    value: FilterNumberConfig['operation']
 }
 
 const options: Option[] = [
@@ -44,13 +47,17 @@ const options: Option[] = [
         label: '!=',
         value: '!=',
     },
+    {
+        label: '>',
+        value: '>',
+    },
 ]
 </script>
 <template>
     <is-select
         v-model="operation"
         menu:offset-y
-        :label="$t('operation')"
+        :label="$t('type')"
         :options="options"
         label-key="label"
         value-key="value"
@@ -58,5 +65,5 @@ const options: Option[] = [
         class="mb-4 w-full"
     />
 
-    <is-input v-model="model.value" :label="$t('value')" class="w-full" />
+    <is-input v-model="model.value" type="number" :label="$t('value')" class="w-full" />
 </template>

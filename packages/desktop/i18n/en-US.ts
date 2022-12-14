@@ -55,8 +55,6 @@ export default {
     loadMore: 'Load more',
     search: 'Search',
     section: 'Section',
-    equal: 'Equal',
-    notEqual: 'Not equal',
     apply: 'Apply',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',

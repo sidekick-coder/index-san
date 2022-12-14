@@ -3,6 +3,7 @@ import { CollectionColumn } from '@/../core/entities/collection'
 import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
+import CFilterNumber from './CFilterNumber.vue'
 import CFilterText from './CFilterText.vue'
 
 // Props & Emits
@@ -26,6 +27,7 @@ const model = useVModel(props, 'modelValue', emit)
 // set component
 const components: Record<CollectionColumn['type'], any> = {
     text: CFilterText,
+    number: CFilterNumber,
 }
 
 const selectedColumn = computed(() => props.columns.find((c) => c.id === model.value.column))
@@ -48,7 +50,7 @@ const selectedColumn = computed(() => props.columns.find((c) => c.id === model.v
                 </v-btn>
             </template>
 
-            <v-card color="b-secondary" class="overflow-x-auto">
+            <v-card color="b-secondary" class="overflow-x-auto rounded mt-2">
                 <v-card-content class="flex flex-wrap">
                     <component
                         :is="components[selectedColumn.type] || components.text"
