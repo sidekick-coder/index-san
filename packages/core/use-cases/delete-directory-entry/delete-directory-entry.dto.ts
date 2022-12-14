@@ -4,7 +4,7 @@ declare namespace DeleteDirectoryEntryDTO {
         path: string
     }
 
-    // export interface Output {}
+    export interface Output {}
 }
 
 export default DeleteDirectoryEntryDTO

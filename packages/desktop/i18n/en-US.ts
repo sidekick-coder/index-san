@@ -9,6 +9,8 @@ export default {
     item: 'Item | Items',
     column: 'Column | Columns',
     rule: 'Rule | Rules',
+    file: 'File | Files',
+    folder: 'Folder | Folders',
     listEntity: '{0} list',
     addEntity: 'Add {0}',
     editEntity: 'Edit {0}',

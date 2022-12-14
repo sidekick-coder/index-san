@@ -20,10 +20,16 @@ export default class DirectoryEntry {
         return result
     }
 
+    public static basename(...paths: string[]) {
+        const path = this.normalize(...paths)
+
+        return path.split('/').pop() as string
+    }
+
     public static directory(...paths: string[]) {
         const path = this.normalize(...paths)
 
-        const basename = path.split('/').pop()
+        const basename = this.basename(...paths)
 
         return new DirectoryEntry({
             name: basename as string,

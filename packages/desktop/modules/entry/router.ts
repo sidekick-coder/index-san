@@ -3,11 +3,11 @@ import { Router } from 'vue-router'
 export default (router: Router) => {
     router.addRoute({
         path: '/entries',
-        component: () => import('@/modules/workspace/WLayout.vue'),
+        component: () => import('./ELayout.vue'),
         children: [
             {
                 path: '',
-                component: () => import('./views/EList.vue'),
+                component: () => import('./views/ESingle.vue'),
                 props: true,
             },
             {

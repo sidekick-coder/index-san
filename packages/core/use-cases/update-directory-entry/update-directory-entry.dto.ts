@@ -5,7 +5,7 @@ declare namespace UpdateDirectoryEntryDTO {
         newPath: string
     }
 
-    // export interface Output {}
+    export interface Output {}
 }
 
 export default UpdateDirectoryEntryDTO

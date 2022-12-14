@@ -27,7 +27,7 @@ load()
 </script>
 <template>
     <is-container class="h-full flex items-center justify-center">
-        <v-card class="border border-lines max-w-[500px]">
+        <v-card class="border border-lines w-[500px] overflow-auto">
             <v-card-content v-if="entry" class="flex flex-wrap">
                 <div class="w-full"><b>Name: </b> {{ entry.name }}</div>
                 <div class="w-full"><b>Path: </b> {{ entry.path }}</div>

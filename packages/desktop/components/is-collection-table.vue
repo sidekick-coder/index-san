@@ -11,7 +11,6 @@ import {
     updateOrCreateCollectionView,
 } from '@/composables/collection'
 import { createItem, deleteItem } from '@/composables/item'
-import { useArray, ArrayFilter } from '@/composables/array'
 
 const props = defineProps({
     workspaceId: {
@@ -57,17 +56,7 @@ const filteredColumns = computed(() => {
 })
 
 const filteredItems = computed(() => {
-    const filters = columns.value
-        .filter((c) => !!options.value[`filter:${c.field}`])
-        .map<ArrayFilter>((c) => ({
-            type: c.type === 'relation' ? 'string' : c.type,
-            key: c.field,
-            value: options.value[`filter:${c.field}`],
-        }))
-
-    return useArray(items.value)
-        .filter(...filters)
-        .value()
+    return items.value
 })
 
 const filters = computed(() => {

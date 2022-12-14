@@ -65,6 +65,8 @@ const views = {
 const current = ref<keyof typeof views>('default')
 
 async function setView() {
+    current.value = 'default'
+
     if (!entry.value) {
         return
     }
@@ -83,16 +85,18 @@ async function setView() {
         current.value = 'json'
     }
 
-    if (/.(txt|csv)/.test(path)) {
+    if (/.(txt|csv|html)/.test(path)) {
         current.value = 'text'
     }
 
     if (type === 'directory') {
         current.value = 'folder'
     }
+
+    store.layout.toolbar = current.value !== 'folder'
 }
 
-watch(entry, setView, { deep: true })
+watch(() => entry.value?.path, setView, { deep: true })
 </script>
 <template>
     <component :is="views[current]" v-if="entry" :path="entry.path" />

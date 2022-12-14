@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-    inheritAttrs: true,
+    inheritAttrs: false,
 }
 </script>
 
@@ -17,6 +17,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    size: {
+        type: String,
+        default: 'md',
+    },
     color: {
         type: String,
         default: 'accent',
@@ -26,6 +30,14 @@ const props = defineProps({
         default: false,
     },
     flat: {
+        type: Boolean,
+        default: false,
+    },
+    tile: {
+        type: Boolean,
+        default: false,
+    },
+    rounded: {
         type: Boolean,
         default: false,
     },
@@ -47,18 +59,23 @@ const attrs = useAttrs()
 
 // input
 
+const sizes = {
+    sm: 'py-1 px-4 text-sm',
+    md: 'py-2 px-4',
+}
+
 const inputColors = {
     default: {
         accent: {
-            normal: 'rounded outline outline-lines',
+            normal: 'outline outline-lines',
             focus: 'outline-accent',
         },
         danger: {
-            normal: 'rounded outline outline-lines',
+            normal: 'outline outline-lines',
             focus: 'outline-danger',
         },
         info: {
-            normal: 'rounded outline outline-lines',
+            normal: 'outline outline-lines',
             focus: 'outline-info',
         },
     },
@@ -91,7 +108,7 @@ function onBlur() {
 }
 
 const classes = computed(() => {
-    const result: string[] = ['transition-all py-2 px-4 bg-transparent w-full flex']
+    const result: string[] = ['transition-all bg-transparent w-full flex']
 
     let color = inputColors.default[props.color]
 
@@ -99,7 +116,13 @@ const classes = computed(() => {
         color = inputColors.flat[props.color]
     }
 
+    if (!props.tile) {
+        result.push(props.rounded ? 'rounded-full' : 'rounded-sm')
+    }
+
     result.push(color.normal)
+
+    result.push(sizes[props.size] || props.size)
 
     if (input.value.isFocus) {
         result.push(color.focus)
@@ -108,7 +131,7 @@ const classes = computed(() => {
     return result
 })
 
-// label colors
+// label
 const labelColors = {
     default: {
         accent: 'text-accent',
@@ -130,9 +153,10 @@ const labelClasses = computed(() => {
 // input attrs
 
 const bindings = computed(() => {
-    const wrapper = {}
+    const root = {}
     const label = {}
     const input = {}
+    const wrapper = {}
 
     Object.keys(attrs).forEach((key) => {
         if (key.startsWith('input:')) {
@@ -145,19 +169,24 @@ const bindings = computed(() => {
             return
         }
 
-        wrapper[key] = attrs[key]
+        if (key.startsWith('wrapper:')) {
+            wrapper[key.replace('wrapper:', '')] = attrs[key]
+            return
+        }
+
+        root[key] = attrs[key]
     })
 
-    return { wrapper, label, input }
+    return { root, wrapper, label, input }
 })
 </script>
 <template>
-    <div class="w-full" v-bind="bindings.wrapper">
+    <div v-bind="bindings.root">
         <label v-if="label" :for="label" :class="labelClasses" v-bind="bindings.label">
             {{ label }}
         </label>
 
-        <div :class="classes">
+        <div :class="classes" v-bind="bindings.wrapper">
             <input
                 :id="label"
                 v-model="model"

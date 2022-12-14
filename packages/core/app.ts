@@ -35,6 +35,7 @@ import DeleteScript from './use-cases/delete-script/delete-script'
 import ExecuteScript from './use-cases/execute-script/execute-script'
 import ShowMenu from './use-cases/show-menu/show-menu'
 import UpdateMenu from './use-cases/update-menu/update-menu'
+import UpdateDirectoryEntry from './use-cases/update-directory-entry/update-directory-entry'
 
 interface AppArgs {
     workspaceRepository: IWorkspaceRepository
@@ -51,6 +52,7 @@ interface AppUseCases {
 
     'list-directory-entry': ListDirectoryEntry
     'show-directory-entry': ShowDirectoryEntry
+    'update-directory-entry': UpdateDirectoryEntry
     'read-directory-entry': ReadDirectoryEntry
     'create-directory-entry': CreateDirectoryEntry
     'write-directory-entry': WriteDirectoryEntry
@@ -94,10 +96,11 @@ export default class App extends AppService {
 
             'list-directory-entry': new ListDirectoryEntry(this),
             'show-directory-entry': new ShowDirectoryEntry(this),
-            'read-directory-entry': new ReadDirectoryEntry(this),
+            'update-directory-entry': new UpdateDirectoryEntry(this),
             'create-directory-entry': new CreateDirectoryEntry(this),
-            'write-directory-entry': new WriteDirectoryEntry(this),
             'delete-directory-entry': new DeleteDirectoryEntry(this),
+            'read-directory-entry': new ReadDirectoryEntry(this),
+            'write-directory-entry': new WriteDirectoryEntry(this),
 
             'list-collections': new ListCollections(this),
             'show-collection': new ShowCollection(this),
