@@ -20,6 +20,7 @@ const links = computed(() =>
     route.path
         .split('/')
         .filter((p) => p !== '')
+        .map((label) => decodeURI(label))
         .map((label, index, array) => {
             let to: string | null = array.slice(0, index + 1).join('/')
 
@@ -55,6 +56,8 @@ const links = computed(() =>
 const navigation = ref({
     haveBack: !!window.history.state.forward,
     haveForward: !!window.history.state.forward,
+    goBack: () => router.go(-1),
+    goForward: () => router.go(1),
 })
 
 watch(
@@ -92,8 +95,7 @@ async function toggle() {
             :links="links"
             :drawer="drawer"
             :toggle-drawer="() => (drawer = true)"
-            :navigate-back="navigation.haveBack ? () => $router.go(-1) : undefined"
-            :navigate-forward="navigation.haveForward ? () => $router.go(1) : undefined"
+            :navigation="navigation"
             :toggle-favorite="toggle"
             :is-favorite="!!menuItem"
         >
@@ -101,11 +103,11 @@ async function toggle() {
                 <is-icon name="bars" />
             </v-btn>
 
-            <v-btn :disabled="!navigation.haveBack" text size="sm" @click="$router.go(-1)">
+            <v-btn :disabled="!navigation.haveBack" text size="sm" @click="navigation.goBack">
                 <is-icon name="arrow-left" />
             </v-btn>
 
-            <v-btn :disabled="!navigation.haveForward" text size="sm" @click="$router.go(1)">
+            <v-btn :disabled="!navigation.haveForward" text size="sm" @click="navigation.goForward">
                 <is-icon name="arrow-right" />
             </v-btn>
 

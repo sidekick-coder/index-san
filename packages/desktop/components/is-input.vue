@@ -81,8 +81,8 @@ const inputColors = {
     },
     flat: {
         accent: {
-            normal: 'bg-transparent',
-            focus: 'bg-accent/20',
+            normal: 'outline outline-1 outline-transparent hover:outline-accent',
+            focus: '!outline-accent bg-accent/20',
         },
         danger: {
             normal: 'bg-transparent',

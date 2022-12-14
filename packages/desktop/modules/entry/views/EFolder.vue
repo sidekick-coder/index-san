@@ -20,10 +20,14 @@ const store = useStore()
 const router = useRouter()
 
 const entries = ref<DirectoryEntry[]>([])
+const firstRun = ref(true)
 const loading = ref(false)
 
 async function setEntries() {
-    loading.value = true
+    if (firstRun.value) {
+        loading.value = true
+        firstRun.value = false
+    }
 
     await store
         .list({ path: props.path })
@@ -152,19 +156,19 @@ async function deleteEntry(item: DirectoryEntry) {
                 </v-btn>
 
                 <v-btn
-                    :disabled="!data['navigate-back']"
+                    :disabled="!data.navigation.haveBack"
                     text
                     size="sm"
-                    @click="data['navigate-back']"
+                    @click="data.navigation.goBack"
                 >
                     <is-icon name="arrow-left" />
                 </v-btn>
 
                 <v-btn
-                    :disabled="!data['navigate-forward']"
+                    :disabled="!data.navigation.haveForward"
                     text
                     size="sm"
-                    @click="data['navigate-forward']"
+                    @click="data.navigation.goForward"
                 >
                     <is-icon name="arrow-right" />
                 </v-btn>
@@ -195,9 +199,7 @@ async function deleteEntry(item: DirectoryEntry) {
                         {{ link.label }}
                     </v-btn>
 
-                    <div v-else class="text-xs px-3 py-1">
-                        {{ link.label }}
-                    </div>
+                    <div v-else class="text-xs px-3 py-1" v-text="link.label" />
 
                     <div
                         v-if="data.links.length >= 2 && index !== data.links.length - 1"
@@ -235,7 +237,9 @@ async function deleteEntry(item: DirectoryEntry) {
                             @click="$router.push(`/entries/${item.path}`)"
                         >
                             <v-td class="pl-10 flex pr-7">
-                                <is-icon :name="getIcon(item)" class="mr-4 text-t-secondary" />
+                                <div class="w-4 mr-4">
+                                    <is-icon :name="getIcon(item)" class="text-t-secondary" />
+                                </div>
 
                                 <is-input
                                     v-model="item.name"
