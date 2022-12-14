@@ -5,14 +5,14 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useMeta } from '@/composables/metas'
-import { useState } from '@/composables/state'
 
 import { useStore } from '@/modules/menu/store'
+import { useToggleDrawer } from '../composables/drawer'
 
 const route = useRoute()
 const router = useRouter()
 
-const drawer = useState('app:drawer', true, { localStorage: true })
+const drawer = useToggleDrawer()
 
 // links
 
@@ -33,6 +33,14 @@ const links = computed(() =>
 
             if (to === route.path) {
                 to = null
+            }
+
+            if (label === 'entries') {
+                label = 'Root'
+            }
+
+            if (label.length > 10) {
+                label = label.slice(0, 10) + '...'
             }
 
             return {
@@ -79,33 +87,43 @@ async function toggle() {
 </script>
 
 <template>
-    <w-toolbar class="px-7 border-b border-lines text-sm" :height="40">
-        <v-btn v-if="!drawer" text size="sm" @click="drawer = true">
-            <is-icon name="bars" />
-        </v-btn>
-
-        <v-btn :disabled="!navigation.haveBack" text size="sm" @click="$router.go(-1)">
-            <is-icon name="arrow-left" />
-        </v-btn>
-
-        <v-btn :disabled="!navigation.haveForward" text size="sm" @click="$router.go(1)">
-            <is-icon name="arrow-right" />
-        </v-btn>
-
-        <template v-for="(link, index) in links" :key="index">
-            <v-btn v-if="link.to" size="sm" text :to="link.to">
-                {{ link.label }}
+    <v-layout-toolbar class="px-7 border-b border-lines text-sm" :height="45">
+        <slot
+            :links="links"
+            :drawer="drawer"
+            :toggle-drawer="() => (drawer = true)"
+            :navigate-back="navigation.haveBack ? () => $router.go(-1) : undefined"
+            :navigate-forward="navigation.haveForward ? () => $router.go(1) : undefined"
+            :toggle-favorite="toggle"
+            :is-favorite="!!menuItem"
+        >
+            <v-btn v-if="!drawer" text size="sm" @click="drawer = true">
+                <is-icon name="bars" />
             </v-btn>
 
-            <div v-else class="text-xs px-3 py-1">
-                {{ link.label }}
-            </div>
+            <v-btn :disabled="!navigation.haveBack" text size="sm" @click="$router.go(-1)">
+                <is-icon name="arrow-left" />
+            </v-btn>
 
-            <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
-        </template>
+            <v-btn :disabled="!navigation.haveForward" text size="sm" @click="$router.go(1)">
+                <is-icon name="arrow-right" />
+            </v-btn>
 
-        <v-btn class="ml-auto" text size="sm" @click="toggle">
-            <is-icon :name="menuItem ? 'star' : 'fa-regular fa-star'" />
-        </v-btn>
-    </w-toolbar>
+            <template v-for="(link, index) in links" :key="index">
+                <v-btn v-if="link.to" size="sm" text :to="link.to">
+                    {{ link.label }}
+                </v-btn>
+
+                <div v-else class="text-xs px-3 py-1">
+                    {{ link.label }}
+                </div>
+
+                <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
+            </template>
+
+            <v-btn class="ml-auto" text size="sm" @click="toggle">
+                <is-icon :name="menuItem ? 'star' : 'fa-regular fa-star'" />
+            </v-btn>
+        </slot>
+    </v-layout-toolbar>
 </template>

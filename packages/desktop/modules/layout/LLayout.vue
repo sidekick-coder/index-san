@@ -2,26 +2,29 @@
 // main layout
 import LDrawer from './components/LDrawer.vue'
 import LToolbar from './components/LToolbar.vue'
+
+defineProps({
+    hideToolbar: {
+        type: Boolean,
+        default: false,
+    },
+})
 </script>
 
 <template>
-    <w-layout>
-        <slot name="drawer">
-            <l-drawer />
-        </slot>
+    <v-layout>
+        <l-drawer />
 
-        <w-content class="bg-b-primary text-t-primary">
-            <w-layout use-percentage>
-                <slot name="toolbar">
-                    <l-toolbar />
-                </slot>
+        <v-layout-content class="bg-b-primary text-t-primary">
+            <v-layout use-percentage>
+                <l-toolbar v-if="!hideToolbar" />
 
-                <w-content>
+                <v-layout-content>
                     <slot>
                         <router-view />
                     </slot>
-                </w-content>
-            </w-layout>
-        </w-content>
-    </w-layout>
+                </v-layout-content>
+            </v-layout>
+        </v-layout-content>
+    </v-layout>
 </template>

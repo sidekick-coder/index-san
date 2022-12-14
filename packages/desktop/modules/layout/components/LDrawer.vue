@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import groupBy from 'lodash/groupBy'
 
 import { useState } from '@/composables/state'
 import { useStore as useMenu } from '@/modules/menu/store'
@@ -74,7 +73,7 @@ const title = computed(() => {
 </script>
 
 <template>
-    <w-drawer
+    <v-layout-drawer
         v-model="drawer"
         class="bg-b-secondary text-t-primary border-r border-b-primary group"
     >
@@ -93,5 +92,5 @@ const title = computed(() => {
         </is-list-item>
 
         <l-drawer-item v-for="(item, index) in items" :key="index" :item="item" />
-    </w-drawer>
+    </v-layout-drawer>
 </template>
