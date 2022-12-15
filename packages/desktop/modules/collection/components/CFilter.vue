@@ -2,15 +2,19 @@
 import { CollectionColumn } from '@/../core/entities/collection'
 import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
+import { Filter } from '../composables/filter'
 
 import CFilterNumber from './CFilterNumber.vue'
+import CFilterRelation from './CFilterRelation.vue'
+import CFilterScript from './CFilterScript.vue'
+import CFilterSelect from './CFilterSelect.vue'
 import CFilterText from './CFilterText.vue'
 
 // Props & Emits
 
 const props = defineProps({
     modelValue: {
-        type: Object,
+        type: Object as () => Filter,
         default: null,
     },
     columns: {
@@ -28,45 +32,34 @@ const model = useVModel(props, 'modelValue', emit)
 const components: Record<CollectionColumn['type'], any> = {
     text: CFilterText,
     number: CFilterNumber,
+    relation: CFilterRelation,
+    select: CFilterSelect,
+    script: CFilterScript,
 }
 
-const selectedColumn = computed(() => props.columns.find((c) => c.id === model.value.column))
+const column = computed(() => props.columns.find((c) => c.id === model.value.columnId))
 </script>
 <template>
-    <is-list-item align="end" class="gap-x-4">
-        <is-select
-            v-model="model.column"
-            :options="columns"
-            label-key="label"
-            readonly
-            value-key="id"
-            class="max-w-[150px]"
-        />
+    <v-card v-if="column" class="gap-x-4 flex-wrap">
+        <v-card-content>
+            <v-card class="border border-lines">
+                <v-card-head padding>
+                    <v-card-title class="mr-auto">
+                        {{ column.label }}
+                    </v-card-title>
 
-        <is-menu v-if="selectedColumn" offset-y>
-            <template #activator="{ on }">
-                <v-btn size="none" class="h-9 w-9 rounded-full" color="b-secondary" v-bind="on">
-                    <is-icon name="cog" />
-                </v-btn>
-            </template>
-
-            <v-card color="b-secondary" class="overflow-x-auto rounded mt-2">
+                    <v-btn color="danger" text size="sm" @click="$emit('destroy')">
+                        <is-icon name="trash" />
+                    </v-btn>
+                </v-card-head>
                 <v-card-content class="flex flex-wrap">
                     <component
-                        :is="components[selectedColumn.type] || components.text"
+                        :is="components[column.type] || components.text"
                         v-model="model"
+                        :column="column"
                     />
                 </v-card-content>
             </v-card>
-        </is-menu>
-
-        <v-btn
-            size="none"
-            class="h-9 w-9 rounded-full"
-            color="b-secondary"
-            @click="$emit('destroy')"
-        >
-            <is-icon name="trash" />
-        </v-btn>
-    </is-list-item>
+        </v-card-content>
+    </v-card>
 </template>

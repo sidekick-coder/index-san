@@ -130,7 +130,7 @@ const displayLabel = computed(() => {
 
     const option = props.options.find((o) => o[props.valueKey] === model.value)
 
-    return option[props.labelKey]
+    return option ? option[props.labelKey] : option
 })
 
 function onShowMenu(value: boolean) {
@@ -144,6 +144,7 @@ function onShowMenu(value: boolean) {
         :model-value="menu"
         max-height="132"
         v-bind="bindings.menu"
+        close-on-content-click
         @update:model-value="onShowMenu"
     >
         <template #activator="{ on }">

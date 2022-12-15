@@ -3,7 +3,7 @@ import uuid from 'uuid-random'
 export interface CollectionColumn {
     id: string
     field: string
-    type: 'text' | 'number'
+    type: 'text' | 'number' | 'select' | 'relation' | 'script'
     label: string
     readonly?: boolean
     [key: string]: any

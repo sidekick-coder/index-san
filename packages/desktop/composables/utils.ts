@@ -28,3 +28,19 @@ export function waitFor(cb: () => boolean, timeout = 500) {
         }, 50)
     })
 }
+
+export function toCssMeasurement(value: string | number) {
+    if (typeof value === 'number') {
+        return `${value}px`
+    }
+
+    if (/(%|px|deg)/.test(value)) {
+        return value
+    }
+
+    if (/[0-9]/.test(value)) {
+        return `${value}px`
+    }
+
+    return value
+}

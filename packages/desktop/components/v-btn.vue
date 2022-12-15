@@ -2,6 +2,10 @@
 import { computed } from 'vue'
 
 const props = defineProps({
+    type: {
+        type: String,
+        default: 'button',
+    },
     size: {
         type: String,
         default: 'md',
@@ -83,7 +87,13 @@ const classes = computed(() => {
 })
 </script>
 <template>
-    <component :is="to ? 'router-link' : 'button'" :to="to" :class="classes" :disabled="disabled">
+    <component
+        :is="to ? 'router-link' : 'button'"
+        :to="to"
+        :class="classes"
+        :disabled="disabled"
+        :type="type"
+    >
         <div v-if="loading" class="absolute flex items-center justify-center">
             <is-icon name="spinner" class="animate-spin" />
         </div>

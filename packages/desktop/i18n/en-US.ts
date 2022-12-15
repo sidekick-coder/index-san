@@ -56,6 +56,7 @@ export default {
     search: 'Search',
     section: 'Section',
     apply: 'Apply',
+    operation: 'Operation',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

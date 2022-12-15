@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { toCssMeasurement } from '@/composables/utils'
 
 const props = defineProps({
     width: {
         type: String,
-        default: null,
+        default: '100%',
     },
     height: {
         type: String,
@@ -39,7 +40,7 @@ const colors = computed(() => {
 
 // classes
 const classes = computed(() => {
-    const result: string[] = ['w-full']
+    const result: string[] = []
 
     if (props.color) {
         result.push(colors.value[props.color])
@@ -51,17 +52,17 @@ const classes = computed(() => {
 // style
 
 const style = computed(() => {
-    const result: string[] = []
+    const result: any = {}
 
     if (props.width) {
-        result.push(`width: ${props.width}px`)
+        result.width = toCssMeasurement(props.width)
     }
 
     if (props.height) {
-        result.push(`height: ${props.height}px`)
+        result.height = toCssMeasurement(props.height)
     }
 
-    return result.join(';')
+    return result
 })
 </script>
 

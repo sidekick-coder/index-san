@@ -1,15 +1,19 @@
 <script setup lang="ts">
+import { CollectionColumn } from '@/../core/entities/collection'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { Filter, FilterNumberConfig } from '../composables/filter'
+import { Filter, operations } from '../composables/filter'
 
 const props = defineProps({
     modelValue: {
         type: Object as () => Filter,
+        default: () => ({}),
+    },
+    column: {
+        type: Object as () => CollectionColumn,
         default: () => ({}),
     },
 })
@@ -19,7 +23,7 @@ const emit = defineEmits(['update:modelValue'])
 // set value
 const model = useVModel(props, 'modelValue', emit)
 
-const operation = computed<FilterNumberConfig['operation']>({
+const operation = computed<keyof typeof operations.number>({
     get() {
         return get(model.value, 'config.operation')
     },
@@ -30,40 +34,22 @@ const operation = computed<FilterNumberConfig['operation']>({
 
 if (!operation.value) operation.value = '='
 
-// options
-const tm = useI18n()
-
-interface Option {
-    label: string
-    value: FilterNumberConfig['operation']
-}
-
-const options: Option[] = [
-    {
-        label: '=',
-        value: '=',
-    },
-    {
-        label: '!=',
-        value: '!=',
-    },
-    {
-        label: '>',
-        value: '>',
-    },
-]
+const options = Object.keys(operations.number).map((key) => ({
+    label: key,
+    value: key,
+}))
 </script>
 <template>
-    <is-select
-        v-model="operation"
-        menu:offset-y
-        :label="$t('type')"
-        :options="options"
-        label-key="label"
-        value-key="value"
-        card:color="b-primary"
-        class="mb-4 w-full"
-    />
+    <div class="flex w-full">
+        <is-select
+            v-model="operation"
+            :options="options"
+            label-key="label"
+            value-key="value"
+            menu:offset-y
+            class="mr-4 max-w-[80px]"
+        />
 
-    <is-input v-model="model.value" type="number" :label="$t('value')" class="w-full" />
+        <is-input v-model="model.value" type="number" :placeholder="$t('value')" class="w-full" />
+    </div>
 </template>

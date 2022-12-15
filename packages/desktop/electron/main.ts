@@ -46,7 +46,7 @@ app.whenReady().then(async () => {
 
     const window = new BrowserWindow({
         ...bounds,
-        title: 'Main window',
+        title: 'Index-san',
         autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, './preload.js'),

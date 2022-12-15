@@ -127,7 +127,7 @@ watch(() => props.column, setRelation, {
                 :model-value="scriptLabel"
                 readonly
                 flat
-                input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
+                input:class="cursor-pointer w-full"
             />
         </template>
 

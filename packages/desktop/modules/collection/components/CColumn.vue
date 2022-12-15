@@ -19,7 +19,14 @@ const props = defineProps({
     },
 })
 
-const types = [
+// type options
+
+interface Option {
+    label: string
+    value: CollectionColumn['type']
+}
+
+const types: Option[] = [
     {
         label: 'Text',
         value: 'text',
@@ -32,23 +39,24 @@ const types = [
         label: 'Select',
         value: 'select',
     },
-    {
-        label: 'Entry',
-        value: 'entry',
-    },
+    // {
+    //     label: 'Entry',
+    //     value: 'entry',
+    // },
     {
         label: 'Relation',
         value: 'relation',
     },
-    {
-        label: 'Script',
-        value: 'script',
-    },
+    // {
+    //     label: 'Script',
+    //     value: 'script',
+    // },
 ]
 
 const dialog = ref(false)
 
-const payload = ref({
+const payload = ref<Omit<CollectionColumn, ''>>({
+    id: '',
     label: '',
     field: '',
     type: 'text',
@@ -58,7 +66,7 @@ const payload = ref({
     displayField: undefined,
 })
 
-const icons = {
+const icons: Record<CollectionColumn['type'], any> = {
     text: 'font',
     number: 'hashtag',
     select: 'fa-regular fa-square-caret-down',

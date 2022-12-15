@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { CollectionColumn } from '@/../core/entities/collection'
+import { CollectionColumn } from '@core/entities/collection'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { Filter, operations } from '../composables/filter'
 
@@ -38,18 +38,32 @@ const options = Object.keys(operations.text).map((key) => ({
     label: key,
     value: key,
 }))
+// Options
+const select = ref({
+    options: [] as string[],
+})
+
+if (props.column.options) {
+    select.value.options = props.column.options.split(',').map((i: string) => i.trim())
+}
 </script>
 <template>
     <div class="flex w-full">
         <is-select
             v-model="operation"
-            menu:offset-y
             :options="options"
             label-key="label"
             value-key="value"
+            menu:offset-y
             class="mr-4 max-w-[80px]"
         />
 
-        <is-input v-model="model.value" :placeholder="$t('value')" input:autofocus class="grow" />
+        <is-select
+            v-model="model.value"
+            :placeholder="$t('value')"
+            :options="select.options"
+            class="w-full"
+            menu:offset-y
+        />
     </div>
 </template>

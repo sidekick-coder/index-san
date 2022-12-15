@@ -41,7 +41,14 @@ watch(() => props.collectionId, load, {
 })
 </script>
 <template>
-    <is-container v-if="collection" class="overflow-auto h-full pb-10">
-        <c-table :collection-id="collectionId" :title="meta.title" view-id="default" />
-    </is-container>
+    <div class="w-full h-full">
+        <c-table
+            v-if="collection"
+            :collection-id="collectionId"
+            :title="meta.title"
+            view-id="default"
+            height="100%"
+            padding-vertical="40"
+        />
+    </div>
 </template>

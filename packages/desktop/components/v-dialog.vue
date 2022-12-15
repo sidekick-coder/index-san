@@ -1,3 +1,6 @@
+<script lang="ts">
+export default { inheritAttrs: false }
+</script>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'

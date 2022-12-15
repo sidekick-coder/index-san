@@ -23,7 +23,7 @@ const emit = defineEmits(['update:modelValue'])
 // set value
 const model = useVModel(props, 'modelValue', emit)
 
-const operation = computed<keyof typeof operations.text>({
+const operation = computed<keyof typeof operations.script>({
     get() {
         return get(model.value, 'config.operation')
     },
@@ -34,7 +34,7 @@ const operation = computed<keyof typeof operations.text>({
 
 if (!operation.value) operation.value = '='
 
-const options = Object.keys(operations.text).map((key) => ({
+const options = Object.keys(operations.script).map((key) => ({
     label: key,
     value: key,
 }))

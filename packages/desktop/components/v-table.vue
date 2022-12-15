@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import { toCssMeasurement } from '@/composables/utils'
 
 interface ColumnPadding {
     top?: number
@@ -49,15 +50,15 @@ const parsedColumns = computed(() =>
         const style: any = {}
 
         if (column.width) {
-            style.width = `${column.width}px`
+            style.width = toCssMeasurement(column.width)
         }
 
         if (column.padding?.left) {
-            style['padding-left'] = `${column.padding?.left}px`
+            style['padding-left'] = toCssMeasurement(column.padding.left)
         }
 
         if (column.padding?.right) {
-            style['padding-right'] = `${column.padding?.right}px`
+            style['padding-right'] = toCssMeasurement(column.padding.right)
         }
 
         return {
