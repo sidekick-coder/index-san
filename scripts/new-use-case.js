@@ -51,7 +51,7 @@ test.group('{{kebabCaseName}} (use-case)', (group) => {
     const app = new InMemoryApp()
     const useCase = new {{camelCaseName}}(app)
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    group.each.teardown(() => app.clear())
 
     test('should test use-case', async ({ expect }) => {
         expect(1).toEqual(1)
@@ -65,7 +65,7 @@ async function main() {
 
     const folderPath = path.resolve(BASE_PATH, 'packages', 'core', 'use-cases', kebabCaseName)
 
-    await fs.promises.mkdir(folderPath)
+    await fs.promises.mkdir(folderPath, { recursive: true })
 
     const items = [
         [path.resolve(folderPath, `${kebabCaseName}.dto.ts`), dto],
@@ -80,6 +80,8 @@ async function main() {
             .trim()
 
         await fs.promises.writeFile(filename, parsed)
+
+        console.info('created: ', filename)
     }
 }
 
