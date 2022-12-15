@@ -8,19 +8,18 @@ import { useRouter } from 'vue-router'
 import debounce from 'lodash/debounce'
 
 import Item from '@core/entities/item'
-import Collection, { CollectionColumn } from '@core/entities/collection'
+import Collection from '@core/entities/collection'
 import { ViewTable } from '@core/entities/view'
 
-import { toCssMeasurement, useNonReactive } from '@/composables/utils'
+import { useNonReactive } from '@/composables/utils'
+import { filter } from '@/modules/collection/composables/filter'
+import { createBindings } from '@/composables/binding'
 import { useStore } from '@/modules/collection/store'
-
-import { Filter, filter } from '@/modules/collection/composables/filter'
 
 import Draggable from 'vuedraggable'
 import CColumn from './CColumn.vue'
-import CFilter from './CFilter.vue'
+import CDrawerFilter from './CDrawerFilter.vue'
 import IValue from '@/modules/item/components/IValue.vue'
-import { createBindings } from '@/composables/binding'
 
 const props = defineProps({
     width: {
@@ -75,22 +74,6 @@ watch(() => props.collectionId, setCollection, {
     immediate: true,
 })
 
-// set items
-const items = ref<Item[]>([])
-
-async function setItems() {
-    if (!collection.value) {
-        items.value = []
-        return
-    }
-    store.item
-        .list({ collectionId: props.collectionId })
-        .then((r) => (items.value = r.data))
-        .catch(() => (items.value = []))
-}
-
-watch(collection, setItems)
-
 // view
 const view = ref<ViewTable & { loading: boolean }>({
     loading: false,
@@ -129,15 +112,13 @@ async function setView() {
 
     collection.value.columns
         .map((c) => useNonReactive(c))
-        .forEach((c) => {
-            const saved = savedColumns.find((s) => s.id === c.id)
-
+        .forEach((c) =>
             columns.push({
-                width: 200,
+                width: 5,
                 ...c,
-                ...saved,
+                ...savedColumns.find((s) => s.id === c.id),
             })
-        })
+        )
 
     columns.push({
         id: '_actions_right',
@@ -171,58 +152,48 @@ watch(collection, setView)
 watch(() => view.value.columns, saveView, { deep: true })
 watch(() => view.value.filters, saveView, { deep: true })
 
-// filters
+// set items
+
 const search = ref({
     input: '',
     show: false,
     onInput: debounce((v) => (search.value.input = v), 100),
 })
 
-const filters = ref({
-    drawer: false,
-    payload: [] as Filter[],
-})
+const items = ref<Item[]>([])
+const loadingItems = ref(false)
 
-const filteredItems = computed(() =>
-    items.value.filter((i) => {
+async function setItems() {
+    if (!collection.value) {
+        items.value = []
+        return
+    }
+
+    if (loadingItems.value) return
+
+    loadingItems.value = true
+
+    const raw = await store.item
+        .list({ collectionId: props.collectionId })
+        .then((r) => (items.value = r.data))
+        .catch(() => (items.value = []))
+
+    items.value = raw.filter((i) => {
         let valid = !!JSON.stringify(i).toLowerCase().includes(search.value.input.toLowerCase())
 
         valid = view.value.filters.reduce((r, f) => r && filter(i, f), valid)
 
         return valid
     })
-)
 
-function addFilter(column: CollectionColumn) {
-    filters.value.payload.push({
-        columnId: column.id,
-        field: column.field,
-        type: column.type,
-        config: {},
-        value: '',
-    })
+    setTimeout(() => (loadingItems.value = false), 800)
 }
 
-function applyFilters() {
-    view.value.filters = useNonReactive(filters.value.payload)
+watch(collection, setItems)
 
-    filters.value.drawer = false
-}
+watch(() => view.value.filters, debounce(setItems, 500), { deep: true })
 
-function cancelFilters() {
-    filters.value.payload = useNonReactive(view.value.filters)
-
-    filters.value.drawer = false
-}
-
-watch(
-    () => view.value.loading,
-    (v) => {
-        if (v) return
-
-        filters.value.payload = useNonReactive(view.value.filters)
-    }
-)
+watch(() => search.value.input, debounce(setItems, 1000))
 
 // bindings
 const attrs = useAttrs()
@@ -265,74 +236,21 @@ const bindings = computed(() => createBindings(attrs, ['table', 'head']))
                     <is-icon name="search" />
                 </v-btn>
 
-                <is-drawer v-model="filters.drawer">
-                    <template #activator="{ attrs }">
-                        <v-btn text size="sm" v-bind="attrs">
-                            <is-icon name="filter" />
-                        </v-btn>
-                    </template>
+                <v-btn text size="sm" @click="setItems">
+                    <is-icon name="rotate" />
+                </v-btn>
 
-                    <form @submit.prevent="applyFilters">
-                        <v-card-head class="px-4">
-                            <v-card-title class="text-t-secondary mr-auto">
-                                {{ $t('filter', 2) }}
-                            </v-card-title>
-
-                            <v-btn class="mr-4" color="danger" @click="cancelFilters">
-                                {{ $t('cancel') }}
-                            </v-btn>
-
-                            <v-btn class="mr-4" type="submit">
-                                {{ $t('apply') }}
-                            </v-btn>
-
-                            <v-btn @click="filters.drawer = false">
-                                <is-icon name="times" />
-                            </v-btn>
-                        </v-card-head>
-
-                        <c-filter
-                            v-for="(f, index) in filters.payload"
-                            :key="index"
-                            :model-value="f"
-                            :columns="collection ? collection.columns : []"
-                            @update:model-value="(v) => (filters[index] = v)"
-                            @destroy="filters.payload.splice(index, 1)"
-                        />
-
-                        <v-card-content class="flex-wrap">
-                            <div
-                                v-if="!filters.payload.length"
-                                class="w-full mb-3 text-t-secondary"
-                            >
-                                {{ $t('noEntity', [$t('filter', 2)]) }}
-                            </div>
-
-                            <is-menu offset-y close-on-content-click>
-                                <template #activator="{ on }">
-                                    <v-btn v-bind="on" class="mr-4" color="info">
-                                        {{ $t('addEntity', [$t('filter')]) }}
-                                    </v-btn>
-                                </template>
-
-                                <v-card color="b-secondary">
-                                    <is-list-item
-                                        v-for="c in collection ? collection.columns : []"
-                                        :key="c.id"
-                                        @click="addFilter(c)"
-                                    >
-                                        {{ c.label }}
-                                    </is-list-item>
-                                </v-card>
-                            </is-menu>
-                        </v-card-content>
-                    </form>
-                </is-drawer>
+                <c-drawer-filter v-model="view.filters" :columns="collection?.columns" />
             </div>
         </v-card-head>
 
         <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
-            <v-table :items="filteredItems" :columns="view.columns" v-bind="bindings.table">
+            <v-table
+                :items="items"
+                :columns="view.columns"
+                v-bind="bindings.table"
+                :loading="loadingItems"
+            >
                 <template #column>
                     <Draggable v-model="view.columns" handle=".drag" item-key="id" tag="v-tr">
                         <template #item="{ element: c }">
@@ -369,7 +287,6 @@ const bindings = computed(() => createBindings(attrs, ['table', 'head']))
                             v-for="c in view.columns"
                             :key="c.id"
                             no-padding
-                            :width="c.width"
                             :class="c.id[0] === '_' ? '!border-x-0' : ''"
                         >
                             <is-menu v-if="c.id === '_actions_left'" offset-y>

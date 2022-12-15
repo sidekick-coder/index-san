@@ -57,6 +57,7 @@ export default {
     section: 'Section',
     apply: 'Apply',
     operation: 'Operation',
+    clear: 'Clear',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

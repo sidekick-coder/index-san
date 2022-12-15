@@ -29,6 +29,7 @@ module.exports = {
 
             'accent': 'rgb(var(--accent) / 1)',
             'danger': 'rgb(var(--danger))',
+            'warn': 'rgb(var(--warn))',
             'info': 'rgb(var(--info))',
         },
         extend: {

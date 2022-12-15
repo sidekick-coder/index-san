@@ -51,6 +51,7 @@ const variations = {
         'accent': 'bg-accent hover:bg-accent/75',
         'danger': 'bg-danger hover:bg-danger/75 text-t-primary',
         'info': 'bg-info hover:bg-info/75 text-t-primary',
+        'warn': 'bg-warn hover:bg-warn/75 text-t-primary',
         'b-secondary': 'bg-b-secondary hover:bg-b-secondary/75 text-t-primary',
     },
     text: {
@@ -58,6 +59,7 @@ const variations = {
             'hover:border-accent/5 hover:bg-accent/5 border border-transparent hover:text-accent',
         'danger':
             'hover:border-danger/5 hover:bg-danger/5 border border-transparent hover:text-danger',
+        'warn': 'hover:border-warn/5 hover:bg-warn/5 border border-transparent hover:text-warn',
         'info': 'hover:border-info/5 hover:bg-info/5 border border-transparent hover:text-info',
         'lines': 'hover:border-lines/5 hover:bg-lines/5 border border-transparent hover:text-lines',
         'b-primary':

@@ -12,7 +12,7 @@ export const operations = {
         '=': (a: number, b: number) => a === b,
         '!=': (a: number, b: number) => a != b,
         '>': (a: number, b: number) => a > b,
-        '<': (a: number, b: number) => a > b,
+        '<': (a: number, b: number) => a < b,
         '>=': (a: number, b: number) => a >= b,
         '<=': (a: number, b: number) => a <= b,
     },
@@ -96,6 +96,8 @@ export function filterScript(value: ExecuteScriptDTO.Output | null, filter: Filt
 
 export function filter(item: Item, filter: Filter) {
     const value = item[filter.field]
+
+    if (filter.value === undefined || filter.value === '') return true
 
     if (filter.type === 'number') {
         return filterNumber(value, filter)
