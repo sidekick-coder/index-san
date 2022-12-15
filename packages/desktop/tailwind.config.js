@@ -31,6 +31,12 @@ module.exports = {
             'danger': 'rgb(var(--danger))',
             'info': 'rgb(var(--info))',
         },
+        extend: {
+            transitionProperty: {
+                height: 'height',
+                width: 'width',
+            },
+        },
     },
     plugins: [],
 }

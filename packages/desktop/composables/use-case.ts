@@ -1,5 +1,4 @@
 import { useStore } from '@/modules/notify/store'
-import get from 'lodash/get'
 
 import App from '@core/app'
 import { i18n } from '@/plugins/i18n'
@@ -8,7 +7,10 @@ export interface DataResponse<T> {
     data: T
 }
 
-export async function useCase<T = any>(name: keyof App['cases'], args?: any): Promise<T> {
+export async function useCase<
+    K extends keyof App['cases'],
+    T = ReturnType<App['cases'][K]['execute']>
+>(name: K, args?: Parameters<App['cases'][K]['execute']>[0]): Promise<Awaited<T>> {
     const notify = useStore()
 
     args = args ? JSON.parse(JSON.stringify(args)) : {}
@@ -34,5 +36,5 @@ export async function useCase<T = any>(name: keyof App['cases'], args?: any): Pr
     notify.error(message)
     console.error(Object.assign(new Error(), error))
 
-    return Promise.reject(error)
+    return Promise.reject(error) as any
 }

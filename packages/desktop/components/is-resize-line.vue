@@ -32,30 +32,41 @@ const model = useVModel(props, 'modelValue', emit)
 const startWidth = ref(props.modelValue)
 
 const drag = debounce((event: MouseEvent) => {
-    const width = startWidth.value + event.clientX - state.value.x
+    const width = Math.abs(startWidth.value + event.clientX - state.value.x)
 
-    if (width >= props.minWidth || !props.minWidth) {
-        model.value = width
+    if (width % 4 !== 0) {
+        return
     }
+
+    if (props.minWidth && width <= props.minWidth) {
+        return
+    }
+
+    model.value = width
 }, props.debounce)
 
-function stop() {
+const stop = debounce(() => {
     startWidth.value = model.value
+    moving.value = false
 
-    document.documentElement.removeEventListener('mousemove', drag, false)
-    document.documentElement.removeEventListener('mouseup', stop, false)
-}
+    window.removeEventListener('mousemove', drag, false)
+    window.removeEventListener('mouseup', stop, false)
+}, 50)
 
-function start(event: MouseEvent) {
+const start = debounce((event: MouseEvent) => {
     moving.value = true
 
     state.value.x = event.clientX
     state.value.y = event.clientY
 
-    document.documentElement.addEventListener('mousemove', drag, false)
-    document.documentElement.addEventListener('mouseup', stop, false)
-}
+    window.addEventListener('mousemove', drag, false)
+    window.addEventListener('mouseup', stop, false)
+}, 50)
 </script>
 <template>
-    <div class="h-full w-[5px] absolute right-0 top-0 cursor-col-resize" @mousedown="start"></div>
+    <div
+        class="h-full w-[5px] absolute right-0 top-0 cursor-col-resize"
+        :class="moving ? 'bg-accent' : ''"
+        @mousedown="start"
+    ></div>
 </template>

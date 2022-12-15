@@ -36,92 +36,64 @@ import ExecuteScript from './use-cases/execute-script/execute-script'
 import ShowMenu from './use-cases/show-menu/show-menu'
 import UpdateMenu from './use-cases/update-menu/update-menu'
 import UpdateDirectoryEntry from './use-cases/update-directory-entry/update-directory-entry'
+import ShowViews from './use-cases/show-views/show-views'
+import UpdateViews from './use-cases/update-views/update-views'
 
 interface AppArgs {
     workspaceRepository: IWorkspaceRepository
     driveManager: DriveManager
     crudManger: CrudManager
 }
-interface AppUseCases {
-    'list-workspaces': ListWorkspaces
-    'create-workspace': CreateWorkspace
-    'delete-workspace': DeleteWorkspace
 
-    'show-workspace-options': ShowWorkspaceOptions
-    'update-workspace-options': UpdateWorkspaceOptions
+function createUseCases(app: AppService) {
+    return {
+        'list-workspaces': new ListWorkspaces(app.repositories.workspace),
+        'create-workspace': new CreateWorkspace(app.repositories.workspace, app.managers.drive),
+        'delete-workspace': new DeleteWorkspace(app.repositories.workspace),
 
-    'list-directory-entry': ListDirectoryEntry
-    'show-directory-entry': ShowDirectoryEntry
-    'update-directory-entry': UpdateDirectoryEntry
-    'read-directory-entry': ReadDirectoryEntry
-    'create-directory-entry': CreateDirectoryEntry
-    'write-directory-entry': WriteDirectoryEntry
-    'delete-directory-entry': DeleteDirectoryEntry
+        'show-workspace-options': new ShowWorkspaceOptions(app),
+        'update-workspace-options': new UpdateWorkspaceOptions(app),
 
-    'list-collections': ListCollections
-    'show-collection': ShowCollection
-    'create-collection': CreateCollection
-    'update-collection': UpdateCollection
-    'delete-collection': DeleteCollection
+        'list-directory-entry': new ListDirectoryEntry(app),
+        'show-directory-entry': new ShowDirectoryEntry(app),
+        'update-directory-entry': new UpdateDirectoryEntry(app),
+        'create-directory-entry': new CreateDirectoryEntry(app),
+        'delete-directory-entry': new DeleteDirectoryEntry(app),
+        'read-directory-entry': new ReadDirectoryEntry(app),
+        'write-directory-entry': new WriteDirectoryEntry(app),
 
-    'list-items': ListItems
-    'show-item': ShowItem
-    'create-item': CreateItem
-    'update-item': UpdateItem
-    'delete-item': DeleteItem
+        'list-collections': new ListCollections(app),
+        'show-collection': new ShowCollection(app),
+        'create-collection': new CreateCollection(app),
+        'update-collection': new UpdateCollection(app),
+        'delete-collection': new DeleteCollection(app),
 
-    'list-scripts': ListScripts
-    'create-script': CreateScript
-    'update-script': UpdateScript
-    'delete-script': DeleteScript
-    'execute-script': ExecuteScript
+        'list-items': new ListItems(app),
+        'show-item': new ShowItem(app),
+        'create-item': new CreateItem(app),
+        'update-item': new UpdateItem(app),
+        'delete-item': new DeleteItem(app),
 
-    'show-menu': ShowMenu
-    'update-menu': UpdateMenu
+        'list-scripts': new ListScripts(app),
+        'create-script': new CreateScript(app),
+        'update-script': new UpdateScript(app),
+        'delete-script': new DeleteScript(app),
+        'execute-script': new ExecuteScript(app),
+
+        'show-menu': new ShowMenu(app),
+        'update-menu': new UpdateMenu(app),
+
+        'show-views': new ShowViews(app),
+        'update-views': new UpdateViews(app),
+    }
 }
 
 export default class App extends AppService {
-    public cases: AppUseCases
+    public cases: ReturnType<typeof createUseCases>
 
     constructor({ workspaceRepository, driveManager, crudManger }: AppArgs) {
         super({ workspaceRepository, driveManager, crudManger })
 
-        this.cases = {
-            'list-workspaces': new ListWorkspaces(workspaceRepository),
-            'create-workspace': new CreateWorkspace(workspaceRepository, driveManager),
-            'delete-workspace': new DeleteWorkspace(workspaceRepository),
-
-            'show-workspace-options': new ShowWorkspaceOptions(this),
-            'update-workspace-options': new UpdateWorkspaceOptions(this),
-
-            'list-directory-entry': new ListDirectoryEntry(this),
-            'show-directory-entry': new ShowDirectoryEntry(this),
-            'update-directory-entry': new UpdateDirectoryEntry(this),
-            'create-directory-entry': new CreateDirectoryEntry(this),
-            'delete-directory-entry': new DeleteDirectoryEntry(this),
-            'read-directory-entry': new ReadDirectoryEntry(this),
-            'write-directory-entry': new WriteDirectoryEntry(this),
-
-            'list-collections': new ListCollections(this),
-            'show-collection': new ShowCollection(this),
-            'create-collection': new CreateCollection(this),
-            'update-collection': new UpdateCollection(this),
-            'delete-collection': new DeleteCollection(this),
-
-            'list-items': new ListItems(this),
-            'show-item': new ShowItem(this),
-            'create-item': new CreateItem(this),
-            'update-item': new UpdateItem(this),
-            'delete-item': new DeleteItem(this),
-
-            'list-scripts': new ListScripts(this),
-            'create-script': new CreateScript(this),
-            'update-script': new UpdateScript(this),
-            'delete-script': new DeleteScript(this),
-            'execute-script': new ExecuteScript(this),
-
-            'show-menu': new ShowMenu(this),
-            'update-menu': new UpdateMenu(this),
-        }
+        this.cases = createUseCases(this)
     }
 }

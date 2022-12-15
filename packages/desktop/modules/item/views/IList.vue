@@ -48,7 +48,8 @@ watch(() => props.collectionId, load, {
             :title="meta.title"
             view-id="default"
             height="100%"
-            padding-vertical="40"
+            table:padding-left="20"
+            head:class="px-10"
         />
     </div>
 </template>

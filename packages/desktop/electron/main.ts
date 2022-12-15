@@ -33,6 +33,10 @@ const indexSan = new IndexSan({
     workspaceRepository,
 })
 
+if (process.env.VITE_DEV_SERVER_URL) {
+    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+}
+
 app.whenReady().then(async () => {
     const preferences = new JSONService<Preference>(
         path.resolve(app.getPath('userData'), 'preferences.json')
@@ -132,7 +136,6 @@ app.whenReady().then(async () => {
 
     if (process.env.VITE_DEV_SERVER_URL) {
         window.loadURL(process.env.VITE_DEV_SERVER_URL)
-        process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
     } else {
         window.loadFile(path.resolve(__dirname, '..', 'dist', 'index.html'))
     }

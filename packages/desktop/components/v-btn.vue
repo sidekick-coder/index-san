@@ -22,6 +22,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    tile: {
+        type: Boolean,
+        default: false,
+    },
     disabled: {
         type: Boolean,
         default: false,
@@ -78,7 +82,9 @@ const classes = computed(() => {
         result.push('opacity-60 pointer-events-none')
     }
 
-    result.push(props.rounded ? 'rounded-full' : 'rounded')
+    if (!props.tile) {
+        result.push(props.rounded ? 'rounded-full' : 'rounded')
+    }
 
     result.push(sizes[props.size])
     result.push(colors[props.color])

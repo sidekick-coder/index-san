@@ -1,20 +1,26 @@
+<script lang="ts">
+export default { inheritAttrs: false }
+</script>
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, useAttrs } from 'vue'
 import { useRouter } from 'vue-router'
 
 import debounce from 'lodash/debounce'
 
 import Item from '@core/entities/item'
 import Collection, { CollectionColumn } from '@core/entities/collection'
+import { ViewTable } from '@core/entities/view'
 
 import { toCssMeasurement, useNonReactive } from '@/composables/utils'
 import { useStore } from '@/modules/collection/store'
+
 import { Filter, filter } from '@/modules/collection/composables/filter'
 
 import Draggable from 'vuedraggable'
 import CColumn from './CColumn.vue'
 import CFilter from './CFilter.vue'
 import IValue from '@/modules/item/components/IValue.vue'
+import { createBindings } from '@/composables/binding'
 
 const props = defineProps({
     width: {
@@ -24,10 +30,6 @@ const props = defineProps({
     height: {
         type: [String, Number],
         default: null,
-    },
-    paddingVertical: {
-        type: [String, Number],
-        default: 0,
     },
     collectionId: {
         type: String,
@@ -44,13 +46,6 @@ const props = defineProps({
 })
 
 const router = useRouter()
-
-const drawers = ref({
-    filters: false,
-    columns: false,
-})
-
-const loading = ref(false)
 
 async function onItemNew() {
     // await createItem(props.workspaceId, props.collectionId)
@@ -80,56 +75,6 @@ watch(() => props.collectionId, setCollection, {
     immediate: true,
 })
 
-// set columns
-interface CTableColumn extends CollectionColumn {
-    width: number | string
-}
-
-const column = ref({
-    loading: false,
-    columns: [] as CTableColumn[],
-})
-
-async function setColumns() {
-    column.value.columns = []
-
-    if (!collection.value) {
-        return
-    }
-
-    column.value.loading = true
-
-    useNonReactive(collection.value.columns).forEach((c, index) => {
-        const payload: any = {
-            ...c,
-            width: 200,
-        }
-
-        if (props.paddingVertical && index === 0) {
-            payload.padding = {
-                left: props.paddingVertical,
-            }
-        }
-
-        column.value.columns.push(payload)
-    })
-
-    column.value.columns.push({
-        id: '_actions',
-        field: '_actions',
-        label: '',
-        width: '100%',
-        type: 'text',
-        padding: {
-            right: props.paddingVertical,
-        },
-    })
-
-    column.value.loading = false
-}
-
-watch(collection, setColumns)
-
 // set items
 const items = ref<Item[]>([])
 
@@ -146,31 +91,103 @@ async function setItems() {
 
 watch(collection, setItems)
 
-// search bar
+// view
+const view = ref<ViewTable & { loading: boolean }>({
+    loading: false,
+
+    id: props.viewId,
+    component: 'table',
+    columns: [],
+    filters: [],
+})
+
+async function setView() {
+    if (!collection.value) return
+
+    view.value.loading = true
+
+    const columns: ViewTable['columns'] = []
+    const savedColumns: ViewTable['columns'] = []
+
+    if (props.viewId) {
+        await store.view.show(props.collectionId, props.viewId).then((r: ViewTable) => {
+            if (!r) return
+
+            view.value.filters = r.filters
+
+            savedColumns.push(...r.columns)
+        })
+    }
+
+    columns.push({
+        id: '_actions_left',
+        field: '_actions_left',
+        label: '',
+        width: 26,
+        type: 'text',
+    })
+
+    collection.value.columns
+        .map((c) => useNonReactive(c))
+        .forEach((c) => {
+            const saved = savedColumns.find((s) => s.id === c.id)
+
+            columns.push({
+                width: 200,
+                ...c,
+                ...saved,
+            })
+        })
+
+    columns.push({
+        id: '_actions_right',
+        field: '_actions_right',
+        label: '',
+        width: '100%',
+        type: 'text',
+    })
+
+    view.value.columns = columns
+
+    setTimeout(() => (view.value.loading = false), 1100)
+}
+
+const saveView = debounce(async () => {
+    if (!props.viewId || view.value.loading) return
+
+    const data = useNonReactive(view.value)
+
+    data.columns = data.columns.filter((c) => !c.id.startsWith('_'))
+
+    await store.view.updateOrCreate({
+        collectionId: props.collectionId,
+        viewId: props.viewId,
+        data,
+    })
+}, 1000)
+
+watch(collection, setView)
+
+watch(() => view.value.columns, saveView, { deep: true })
+watch(() => view.value.filters, saveView, { deep: true })
+
+// filters
 const search = ref({
     input: '',
     show: false,
-    onInput: debounce((v) => {
-        search.value.input = v
-    }, 100),
+    onInput: debounce((v) => (search.value.input = v), 100),
 })
 
-// filters
 const filters = ref({
     drawer: false,
     payload: [] as Filter[],
-    current: [] as Filter[],
 })
 
 const filteredItems = computed(() =>
     items.value.filter((i) => {
-        let valid = filters.value.current.reduce((r, f) => r && filter(i, f), true)
+        let valid = !!JSON.stringify(i).toLowerCase().includes(search.value.input.toLowerCase())
 
-        if (search.value.input) {
-            valid =
-                valid &&
-                !!JSON.stringify(i).toLowerCase().includes(search.value.input.toLowerCase())
-        }
+        valid = view.value.filters.reduce((r, f) => r && filter(i, f), valid)
 
         return valid
     })
@@ -187,34 +204,35 @@ function addFilter(column: CollectionColumn) {
 }
 
 function applyFilters() {
-    filters.value.current = useNonReactive(filters.value.payload)
+    view.value.filters = useNonReactive(filters.value.payload)
 
     filters.value.drawer = false
 }
 
 function cancelFilters() {
-    filters.value.payload = useNonReactive(filters.value.current)
+    filters.value.payload = useNonReactive(view.value.filters)
 
     filters.value.drawer = false
 }
 
 watch(
-    () => props.collectionId,
-    () => {
-        filters.value.current = []
-        filters.value.payload = []
+    () => view.value.loading,
+    (v) => {
+        if (v) return
+
+        filters.value.payload = useNonReactive(view.value.filters)
     }
 )
+
+// bindings
+const attrs = useAttrs()
+
+const bindings = computed(() => createBindings(attrs, ['table', 'head']))
 </script>
 
 <template>
-    <v-card class="group/card" :height="height" :width="width">
-        <v-card-head
-            :style="{
-                paddingLeft: toCssMeasurement(props.paddingVertical),
-                paddingRight: toCssMeasurement(props.paddingVertical),
-            }"
-        >
+    <v-card class="group/card" :height="height" :width="width" v-bind="bindings.root">
+        <v-card-head v-bind="bindings.head">
             <v-card-title v-if="title" class="grow">
                 {{ title }}
             </v-card-title>
@@ -314,42 +332,33 @@ watch(
         </v-card-head>
 
         <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
-            <v-table :items="filteredItems" :columns="column.columns">
-                <template #column="data">
-                    <Draggable v-model="data.columns" handle=".drag" item-key="id" tag="v-tr">
+            <v-table :items="filteredItems" :columns="view.columns" v-bind="bindings.table">
+                <template #column>
+                    <Draggable v-model="view.columns" handle=".drag" item-key="id" tag="v-tr">
                         <template #item="{ element: c }">
-                            <v-th v-if="c.id !== '_actions'" :style="c.style">
+                            <v-th
+                                v-if="c.id === '_actions_left'"
+                                :id="c.id"
+                                :width="c.width"
+                                class="!border-x-0 !px-0"
+                            />
+
+                            <v-th
+                                v-else-if="c.id === '_actions_right'"
+                                :id="c.id"
+                                class="w-full !border-x-0"
+                                :width="c.width"
+                            >
+                                <v-btn size="sm" text class="text-t-secondary" @click="onColumnNew">
+                                    <is-icon name="plus" />
+                                </v-btn>
+                            </v-th>
+
+                            <v-th v-else :id="c.id" :width="c.width">
                                 <c-column class="drag" :collection-id="collectionId" :column="c" />
 
                                 <is-resize-line v-model="c.width" :min-width="100" />
                             </v-th>
-
-                            <template v-else>
-                                <v-th v-if="!column.columns.length" class="drag">
-                                    <div
-                                        class="flex cursor-pointer text-t-secondary text-sm"
-                                        @click="onColumnNew"
-                                    >
-                                        Add column
-                                        <is-icon
-                                            class="cursor-pointer ml-2"
-                                            name="plus"
-                                            @click="onColumnNew"
-                                        />
-                                    </div>
-                                </v-th>
-
-                                <v-th v-else class="w-full">
-                                    <v-btn
-                                        size="sm"
-                                        text
-                                        class="text-t-secondary"
-                                        @click="onColumnNew"
-                                    >
-                                        <is-icon name="plus" />
-                                    </v-btn>
-                                </v-th>
-                            </template>
                         </template>
                     </Draggable>
                 </template>
@@ -357,17 +366,19 @@ watch(
                 <template #item="data">
                     <v-tr class="relative group/item">
                         <v-td
-                            v-for="(c, index) in data.columns"
+                            v-for="c in view.columns"
                             :key="c.id"
                             no-padding
-                            :style="c.style"
+                            :width="c.width"
+                            :class="c.id[0] === '_' ? '!border-x-0' : ''"
                         >
-                            <is-menu v-if="index === 0" offset-y>
+                            <is-menu v-if="c.id === '_actions_left'" offset-y>
                                 <template #activator="{ on }">
                                     <v-btn
-                                        class="-ml-9 mt-2 w-4 h-6 text-sm absolute top-0 opacity-0 group-hover/item:opacity-100"
+                                        class="opacity- 0 w-full h-[43px] opacity-0 group-hover/item:opacity-100"
                                         size="none"
-                                        text
+                                        color="b-secondary"
+                                        tile
                                         v-bind="on"
                                     >
                                         <is-icon name="ellipsis-vertical" />
@@ -387,12 +398,13 @@ watch(
                                 </v-card>
                             </is-menu>
 
+                            <div v-else-if="c.id === '_actions_right'"></div>
+
                             <i-value
-                                v-if="c.id !== '_actions'"
+                                v-else
                                 :model-value="data.item[c.field]"
                                 :column="c"
                                 :item="data.item"
-                                :class="index === 0 ? '-ml-4' : ''"
                             />
                         </v-td>
                     </v-tr>
@@ -401,7 +413,7 @@ watch(
                 <template #append>
                     <v-tr>
                         <v-td
-                            :colspan="column.columns.length"
+                            :colspan="view.columns.length"
                             class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
                             @click="onItemNew"
                         >

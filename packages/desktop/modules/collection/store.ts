@@ -6,9 +6,9 @@ import Collection from '@core/entities/collection'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useStore as useItem } from '@/modules/item/store'
+import { useStore as useView } from '@/modules/view/store'
 import { useCase } from '@/composables/use-case'
 
-import ListCollectionsDTO from '@core/use-cases/list-collections/list-collections.dto'
 import UpdateCollectionsDTO from '@core/use-cases/update-collection/update-collection.dto'
 import CreateCollectionDTO from '@/../core/use-cases/create-collection/create-collection.dto'
 import DeleteCollectionsDTO from '@/../core/use-cases/delete-collection/delete-collection.dto'
@@ -17,15 +17,16 @@ import ShowCollectionsDTO from '@/../core/use-cases/show-collection/show-collect
 export const useStore = defineStore('collections', () => {
     const collections = ref<Collection[]>([])
 
-    const item = useItem()
     const workspace = useWorkspace()
+    const item = useItem()
+    const view = useView()
 
     async function setCollections(workspaceId = workspace.currentId) {
-        await useCase<ListCollectionsDTO.Output>('list-collections', {
+        return await useCase('list-collections', {
             workspaceId,
         })
             .then((r) => (collections.value = get(r, 'data', [])))
-            .catch(() => (collections.value = []))
+            .catch(() => (collections.value = [] as Collection[]))
     }
 
     async function show(payload: Partial<ShowCollectionsDTO.Input>) {
@@ -33,7 +34,7 @@ export const useStore = defineStore('collections', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<ShowCollectionsDTO.Output>('show-collection', payload)
+        return useCase('show-collection', payload)
     }
 
     async function create(payload: Partial<CreateCollectionDTO.Input>) {
@@ -69,6 +70,7 @@ export const useStore = defineStore('collections', () => {
     return {
         workspace,
         item,
+        view,
 
         collections,
 

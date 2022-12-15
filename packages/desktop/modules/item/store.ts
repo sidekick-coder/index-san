@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
+
 import ListItemsDTO from '@/../core/use-cases/list-items/list-items.dto'
 import { useCase } from '@/composables/use-case'
 import { waitFor } from '@/composables/utils'
@@ -39,7 +40,7 @@ export const useStore = defineStore('item', () => {
 
         loading.set(collectionId, true)
 
-        return useCase<ListItemsDTO.Output>('list-items', payload)
+        return useCase('list-items', payload)
             .then((response) => {
                 cache.set(collectionId, response)
 
@@ -50,5 +51,6 @@ export const useStore = defineStore('item', () => {
 
     return {
         list,
+        workspace,
     }
 })

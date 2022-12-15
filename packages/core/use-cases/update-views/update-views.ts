@@ -17,7 +17,7 @@ export default class UpdateViews {
 
         const filename = DirectoryEntry.normalize(collection.path, '.is', 'views.json')
 
-        await workspace.drive.write(filename, JSON.stringify(data))
+        await workspace.drive.write(filename, JSON.stringify(data, null, 4))
 
         return {}
     }
