@@ -17,6 +17,7 @@ test.group('show-menu (use-case)', (group) => {
 
         for (let i = 0; i < 20; i++) {
             menu.push({
+                id: String(i),
                 label: `item-${i}`,
                 to: `item-${i}`,
             })

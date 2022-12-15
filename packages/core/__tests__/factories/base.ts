@@ -5,7 +5,7 @@ export class Factory<T> {
         return this.define(data)
     }
 
-    public createMany(data?: Partial<T>, count = 5) {
+    public createMany(count = 5, data?: Partial<T>) {
         const items: T[] = []
 
         for (let i = 0; i < count; i++) {
