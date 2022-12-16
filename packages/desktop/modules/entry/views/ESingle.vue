@@ -22,17 +22,6 @@ const props = defineProps({
     },
 })
 
-// async function load() {
-//     entry.value = undefined
-
-//     const data = await useDirectoryEntry(props.workspaceId).show(props.entryId)
-
-//     entry.value = data
-//     meta.value.title = data.name ?? 'Entry'
-
-//     current.value = getRecommendedView(data)
-// }
-
 // set meta
 const meta = useMeta({ title: DirectoryEntry.basename(props.entryId) })
 

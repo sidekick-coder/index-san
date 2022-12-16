@@ -8,8 +8,8 @@ import { useRouter } from 'vue-router'
 import debounce from 'lodash/debounce'
 
 import Item from '@core/entities/item'
-import Collection from '@core/entities/collection'
-import { ViewTable } from '@core/entities/view'
+import Collection, { CollectionColumn } from '@core/entities/collection'
+import { ViewTable, ViewTableColumn } from '@core/entities/view'
 
 import { useNonReactive } from '@/composables/utils'
 import { filter } from '@/modules/collection/composables/filter'
@@ -75,13 +75,12 @@ watch(() => props.collectionId, setCollection, {
 })
 
 // view
-const view = ref<ViewTable & { loading: boolean }>({
+const view = ref({
     loading: false,
-
     id: props.viewId,
     component: 'table',
-    columns: [],
-    filters: [],
+    columns: [] as (CollectionColumn & ViewTableColumn)[],
+    filters: [] as ViewTable['filters'],
 })
 
 async function setView() {
@@ -89,7 +88,7 @@ async function setView() {
 
     view.value.loading = true
 
-    const columns: ViewTable['columns'] = []
+    const columns: any[] = []
     const savedColumns: ViewTable['columns'] = []
 
     if (props.viewId) {
@@ -102,23 +101,32 @@ async function setView() {
         })
     }
 
-    columns.push({
+    collection.value.columns
+        .map((c) => useNonReactive(c))
+        .forEach((c) =>
+            columns.push({
+                width: 200,
+                ...c,
+                ...savedColumns.find((s) => s.id === c.id),
+            })
+        )
+
+    columns.sort((a, b) => {
+        const aIndex = savedColumns.findIndex((s) => s.id === a.id)
+        const bIndex = savedColumns.findIndex((s) => s.id === b.id)
+
+        if (aIndex === -1 || bIndex === -1) return 0
+
+        return aIndex - bIndex
+    })
+
+    columns.unshift({
         id: '_actions_left',
         field: '_actions_left',
         label: '',
         width: 26,
         type: 'text',
     })
-
-    collection.value.columns
-        .map((c) => useNonReactive(c))
-        .forEach((c) =>
-            columns.push({
-                width: 5,
-                ...c,
-                ...savedColumns.find((s) => s.id === c.id),
-            })
-        )
 
     columns.push({
         id: '_actions_right',
@@ -136,9 +144,14 @@ async function setView() {
 const saveView = debounce(async () => {
     if (!props.viewId || view.value.loading) return
 
-    const data = useNonReactive(view.value)
+    const data = useNonReactive<ViewTable>(view.value)
 
-    data.columns = data.columns.filter((c) => !c.id.startsWith('_'))
+    data.columns = data.columns
+        .filter((c) => !c.id.startsWith('_'))
+        .map((c) => ({
+            id: c.id,
+            width: c.width,
+        }))
 
     await store.view.updateOrCreate({
         collectionId: props.collectionId,
@@ -199,6 +212,54 @@ watch(() => search.value.input, debounce(setItems, 1000))
 const attrs = useAttrs()
 
 const bindings = computed(() => createBindings(attrs, ['table', 'head']))
+
+// update item
+
+async function updateItem(item: Item, field: string, value: any) {
+    let old = item[field]
+
+    item[field] = value
+
+    const payload = {
+        collectionId: props.collectionId,
+        itemId: item.id,
+        data: {
+            [field]: value,
+        },
+    }
+
+    await store.item.update(payload).catch(() => {
+        item[field] = old
+    })
+}
+
+// update column
+
+async function updateColumn(column: CollectionColumn) {
+    if (!collection.value) return
+
+    const oldColumns = useNonReactive(collection.value.columns).map((c) => ({
+        ...c,
+        width: undefined,
+    }))
+
+    const newColumns = useNonReactive(oldColumns).map((c) => (c.id === column.id ? column : c))
+
+    collection.value.columns = newColumns
+
+    await store
+        .update({
+            collectionId: props.collectionId,
+            data: {
+                columns: newColumns,
+            },
+        })
+        .catch(() => {
+            collection.value!.columns = oldColumns
+        })
+
+    await setView()
+}
 </script>
 
 <template>
@@ -273,7 +334,12 @@ const bindings = computed(() => createBindings(attrs, ['table', 'head']))
                             </v-th>
 
                             <v-th v-else :id="c.id" :width="c.width">
-                                <c-column class="drag" :collection-id="collectionId" :column="c" />
+                                <c-column
+                                    class="drag"
+                                    :collection-id="collectionId"
+                                    :model-value="c"
+                                    @update:model-value="updateColumn"
+                                />
 
                                 <is-resize-line v-model="c.width" :min-width="100" />
                             </v-th>
@@ -322,6 +388,7 @@ const bindings = computed(() => createBindings(attrs, ['table', 'head']))
                                 :model-value="data.item[c.field]"
                                 :column="c"
                                 :item="data.item"
+                                @update:model-value="updateItem(data.item, c.field, $event)"
                             />
                         </v-td>
                     </v-tr>

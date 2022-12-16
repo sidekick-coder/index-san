@@ -8,6 +8,7 @@ import { useStore } from '../store'
 
 import VTr from '@/components/v-tr.vue'
 import LToolbar from '@/modules/layout/components/LToolbar.vue'
+import EEntryIcon from '../components/EEntryIcon.vue'
 import { onKeyStroke } from '@vueuse/core'
 
 const props = defineProps({
@@ -46,8 +47,13 @@ watch(() => props.path, setEntries, {
 const search = ref('')
 
 const filteredEntries = computed(() => {
-    return entries.value.filter((e) => e.name.match(search.value))
+    return entries.value.filter((e) => e.name.toLowerCase().includes(search.value.toLowerCase()))
 })
+
+watch(
+    () => props.path,
+    () => (search.value = '')
+)
 
 // Table
 
@@ -63,22 +69,6 @@ const columns = [
         },
     },
 ]
-
-// Get icon
-
-function getIcon(item: DirectoryEntry) {
-    let icon = 'file'
-
-    if (item.type === 'directory') {
-        icon = 'folder'
-    }
-
-    if (item.name === '.is') {
-        icon = 'cog'
-    }
-
-    return icon
-}
 
 // create entries
 
@@ -334,7 +324,7 @@ function show(item: DirectoryEntry) {
                         >
                             <v-td class="pl-10 flex pr-7">
                                 <div class="w-4 mr-2">
-                                    <is-icon :name="getIcon(item)" class="text-t-secondary" />
+                                    <e-entry-icon :model-value="item" class="text-t-secondary" />
                                 </div>
 
                                 <is-input

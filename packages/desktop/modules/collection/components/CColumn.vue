@@ -1,101 +1,72 @@
 <script setup lang="ts">
-import { CollectionColumn } from '@core/entities/collection'
-
-import { updateCollectionColumn, deleteCollectionColumn } from '@/composables/collection'
+import { CollectionColumn, CollectionColumnType } from '@core/entities/collection'
 
 import { computed, ref, watch } from 'vue'
 import { useStore } from '@/modules/collection/store'
 
 import MEditor from '@/modules/monaco/components/MEditor.vue'
+import { useVModel } from '@vueuse/core'
+import { useNonReactive } from '@/composables/utils'
+import { useI18n } from 'vue-i18n'
 
+// Props & emits
 const props = defineProps({
+    modelValue: {
+        type: Object as () => CollectionColumn,
+        required: true,
+    },
     collectionId: {
         type: String,
         required: true,
     },
-    column: {
-        type: Object as () => CollectionColumn,
-        required: true,
-    },
 })
 
-// type options
+const emit = defineEmits(['update:modelValue'])
 
-interface Option {
-    label: string
-    value: CollectionColumn['type']
-}
+// form
+const tm = useI18n()
+const model = useVModel(props, 'modelValue', emit)
 
-const types: Option[] = [
-    {
-        label: 'Text',
-        value: 'text',
-    },
-    {
-        label: 'Number',
-        value: 'number',
-    },
-    {
-        label: 'Select',
-        value: 'select',
-    },
-    // {
-    //     label: 'Entry',
-    //     value: 'entry',
-    // },
-    {
-        label: 'Relation',
-        value: 'relation',
-    },
-    // {
-    //     label: 'Script',
-    //     value: 'script',
-    // },
-]
-
-const dialog = ref(false)
-
-const payload = ref<Omit<CollectionColumn, ''>>({
+const payload = ref<CollectionColumn>({
     id: '',
     label: '',
     field: '',
-    type: 'text',
+    type: CollectionColumnType.text,
     content: '',
     options: undefined,
     collectionId: undefined,
     displayField: undefined,
 })
 
+const types = Object.values(CollectionColumnType).map((v) => ({
+    label: tm.t(v),
+    value: v,
+}))
+
+async function submit() {
+    model.value = useNonReactive(payload.value)
+
+    dialog.value = false
+}
+
+// icons
 const icons: Record<CollectionColumn['type'], any> = {
     text: 'font',
     number: 'hashtag',
     select: 'fa-regular fa-square-caret-down',
     relation: 'arrow-up',
     script: 'code',
+    entry: 'file',
 }
 
-function load() {
-    Object.keys(payload.value).forEach((key) => {
-        payload.value[key] = props.column[key]
-    })
-}
+// dialog
+const dialog = ref(false)
 
-watch(() => props.column, load, { immediate: true, deep: true })
+watch(dialog, (value) => {
+    if (!value) return
 
-async function submit() {
-    if (payload.value.type !== 'select') {
-        payload.value.options = undefined
-    }
-
-    // await updateCollectionColumn(
-    //     props.workspaceId,
-    //     props.collectionId,
-    //     props.column.id,
-    //     payload.value
-    // )
-
-    dialog.value = false
-}
+    payload.value = useNonReactive(model.value)
+})
 
 async function deleteColumn() {
     // await deleteCollectionColumn(props.workspaceId, props.collectionId, props.column.id)
@@ -127,14 +98,14 @@ const options = computed(() => {
                 class="cursor-pointer text-t-secondary text-sm flex items-center overflow-hidden"
                 v-bind="{ ...attrs, ...$attrs }"
             >
-                <fa-icon :icon="icons[column.type] || 'font'" class="mr-2 text-xs" />
+                <fa-icon :icon="icons[model.type] || 'font'" class="mr-2 text-xs" />
 
-                {{ column.label }}
+                {{ model.label }}
             </div>
         </template>
 
         <v-card width="500" color="b-secondary">
-            <v-card-head>
+            <v-card-head class="px-4">
                 <v-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
                 </v-card-title>
@@ -217,8 +188,16 @@ const options = computed(() => {
                         </v-card>
                     </is-drawer>
 
+                    <div v-if="payload.type === 'entry'" class="mb-4">
+                        <is-input
+                            v-model="payload.filename"
+                            :label="$t('filename')"
+                            placeholder="thumbnail.jpg"
+                        />
+                    </div>
+
                     <div>
-                        <v-btn class="w-full">{{ $t('save') }}</v-btn>
+                        <v-btn type="submit" class="w-full">{{ $t('save') }}</v-btn>
                     </div>
                 </w-form>
             </v-card-content>

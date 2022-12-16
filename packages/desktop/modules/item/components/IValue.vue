@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, PropType } from 'vue'
 import throttle from 'lodash/throttle'
+import template from 'lodash/template'
+
+import uuid from 'uuid-random'
 
 import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
+import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 
 import SOutput from '@/modules/script/components/SOutput.vue'
+import EEntryIcon from '@/modules/entry/components/EEntryIcon.vue'
+
 import { useVModel } from 'vue-wind/composables/v-model'
-import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
 import { useStore } from '../store'
+import DirectoryEntry from '@/../core/entities/directory-entry'
 
 const props = defineProps({
     modelValue: {
-        type: [String, Number, Object],
+        type: [String, Number, Object] as PropType<any>,
         default: null,
     },
     column: {
@@ -101,6 +107,55 @@ async function setRelation() {
 watch(() => props.column, setRelation, {
     immediate: true,
 })
+
+// entry
+
+async function deleteEntry() {
+    if (!model.value) return
+
+    await store.entry.destroy({ path: model.value })
+
+    model.value = null
+}
+
+function upload() {
+    const input = document.createElement('input')
+
+    input.type = 'file'
+
+    input.onchange = async () => {
+        if (!input.files || !input.files[0]) return
+
+        const file = input.files[0]
+
+        const compiled = template(props.column.filename || `${uuid()}.{ext}`, {
+            interpolate: /{([\s\S]+?)}/g,
+        })
+
+        const filename = compiled({
+            ext: DirectoryEntry.extname(file.path),
+            itemPath: props.item._filename || '',
+        })
+
+        const path = DirectoryEntry.normalize(filename)
+
+        const buffer = await file.arrayBuffer()
+
+        await store.entry.write({
+            path,
+            data: new Uint8Array(buffer),
+            contentType: 'Uint8Array',
+        })
+
+        if (filename !== model.value) {
+            await deleteEntry().catch(Boolean)
+        }
+
+        model.value = path
+    }
+
+    input.click()
+}
 </script>
 
 <template>
@@ -150,26 +205,31 @@ watch(() => props.column, setRelation, {
         flat
     />
 
-    <!-- <template v-else-if="column.type === 'entry'">
-        <input
-            v-if="edit"
-            v-model="payload"
-            
-            @blur="edit = false"
-            @change="onChange"
-        />
+    <template v-else-if="column.type === 'entry'">
+        <div class="px-4">
+            <v-btn v-if="!model" color="info" size="sm" @click="upload">
+                {{ $t('upload') }}
+            </v-btn>
 
-        <div v-else  @click="edit = true">
-            <w-btn
-                v-if="payload"
-                size="sm"
-                custom:color="bg-b-primary"
-                @click="$router.push(`/workspaces/${workspaceId}/entries/${payload}`)"
-            >
-                {{ payload }}
-            </w-btn>
+            <is-menu v-else offset-y close-on-content-click>
+                <template #activator="{ on }">
+                    <v-btn size="sm" v-bind="on" color="b-secondary" class="w-full !justify-start">
+                        <e-entry-icon :model-value="model" class="mr-2" />
+
+                        {{ DirectoryEntry.basename(model as string) }}
+                    </v-btn>
+                </template>
+                <v-card color="b-secondary">
+                    <is-list-item @click="upload">
+                        {{ $t('upload') }}
+                    </is-list-item>
+                    <is-list-item @click="deleteEntry">
+                        {{ $t('deleteEntity', [$t('entry')]) }}
+                    </is-list-item>
+                </v-card>
+            </is-menu>
         </div>
-    </template> -->
+    </template>
 
     <is-input v-else v-model="model" flat @change="onChange" />
 </template>

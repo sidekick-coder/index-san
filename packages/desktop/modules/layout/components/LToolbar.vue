@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import uuid from 'uuid-random'
 
-import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { onKeyStroke } from '@vueuse/core'

@@ -1,7 +1,5 @@
 import uuid from 'uuid-random'
 
-import { CollectionColumn } from './collection'
-
 export default class View {
     public id: string
 
@@ -10,7 +8,10 @@ export default class View {
     }
 }
 
-interface ViewTableColumn extends CollectionColumn {}
+export interface ViewTableColumn {
+    id: string // link with column
+    width: number
+}
 
 export class ViewTable extends View {
     public component = 'table'

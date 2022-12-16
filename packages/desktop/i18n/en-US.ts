@@ -58,6 +58,12 @@ export default {
     apply: 'Apply',
     operation: 'Operation',
     clear: 'Clear',
+    upload: 'Upload',
+    filename: 'Filename',
+    text: 'Text',
+    number: 'Number',
+    select: 'Select',
+    relation: 'Relation',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

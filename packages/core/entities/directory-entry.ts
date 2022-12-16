@@ -26,6 +26,14 @@ export default class DirectoryEntry {
         return path.split('/').pop() as string
     }
 
+    public static extname(...paths: string[]) {
+        const basename = this.basename(...paths)
+
+        const [, extname] = basename.split('.')
+
+        return extname
+    }
+
     public static directory(...paths: string[]) {
         const path = this.normalize(...paths)
 

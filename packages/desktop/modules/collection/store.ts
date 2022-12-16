@@ -21,7 +21,7 @@ export const useStore = defineStore('collections', () => {
     const item = useItem()
     const view = useView()
 
-    async function setCollections(workspaceId = workspace.currentId) {
+    async function setCollections(workspaceId = workspace.currentId as string) {
         return await useCase('list-collections', {
             workspaceId,
         })
@@ -34,7 +34,7 @@ export const useStore = defineStore('collections', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase('show-collection', payload)
+        return useCase('show-collection', payload as any)
     }
 
     async function create(payload: Partial<CreateCollectionDTO.Input>) {
@@ -42,7 +42,7 @@ export const useStore = defineStore('collections', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        await useCase('create-collection', payload)
+        await useCase('create-collection', payload as any)
 
         await setCollections()
     }
@@ -52,7 +52,7 @@ export const useStore = defineStore('collections', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        await useCase('update-collection', payload)
+        await useCase('update-collection', payload as any)
     }
 
     async function destroy(payload: Partial<DeleteCollectionsDTO.Input>) {
@@ -60,7 +60,7 @@ export const useStore = defineStore('collections', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        await useCase('delete-collection', payload)
+        await useCase('delete-collection', payload as any)
 
         await setCollections()
     }

@@ -1,9 +1,18 @@
 import uuid from 'uuid-random'
 
+export enum CollectionColumnType {
+    text = 'text',
+    number = 'number',
+    select = 'select',
+    relation = 'relation',
+    script = 'script',
+    entry = 'entry',
+}
+
 export interface CollectionColumn {
     id: string
     field: string
-    type: 'text' | 'number' | 'select' | 'relation' | 'script'
+    type: CollectionColumnType
     label: string
     readonly?: boolean
     [key: string]: any

@@ -78,6 +78,8 @@ export default class FolderCrud implements Crud {
                 Object.assign(data, meta)
             }
 
+            data._filename = DirectoryEntry.normalize(collectionPath, entry.name)
+
             items.push(new Item(data, entry.name))
         }
 
