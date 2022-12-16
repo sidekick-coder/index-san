@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import uuid from 'uuid-random'
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { onKeyStroke } from '@vueuse/core'
 
 import { useMeta } from '@/composables/metas'
 
@@ -92,6 +94,24 @@ async function toggle() {
         id: uuid(),
     })
 }
+
+// register shortcuts
+
+onKeyStroke(['ArrowLeft'], (e) => {
+    if (!e.altKey) return
+
+    if (!navigation.value.haveBack) return
+
+    navigation.value.goBack()
+})
+
+onKeyStroke(['ArrowRight'], (e) => {
+    if (!e.altKey) return
+
+    if (!navigation.value.haveForward) return
+
+    navigation.value.goForward()
+})
 </script>
 
 <template>

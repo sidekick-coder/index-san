@@ -101,12 +101,12 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
         </thead>
 
         <slot
-            v-for="item in visibleItems"
-            :key="item"
+            v-for="(item, index) in visibleItems"
             name="item"
             :items="visibleItems"
             :columns="parsedColumns"
             :item="item"
+            :index="index"
         >
             <v-tr>
                 <slot

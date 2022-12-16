@@ -6,7 +6,9 @@ import DirectoryEntry from '@core/entities/directory-entry'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '../store'
 
+import VTr from '@/components/v-tr.vue'
 import LToolbar from '@/modules/layout/components/LToolbar.vue'
+import { onKeyStroke } from '@vueuse/core'
 
 const props = defineProps({
     path: {
@@ -123,19 +125,6 @@ async function addFolder() {
     entries.value.push(data)
 }
 
-// update item
-
-async function updateItem(item: DirectoryEntry) {
-    await store
-        .update({
-            newPath: DirectoryEntry.normalize(props.path, item.name),
-            path: item.path,
-        })
-        .catch(() => {
-            item.name = DirectoryEntry.basename(item.path)
-        })
-}
-
 // delete entry
 
 async function deleteEntry(item: DirectoryEntry) {
@@ -144,6 +133,106 @@ async function deleteEntry(item: DirectoryEntry) {
     await store.destroy({ path: item.path })
 
     entries.value.splice(index, 1)
+}
+
+// select item
+
+const selected = ref<number[]>([])
+const trRef = ref<InstanceType<typeof VTr>[]>([])
+
+function onSelect(e: MouseEvent, itemIndex: number) {
+    if (!e.ctrlKey && !e.shiftKey) {
+        selected.value = [itemIndex]
+        return
+    }
+
+    if (e.ctrlKey) {
+        selected.value.push(itemIndex)
+        return
+    }
+
+    const selectedIndex = selected.value[0]
+
+    if (itemIndex > selectedIndex) {
+        selected.value = entries.value
+            .map((e, index) => index)
+            .filter((index) => index <= itemIndex)
+            .filter((index) => index >= selectedIndex)
+    }
+
+    if (itemIndex < selectedIndex) {
+        selected.value = entries.value
+            .map((e, index) => index)
+            .filter((index) => index >= itemIndex)
+            .filter((index) => index <= selectedIndex)
+    }
+}
+
+function updateSelection() {
+    if (selected.value.length !== 1) return
+
+    const index = selected.value[0]
+
+    if (trRef.value[index]) {
+        trRef.value[index].$el?.focus()
+    }
+}
+
+watch(selected, updateSelection)
+
+onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
+    if (!entries.value.length) return
+
+    if (!selected.value.length) {
+        selected.value = [0]
+        return
+    }
+
+    const next = selected.value[0] + 1
+    const prev = selected.value[0] - 1
+
+    if (e.key === 'ArrowDown' && !!entries.value[next]) {
+        selected.value = [next]
+    }
+
+    if (e.key === 'ArrowUp' && !!entries.value[prev]) {
+        selected.value = [prev]
+    }
+})
+
+// update item
+
+const editItem = ref<number>()
+
+async function updateItem(item: DirectoryEntry) {
+    const newPath = DirectoryEntry.normalize(props.path, item.name)
+
+    const index = editItem.value
+
+    if (!index) return
+
+    await store
+        .update({
+            newPath,
+            path: item.path,
+        })
+        .then(() => {
+            entries.value[index].path = newPath
+            editItem.value = undefined
+        })
+        .catch(() => {
+            item.name = DirectoryEntry.basename(item.path)
+        })
+}
+
+watch(selected, () => (editItem.value = undefined))
+
+// show
+
+function show(item: DirectoryEntry) {
+    if (editItem.value) return
+
+    router.push(`/entries/${item.path}`)
 }
 </script>
 
@@ -231,23 +320,37 @@ async function deleteEntry(item: DirectoryEntry) {
 
             <div class="h-full overflow-auto">
                 <v-table :columns="columns" :items="filteredEntries" :fixed="false" header-stick>
-                    <template #item="{ item }">
+                    <template #item="{ item, index }">
                         <v-tr
-                            class="cursor-pointer hover:bg-b-secondary group"
-                            @click="$router.push(`/entries/${item.path}`)"
+                            :ref="(el: any) => trRef[index] = el"
+                            class="cursor-pointer hover:bg-b-secondary group focus:outline-0"
+                            :class="[selected.includes(index) ? 'bg-b-secondary' : '']"
+                            tabindex="0"
+                            @dblclick="show(item)"
+                            @click="onSelect($event, index)"
+                            @keydown.enter="show(item)"
+                            @keydown.f2="editItem = index"
+                            @keydown.esc="updateSelection"
                         >
                             <v-td class="pl-10 flex pr-7">
-                                <div class="w-4 mr-4">
+                                <div class="w-4 mr-2">
                                     <is-icon :name="getIcon(item)" class="text-t-secondary" />
                                 </div>
 
                                 <is-input
+                                    v-if="editItem === index"
                                     v-model="item.name"
                                     flat
                                     size="sm"
                                     class="w-full max-w-[70%]"
-                                    @click.prevent.stop
-                                    @change="updateItem(item)"
+                                    autofocus
+                                    @keypress.enter="updateItem(item)"
+                                />
+
+                                <div
+                                    v-else
+                                    class="text-sm select-none px-4 py-1"
+                                    v-text="item.name"
                                 />
 
                                 <v-btn

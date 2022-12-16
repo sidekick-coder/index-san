@@ -25,7 +25,7 @@ export const useStore = defineStore('entry', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<ListDirectoryEntryDTO.Output>('list-directory-entry', payload)
+        return useCase('list-directory-entry', payload as any)
     }
 
     function show(payload: Partial<ShowDirectoryEntryDTO.Input>) {
@@ -33,7 +33,7 @@ export const useStore = defineStore('entry', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<ShowDirectoryEntryDTO.Output>('show-directory-entry', payload)
+        return useCase('show-directory-entry', payload as any)
     }
 
     function create(payload: Partial<CreateDirectoryEntryDTO.Input>) {
@@ -41,7 +41,7 @@ export const useStore = defineStore('entry', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<CreateDirectoryEntryDTO.Output>('create-directory-entry', payload)
+        return useCase('create-directory-entry', payload as any)
     }
 
     function update(payload: Partial<UpdateDirectionEntryDTO.Input>) {
@@ -49,7 +49,7 @@ export const useStore = defineStore('entry', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<UpdateDirectionEntryDTO.Output>('update-directory-entry', payload)
+        return useCase('update-directory-entry', payload as any)
     }
 
     function destroy(payload: Partial<DeleteDirectoryEntryDTO.Input>) {
@@ -57,7 +57,7 @@ export const useStore = defineStore('entry', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<DeleteDirectoryEntryDTO.Output>('delete-directory-entry', payload)
+        return useCase('delete-directory-entry', payload as any)
     }
 
     function read(payload: Partial<ReadDirectoryEntryDTO.Input>) {
@@ -73,7 +73,7 @@ export const useStore = defineStore('entry', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return useCase<void>('write-directory-entry', payload)
+        return useCase('write-directory-entry', payload as any)
     }
 
     return {

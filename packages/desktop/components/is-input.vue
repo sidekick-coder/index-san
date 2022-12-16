@@ -5,7 +5,8 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue'
+import { createBindings } from '@/composables/binding'
+import { computed, ref, useAttrs, onMounted } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
@@ -48,6 +49,10 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: '',
+    },
+    autofocus: {
+        type: Boolean,
+        default: false,
     },
 })
 
@@ -152,32 +157,15 @@ const labelClasses = computed(() => {
 
 // input attrs
 
-const bindings = computed(() => {
-    const root = {}
-    const label = {}
-    const input = {}
-    const wrapper = {}
+const bindings = computed(() => createBindings(attrs, ['label', 'input', 'wrapper']))
 
-    Object.keys(attrs).forEach((key) => {
-        if (key.startsWith('input:')) {
-            input[key.replace('input:', '')] = attrs[key]
-            return
-        }
+// autofocus
+const inputRef = ref<HTMLInputElement>()
 
-        if (key.startsWith('label:')) {
-            label[key.replace('label:', '')] = attrs[key]
-            return
-        }
-
-        if (key.startsWith('wrapper:')) {
-            wrapper[key.replace('wrapper:', '')] = attrs[key]
-            return
-        }
-
-        root[key] = attrs[key]
-    })
-
-    return { root, wrapper, label, input }
+onMounted(() => {
+    if (props.autofocus) {
+        inputRef.value?.focus()
+    }
 })
 </script>
 <template>
@@ -189,6 +177,7 @@ const bindings = computed(() => {
         <div :class="classes" v-bind="bindings.wrapper">
             <input
                 :id="label"
+                ref="inputRef"
                 v-model="model"
                 :type="type"
                 :placeholder="placeholder"
