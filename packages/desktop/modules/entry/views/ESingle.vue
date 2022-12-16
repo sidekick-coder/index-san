@@ -10,10 +10,8 @@ import { useRouter } from 'vue-router'
 
 import EFolder from './EFolder.vue'
 import EInfo from './EInfo.vue'
-import EJson from './EJson.vue'
 import EMarkdown from './EMarkdown.vue'
-import EJs from './EJs.vue'
-import EText from './EText.vue'
+import ESimpleEditor from './ESimpleEditor.vue'
 
 const props = defineProps({
     entryId: {
@@ -48,9 +46,7 @@ watch(() => props.entryId, setEntry, { immediate: true })
 const views = {
     default: EInfo,
     folder: EFolder,
-    json: EJson,
-    js: EJs,
-    text: EText,
+    editor: ESimpleEditor,
     markdown: EMarkdown,
     // image: 'is-entry-view-image',
 }
@@ -70,16 +66,8 @@ async function setView() {
         current.value = 'markdown'
     }
 
-    if (/.(js)/.test(path)) {
-        current.value = 'js'
-    }
-
-    if (/.(json)/.test(path)) {
-        current.value = 'json'
-    }
-
-    if (/.(txt|csv|html)/.test(path)) {
-        current.value = 'text'
+    if (/.(js|json|txt|csv|html)/.test(path)) {
+        current.value = 'editor'
     }
 
     if (type === 'directory') {
