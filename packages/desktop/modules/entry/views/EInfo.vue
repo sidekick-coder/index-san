@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useDirectoryEntry } from '@/composables/directory-entry'
 import DirectoryEntry from '@core/entities/directory-entry'
 import { ref } from 'vue'
 import { useStore } from '../store'
