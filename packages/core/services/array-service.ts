@@ -22,7 +22,7 @@ class ArrayService<T = Record<string, any>> extends Array<T> {
         const array = new ArrayGroupService<GroupArray<T> & GetKey<T, K, string>>()
 
         Object.entries(groupBy(this, key)).map(([group, items]) =>
-            array.push({ [key]: group, _items: items } as any)
+            array.push({ [key]: group, _items: ArrayService.from(items) } as any)
         )
 
         return array

@@ -4,8 +4,6 @@ import WorkspaceNotFound from '../exceptions/workspace-not-found'
 import AppService from './app-service'
 import CollectionService, { ListOptions } from './collection-service'
 
-const cache = new Map<string, any>()
-
 export default class WorkspaceService extends Workspace {
     public app: AppService
     public collections: Collection[]
@@ -66,15 +64,9 @@ export default class WorkspaceService extends Workspace {
     }
 
     public async items(collectionId: string, options?: ListOptions) {
-        const key = `collection:${collectionId}:items`
-
-        if (cache.has(key)) {
-            return cache.get(key).slice()
-        }
-
         const collection = await this.collection(collectionId)
 
-        return collection.list(options)
+        return await collection.list(options)
     }
 
     public async createCollection(data: Collection) {

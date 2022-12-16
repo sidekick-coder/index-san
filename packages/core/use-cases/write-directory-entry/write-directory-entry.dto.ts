@@ -2,7 +2,8 @@ declare namespace WriteDirectoryEntryDTO {
     export interface Input {
         workspaceId: string
         path: string
-        data: Buffer | string
+        contentType?: 'string' | 'Uint8Array'
+        data: any
     }
 }
 

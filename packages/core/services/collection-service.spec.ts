@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import Collection from '../entities/collection'
+import DirectoryEntry from '../entities/directory-entry'
 import Item from '../entities/item'
 import InMemoryApp from '../__tests__/app'
 import CollectionFactory from '../__tests__/factories/collections'
@@ -173,6 +174,35 @@ test.group('collection-service (service)', (group) => {
         })
 
         expect(result[0].sum.result).toBe(`sum is: 15`)
+    })
+
+    test('should return items with related entries', async ({ expect }) => {
+        const collection = await createCollection({
+            columns: [
+                {
+                    id: '1',
+                    label: 'Thumbnail',
+                    field: 'thumbnail',
+                    type: 'entry',
+                },
+            ],
+        })
+
+        const entry = DirectoryEntry.file(collection.path, '01', 'thumbnail.jpg')
+
+        await app.memoryCrud.create(collection.path, {
+            id: '01',
+            name: 'Will',
+            thumbnail: entry.path,
+        })
+
+        app.memoryDrive.createFile(entry.path, Buffer.from([0]))
+
+        const result = await collection.list({
+            include: ['entries'],
+        })
+
+        expect(result[0].thumbnail).toEqual(entry)
     })
 
     test('should return a collection by id', async ({ expect }) => {

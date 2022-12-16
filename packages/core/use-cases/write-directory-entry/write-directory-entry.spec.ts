@@ -7,20 +7,6 @@ test.group('write-directory-entry (use-case', () => {
     const app = new InMemoryApp()
     const useCase = new WriteDirectoryEntry(app)
 
-    test('should throw an error if directory-entry not exist', async ({ expect }) => {
-        const workspace = await app.workspaceRepository.createFake()
-
-        expect.assertions(1)
-
-        await useCase
-            .execute({
-                workspaceId: workspace.id,
-                path: '22',
-                data: Buffer.from(''),
-            })
-            .catch((err) => expect(err.message).toEqual('DirectoryEntry not found'))
-    })
-
     test('should update entry with buffer', async ({ expect }) => {
         const workspace = await app.workspaceRepository.createFake()
 

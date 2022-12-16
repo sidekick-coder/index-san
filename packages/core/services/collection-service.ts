@@ -1,4 +1,5 @@
 import Collection from '../entities/collection'
+import DirectoryEntry from '../entities/directory-entry'
 import Item from '../entities/item'
 import CollectionNotFound from '../exceptions/collection-not-found'
 import ItemNotFound from '../exceptions/item-not-found'
@@ -6,7 +7,7 @@ import ArrayService from './array-service'
 import ScriptService from './script-service'
 import WorkspaceService from './workspace-service'
 
-type ListOptionsInclude = 'relations' | 'scripts'
+type ListOptionsInclude = 'relations' | 'scripts' | 'entries'
 
 export interface ListOptions {
     include: ListOptionsInclude[]
@@ -59,8 +60,8 @@ export default class CollectionService extends Collection {
             }
         }
 
+        // add script executions
         if (options?.include.includes('scripts')) {
-            // add script executions
             const scripts = this.columns.filter((c) => c.type === 'script')
 
             for await (const column of scripts) {
@@ -70,6 +71,22 @@ export default class CollectionService extends Collection {
                         workspace: this.workspace,
                     })
                 }
+            }
+        }
+
+        // add entries
+        if (options?.include.includes('entries')) {
+            const entries = this.columns.filter((c) => c.type === 'entry')
+
+            for (const column of entries) {
+                items.forEach((item) => {
+                    if (!item[column.field]) {
+                        item[column.field] = null
+                        return
+                    }
+
+                    item[column.field] = DirectoryEntry.file(item[column.field])
+                })
             }
         }
 
