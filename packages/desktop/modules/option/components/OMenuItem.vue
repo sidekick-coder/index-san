@@ -44,7 +44,7 @@ function removeChildren(index: number) {
                 </template>
             </v-icon-picker>
 
-            <is-input v-model="item.label" class="ml-2" />
+            <is-input v-model="item.label" class="ml-2 w-full max-w-[500px]" />
 
             <v-btn
                 class="w-[38px] h-[38px] ml-2"

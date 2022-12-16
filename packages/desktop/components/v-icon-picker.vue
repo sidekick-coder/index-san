@@ -60,13 +60,14 @@ function onSelect(option: string) {
         </template>
 
         <v-card
-            class="max-h-[300px] w-[300px] overflow-y-auto flex items-baseline flex-wrap bg-b-secondary"
+            class="max-h-[300px] overflow-y-auto flex items-baseline flex-wrap bg-b-secondary"
+            width="300"
         >
             <is-input
                 v-model="search"
                 :placeholder="$t('search')"
                 flat
-                class="border-b border-lines text-sm"
+                class="border-b border-lines text-sm w-full"
             />
 
             <v-btn
