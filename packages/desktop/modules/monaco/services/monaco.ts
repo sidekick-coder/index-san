@@ -4,8 +4,6 @@ import * as monaco from 'monaco-editor'
 
 import defaultTheme from '@/assets/themes/default.json'
 
-import interfaces from './interfaces'
-
 // define theme
 monaco.editor.defineTheme('app-theme', defaultTheme as any)
 
@@ -25,15 +23,7 @@ monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
     diagnosticCodesToIgnore: [1375, 1378],
 })
 
-const lib = {
-    uri: 'ts:index-san/index.d.ts',
-    source: interfaces,
-}
-
-monaco.languages.typescript.javascriptDefaults.addExtraLib(lib.uri, lib.source)
-
-monaco.editor.createModel(lib.source, 'typescript', monaco.Uri.parse(lib.uri))
-
+// create editor
 export function createMonaco(
     el: HTMLElement,
     options: monaco.editor.IStandaloneEditorConstructionOptions
@@ -42,19 +32,54 @@ export function createMonaco(
         ...options,
         theme: 'app-theme',
         automaticLayout: true,
-        // value: model.value,
-        // language: props.language,
-        // readOnly: props.readonly,
-        // minimap: { enabled: props.minimap },
-        // padding: props.padding,
-        // overviewRulerBorder: false,
-        // lineNumbers: props.lineNumbers as any,
-        // scrollbar: {
-        //     verticalScrollbarSize: 10,
-        //     horizontalScrollbarSize: 10,
-        //     useShadows: false,
-        //     horizontal: 'visible',
-        //     vertical: 'visible',
-        // },
     })
+}
+
+// load libs
+export interface MonacoLibs {
+    uri: string
+    // filepath: string
+    source: string
+}
+
+interface RegisterItem {
+    lib: monaco.IDisposable
+    model: monaco.editor.ITextModel
+}
+
+const register: Map<string, RegisterItem> = new Map()
+
+export function loadLibs(libs: MonacoLibs[]): () => any {
+    libs.forEach((lib) => {
+        if (register.has(lib.uri)) return
+
+        console.debug(`[monaco] load lib: ${lib.uri}`)
+
+        const libDisposable = monaco.languages.typescript.javascriptDefaults.addExtraLib(
+            lib.uri,
+            lib.source
+        )
+
+        const model = monaco.editor.createModel(lib.source, 'typescript', monaco.Uri.parse(lib.uri))
+
+        register.set(lib.uri, {
+            lib: libDisposable,
+            model: model,
+        })
+    })
+
+    return () => {
+        libs.map((lib) => {
+            const item = register.get(lib.uri)
+
+            if (item) {
+                item.lib.dispose()
+                item.model.dispose()
+
+                console.debug(`[monaco] dispose lib: ${lib.uri}`)
+
+                register.delete(lib.uri)
+            }
+        })
+    }
 }

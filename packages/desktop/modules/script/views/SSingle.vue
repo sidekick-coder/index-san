@@ -3,6 +3,8 @@ import { computed, ref, watch } from 'vue'
 
 import Script from '@core/entities/script'
 
+import { lib } from '@/modules/monaco/libs/script'
+
 import { useMeta } from '@/composables/metas'
 import { useStore } from '@/modules/script/store'
 
@@ -57,7 +59,7 @@ async function save() {
 
 const execution = ref({
     loading: false,
-    logs: [],
+    logs: [] as string[],
     error: null as null | any,
     result: null as null | any,
 })
@@ -132,7 +134,12 @@ async function execute() {
         <w-content>
             <w-layout use-percentage>
                 <w-content>
-                    <m-editor v-model="content" @keydown.ctrl.s="save" @keyup.ctrl.e="execute" />
+                    <m-editor
+                        v-model="content"
+                        :libs="lib.mount()"
+                        @keydown.ctrl.s="save"
+                        @keyup.ctrl.e="execute"
+                    />
                 </w-content>
                 <w-drawer :model-value="!!output" right :width="500" class="border-l border-lines">
                     <v-card color="b-secondary" class="h-full">

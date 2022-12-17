@@ -338,6 +338,7 @@ async function updateColumn(column: CollectionColumn) {
                                     class="drag"
                                     :collection-id="collectionId"
                                     :model-value="c"
+                                    :collection="(collection as Collection)"
                                     @update:model-value="updateColumn"
                                 />
 

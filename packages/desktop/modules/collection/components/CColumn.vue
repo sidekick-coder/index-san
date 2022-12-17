@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CollectionColumn, CollectionColumnType } from '@core/entities/collection'
+import Collection, { CollectionColumn, CollectionColumnType } from '@core/entities/collection'
 
 import { computed, ref, watch } from 'vue'
 import { useStore } from '@/modules/collection/store'
@@ -9,14 +9,16 @@ import { useVModel } from '@vueuse/core'
 import { useNonReactive } from '@/composables/utils'
 import { useI18n } from 'vue-i18n'
 
+import { lib as libScriptColumn } from '@/modules/monaco/libs/column-script'
+
 // Props & emits
 const props = defineProps({
     modelValue: {
         type: Object as () => CollectionColumn,
         required: true,
     },
-    collectionId: {
-        type: String,
+    collection: {
+        type: Object as () => Collection,
         required: true,
     },
 })
@@ -77,18 +79,18 @@ async function deleteColumn() {
 // collections
 const store = useStore()
 
-// selected collection options
+// relation selected collection options
 
-const options = computed(() => {
+const relation = computed(() => {
     const { collectionId } = payload.value
 
-    if (!collectionId) return []
+    if (!collectionId) return null
 
     const collection = store.collections.find((c) => c.id === collectionId)
 
-    if (!collection) return []
+    if (!collection) return null
 
-    return collection.columns
+    return collection
 })
 </script>
 <template>
@@ -159,7 +161,7 @@ const options = computed(() => {
                             <is-select
                                 v-model="payload.displayField"
                                 label="Collection display field"
-                                :options="options"
+                                :options="relation ? relation.columns : []"
                                 label-key="label"
                                 value-key="field"
                                 card:color="b-primary"
@@ -184,7 +186,10 @@ const options = computed(() => {
                         </template>
 
                         <v-card color="b-secondary" class="h-full">
-                            <m-editor v-model="payload.content" />
+                            <m-editor
+                                v-model="payload.content"
+                                :libs="libScriptColumn.mount(collection.columns)"
+                            />
                         </v-card>
                     </is-drawer>
 

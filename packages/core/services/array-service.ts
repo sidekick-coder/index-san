@@ -18,6 +18,12 @@ class ArrayService<T = Record<string, any>> extends Array<T> {
         return array
     }
 
+    public filter(predicate: (value: T, index: number, array: T[]) => any): ArrayService<T> {
+        const items = Array.from(this).filter(predicate)
+
+        return ArrayService.from<T>(items)
+    }
+
     public groupBy<K extends keyof T>(key: K) {
         const array = new ArrayGroupService<GroupArray<T> & GetKey<T, K, string>>()
 

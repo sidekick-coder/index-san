@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { createMonaco } from '../services/monaco'
+import { createMonaco, loadLibs, MonacoLibs } from '../services/monaco'
 
 // Props & Emits
 
@@ -30,9 +30,24 @@ const props = defineProps({
         type: String,
         default: 'on',
     },
+    libs: {
+        type: Array as () => MonacoLibs[],
+        default: () => [],
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const dispose = ref(() => true)
+
+// load libs
+onMounted(() => {
+    dispose.value = loadLibs(props.libs)
+})
+
+onUnmounted(() => {
+    dispose.value()
+})
 
 // mount editor
 const root = ref<HTMLElement>()
