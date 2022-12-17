@@ -297,8 +297,8 @@ function show(item: DirectoryEntry) {
                     wrapper:class="h-full"
                 />
 
-                <v-btn text size="sm" @click="data['toggle-favorite']">
-                    <is-icon :name="data['is-favorite'] ? 'star' : 'fa-regular fa-star'" />
+                <v-btn text size="sm" @click="data.menu.toggle">
+                    <is-icon :name="data.menu.item ? 'star' : 'fa-regular fa-star'" />
                 </v-btn>
             </template>
         </l-toolbar>

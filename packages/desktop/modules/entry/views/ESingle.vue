@@ -12,6 +12,7 @@ import EFolder from './EFolder.vue'
 import EInfo from './EInfo.vue'
 import EMarkdown from './EMarkdown.vue'
 import ESimpleEditor from './ESimpleEditor.vue'
+import EImage from './EImage.vue'
 
 const props = defineProps({
     entryId: {
@@ -48,7 +49,7 @@ const views = {
     folder: EFolder,
     editor: ESimpleEditor,
     markdown: EMarkdown,
-    // image: 'is-entry-view-image',
+    image: EImage,
 }
 
 const current = ref<keyof typeof views>('default')
@@ -64,6 +65,10 @@ async function setView() {
 
     if (/.(md)/.test(path)) {
         current.value = 'markdown'
+    }
+
+    if (/.(jpg|jpeg)/.test(path)) {
+        current.value = 'image'
     }
 
     if (/.(js|json|txt|csv|html)/.test(path)) {

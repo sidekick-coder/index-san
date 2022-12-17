@@ -80,21 +80,22 @@ watch(
 
 const store = useStore()
 const meta = useMeta()
-const menuItem = computed(() => store.menu.find((i) => i.to === route.path))
 
-async function toggle() {
-    if (menuItem.value) {
-        return await store.destroy(menuItem.value)
-    }
+const menu = ref({
+    item: computed(() => store.menu.find((i) => i.to === route.path)),
+    async toggle() {
+        if (menu.value.item) {
+            return await store.destroy(menu.value.item)
+        }
 
-    await store.create({
-        label: meta.value.title,
-        to: route.path,
-        children: [],
-        id: uuid(),
-    })
-}
-
+        await store.create({
+            label: meta.value.title,
+            to: route.path,
+            children: [],
+            id: uuid(),
+        })
+    },
+})
 // register shortcuts
 
 onKeyStroke(['ArrowLeft'], (e) => {
@@ -116,13 +117,7 @@ onKeyStroke(['ArrowRight'], (e) => {
 
 <template>
     <v-layout-toolbar class="px-7 border-b border-lines text-sm" :height="45">
-        <slot
-            :links="links"
-            :drawer="drawer"
-            :navigation="navigation"
-            :toggle-favorite="toggle"
-            :is-favorite="!!menuItem"
-        >
+        <slot :links="links" :drawer="drawer" :navigation="navigation" :menu="menu">
             <v-btn v-if="!drawer.show" text size="sm" @click="drawer.toggle">
                 <is-icon name="bars" />
             </v-btn>
@@ -147,8 +142,8 @@ onKeyStroke(['ArrowRight'], (e) => {
                 <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
             </template>
 
-            <v-btn class="ml-auto" text size="sm" @click="toggle">
-                <is-icon :name="menuItem ? 'star' : 'fa-regular fa-star'" />
+            <v-btn class="ml-auto" text size="sm" @click="menu.toggle">
+                <is-icon :name="menu.item ? 'star' : 'fa-regular fa-star'" />
             </v-btn>
         </slot>
     </v-layout-toolbar>
