@@ -4,11 +4,12 @@ export default { inheritAttrs: false }
 <script setup lang="ts">
 import { ref, watch, computed, useAttrs } from 'vue'
 import { useRouter } from 'vue-router'
+import uuid from 'uuid-random'
 
 import debounce from 'lodash/debounce'
 
 import Item from '@core/entities/item'
-import Collection, { CollectionColumn } from '@core/entities/collection'
+import Collection, { CollectionColumn, CollectionColumnType } from '@core/entities/collection'
 import { ViewTable, ViewTableColumn } from '@core/entities/view'
 
 import { useNonReactive } from '@/composables/utils'
@@ -45,18 +46,6 @@ const props = defineProps({
 })
 
 const router = useRouter()
-
-async function onItemNew() {
-    // await createItem(props.workspaceId, props.collectionId)
-}
-
-async function onItemDelete(itemId: string) {
-    // await deleteItem(props.workspaceId, props.collectionId, itemId)
-}
-
-async function onColumnNew() {
-    // await createCollectionColumn(props.workspaceId, props.collectionId)
-}
 
 // set collection
 const store = useStore()
@@ -233,6 +222,44 @@ async function updateItem(item: Item, field: string, value: any) {
     })
 }
 
+// create column
+
+async function createColumn() {
+    if (!collection.value) return
+
+    const oldColumns = useNonReactive(collection.value.columns).map((c) => ({
+        ...c,
+        width: undefined,
+    }))
+
+    const newColumns = useNonReactive(oldColumns)
+
+    const id = uuid()
+
+    newColumns.push({
+        id,
+        field: id,
+        label: 'New',
+        type: CollectionColumnType.text,
+        width: undefined,
+    })
+
+    collection.value.columns = newColumns
+
+    await store
+        .update({
+            collectionId: props.collectionId,
+            data: {
+                columns: newColumns,
+            },
+        })
+        .catch(() => {
+            collection.value!.columns = oldColumns
+        })
+
+    await setView()
+}
+
 // update column
 
 async function updateColumn(column: CollectionColumn) {
@@ -260,16 +287,94 @@ async function updateColumn(column: CollectionColumn) {
 
     await setView()
 }
+
+// delete column
+
+async function deleteColumn(column: CollectionColumn) {
+    if (!collection.value) return
+
+    const oldColumns = useNonReactive(collection.value.columns).map((c) => ({
+        ...c,
+        width: undefined,
+    }))
+
+    const newColumns = useNonReactive(oldColumns).filter((c) => c.id !== column.id)
+
+    collection.value.columns = newColumns
+
+    await store
+        .update({
+            collectionId: props.collectionId,
+            data: {
+                columns: newColumns,
+            },
+        })
+        .catch(() => {
+            collection.value!.columns = oldColumns
+        })
+
+    await setView()
+}
+
+// create item
+async function onItemNew() {
+    const payload = {}
+
+    const safeList = [
+        CollectionColumnType.text,
+        CollectionColumnType.select,
+        CollectionColumnType.number,
+        CollectionColumnType.relation,
+    ]
+
+    view.value.filters.forEach((f) => {
+        const column = view.value.columns.find((c) => c.id === f.columnId)
+
+        if (!column) return
+
+        if (safeList.includes(column.type)) {
+            payload[column.field] = f.value
+        }
+    })
+
+    const item = new Item(payload)
+
+    items.value.push(item)
+
+    await store.item.create({
+        collectionId: props.collectionId,
+        data: item,
+    })
+}
+
+// delete item
+async function onItemDelete(item: Item) {
+    const index = items.value.indexOf(item)
+    const old = useNonReactive(item)
+
+    if (index === -1) return
+
+    items.value.splice(index, 1)
+
+    await store.item
+        .destroy({
+            collectionId: props.collectionId,
+            itemId: item.id,
+        })
+        .catch(() => {
+            items.value.push(old)
+        })
+}
 </script>
 
 <template>
-    <v-card class="group/card" :height="height" :width="width" v-bind="bindings.root">
+    <v-card :height="height" :width="width" v-bind="bindings.root">
         <v-card-head v-bind="bindings.head">
             <v-card-title v-if="title" class="grow">
                 {{ title }}
             </v-card-title>
 
-            <div class="flex items-center opacity-0 group-hover/card:opacity-100 transition-all">
+            <div class="flex items-center transition-all">
                 <transition name="slide-left">
                     <is-input
                         v-if="search.show || !!search.input"
@@ -328,7 +433,12 @@ async function updateColumn(column: CollectionColumn) {
                                 class="w-full !border-x-0"
                                 :width="c.width"
                             >
-                                <v-btn size="sm" text class="text-t-secondary" @click="onColumnNew">
+                                <v-btn
+                                    size="sm"
+                                    text
+                                    class="text-t-secondary"
+                                    @click="createColumn"
+                                >
                                     <is-icon name="plus" />
                                 </v-btn>
                             </v-th>
@@ -340,6 +450,7 @@ async function updateColumn(column: CollectionColumn) {
                                     :model-value="c"
                                     :collection="(collection as Collection)"
                                     @update:model-value="updateColumn"
+                                    @destroy="deleteColumn(c)"
                                 />
 
                                 <is-resize-line v-model="c.width" :min-width="100" />
@@ -356,10 +467,14 @@ async function updateColumn(column: CollectionColumn) {
                             no-padding
                             :class="c.id[0] === '_' ? '!border-x-0' : ''"
                         >
-                            <is-menu v-if="c.id === '_actions_left'" offset-y>
+                            <is-menu
+                                v-if="c.id === '_actions_left'"
+                                offset-y
+                                close-on-content-click
+                            >
                                 <template #activator="{ on }">
                                     <v-btn
-                                        class="opacity- 0 w-full h-[43px] opacity-0 group-hover/item:opacity-100"
+                                        class="w-full h-[43px] opacity-0 group-hover/item:opacity-100"
                                         size="none"
                                         color="b-secondary"
                                         tile
@@ -374,7 +489,7 @@ async function updateColumn(column: CollectionColumn) {
                                         size="xs"
                                         color="danger"
                                         dark
-                                        @click="onItemDelete(data.item.id)"
+                                        @click="onItemDelete(data.item)"
                                     >
                                         <is-icon name="trash" class="mr-2" />
                                         {{ $t('deleteEntity', [$t('item')]) }}
@@ -396,16 +511,19 @@ async function updateColumn(column: CollectionColumn) {
                 </template>
 
                 <template #append>
-                    <v-tr>
+                    <v-tr class="cursor-pointer hover:bg-b-secondary" @click="onItemNew">
+                        <v-td class="!border-x-0"></v-td>
+
                         <v-td
-                            :colspan="view.columns.length"
-                            class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
-                            @click="onItemNew"
+                            :colspan="view.columns.length - 2"
+                            class="!border-x-0 !px-4 text-t-secondary text-sm"
                         >
                             <fa-icon icon="plus" class="mr-2" />
 
                             <span>New</span>
                         </v-td>
+
+                        <v-td class="!border-x-0"></v-td>
                     </v-tr>
                 </template>
             </v-table>

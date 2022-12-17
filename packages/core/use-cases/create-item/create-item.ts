@@ -15,7 +15,7 @@ export default class CreateItem {
 
         const collection = await workspace.collection(collectionId)
 
-        const item = new Item(data)
+        const item = new Item(data, data.id)
 
         await collection.create(item)
 

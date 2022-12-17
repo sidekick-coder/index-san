@@ -23,7 +23,7 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'destroy'])
 
 // form
 const tm = useI18n()
@@ -71,7 +71,7 @@ watch(dialog, (value) => {
 })
 
 async function deleteColumn() {
-    // await deleteCollectionColumn(props.workspaceId, props.collectionId, props.column.id)
+    emit('destroy')
 
     dialog.value = false
 }

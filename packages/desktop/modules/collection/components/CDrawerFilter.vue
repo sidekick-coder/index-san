@@ -42,8 +42,12 @@ function add(column: CollectionColumn) {
 <template>
     <is-drawer v-model="drawer">
         <template #activator="{ attrs }">
-            <v-btn text size="sm" v-bind="attrs">
+            <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
                 <is-icon name="filter" />
+                <div
+                    v-if="filters.length"
+                    class="bg-accent h-2 w-2 rounded-full absolute top-0 right-0 group-hover/btn:text-t-primary"
+                />
             </v-btn>
         </template>
 

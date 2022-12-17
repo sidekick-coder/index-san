@@ -49,9 +49,9 @@ const show = computed(() => visibleSections.value.includes(props.item.id))
         <template v-if="item.isSection">
             <v-btn
                 text
-                size="none"
-                class="text-t-secondary px-2 -ml-2 font-bold"
-                color="lines"
+                size="px-2 -ml-2"
+                color="hover:bg-b-primary/40"
+                class="text-t-secondary font-bold"
                 @click="toggle"
             >
                 {{ item.label }}

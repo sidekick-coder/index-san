@@ -88,8 +88,8 @@ const classes = computed(() => {
         result.push(props.rounded ? 'rounded-full' : 'rounded')
     }
 
-    result.push(sizes[props.size])
-    result.push(colors[props.color])
+    result.push(sizes[props.size] || props.size)
+    result.push(colors[props.color] || props.c)
 
     return result
 })
