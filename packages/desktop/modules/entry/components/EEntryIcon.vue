@@ -24,6 +24,10 @@ const icon = computed(() => {
         return 'fa-brands fa-markdown'
     }
 
+    if (/.(html)/.test(entry.path)) {
+        return 'fa-brands fa-html5'
+    }
+
     if (entry.name === '.is') {
         return 'cog'
     }
@@ -34,7 +38,25 @@ const icon = computed(() => {
 
     return 'file'
 })
+
+const color = computed(() => {
+    let entry = props.modelValue
+
+    if (typeof entry === 'string') {
+        entry = DirectoryEntry.file(entry)
+    }
+
+    if (/.(html)/.test(entry.path)) {
+        return 'text-danger'
+    }
+
+    if (entry.type === 'directory') {
+        return 'text-info'
+    }
+
+    return 'text-t-primary'
+})
 </script>
 <template>
-    <is-icon :name="icon" />
+    <is-icon :name="icon" :class="color" />
 </template>

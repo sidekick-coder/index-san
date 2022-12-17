@@ -37,6 +37,8 @@ async function setEntries() {
         .then((r) => (entries.value = r.data))
         .catch(() => router.push('/404'))
         .finally(() => setTimeout(() => (loading.value = false), 500))
+
+    entries.value.sort((a, b) => b.type.length - a.type.length)
 }
 
 watch(() => props.path, setEntries, {
@@ -324,7 +326,7 @@ function show(item: DirectoryEntry) {
                         >
                             <v-td class="pl-10 flex pr-7">
                                 <div class="w-4 mr-2">
-                                    <e-entry-icon :model-value="item" class="text-t-secondary" />
+                                    <e-entry-icon :model-value="item" />
                                 </div>
 
                                 <is-input
