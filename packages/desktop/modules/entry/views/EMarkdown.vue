@@ -5,6 +5,8 @@ import { useStore } from '@/modules/entry/store'
 
 import EMarkdownDoc from '../components/EMarkdownDoc.vue'
 import MEditor from '@/modules/monaco/components/MEditor.vue'
+import DirectoryEntry from '@/../core/entities/directory-entry'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
     path: {
@@ -65,11 +67,22 @@ async function save() {
 
     setPreview()
 }
+
+// state
+const route = useRoute()
+
+const key = `app:markdown:states:${route.path}`
+
+const state = useState(key, {}, { localStorage: true })
 </script>
 <template>
     <w-layout use-percentage>
         <w-toolbar class="border-b border-b-lines">
             <is-container class="-mr-3 flex justify-end w-full">
+                <v-card-title class="mr-auto">
+                    {{ DirectoryEntry.basename(path) }}
+                </v-card-title>
+
                 <v-btn size="sm" class="mr-2" text @click="setPreview">
                     <is-icon name="arrows-rotate" class="mr-2" />
                     {{ $t('reload') }}
@@ -115,6 +128,7 @@ async function save() {
                     <e-markdown-doc
                         v-else-if="content"
                         :ref="(r: any) => (preview.el = r)"
+                        v-model:state="state"
                         class="w-full pb-32"
                         :content="content"
                     />

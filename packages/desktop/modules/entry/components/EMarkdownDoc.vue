@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { markdown } from '../composables/markdown'
-import { onErrorCaptured, defineComponent, ref } from 'vue'
+import { onErrorCaptured, defineComponent, ref, watch } from 'vue'
 
 import SChart from '@/modules/script/components/SChart.vue'
-import SOutput from '@/modules/script/components/SOutput.vue'
+import { useVModel } from '@vueuse/core'
+import { useNonReactive } from '@/composables/utils'
 
 // Props & Emits
 
@@ -12,12 +13,31 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    state: {
+        type: Object,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:state'])
+
+// create state
+const mState = useVModel(props, 'state', emit)
+const innerState = ref(useNonReactive(mState.value || {}))
+
+watch(
+    innerState,
+    (value) => {
+        mState.value = useNonReactive(value)
+    },
+    { deep: true }
+)
 
 // render
 
 const view = defineComponent({
     components: { SChart },
+    setup: () => ({ state: innerState }),
     template: markdown.parse(props.content),
 })
 
