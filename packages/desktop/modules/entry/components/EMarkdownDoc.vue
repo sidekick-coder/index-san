@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { parseMarkdown } from '../composables/markdown'
+import { markdown } from '../composables/markdown'
+import { onErrorCaptured, defineComponent, ref } from 'vue'
 
 import SChart from '@/modules/script/components/SChart.vue'
+import SOutput from '@/modules/script/components/SOutput.vue'
+
+// Props & Emits
 
 const props = defineProps({
     content: {
@@ -10,15 +14,29 @@ const props = defineProps({
     },
 })
 
-const view = {
+// render
+
+const view = defineComponent({
     components: { SChart },
-    template: parseMarkdown(props.content),
-}
+    template: markdown.parse(props.content),
+})
+
+// catch errors
+const error = ref<any>()
+
+onErrorCaptured((err) => {
+    error.value = err.message
+
+    return false
+})
 </script>
 
 <template>
     <article class="is-markdown whitespace-pre-line leading-tight">
-        <component :is="view" />
+        <div v-if="error" class="bg-danger/70 rounded px-4 py-2">
+            {{ error }}
+        </div>
+        <component :is="view" v-else />
     </article>
 </template>
 

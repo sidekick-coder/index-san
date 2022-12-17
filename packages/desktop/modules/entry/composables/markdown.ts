@@ -4,7 +4,7 @@ import hljs from 'highlight.js'
 
 import { componentPlugin } from '@mdit-vue/plugin-component'
 
-export function parseMarkdown(source: string) {
+export function parse(source: string) {
     const md = MarkdownIt({
         html: true,
         xhtmlOut: true,
@@ -25,4 +25,17 @@ export function parseMarkdown(source: string) {
     md.use(componentPlugin)
 
     return md.render(source)
+}
+
+export function validate(source: string) {
+    const template = parse(source)
+
+    console.log(template)
+
+    return false
+}
+
+export const markdown = {
+    parse,
+    validate,
 }

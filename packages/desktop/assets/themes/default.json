@@ -206,8 +206,8 @@
       "editor.selectionHighlightBorder": "#222218",
 
       
-      "scrollbarSlider.background": "#27272A",
-      "scrollbarSlider.activeBackground": "#27272A",
-      "scrollbarSlider.hoverBackground": "#27272A"     
+      "scrollbarSlider.background": "#37415199",
+      "scrollbarSlider.activeBackground": "#37415199",
+      "scrollbarSlider.hoverBackground": "#37415199"     
     }
 }

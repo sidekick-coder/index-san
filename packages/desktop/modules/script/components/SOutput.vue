@@ -9,6 +9,10 @@ const props = defineProps({
         type: Object as () => ExecuteScriptDTO.Output | null,
         default: null,
     },
+    noErrorStack: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const content = computed(() => {
@@ -24,6 +28,9 @@ const content = computed(() => {
     if (props.output.error) {
         result.push('[error]')
         result.push(props.output.error.message)
+    }
+
+    if (props.output.error && !props.noErrorStack) {
         result.push(props.output.error.stack)
     }
 

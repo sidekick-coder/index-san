@@ -5,7 +5,6 @@ import { useCase } from '@/composables/use-case'
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import Script from '@core/entities/script'
 
-import ListScriptsDTO from '@core/use-cases/list-scripts/list-scripts.dto'
 import CreateScriptDTO from '@core/use-cases/create-script/create-script.dto'
 import DeleteScriptDTO from '@core/use-cases/delete-script/delete-script.dto'
 import UpdateScriptDTO from '@/../core/use-cases/update-script/update-script.dto'
@@ -16,8 +15,8 @@ export const useStore = defineStore('script', () => {
 
     const workspace = useWorkspace()
 
-    async function setScrips(workspaceId = workspace.currentId) {
-        await useCase<ListScriptsDTO.Output>('list-scripts', { workspaceId })
+    async function setScrips(workspaceId = workspace.currentId as string) {
+        await useCase('list-scripts', { workspaceId })
             .then(({ data }) => (scripts.value = data))
             .catch(() => (scripts.value = []))
     }
@@ -27,7 +26,7 @@ export const useStore = defineStore('script', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        await useCase('create-script', payload)
+        await useCase('create-script', payload as any)
 
         await setScrips()
     }
@@ -37,7 +36,7 @@ export const useStore = defineStore('script', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        await useCase('update-script', payload)
+        await useCase('update-script', payload as any)
 
         await setScrips()
     }
@@ -47,7 +46,7 @@ export const useStore = defineStore('script', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        await useCase('delete-script', payload)
+        await useCase('delete-script', payload as any)
 
         await setScrips()
     }
@@ -57,14 +56,11 @@ export const useStore = defineStore('script', () => {
             payload.workspaceId = workspace.currentId
         }
 
-        return await useCase('execute-script', payload)
-            .then((r) => r)
-            .catch((err) => ({
-                loading: false,
-                logs: [],
-                error: err.message ?? 'Error executing script',
-                result: null as null | any,
-            }))
+        return await useCase('execute-script', payload as any).catch((err) => ({
+            logs: [],
+            error: err.message ?? 'Error executing script',
+            result: null,
+        }))
     }
 
     watch(() => workspace.currentId, setScrips)

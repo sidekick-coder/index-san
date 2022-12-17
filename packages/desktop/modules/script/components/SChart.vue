@@ -3,7 +3,9 @@ import { onMounted, ref, useSlots, watch } from 'vue'
 import { useStore } from '@/modules/script/store'
 
 import SOutput from './SOutput.vue'
+import MEditor from '@/modules/monaco/components/MEditor.vue'
 import VChart from '@/components/v-chart.vue'
+import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
 
 // Props & Emits
 
@@ -41,12 +43,12 @@ onMounted(() => {
 })
 
 // toggle debug
-const debug = ref(false)
+const current = ref<'chart' | 'debug' | 'raw'>('chart')
 
 // execute script
 const store = useStore()
 
-const output = ref({
+const output = ref<ExecuteScriptDTO.Output>({
     error: null,
     result: null,
     logs: [],
@@ -58,7 +60,7 @@ async function execute() {
     })
 
     if (output.value.error || !output.value.result) {
-        debug.value = true
+        current.value = 'debug'
     }
 }
 
@@ -94,34 +96,48 @@ function refresh() {
         <div ref="contentEl" class="hidden">
             <slot />
         </div>
-        <v-card-head>
-            <v-card-title v-if="title" class="px-4">
+
+        <v-card-head class="pl-4 pr-2">
+            <v-card-title v-if="title">
                 {{ title }}
             </v-card-title>
 
-            <v-btn text size="sm" class="ml-auto" @click="refresh">
+            <v-btn text size="sm" class="ml-auto text-t-secondary" @click="refresh">
+                <is-icon name="chart-pie" />
+            </v-btn>
+
+            <v-btn text size="sm" class="text-t-secondary" @click="refresh">
                 <is-icon name="rotate" />
             </v-btn>
-            <v-btn text size="sm" @click="debug = !debug">
-                <is-icon name="bug" />
+
+            <v-btn text size="sm" class="text-t-secondary" @click="current = 'raw'">
+                <is-icon name="code" />
+            </v-btn>
+
+            <v-btn text size="sm" class="text-t-secondary" @click="current = 'debug'">
+                <is-icon name="check-circle" />
             </v-btn>
         </v-card-head>
 
-        <v-card-content v-if="debug" style="height: calc(100% - 54px)">
-            <s-output :output="output" class="border-b border-l border-r border-lines" />
+        <v-card-content v-if="current === 'raw'" style="height: calc(100% - 54px)">
+            <m-editor :model-value="content" readonly />
+        </v-card-content>
+
+        <v-card-content v-else-if="current === 'debug'" style="height: calc(100% - 54px)">
+            <s-output :output="output" />
         </v-card-content>
 
         <v-card-content
-            v-if="chart.loading"
+            v-else-if="chart.loading"
             style="height: calc(100% - 54px)"
             class="flex items-center justify-center animate-pulse"
         >
             <is-icon name="chart-pie" class="text-[10rem] text-lines" />
         </v-card-content>
 
-        <transition name="fade">
+        <transition v-else name="fade">
             <v-card-content
-                v-if="!chart.loading && chart.options && !debug"
+                v-if="!chart.loading && chart.options"
                 style="height: calc(100% - 54px)"
             >
                 <v-chart ref="chartRef" :options="chart.options" />
