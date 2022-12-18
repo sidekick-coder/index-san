@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import Collection, { CollectionColumn, CollectionColumnType } from '@core/entities/collection'
-
 import { computed, ref, watch } from 'vue'
+
+import Collection from '@core/entities/collection'
+import Column, { ColumnType } from '@core/entities/column'
+
 import { useStore } from '@/modules/collection/store'
 
 import MEditor from '@/modules/monaco/components/MEditor.vue'
@@ -14,7 +16,7 @@ import { lib as libScriptColumn } from '@/modules/monaco/libs/column-script'
 // Props & emits
 const props = defineProps({
     modelValue: {
-        type: Object as () => CollectionColumn,
+        type: Object as () => Column,
         required: true,
     },
     collection: {
@@ -29,18 +31,18 @@ const emit = defineEmits(['update:modelValue', 'destroy'])
 const tm = useI18n()
 const model = useVModel(props, 'modelValue', emit)
 
-const payload = ref<CollectionColumn>({
+const payload = ref<Column>({
     id: '',
     label: '',
     field: '',
-    type: CollectionColumnType.text,
+    type: ColumnType.text,
     content: '',
     options: undefined,
     collectionId: undefined,
     displayField: undefined,
 })
 
-const types = Object.values(CollectionColumnType).map((v) => ({
+const types = Object.values(ColumnType).map((v) => ({
     label: tm.t(v),
     value: v,
 }))
@@ -52,7 +54,7 @@ async function submit() {
 }
 
 // icons
-const icons: Record<CollectionColumn['type'], any> = {
+const icons: Record<Column['type'], any> = {
     text: 'font',
     number: 'hashtag',
     select: 'fa-regular fa-square-caret-down',

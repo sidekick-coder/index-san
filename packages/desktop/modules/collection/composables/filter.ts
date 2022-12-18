@@ -1,6 +1,6 @@
 import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
-import { CollectionColumn } from '@core/entities/collection'
 import Item from '@core/entities/item'
+import { ViewFilter } from '@core/entities/view'
 
 export const operations = {
     text: {
@@ -30,15 +30,7 @@ export const operations = {
     },
 }
 
-export interface Filter {
-    columnId: string
-    field: string
-    type: CollectionColumn['type']
-    config: any
-    value: string
-}
-
-export function filterText(value: string, filter: Filter) {
+export function filterText(value: string, filter: ViewFilter) {
     const operation: keyof typeof operations.text = filter.config.operation
 
     const a = value
@@ -51,7 +43,7 @@ export function filterText(value: string, filter: Filter) {
     return false
 }
 
-export function filterNumber(value: string | number, filter: Filter) {
+export function filterNumber(value: string | number, filter: ViewFilter) {
     const operation: keyof typeof operations.number = filter.config.operation
 
     const a = Number(value)
@@ -66,7 +58,7 @@ export function filterNumber(value: string | number, filter: Filter) {
     return false
 }
 
-export function filterRelation(value: Item | null, filter: Filter) {
+export function filterRelation(value: Item | null, filter: ViewFilter) {
     const operation: keyof typeof operations.relation = filter.config.operation
 
     const a = value ? value.id : null
@@ -79,7 +71,7 @@ export function filterRelation(value: Item | null, filter: Filter) {
     return false
 }
 
-export function filterScript(value: ExecuteScriptDTO.Output | null, filter: Filter) {
+export function filterScript(value: ExecuteScriptDTO.Output | null, filter: ViewFilter) {
     const operation: keyof typeof operations.script = filter.config.operation
 
     if (!value) return false
@@ -94,7 +86,7 @@ export function filterScript(value: ExecuteScriptDTO.Output | null, filter: Filt
     return false
 }
 
-export function filter(item: Item, filter: Filter) {
+export function filter(item: Item, filter: ViewFilter) {
     const value = item[filter.field]
 
     if (filter.value === undefined || filter.value === '') return true

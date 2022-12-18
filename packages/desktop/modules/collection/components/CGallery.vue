@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import Collection, { CollectionColumn, CollectionColumnType } from '@/../core/entities/collection'
-
-import Item from '@core/entities/item'
-
-import { ViewGallery, ViewGalleryColumn } from '@/../core/entities/view'
-import { createBindings } from '@/composables/binding'
-import { useNonReactive } from '@/composables/utils'
 import { debounce } from 'lodash'
 import { computed, ref, useAttrs, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import Collection from '@core/entities/collection'
+import Column, { ColumnType } from '@core/entities/column'
+import Item from '@core/entities/item'
+import ViewGallery, { ViewGalleryColumn } from '@core/entities/view-gallery'
+
+import { createBindings } from '@/composables/binding'
+import { useNonReactive } from '@/composables/utils'
 import { filter } from '../composables/filter'
 import { useStore } from '../store'
 
@@ -17,6 +18,7 @@ import CDrawerFilter from './CDrawerFilter.vue'
 import CDrawerHideColumns from './CDrawerHideColumns.vue'
 import IValue from '@/modules/item/components/IValue.vue'
 import EImg from '@/modules/entry/components/EImg.vue'
+import { useView } from '../composables/view'
 
 // Props & Emits
 const props = defineProps({
@@ -57,114 +59,23 @@ watch(() => props.collectionId, setCollection, {
 })
 
 // view
-const view = ref({
-    loading: false,
-    id: props.viewId,
-    thumbnail: {
-        key: '',
-        position: '',
-        fit: '',
-    },
-    component: 'gallery' as ViewGallery['component'],
-    columns: [] as (CollectionColumn & ViewGalleryColumn)[],
-    filters: [] as ViewGallery['filters'],
-    sizes: {
-        sm: {
-            width: 200,
-            height: 200,
-        },
-        md: {
-            width: 282,
-            height: 200,
-        },
-        lg: {
-            width: 200,
-            height: 200,
-        },
-    },
-})
 
-async function setView() {
-    if (!collection.value) return
-
-    view.value.loading = true
-
-    const columns: any[] = []
-    const savedColumns: ViewGallery['columns'] = []
-
-    if (props.viewId) {
-        await store.view.show(props.collectionId, props.viewId).then((r: ViewGallery) => {
-            if (!r) return
-
-            view.value.filters = r.filters
-
-            if (r.thumbnail) {
-                view.value.thumbnail = r.thumbnail as any
-            }
-
-            if (r.sizes) {
-                view.value.sizes = r.sizes
-            }
-
-            savedColumns.push(...r.columns)
-        })
-    }
-
-    collection.value.columns
-        .map((c) => useNonReactive(c))
-        .forEach((c) =>
-            columns.push({
-                ...c,
-                ...savedColumns.find((s) => s.id === c.id),
-            })
-        )
-
-    columns.sort((a, b) => {
-        const aIndex = savedColumns.findIndex((s) => s.id === a.id)
-        const bIndex = savedColumns.findIndex((s) => s.id === b.id)
-
-        if (aIndex === -1 || bIndex === -1) return 0
-
-        return aIndex - bIndex
-    })
-
-    view.value.columns = columns
-
-    setTimeout(() => (view.value.loading = false), 1100)
-}
-
-const saveView = debounce(async () => {
-    if (!props.viewId || view.value.loading) return
-
-    const data = useNonReactive<ViewGallery>({
-        id: view.value.id,
-        component: view.value.component,
-        columns: view.value.columns,
-        filters: view.value.filters,
-        thumbnail: view.value.thumbnail,
-        sizes: view.value.sizes,
-    })
+const { view, setView } = useView(new ViewGallery(), (payload) => {
+    const data = useNonReactive(payload)
 
     data.columns = data.columns
         .filter((c) => !c.id.startsWith('_'))
         .map((c) => ({
             id: c.id,
-            hide: !!c.hide,
+            hide: c.hide,
         }))
 
-    await store.view.updateOrCreate({
-        collectionId: props.collectionId,
-        viewId: props.viewId,
-        data,
-    })
-}, 1000)
+    return data
+})
 
-watch(collection, setView)
-
-watch(() => view.value.columns, saveView, { deep: true })
-watch(() => view.value.filters, saveView, { deep: true })
-watch(() => view.value.thumbnail, saveView, { deep: true })
-watch(() => view.value.sizes, saveView, { deep: true })
+watch(collection, () => setView(collection.value!, props.viewId), {
+    deep: true,
+})
 
 // count visible columns
 
@@ -237,17 +148,12 @@ const updateItem = debounce(async (item: Item, field: string, value: any) => {
 async function createItem() {
     const payload = {}
 
-    const safeList = [
-        CollectionColumnType.text,
-        CollectionColumnType.select,
-        CollectionColumnType.number,
-        CollectionColumnType.relation,
-    ]
+    const safeList = [ColumnType.text, ColumnType.select, ColumnType.number, ColumnType.relation]
 
     view.value.filters.forEach((f) => {
         const column = view.value.columns.find((c) => c.id === f.columnId)
 
-        if (!column) return
+        if (!column || !column.type || !column.field) return
 
         if (safeList.includes(column.type)) {
             payload[column.field] = f.value

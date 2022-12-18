@@ -9,8 +9,9 @@ import uuid from 'uuid-random'
 import debounce from 'lodash/debounce'
 
 import Item from '@core/entities/item'
-import Collection, { CollectionColumn, CollectionColumnType } from '@core/entities/collection'
-import { ViewTable, ViewTableColumn } from '@core/entities/view'
+import Column, { ColumnType } from '@core/entities/column'
+import Collection from '@core/entities/collection'
+import ViewTable from '@core/entities/view-table'
 
 import { useNonReactive } from '@/composables/utils'
 import { filter } from '@/modules/collection/composables/filter'
@@ -21,6 +22,7 @@ import Draggable from 'vuedraggable'
 import CColumn from './CColumn.vue'
 import CDrawerFilter from './CDrawerFilter.vue'
 import IValue from '@/modules/item/components/IValue.vue'
+import { useView } from '../composables/view'
 
 const props = defineProps({
     width: {
@@ -45,9 +47,14 @@ const props = defineProps({
     },
 })
 
-const router = useRouter()
+// bindings
+const attrs = useAttrs()
+
+const bindings = computed(() => createBindings(attrs, ['table', 'head']))
 
 // set collection
+const router = useRouter()
+
 const store = useStore()
 
 const collection = ref<Collection>()
@@ -64,81 +71,9 @@ watch(() => props.collectionId, setCollection, {
 })
 
 // view
-const view = ref({
-    loading: false,
-    id: props.viewId,
-    component: 'table' as ViewTable['component'],
-    columns: [] as (CollectionColumn & ViewTableColumn)[],
-    filters: [] as ViewTable['filters'],
-})
 
-async function setView() {
-    if (!collection.value) return
-
-    view.value.loading = true
-
-    const columns: any[] = []
-    const savedColumns: ViewTable['columns'] = []
-
-    if (props.viewId) {
-        await store.view.show(props.collectionId, props.viewId).then((r: ViewTable) => {
-            if (!r) return
-
-            view.value.filters = r.filters
-
-            savedColumns.push(...r.columns)
-        })
-    }
-
-    collection.value.columns
-        .map((c) => useNonReactive(c))
-        .forEach((c) =>
-            columns.push({
-                width: 200,
-                ...c,
-                ...savedColumns.find((s) => s.id === c.id),
-            })
-        )
-
-    columns.sort((a, b) => {
-        const aIndex = savedColumns.findIndex((s) => s.id === a.id)
-        const bIndex = savedColumns.findIndex((s) => s.id === b.id)
-
-        if (aIndex === -1 || bIndex === -1) return 0
-
-        return aIndex - bIndex
-    })
-
-    columns.unshift({
-        id: '_actions_left',
-        field: '_actions_left',
-        label: '',
-        width: 26,
-        type: 'text',
-    })
-
-    columns.push({
-        id: '_actions_right',
-        field: '_actions_right',
-        label: '',
-        width: '100%',
-        type: 'text',
-    })
-
-    view.value.columns = columns
-
-    setTimeout(() => (view.value.loading = false), 1100)
-}
-
-const saveView = debounce(async () => {
-    if (!props.viewId || view.value.loading) return
-
-    const data = useNonReactive<ViewTable>({
-        id: view.value.id,
-        component: view.value.component,
-        columns: view.value.columns,
-        filters: view.value.filters,
-    })
+const { view, setView } = useView(new ViewTable(), (payload) => {
+    const data = useNonReactive(payload)
 
     data.columns = data.columns
         .filter((c) => !c.id.startsWith('_'))
@@ -147,17 +82,44 @@ const saveView = debounce(async () => {
             width: c.width,
         }))
 
-    await store.view.updateOrCreate({
-        collectionId: props.collectionId,
-        viewId: props.viewId,
-        data,
-    })
-}, 1000)
+    return data
+})
 
-watch(collection, setView)
+watch(collection, () => setView(collection.value!, props.viewId), {
+    deep: true,
+})
 
-watch(() => view.value.columns, saveView, { deep: true })
-watch(() => view.value.filters, saveView, { deep: true })
+// columns
+
+const columnsWithActions = computed({
+    get() {
+        const columns = useNonReactive(view.value.columns)
+
+        columns.unshift({
+            id: '_actions_left',
+            width: 26,
+        })
+
+        columns.push({
+            id: '_actions_right',
+            width: '100%',
+        })
+
+        return columns
+    },
+    set(value) {
+        view.value.columns = value.filter((c) => !c.id.startsWith('_'))
+    },
+})
+
+// resize
+function resizeColumn(id: string, value: number) {
+    const column = view.value.columns.find((c) => c.id === id)
+
+    if (!column) return
+
+    column.width = value
+}
 
 // set items
 
@@ -202,32 +164,15 @@ watch(() => view.value.filters, debounce(setItems, 500), { deep: true })
 
 watch(() => search.value.input, debounce(setItems, 1000))
 
-// bindings
-const attrs = useAttrs()
-
-const bindings = computed(() => createBindings(attrs, ['table', 'head']))
-
 // create column
-
 async function createColumn() {
     if (!collection.value) return
 
-    const oldColumns = useNonReactive(collection.value.columns).map((c) => ({
-        ...c,
-        width: undefined,
-    }))
+    const oldColumns = useNonReactive(collection.value.columns)
 
     const newColumns = useNonReactive(oldColumns)
 
-    const id = uuid()
-
-    newColumns.push({
-        id,
-        field: id,
-        label: 'New',
-        type: CollectionColumnType.text,
-        width: undefined,
-    })
+    newColumns.push(new Column({ label: 'New' }))
 
     collection.value.columns = newColumns
 
@@ -241,13 +186,10 @@ async function createColumn() {
         .catch(() => {
             collection.value!.columns = oldColumns
         })
-
-    await setView()
 }
 
 // update column
-
-async function updateColumn(column: CollectionColumn) {
+async function updateColumn(column: Column) {
     if (!collection.value) return
 
     const oldColumns = useNonReactive(collection.value.columns).map((c) => ({
@@ -269,19 +211,13 @@ async function updateColumn(column: CollectionColumn) {
         .catch(() => {
             collection.value!.columns = oldColumns
         })
-
-    await setView()
 }
 
 // delete column
-
-async function deleteColumn(column: CollectionColumn) {
+async function deleteColumn(column: Column) {
     if (!collection.value) return
 
-    const oldColumns = useNonReactive(collection.value.columns).map((c) => ({
-        ...c,
-        width: undefined,
-    }))
+    const oldColumns = useNonReactive(collection.value.columns)
 
     const newColumns = useNonReactive(oldColumns).filter((c) => c.id !== column.id)
 
@@ -297,25 +233,18 @@ async function deleteColumn(column: CollectionColumn) {
         .catch(() => {
             collection.value!.columns = oldColumns
         })
-
-    await setView()
 }
 
 // create item
 async function onItemNew() {
     const payload = {}
 
-    const safeList = [
-        CollectionColumnType.text,
-        CollectionColumnType.select,
-        CollectionColumnType.number,
-        CollectionColumnType.relation,
-    ]
+    const safeList = [ColumnType.text, ColumnType.select, ColumnType.number, ColumnType.relation]
 
     view.value.filters.forEach((f) => {
         const column = view.value.columns.find((c) => c.id === f.columnId)
 
-        if (!column) return
+        if (!column || !column.type || !column.field) return
 
         if (safeList.includes(column.type)) {
             payload[column.field] = f.value
@@ -418,47 +347,44 @@ async function onItemDelete(item: Item) {
         <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
             <v-table
                 :items="items"
-                :columns="view.columns"
+                :columns="columnsWithActions"
                 v-bind="bindings.table"
                 :loading="loadingItems"
             >
                 <template #column>
-                    <Draggable v-model="view.columns" handle=".drag" item-key="id" tag="v-tr">
+                    <Draggable v-model="columnsWithActions" handle=".drag" item-key="id" tag="v-tr">
                         <template #item="{ element: c }">
                             <v-th
-                                v-if="c.id === '_actions_left'"
                                 :id="c.id"
-                                :width="c.width"
-                                class="!border-x-0 !px-0"
-                            />
-
-                            <v-th
-                                v-else-if="c.id === '_actions_right'"
-                                :id="c.id"
-                                class="w-full !border-x-0"
-                                :width="c.width"
+                                :width="c.width || 200"
+                                :class="c.id.startsWith('_') ? '!border-x-0 !px-0' : ''"
                             >
                                 <v-btn
+                                    v-if="c.id === '_actions_right'"
                                     size="sm"
                                     text
-                                    class="text-t-secondary"
+                                    class="text-t-secondary mx-2"
                                     @click="createColumn"
                                 >
                                     <is-icon name="plus" />
                                 </v-btn>
-                            </v-th>
 
-                            <v-th v-else :id="c.id" :width="c.width">
-                                <c-column
-                                    class="drag"
-                                    :collection-id="collectionId"
-                                    :model-value="c"
-                                    :collection="(collection as Collection)"
-                                    @update:model-value="updateColumn"
-                                    @destroy="deleteColumn(c)"
-                                />
+                                <template v-else-if="!c.id.startsWith('_')">
+                                    <c-column
+                                        class="drag"
+                                        :collection-id="collectionId"
+                                        :model-value="c"
+                                        :collection="(collection as Collection)"
+                                        @update:model-value="updateColumn"
+                                        @destroy="deleteColumn(c)"
+                                    />
 
-                                <is-resize-line v-model="c.width" :min-width="100" />
+                                    <is-resize-line
+                                        :model-value="c.width || 200"
+                                        :min-width="100"
+                                        @update:model-value="(v: number) => resizeColumn(c.id, v)"
+                                    />
+                                </template>
                             </v-th>
                         </template>
                     </Draggable>
@@ -467,7 +393,7 @@ async function onItemDelete(item: Item) {
                 <template #item="data">
                     <v-tr class="relative group/item">
                         <v-td
-                            v-for="c in view.columns"
+                            v-for="c in columnsWithActions"
                             :key="c.id"
                             no-padding
                             :class="c.id[0] === '_' ? '!border-x-0' : ''"
@@ -506,10 +432,12 @@ async function onItemDelete(item: Item) {
 
                             <i-value
                                 v-else
-                                :model-value="data.item[c.field]"
-                                :column="c"
+                                :model-value="data.item[c.field as string]"
+                                :column="(c as Column)"
                                 :item="data.item"
-                                @update:model-value="updateItem(data.item, c.field, $event)"
+                                @update:model-value="
+                                    updateItem(data.item, c.field as string, $event)
+                                "
                             />
                         </v-td>
                     </v-tr>
@@ -520,7 +448,7 @@ async function onItemDelete(item: Item) {
                         <v-td class="!border-x-0"></v-td>
 
                         <v-td
-                            :colspan="view.columns.length - 2"
+                            :colspan="columnsWithActions.length - 2"
                             class="!border-x-0 !px-4 text-t-secondary text-sm"
                         >
                             <fa-icon icon="plus" class="mr-2" />
