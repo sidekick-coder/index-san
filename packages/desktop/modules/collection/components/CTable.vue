@@ -4,17 +4,14 @@ export default { inheritAttrs: false }
 <script setup lang="ts">
 import { ref, watch, computed, useAttrs } from 'vue'
 import { useRouter } from 'vue-router'
-import uuid from 'uuid-random'
 
 import debounce from 'lodash/debounce'
 
-import Item from '@core/entities/item'
-import Column, { ColumnType } from '@core/entities/column'
+import Column from '@core/entities/column'
 import Collection from '@core/entities/collection'
 import ViewTable from '@core/entities/view-table'
 
 import { useNonReactive } from '@/composables/utils'
-import { filter } from '@/modules/collection/composables/filter'
 import { createBindings } from '@/composables/binding'
 import { useStore } from '@/modules/collection/store'
 
@@ -52,7 +49,8 @@ const attrs = useAttrs()
 
 const bindings = computed(() => createBindings(attrs, ['table', 'head']))
 
-// set collection
+// collection
+
 const router = useRouter()
 
 const store = useStore()
@@ -112,7 +110,6 @@ const columnsWithActions = computed({
     },
 })
 
-// resize
 function resizeColumn(id: string, value: number) {
     const column = view.value.columns.find((c) => c.id === id)
 
@@ -121,7 +118,7 @@ function resizeColumn(id: string, value: number) {
     column.width = value
 }
 
-// set items
+// items
 
 const search = ref({
     input: '',
@@ -129,40 +126,17 @@ const search = ref({
     onInput: debounce((v) => (search.value.input = v), 100),
 })
 
-const items = ref<Item[]>([])
-const loadingItems = ref(false)
+async function load() {
+    store.item.current.collection = collection.value || null
 
-async function setItems() {
-    if (!collection.value) {
-        items.value = []
-        return
-    }
-
-    if (loadingItems.value) return
-
-    loadingItems.value = true
-
-    const raw = await store.item
-        .list({ collectionId: props.collectionId })
-        .then((r) => (items.value = r.data))
-        .catch(() => (items.value = []))
-
-    items.value = raw.filter((i) => {
-        let valid = !!JSON.stringify(i).toLowerCase().includes(search.value.input.toLowerCase())
-
-        valid = view.value.filters.reduce((r, f) => r && filter(i, f), valid)
-
-        return valid
-    })
-
-    setTimeout(() => (loadingItems.value = false), 800)
+    await store.item.setItems(view.value.filters, search.value.input)
 }
 
-watch(collection, setItems)
+watch(collection, load)
 
-watch(() => view.value.filters, debounce(setItems, 500), { deep: true })
+watch(() => view.value.filters, debounce(load, 500), { deep: true })
 
-watch(() => search.value.input, debounce(setItems, 1000))
+watch(() => search.value.input, debounce(load, 500))
 
 // create column
 async function createColumn() {
@@ -235,70 +209,9 @@ async function deleteColumn(column: Column) {
         })
 }
 
-// create item
-async function onItemNew() {
-    const payload = {}
+// update item with debounce
 
-    const safeList = [ColumnType.text, ColumnType.select, ColumnType.number, ColumnType.relation]
-
-    view.value.filters.forEach((f) => {
-        const column = view.value.columns.find((c) => c.id === f.columnId)
-
-        if (!column || !column.type || !column.field) return
-
-        if (safeList.includes(column.type)) {
-            payload[column.field] = f.value
-        }
-    })
-
-    const item = new Item(payload)
-
-    items.value.push(item)
-
-    await store.item.create({
-        collectionId: props.collectionId,
-        data: item,
-    })
-}
-
-// update item
-
-const updateItem = debounce(async (item: Item, field: string, value: any) => {
-    let old = useNonReactive(item)
-
-    item[field] = value
-
-    const payload = {
-        collectionId: props.collectionId,
-        itemId: old.id,
-        data: {
-            [field]: value,
-        },
-    }
-
-    await store.item.update(payload).catch(() => {
-        item[field] = old
-    })
-}, 1000)
-
-// delete item
-async function onItemDelete(item: Item) {
-    const index = items.value.indexOf(item)
-    const old = useNonReactive(item)
-
-    if (index === -1) return
-
-    items.value.splice(index, 1)
-
-    await store.item
-        .destroy({
-            collectionId: props.collectionId,
-            itemId: item.id,
-        })
-        .catch(() => {
-            items.value.push(old)
-        })
-}
+const updateItem = debounce(store.item.update, 1000)
 </script>
 
 <template>
@@ -336,7 +249,7 @@ async function onItemDelete(item: Item) {
                     <is-icon name="search" />
                 </v-btn>
 
-                <v-btn text size="sm" @click="setItems">
+                <v-btn text size="sm" @click="load">
                     <is-icon name="rotate" />
                 </v-btn>
 
@@ -346,10 +259,10 @@ async function onItemDelete(item: Item) {
 
         <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
             <v-table
-                :items="items"
+                :items="store.item.current.items"
                 :columns="columnsWithActions"
                 v-bind="bindings.table"
-                :loading="loadingItems"
+                :loading="store.item.current.loading"
             >
                 <template #column>
                     <Draggable v-model="columnsWithActions" handle=".drag" item-key="id" tag="v-tr">
@@ -420,7 +333,7 @@ async function onItemDelete(item: Item) {
                                         size="xs"
                                         color="danger"
                                         dark
-                                        @click="onItemDelete(data.item)"
+                                        @click="store.item.destroy(data.item)"
                                     >
                                         <is-icon name="trash" class="mr-2" />
                                         {{ $t('deleteEntity', [$t('item')]) }}
@@ -435,16 +348,14 @@ async function onItemDelete(item: Item) {
                                 :model-value="data.item[c.field as string]"
                                 :column="(c as Column)"
                                 :item="data.item"
-                                @update:model-value="
-                                    updateItem(data.item, c.field as string, $event)
-                                "
+                                @update:model-value="updateItem(data.item, c.field!, $event)"
                             />
                         </v-td>
                     </v-tr>
                 </template>
 
                 <template #append>
-                    <v-tr class="cursor-pointer hover:bg-b-secondary" @click="onItemNew">
+                    <v-tr class="cursor-pointer hover:bg-b-secondary" @click="store.item.create">
                         <v-td class="!border-x-0"></v-td>
 
                         <v-td

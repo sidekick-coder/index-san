@@ -4,13 +4,10 @@ import { computed, ref, useAttrs, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import Collection from '@core/entities/collection'
-import Column, { ColumnType } from '@core/entities/column'
-import Item from '@core/entities/item'
-import ViewGallery, { ViewGalleryColumn } from '@core/entities/view-gallery'
+import ViewGallery from '@core/entities/view-gallery'
 
 import { createBindings } from '@/composables/binding'
 import { useNonReactive } from '@/composables/utils'
-import { filter } from '../composables/filter'
 import { useStore } from '../store'
 
 // components
@@ -81,7 +78,7 @@ watch(collection, () => setView(collection.value!, props.viewId), {
 
 const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).length)
 
-// set items
+// items
 
 const search = ref({
     input: '',
@@ -89,86 +86,21 @@ const search = ref({
     onInput: debounce((v) => (search.value.input = v), 100),
 })
 
-const items = ref<Item[]>([])
-const loadingItems = ref(false)
+async function load() {
+    store.item.current.collection = collection.value || null
 
-async function setItems() {
-    if (!collection.value) {
-        items.value = []
-        return
-    }
-
-    if (loadingItems.value) return
-
-    loadingItems.value = true
-
-    const raw = await store.item
-        .list({ collectionId: props.collectionId })
-        .then((r) => (items.value = r.data))
-        .catch(() => (items.value = []))
-
-    items.value = raw.filter((i) => {
-        let valid = !!JSON.stringify(i).toLowerCase().includes(search.value.input.toLowerCase())
-
-        valid = view.value.filters.reduce((r, f) => r && filter(i, f), valid)
-
-        return valid
-    })
-
-    setTimeout(() => (loadingItems.value = false), 800)
+    await store.item.setItems(view.value.filters, search.value.input)
 }
 
-watch(collection, setItems)
+watch(collection, load)
 
-watch(() => view.value.filters, debounce(setItems, 500), { deep: true })
+watch(() => view.value.filters, debounce(load, 500), { deep: true })
 
-watch(() => search.value.input, debounce(setItems, 1000))
+watch(() => search.value.input, debounce(load, 500))
 
-// update item
+// update item with debounce
 
-const updateItem = debounce(async (item: Item, field: string, value: any) => {
-    let old = useNonReactive(item)
-
-    item[field] = value
-
-    const payload = {
-        collectionId: props.collectionId,
-        itemId: old.id,
-        data: {
-            [field]: value,
-        },
-    }
-
-    await store.item.update(payload).catch(() => {
-        item[field] = old
-    })
-}, 1000)
-
-// create item
-async function createItem() {
-    const payload = {}
-
-    const safeList = [ColumnType.text, ColumnType.select, ColumnType.number, ColumnType.relation]
-
-    view.value.filters.forEach((f) => {
-        const column = view.value.columns.find((c) => c.id === f.columnId)
-
-        if (!column || !column.type || !column.field) return
-
-        if (safeList.includes(column.type)) {
-            payload[column.field] = f.value
-        }
-    })
-
-    const item = new Item(payload)
-
-    items.value.push(item)
-
-    await store.item.create({
-        collectionId: props.collectionId,
-        data: item,
-    })
-}
+const updateItem = debounce(store.item.update, 1000)
 </script>
 
 <template>
@@ -178,7 +110,7 @@ async function createItem() {
                 {{ title }}
             </v-card-title>
 
-            <v-btn text size="sm" @click="setItems">
+            <v-btn text size="sm" @click="load">
                 <is-icon name="rotate" />
             </v-btn>
 
@@ -271,10 +203,10 @@ async function createItem() {
 
         <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
             <v-gallery
-                :items="items"
+                :items="store.item.current.items"
                 :columns="view.columns"
                 v-bind="bindings.gallery"
-                :loading="loadingItems"
+                :loading="store.item.current.loading"
                 :sizes="view.sizes"
             >
                 <template #item="data">
@@ -315,7 +247,7 @@ async function createItem() {
                         :height="data.size.height"
                         class="rounded border border-lines flex items-center justify-center cursor-pointer"
                         v-bind="data.bindings.card"
-                        @click="createItem"
+                        @click="store.item.create"
                     >
                         <is-icon class="text-2xl text-lines" name="plus" />
                     </v-card>
