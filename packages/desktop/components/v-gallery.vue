@@ -20,7 +20,16 @@ const props = defineProps({
         type: String,
         default: 'b-secondary',
     },
+    limit: {
+        type: [String, Number],
+        default: 20,
+    },
 })
+
+// bindings
+const attrs = useAttrs()
+
+const bindings = computed(() => createBindings(attrs, ['card']))
 
 // calculate break point
 const rootRef = ref<HTMLElement>()
@@ -65,16 +74,17 @@ const size = computed(() => {
     return sizes[breakpoint.value]
 })
 
-// bindings
-const attrs = useAttrs()
+// pagination
 
-const bindings = computed(() => createBindings(attrs, ['card']))
+const pagination = ref({ limit: +props.limit })
+
+const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
 </script>
 
 <template>
     <div ref="rootRef" class="flex flex-wrap gap-4">
         <slot
-            v-for="(item, index) in items"
+            v-for="(item, index) in visibleItems"
             name="item"
             :size="size"
             :index="index"
@@ -117,5 +127,20 @@ const bindings = computed(() => createBindings(attrs, ['card']))
             :color="color"
             :bindings="bindings"
         />
+
+        <v-card
+            v-if="items.length > pagination.limit"
+            width="100%"
+            class="cursor-pointer"
+            v-bind="bindings.card"
+            :color="color"
+            @click="pagination.limit = pagination.limit + Number(limit)"
+        >
+            <v-card-content class="items-center text-sm">
+                <fa-icon icon="arrow-down" class="mr-4" />
+
+                <span>{{ `${$t('loadMore')} (${visibleItems.length}/${items.length})` }}</span>
+            </v-card-content>
+        </v-card>
     </div>
 </template>
