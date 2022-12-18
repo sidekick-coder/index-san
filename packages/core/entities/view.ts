@@ -1,66 +1,49 @@
 import uuid from 'uuid-random'
+import Column from './column'
+
+export interface ViewFilter {
+    columnId: string
+    field: string
+    type: Column['type']
+    config: any
+    value: string
+}
+
+export interface ViewColumn extends Partial<Column> {
+    id: string // link with column
+}
 
 export default class View {
-    public id: string
-    public filters: any[] = []
+    public id = ''
+    public filters: ViewFilter[] = []
+    public columns: ViewColumn[] = []
 
     constructor(props?: Omit<View, 'id'>, id?: string) {
+        Object.assign(this, props)
+
         this.id = id || uuid()
-
-        this.filters = props?.filters || []
     }
-}
 
-export interface ViewTableColumn {
-    id: string // link with column
-    width: number
-}
+    public merge(payload: Partial<View>) {
+        const { columns, ...data } = payload
 
-export class ViewTable extends View {
-    public readonly component = 'table'
-    public columns: ViewTableColumn[] = []
+        if (!columns) {
+            return Object.assign(this, data)
+        }
 
-    constructor(props: Omit<ViewTable, 'id'>, id?: string) {
-        super(props, id)
+        columns.forEach((c) => {
+            const cColumn = this.columns.find((cv) => cv.id === c.id)
 
-        this.columns = props.columns
-    }
-}
+            Object.assign(cColumn || {}, c)
+        })
 
-export interface ViewGalleryColumn {
-    id: string // link with column
-    hide: boolean
-}
+        this.columns.sort((a, b) => {
+            const aIndex = columns.findIndex((s) => s.id === a.id)
+            const bIndex = columns.findIndex((s) => s.id === b.id)
 
-export interface ViewGallerySize {
-    width: number
-    height: number
-}
+            if (aIndex === -1 || bIndex === -1) return 0
 
-export interface ViewGallerySizes {
-    sm: ViewGallerySize
-    md: ViewGallerySize
-    lg: ViewGallerySize
-}
-
-export interface ViewGalleryThumbnail {
-    key?: string
-    position?: string
-    fit?: string
-}
-
-export class ViewGallery extends View {
-    public readonly component = 'gallery'
-
-    public columns: ViewGalleryColumn[] = []
-    public thumbnail?: ViewGalleryThumbnail
-    public sizes?: ViewGallerySizes
-
-    constructor(props: Omit<ViewGallery, 'id'>, id?: string) {
-        super(props, id)
-
-        this.columns = props.columns
-        this.thumbnail = props.thumbnail
-        this.sizes = props.sizes
+            return aIndex - bIndex
+        })
     }
 }
