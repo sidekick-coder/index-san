@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch, PropType } from 'vue'
-import throttle from 'lodash/throttle'
 import template from 'lodash/template'
 
 import uuid from 'uuid-random'
@@ -36,16 +35,6 @@ const emit = defineEmits(['update:modelValue'])
 // set value
 const model = useVModel(props, 'modelValue', emit)
 
-// if (props.column.type === 'relation') {
-//     setRelatedItems(props.workspaceId, props.column.collectionId)
-// }
-
-const onChange = throttle(async () => {
-    // await updateItem(props.workspaceId, props.collectionId, props.itemId, {
-    //     [props.column.field]: payload.value,
-    // })
-}, 1000)
-
 // Select options
 
 const select = ref({
@@ -61,7 +50,7 @@ const select = ref({
 const scriptLabel = computed(() => {
     if (props.column.type !== 'script') return null
 
-    if (!model.value) return null
+    if (!model.value) return 'No result'
 
     if (typeof model.value !== 'object') return null
 
@@ -159,20 +148,13 @@ function upload() {
 </script>
 
 <template>
-    <is-input
-        v-if="column.type === 'number'"
-        v-model="model"
-        flat
-        type="number"
-        @change="onChange"
-    />
+    <is-input v-if="column.type === 'number'" v-model="model" flat type="number" class="w-full" />
 
     <is-select
         v-else-if="column.type === 'select'"
         v-model="model"
         :options="select.options"
         flat
-        @update:model-value="onChange"
     />
 
     <v-dialog v-else-if="column.type === 'script'">
@@ -231,5 +213,5 @@ function upload() {
         </div>
     </template>
 
-    <is-input v-else v-model="model" flat @change="onChange" />
+    <is-input v-else v-model="model" flat />
 </template>

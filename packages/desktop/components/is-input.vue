@@ -169,7 +169,7 @@ onMounted(() => {
 })
 </script>
 <template>
-    <div v-bind="bindings.root">
+    <div v-bind="bindings.root" class="w-full">
         <label v-if="label" :for="label" :class="labelClasses" v-bind="bindings.label">
             {{ label }}
         </label>

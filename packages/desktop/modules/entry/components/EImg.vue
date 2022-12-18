@@ -1,59 +1,122 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useStore } from '../store'
 import mime from 'mime'
+import { ref, computed, watch } from 'vue'
+
+import { useStore } from '../store'
+import { toCssMeasurement } from '@/composables/utils'
 
 const props = defineProps({
-    path: {
+    src: {
         type: String,
-        required: true,
+        default: null,
+    },
+    width: {
+        type: [String, Number],
+        default: null,
+    },
+    height: {
+        type: [String, Number],
+        default: null,
+    },
+    fit: {
+        type: String,
+        default: null,
+    },
+    position: {
+        type: String,
+        default: null,
     },
 })
 
 const store = useStore()
 
-const src = ref()
+const innerSrc = ref<string>()
 const loading = ref(false)
 
 async function setSrc() {
+    innerSrc.value = undefined
+
+    if (!props.src) return
+
     loading.value = true
 
-    const buffer = await store.read({ path: props.path })
+    await store
+        .read({ path: props.src }, true)
+        .then((buffer) => {
+            const base64 = window.btoa(
+                buffer.reduce((data, b) => data + String.fromCharCode(b), '')
+            )
 
-    const base64 = window.btoa(buffer.reduce((data, b) => data + String.fromCharCode(b), ''))
+            const type = mime.getType(props.src)
 
-    const type = mime.getType(props.path)
-
-    src.value = `data:${type};base64, ${base64}`
-
-    loading.value = false
+            innerSrc.value = `data:${type};base64, ${base64}`
+        })
+        .catch(Boolean)
+        .finally(() => (loading.value = false))
 }
 
-onMounted(setSrc)
+watch(() => props.src, setSrc, { immediate: true })
 
-// set width & height
-const imageRef = ref<HTMLImageElement>()
+// style
 
-const size = ref({
-    height: undefined as undefined | number,
-    width: undefined as undefined | number,
+const style = computed(() => {
+    const result: any = {}
+
+    if (props.width) {
+        result['width'] = toCssMeasurement(props.width)
+    }
+
+    if (props.height) {
+        result['height'] = toCssMeasurement(props.height)
+    }
+
+    return result
 })
 
-function onLoad() {
-    if (!imageRef.value) return
+// classes
 
-    size.value.height = imageRef.value.height
-    size.value.width = imageRef.value.width
+const fitOptions = {
+    'cover': 'object-cover',
+    'contain': 'object-contain',
+    'fill': 'object-fill',
+    'none': 'object-none',
+    'scale-down': 'object-scale-down',
 }
+
+const positionOptions = {
+    'top': 'object-top',
+    'bottom': 'object-bottom',
+    'center': 'object-center',
+    'left': 'object-left',
+    'right': 'object-right',
+
+    'left-top': 'object-left-top',
+    'left-bottom': 'object-left-bottom',
+    'right-top': 'object-right-top',
+    'right-bottom': 'object-right-bottom',
+}
+
+const classes = computed(() => {
+    const result: string[] = []
+
+    if (props.fit) {
+        result.push(fitOptions[props.fit])
+    }
+
+    if (props.position) {
+        result.push(positionOptions[props.position])
+    }
+
+    return result
+})
 </script>
 
 <template>
     <img
-        v-if="!loading"
+        v-if="!loading && innerSrc"
         ref="imageRef"
-        :src="src"
-        :width="size.width"
-        :height="size.height"
-        @load="onLoad"
+        :src="innerSrc"
+        :class="classes"
+        :style="style"
     />
 </template>

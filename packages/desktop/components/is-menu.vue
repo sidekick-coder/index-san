@@ -1,3 +1,8 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
@@ -58,17 +63,17 @@ const max = ref({
     y: window.innerHeight - 300,
 })
 
-watch(show, (value) => {
-    if (!value) return
+watch(
+    () => max.value.el,
+    (el) => {
+        if (!el) return
 
-    if (!max.value.el) return
-
-    const el = max.value.el
-
-    setTimeout(() => {
-        max.value.y = window.innerHeight - el.clientHeight
-    }, 50)
-})
+        setTimeout(() => {
+            max.value.y = window.innerHeight - el.clientHeight
+            max.value.x = window.innerWidth - el.clientWidth
+        }, 50)
+    }
+)
 
 // track mouse position
 
@@ -119,8 +124,10 @@ onUnmounted(() => document.removeEventListener('click', onClickDom))
 const style = computed(() => {
     const result = {
         top: `${Math.min(mouse.value.y, max.value.y)}px`,
-        left: `${mouse.value.x}px`,
+        left: `${Math.min(mouse.value.x, max.value.x)}px`,
     }
+
+    // console.log(mouse.value.x, max.value.x)
 
     if (props.maxHeight) {
         result['max-height'] = `${props.maxHeight}px`
@@ -150,7 +157,8 @@ function onContentClick() {
                 v-if="show"
                 :ref="(el: any) => (max.el = el)"
                 :style="style"
-                class="is-menu z-20 fixed transition-all overflow-auto"
+                class="is-menu z-20 fixed transition-all overflow-auto max-h-screen"
+                v-bind="$attrs"
                 @click.stop="onContentClick"
             >
                 <slot />

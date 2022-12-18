@@ -7,6 +7,7 @@ import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import CTable from '@/modules/collection/components/CTable.vue'
+import CGallery from '@/modules/collection/components/CGallery.vue'
 
 const props = defineProps({
     collectionId: {
@@ -41,15 +42,22 @@ watch(() => props.collectionId, load, {
 })
 </script>
 <template>
-    <div class="w-full h-full">
-        <c-table
-            v-if="collection"
+    <div v-if="collection" class="w-full h-full">
+        <!-- <c-table
+            
             :collection-id="collectionId"
             :title="meta.title"
             view-id="default"
             height="100%"
-            table:padding-left="20"
             head:class="px-10"
+        /> -->
+        <c-gallery
+            :collection-id="collectionId"
+            :title="meta.title"
+            view-id="grid:default"
+            height="100%"
+            head:class="px-10"
+            gallery:class="px-10 pt-5"
         />
     </div>
 </template>

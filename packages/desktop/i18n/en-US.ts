@@ -64,6 +64,13 @@ export default {
     number: 'Number',
     select: 'Select',
     relation: 'Relation',
+    hideAll: 'Hide all',
+    showAll: 'Show all',
+    thumbnail: 'Thumbnail',
+    widthEntity: 'Width {0}',
+    heightEntity: 'Height {0}',
+    position: 'Position',
+    fit: 'Fit',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

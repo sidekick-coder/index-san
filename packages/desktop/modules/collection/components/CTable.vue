@@ -67,7 +67,7 @@ watch(() => props.collectionId, setCollection, {
 const view = ref({
     loading: false,
     id: props.viewId,
-    component: 'table',
+    component: 'table' as ViewTable['component'],
     columns: [] as (CollectionColumn & ViewTableColumn)[],
     filters: [] as ViewTable['filters'],
 })
@@ -133,7 +133,12 @@ async function setView() {
 const saveView = debounce(async () => {
     if (!props.viewId || view.value.loading) return
 
-    const data = useNonReactive<ViewTable>(view.value)
+    const data = useNonReactive<ViewTable>({
+        id: view.value.id,
+        component: view.value.component,
+        columns: view.value.columns,
+        filters: view.value.filters,
+    })
 
     data.columns = data.columns
         .filter((c) => !c.id.startsWith('_'))
@@ -201,26 +206,6 @@ watch(() => search.value.input, debounce(setItems, 1000))
 const attrs = useAttrs()
 
 const bindings = computed(() => createBindings(attrs, ['table', 'head']))
-
-// update item
-
-async function updateItem(item: Item, field: string, value: any) {
-    let old = item[field]
-
-    item[field] = value
-
-    const payload = {
-        collectionId: props.collectionId,
-        itemId: item.id,
-        data: {
-            [field]: value,
-        },
-    }
-
-    await store.item.update(payload).catch(() => {
-        item[field] = old
-    })
-}
 
 // create column
 
@@ -346,6 +331,26 @@ async function onItemNew() {
         data: item,
     })
 }
+
+// update item
+
+const updateItem = debounce(async (item: Item, field: string, value: any) => {
+    let old = useNonReactive(item)
+
+    item[field] = value
+
+    const payload = {
+        collectionId: props.collectionId,
+        itemId: old.id,
+        data: {
+            [field]: value,
+        },
+    }
+
+    await store.item.update(payload).catch(() => {
+        item[field] = old
+    })
+}, 1000)
 
 // delete item
 async function onItemDelete(item: Item) {

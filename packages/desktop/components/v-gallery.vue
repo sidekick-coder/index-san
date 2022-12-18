@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { createBindings } from '@/composables/binding'
-import { computed, useAttrs } from 'vue'
+import { computed, useAttrs, ref } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
 
 const props = defineProps({
     items: {
@@ -21,6 +22,28 @@ const props = defineProps({
     },
 })
 
+// calculate break point
+const rootRef = ref<HTMLElement>()
+const breakpoint = ref<'sm' | 'md' | 'lg'>('md')
+
+useResizeObserver(rootRef, (entries) => {
+    const entry = entries[0]
+
+    const { width } = entry.contentRect
+
+    if (width < 640) {
+        breakpoint.value = 'sm'
+    }
+
+    if (width > 640) {
+        breakpoint.value = 'md'
+    }
+
+    if (width > 1024) {
+        breakpoint.value = 'lg'
+    }
+})
+
 // size
 const size = computed(() => {
     const sizes = {
@@ -39,22 +62,26 @@ const size = computed(() => {
         ...props.sizes,
     }
 
-    return sizes.md
+    return sizes[breakpoint.value]
 })
 
-// bidings
+// bindings
 const attrs = useAttrs()
-const bindigns = computed(() => createBindings(attrs, ['card']))
+
+const bindings = computed(() => createBindings(attrs, ['card']))
 </script>
 
 <template>
-    <div class="flex flex-wrap gap-4">
+    <div ref="rootRef" class="flex flex-wrap gap-4">
         <slot
             v-for="(item, index) in items"
             name="item"
             :size="size"
             :index="index"
             :columns="columns"
+            :color="color"
+            :bindings="bindings"
+            :item="item"
         >
             <v-card
                 :key="index"
@@ -62,7 +89,7 @@ const bindigns = computed(() => createBindings(attrs, ['card']))
                 :height="size.height"
                 class="overflow-auto"
                 :color="color"
-                v-bind="bindigns.card"
+                v-bind="bindings.card"
             >
                 <template v-for="(column, cIndex) in columns" :key="cIndex">
                     <is-list-item class="px-4 py-2">
@@ -81,5 +108,14 @@ const bindigns = computed(() => createBindings(attrs, ['card']))
         >
             {{ $t('noEntity', [$t('item', 2)]) }}
         </v-card>
+
+        <slot
+            name="append-body"
+            :size="size"
+            :columns="columns"
+            :items="items"
+            :color="color"
+            :bindings="bindings"
+        />
     </div>
 </template>

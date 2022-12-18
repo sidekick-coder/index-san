@@ -10,6 +10,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    clickable: {
+        type: Boolean,
+        default: false,
+    },
     color: {
         type: String,
         default: 'accent',
@@ -39,7 +43,7 @@ const sizes = {
 }
 
 const alignments = {
-    center: 'items-start',
+    center: 'items-center',
     start: 'items-start',
     end: 'items-end',
     baseline: 'items-baseline',
@@ -48,10 +52,10 @@ const alignments = {
 const classes = computed(() => {
     const result: string[] = ['w-full transition-all flex']
 
-    result.push(sizes[props.size])
+    result.push(sizes[props.size] || props.size)
     result.push(alignments[props.align])
 
-    if (attrs.onClick || props.to) {
+    if (attrs.onClick || props.to || props.clickable) {
         result.push('cursor-pointer', defaultColors[props.color])
     }
 

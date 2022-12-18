@@ -10,7 +10,7 @@ export interface DataResponse<T> {
 export async function useCase<
     K extends keyof App['cases'],
     T = ReturnType<App['cases'][K]['execute']>
->(name: K, args?: Parameters<App['cases'][K]['execute']>[0]): Promise<Awaited<T>> {
+>(name: K, args?: Parameters<App['cases'][K]['execute']>[0], silent = false): Promise<Awaited<T>> {
     const notify = useStore()
 
     args = args ? JSON.parse(JSON.stringify(args)) : {}
@@ -33,8 +33,10 @@ export async function useCase<
         message = i18n.global.t(error.i18nKey, error.i18nArgs)
     }
 
-    notify.error(message)
-    console.error(Object.assign(new Error(), error))
+    if (!silent) {
+        notify.error(message)
+        console.error(Object.assign(new Error(), error))
+    }
 
     return Promise.reject(error) as any
 }

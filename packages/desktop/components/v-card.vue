@@ -4,11 +4,11 @@ import { toCssMeasurement } from '@/composables/utils'
 
 const props = defineProps({
     width: {
-        type: String,
+        type: [String, Number],
         default: '100%',
     },
     height: {
-        type: String,
+        type: [String, Number],
         default: null,
     },
     color: {
