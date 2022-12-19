@@ -81,8 +81,6 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
         class="w-full border-lines border-separate border-spacing-0 relative"
         :class="[fixed ? 'table-fixed' : '', loading ? 'animate-pulse' : '']"
     >
-        <div v-if="loading" class="absolute top-0 left-0 h-[1px] w-full bg-accent animate-pulse" />
-
         <thead>
             <slot name="column" :columns="parsedColumns">
                 <v-tr :class="[headerStick ? 'sticky top-0' : '']" class="bg-b-primary">

@@ -1,4 +1,4 @@
-import View from './view'
+import ViewCommon from './view-common'
 
 export interface ViewGallerySize {
     width: number | string
@@ -11,7 +11,7 @@ export interface ViewGalleryThumbnail {
     fit?: string
 }
 
-export default class ViewGallery extends View {
+export default class ViewGallery extends ViewCommon {
     public readonly component = 'gallery'
 
     public thumbnail?: ViewGalleryThumbnail

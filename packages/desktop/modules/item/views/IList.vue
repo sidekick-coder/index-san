@@ -6,8 +6,7 @@ import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import CTable from '@/modules/collection/components/CTable.vue'
-import CGallery from '@/modules/collection/components/CGallery.vue'
+import CViewGroup from '@/modules/collection/components/CViewGroup.vue'
 
 const props = defineProps({
     collectionId: {
@@ -43,20 +42,13 @@ watch(() => props.collectionId, load, {
 </script>
 <template>
     <div v-if="collection" class="w-full h-full">
-        <!-- <c-table
+        <c-view-group
             :collection-id="collectionId"
             :title="meta.title"
             view-id="default"
             height="100%"
-            head:class="pl pr-7"
-        /> -->
-        <c-gallery
-            :collection-id="collectionId"
-            :title="meta.title"
-            view-id="grid:default"
-            height="100%"
-            head:class="px-10"
-            gallery:class="px-10 pt-5"
+            head:class="pl-10 pr-7"
+            gallery:class="px-10"
         />
     </div>
 </template>

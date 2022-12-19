@@ -1,0 +1,188 @@
+<script setup lang="ts">
+import ViewGroup from '@core/entities/view-group'
+
+import { createBindings } from '@/composables/binding'
+import { computed, useAttrs, watch, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from '../store'
+
+import CActions from './CActions.vue'
+import CGallery from './CGallery.vue'
+import CTable from './CTable.vue'
+import ViewTable from '@/../core/entities/view-table'
+import ViewGallery from '@/../core/entities/view-gallery'
+
+// Props & emit
+
+const props = defineProps({
+    collectionId: {
+        type: String,
+        required: true,
+    },
+    viewId: {
+        type: String,
+        default: null,
+    },
+    title: {
+        type: String,
+        default: null,
+    },
+})
+// bindings
+const attrs = useAttrs()
+
+const bindings = computed(() => createBindings(attrs, ['head', 'table', 'gallery']))
+
+// collection
+
+const router = useRouter()
+const store = useStore()
+
+const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
+
+async function setCollection() {
+    if (!collection.value) {
+        await store.setCollections()
+    }
+
+    if (!collection.value) {
+        router.push('404')
+    }
+}
+
+watch(() => props.collectionId, setCollection, {
+    immediate: true,
+})
+
+// view
+const innerViewId = ref('')
+
+const view = computed(() => store.view.getView<ViewGroup>(props.collectionId, innerViewId.value))
+
+async function setViews() {
+    innerViewId.value = props.viewId || ''
+
+    await store.view.setViews(props.collectionId)
+
+    if (!view.value) {
+        const view = new ViewGroup()
+
+        innerViewId.value = view.id
+
+        await store.view.createView(props.collectionId, view, !!props.viewId)
+    }
+}
+
+watch(props, setViews, {
+    immediate: true,
+    deep: true,
+})
+
+// selection
+
+const all = computed(() =>
+    store.view.getViews(props.collectionId).filter((v) => v.component !== 'group')
+)
+
+// add new view
+
+const options = {
+    table: () => new ViewTable(),
+    gallery: () => new ViewGallery(),
+}
+
+async function addView(type: keyof typeof options) {
+    const payload = options[type]()
+
+    payload.label = 'New'
+
+    await store.view.createView(props.collectionId, payload, !!props.viewId)
+}
+</script>
+<template>
+    <v-card v-if="view" v-bind="bindings.root">
+        <c-actions v-bind="bindings.head" :collection-id="collectionId" :view-id="view.selected">
+            <template #left>
+                <div class="flex -mb-[1px]">
+                    <v-btn
+                        v-for="v in all"
+                        :key="v.id"
+                        text
+                        size="text-sm px-4 h-[45px]"
+                        tile
+                        color="border-b border-transparent hover:bg-b-secondary/50"
+                        :class="view.selected === v.id ? 'border-t-primary' : ''"
+                        @click="view.selected = v.id"
+                    >
+                        {{ v.label || v.id }}
+                    </v-btn>
+
+                    <is-menu offset-y close-on-content-click>
+                        <template #activator="{ on }">
+                            <v-btn
+                                text
+                                size="text-sm px-4 h-[45px]"
+                                tile
+                                color="border-b border-transparent hover:bg-b-secondary/50"
+                                v-bind="on"
+                            >
+                                <is-icon name="plus" />
+                            </v-btn>
+                        </template>
+
+                        <v-card color="b-secondary">
+                            <is-list-item @click="addView('table')">
+                                {{ $t('addEntity', [$t('table')]) }}
+                            </is-list-item>
+                            <is-list-item @click="addView('gallery')">
+                                {{ $t('addEntity', [$t('gallery')]) }}
+                            </is-list-item>
+                        </v-card>
+                    </is-menu>
+                </div>
+            </template>
+        </c-actions>
+
+        <div class="overflow-auto w-full h-[calc(100%_-_45px)]">
+            <transition-group name="c-view-group">
+                <template v-for="v in all" :key="v.id">
+                    <c-gallery
+                        v-if="v.component === 'gallery' && v.id === view.selected"
+                        :collection-id="collectionId"
+                        :view-id="v.id"
+                        v-bind="bindings.gallery"
+                        hide-actions
+                    />
+
+                    <c-table
+                        v-if="v.component === 'table' && v.id === view.selected"
+                        :collection-id="collectionId"
+                        :view-id="v.id"
+                        v-bind="bindings.table"
+                        height="100%"
+                        hide-actions
+                    />
+                </template>
+            </transition-group>
+        </div>
+
+        <!-- <c-gallery :collection-id="collectionId" view-id="grid:default" /> -->
+    </v-card>
+</template>
+
+<style>
+.c-view-group-move,
+.c-view-group-enter-active,
+.c-view-group-leave-active {
+    transition: all 0.3s ease;
+}
+
+.c-view-group-enter-from,
+.c-view-group-leave-to {
+    transform: translateX(10%);
+    opacity: 0;
+}
+.c-view-group-leave-active {
+    position: absolute;
+}
+</style>

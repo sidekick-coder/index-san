@@ -1,3 +1,8 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
 import { createBindings } from '@/composables/binding'
 import { computed, useAttrs, ref } from 'vue'
@@ -94,11 +99,10 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
         ref="rootRef"
         class="flex flex-wrap gap-4 relative"
         :class="loading ? 'animate-pulse' : ''"
+        v-bind="bindings.root"
     >
-        <div v-if="loading" class="absolute top-0 left-0 h-[1px] w-full bg-accent animate-pulse" />
-
         <v-card
-            v-else-if="!items.length"
+            v-if="!items.length"
             width="100%"
             height="100"
             :color="color"

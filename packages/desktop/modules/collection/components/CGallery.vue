@@ -26,6 +26,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    hideActions: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 // bindings
@@ -51,10 +55,28 @@ watch(() => props.collectionId, setCollection, {
 })
 
 // view
+const innerViewId = ref('')
 
-const view = computed(
-    () => store.view.getRegister<ViewGallery>(props.collectionId, props.viewId).view
-)
+const view = computed(() => store.view.getView<ViewGallery>(props.collectionId, innerViewId.value))
+
+async function setViews() {
+    innerViewId.value = props.viewId || ''
+
+    await store.view.setViews(props.collectionId)
+
+    if (!view.value) {
+        const view = new ViewGallery()
+
+        innerViewId.value = view.id
+
+        await store.view.createView(props.collectionId, view, !!props.viewId)
+    }
+}
+
+watch(props, setViews, {
+    immediate: true,
+    deep: true,
+})
 
 // columns
 
@@ -128,12 +150,10 @@ const items = computed(() => store.item.getRegister(props.collectionId).items)
 const loading = computed(() => store.item.getRegister(props.collectionId).loading)
 
 async function load() {
-    await store.item.setRegister(props.collectionId, {
-        filters: view.value.filters,
-    })
+    await store.item.setRegister(props.collectionId)
 }
 
-watch(() => view.value?.filters, debounce(load, 500), { deep: true })
+watch(() => view.value.filters, debounce(load, 500), { deep: true, immediate: true })
 
 // update item with debounce
 
@@ -141,8 +161,13 @@ const updateItem = debounce(store.item.update, 500)
 </script>
 
 <template>
-    <v-card width="100%">
-        <c-actions v-bind="bindings.head" :collection-id="props.collectionId" :view-id="viewId" />
+    <v-card v-if="view" width="100%">
+        <c-actions
+            v-if="!hideActions"
+            v-bind="bindings.head"
+            :collection-id="props.collectionId"
+            :view-id="viewId"
+        />
 
         <!-- <v-card-head v-bind="bindings.head">
             <v-card-title v-if="title" class="grow">
@@ -240,7 +265,10 @@ const updateItem = debounce(store.item.update, 500)
             <c-drawer-filter v-model="view.filters" :columns="collection?.columns" />
         </v-card-head> -->
 
-        <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
+        <div
+            class="overflow-auto w-full"
+            :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
+        >
             <v-gallery
                 :items="items"
                 :columns="columns"
@@ -248,6 +276,7 @@ const updateItem = debounce(store.item.update, 500)
                 :loading="loading"
                 :sizes="sizes"
                 item-key="id"
+                class="pt-4"
             >
                 <template #item="data">
                     <v-card

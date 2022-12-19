@@ -5,15 +5,14 @@ import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useStore as useEntry } from '@/modules/entry/store'
 import { useStore as useCollection } from '@/modules/collection/store'
 
-import ListItemsDTO from '@/../core/use-cases/list-items/list-items.dto'
-import { useCase } from '@/composables/use-case'
-
+import ListItemsDTO from '@core/use-cases/list-items/list-items.dto'
 import Item from '@core/entities/item'
-import Collection from '@/../core/entities/collection'
-import { useNonReactive, waitFor } from '@/composables/utils'
-import { ViewFilter } from '@/../core/entities/view'
+import { ViewFilter } from '@core/entities/view-common'
+import { ColumnType } from '@core/entities/column'
+
+import { useCase } from '@/composables/use-case'
+import { useNonReactive } from '@/composables/utils'
 import { filter } from '../collection/composables/filter'
-import { ColumnType } from '@/../core/entities/column'
 
 interface Register {
     collectionId: string

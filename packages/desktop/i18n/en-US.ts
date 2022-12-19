@@ -72,6 +72,8 @@ export default {
     position: 'Position',
     fit: 'Fit',
     loadingEntity: 'Loading {0}',
+    table: 'Table',
+    gallery: 'Gallery',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

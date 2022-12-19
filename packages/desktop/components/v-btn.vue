@@ -89,7 +89,7 @@ const classes = computed(() => {
     }
 
     result.push(sizes[props.size] || props.size)
-    result.push(colors[props.color] || props.c)
+    result.push(colors[props.color] || props.color)
 
     return result
 })

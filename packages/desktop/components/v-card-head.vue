@@ -8,7 +8,7 @@ defineProps({
 </script>
 <template>
     <div
-        class="w-full py-2 flex items-center border-b border-lines"
+        class="w-full flex items-center border-b border-lines min-h-[45px]"
         :class="[padding ? 'px-4' : '']"
     >
         <slot />
