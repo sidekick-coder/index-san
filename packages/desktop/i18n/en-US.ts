@@ -12,6 +12,7 @@ export default {
     file: 'File | Files',
     folder: 'Folder | Folders',
     filter: 'Filter | Filters',
+    view: 'View | Views',
     listEntity: '{0} list',
     addEntity: 'Add {0}',
     editEntity: 'Edit {0}',
@@ -75,6 +76,7 @@ export default {
     table: 'Table',
     gallery: 'Gallery',
     errors: {
+        unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',
     },

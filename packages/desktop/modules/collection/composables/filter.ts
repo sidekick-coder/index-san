@@ -1,6 +1,8 @@
 import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
 import Item from '@core/entities/item'
-import { ViewFilter } from '@core/entities/view'
+
+import { ViewFilter } from '@core/entities/view-common'
+import Column, { ColumnType } from '@core/entities/column'
 
 export const operations = {
     text: {
@@ -104,4 +106,23 @@ export function filter(item: Item, filter: ViewFilter) {
     }
 
     return filterText(value, filter)
+}
+
+// create a payload base on view filters
+export function createPayload(filters: ViewFilter[] = [], columns: Column[] = []) {
+    const payload = {}
+
+    const safeList = [ColumnType.text, ColumnType.select, ColumnType.number, ColumnType.relation]
+
+    filters.forEach((f) => {
+        const column = columns.find((c) => c.id === f.columnId)
+
+        if (!column || !column.type || !column.field) return
+
+        if (safeList.includes(column.type)) {
+            payload[column.field] = f.value
+        }
+    })
+
+    return payload
 }

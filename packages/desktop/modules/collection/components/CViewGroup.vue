@@ -69,7 +69,11 @@ async function setViews() {
 
         innerViewId.value = view.id
 
-        await store.view.createView(props.collectionId, view, !!props.viewId)
+        await store.view.create(props.collectionId, view, !!props.viewId)
+    }
+
+    if (!view.value.selected && all.value[0]) {
+        view.value.selected = all.value[0].id
     }
 }
 
@@ -96,8 +100,14 @@ async function addView(type: keyof typeof options) {
 
     payload.label = 'New'
 
-    await store.view.createView(props.collectionId, payload, !!props.viewId)
+    await store.view.create(props.collectionId, payload, !!props.viewId)
+
+    view.value.selected = payload.id
 }
+
+// items
+
+const register = computed(() => store.item.getStoreItem(props.collectionId))
 </script>
 <template>
     <v-card v-if="view" v-bind="bindings.root">
@@ -111,7 +121,9 @@ async function addView(type: keyof typeof options) {
                         size="text-sm px-4 h-[45px]"
                         tile
                         color="border-b border-transparent hover:bg-b-secondary/50"
-                        :class="view.selected === v.id ? 'border-t-primary' : ''"
+                        :class="
+                            view.selected === v.id && !register?.loading ? 'border-t-primary' : ''
+                        "
                         @click="view.selected = v.id"
                     >
                         {{ v.label || v.id }}
@@ -126,6 +138,12 @@ async function addView(type: keyof typeof options) {
                                 color="border-b border-transparent hover:bg-b-secondary/50"
                                 v-bind="on"
                             >
+                                <template v-if="!all.length">
+                                    <span class="mr-4">
+                                        {{ $t('addEntity', [$t('view')]) }}
+                                    </span>
+                                </template>
+
                                 <is-icon name="plus" />
                             </v-btn>
                         </template>
@@ -164,9 +182,17 @@ async function addView(type: keyof typeof options) {
                     />
                 </template>
             </transition-group>
-        </div>
 
-        <!-- <c-gallery :collection-id="collectionId" view-id="grid:default" /> -->
+            <div v-if="!all.length" class="h-full w-full flex items-center justify-center">
+                <div class="text-center mb-2 text-t-secondary">
+                    <is-icon name="box-open" class="text-2xl" />
+
+                    <div class="block">
+                        {{ $t('noEntity', [$t('view', 2)]) }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </v-card>
 </template>
 

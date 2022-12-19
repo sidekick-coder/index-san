@@ -213,5 +213,9 @@ function upload() {
         </div>
     </template>
 
-    <is-input v-else-if="typeof model === 'string'" v-model="model" flat />
+    <is-input v-else-if="column.type === 'text'" v-model="model" flat />
+
+    <div v-else class="text-danger px-4 py-2">
+        {{ $t('errors.unknown') }}
+    </div>
 </template>

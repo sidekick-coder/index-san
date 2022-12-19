@@ -15,6 +15,8 @@ import CActions from './CActions.vue'
 
 import IValue from '@/modules/item/components/IValue.vue'
 import EImg from '@/modules/entry/components/EImg.vue'
+import { createPayload } from '../composables/filter'
+import Item from '@/../core/entities/item'
 
 // Props & Emits
 const props = defineProps({
@@ -69,7 +71,7 @@ async function setViews() {
 
         innerViewId.value = view.id
 
-        await store.view.createView(props.collectionId, view, !!props.viewId)
+        await store.view.create(props.collectionId, view, !!props.viewId)
     }
 }
 
@@ -145,19 +147,35 @@ const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).
 
 // items
 
-const items = computed(() => store.item.getRegister(props.collectionId).items)
+const items = computed(() => store.item.getItems(props.collectionId))
 
-const loading = computed(() => store.item.getRegister(props.collectionId).loading)
+const register = computed(() => store.item.getStoreItem(props.collectionId))
 
 async function load() {
-    await store.item.setRegister(props.collectionId)
+    await store.item.setItems(props.collectionId)
 }
 
 watch(() => view.value.filters, debounce(load, 500), { deep: true, immediate: true })
 
 // update item with debounce
 
-const updateItem = debounce(store.item.update, 500)
+const updateItem = debounce((item: Item, field: string, value: any) => {
+    const old = item[field]
+
+    item[field] = value
+
+    store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
+        item[field] = old
+    })
+}, 500)
+
+// create item
+
+async function create() {
+    const item = new Item(createPayload(view.value.filters, collection.value?.columns))
+
+    await store.item.create(props.collectionId, item)
+}
 </script>
 
 <template>
@@ -273,10 +291,10 @@ const updateItem = debounce(store.item.update, 500)
                 :items="items"
                 :columns="columns"
                 v-bind="bindings.gallery"
-                :loading="loading"
+                :loading="register?.loading"
                 :sizes="sizes"
                 item-key="id"
-                class="pt-4"
+                class="py-4"
             >
                 <template #item="data">
                     <v-card
@@ -307,9 +325,7 @@ const updateItem = debounce(store.item.update, 500)
                                     :column="c"
                                     :item="data.item"
                                     class="w-full"
-                                    @update:model-value="
-                                        updateItem(collectionId, data.item, c.field, $event)
-                                    "
+                                    @update:model-value="updateItem(data.item, c.field, $event)"
                                 />
                             </is-list-item>
                         </template>
@@ -322,7 +338,7 @@ const updateItem = debounce(store.item.update, 500)
                         :height="data.size.height"
                         class="rounded border border-lines flex items-center justify-center cursor-pointer"
                         v-bind="data.bindings.card"
-                        @click="store.item.create"
+                        @click="create"
                     >
                         <is-icon class="text-2xl text-lines" name="plus" />
                     </v-card>

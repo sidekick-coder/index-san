@@ -19,6 +19,8 @@ import CActions from './CActions.vue'
 
 import IValue from '@/modules/item/components/IValue.vue'
 import ViewTable from '@/../core/entities/view-table'
+import Item from '@/../core/entities/item'
+import { createPayload } from '../composables/filter'
 
 const props = defineProps({
     width: {
@@ -88,7 +90,7 @@ async function setViews() {
 
         innerViewId.value = view.id
 
-        await store.view.createView(props.collectionId, view, !!props.viewId)
+        await store.view.create(props.collectionId, view, !!props.viewId)
     }
 }
 
@@ -148,18 +150,35 @@ function resizeColumn(id: string, width: number) {
 
 // items
 
-const items = computed(() => store.item.getRegister(props.collectionId).items)
-const loading = computed(() => store.item.getRegister(props.collectionId).loading)
+const items = computed(() => store.item.getItems(props.collectionId))
+
+const register = computed(() => store.item.getStoreItem(props.collectionId))
 
 async function load() {
-    await store.item.setRegister(props.collectionId)
+    await store.item.setItems(props.collectionId)
 }
 
 watch(() => view.value.filters, debounce(load, 500), { deep: true, immediate: true })
 
 // update item with debounce
 
-const updateItem = debounce(store.item.update, 500)
+const updateItem = debounce((item: Item, field: string, value: any) => {
+    const old = item[field]
+
+    item[field] = value
+
+    store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
+        item[field] = old
+    })
+}, 500)
+
+// create item
+
+async function create() {
+    const item = new Item(createPayload(view.value.filters, collection.value?.columns))
+
+    await store.item.create(props.collectionId, item)
+}
 </script>
 
 <template>
@@ -175,7 +194,12 @@ const updateItem = debounce(store.item.update, 500)
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
-            <v-table :items="items" :columns="columns" v-bind="bindings.table" :loading="loading">
+            <v-table
+                :items="items"
+                :columns="columns"
+                v-bind="bindings.table"
+                :loading="register?.loading"
+            >
                 <template #column>
                     <Draggable v-model="columns" handle=".drag" item-key="id" tag="v-tr">
                         <template #item="{ element: c }">
@@ -234,7 +258,7 @@ const updateItem = debounce(store.item.update, 500)
                             >
                                 <template #activator="{ on }">
                                     <v-btn
-                                        class="w-full h-[43px] opacity-0 group-hover/item:opacity-100"
+                                        class="w-full h-[40px] opacity-0 group-hover/item:opacity-100"
                                         size="none"
                                         color="b-secondary"
                                         tile
@@ -249,7 +273,7 @@ const updateItem = debounce(store.item.update, 500)
                                         size="xs"
                                         color="danger"
                                         dark
-                                        @click="store.item.destroy(collectionId, data.item)"
+                                        @click="store.item.destroy(collectionId, data.item.id)"
                                     >
                                         <is-icon name="trash" class="mr-2" />
                                         {{ $t('deleteEntity', [$t('item')]) }}
@@ -264,19 +288,14 @@ const updateItem = debounce(store.item.update, 500)
                                 :model-value="data.item[c.field as string]"
                                 :column="(c as Column)"
                                 :item="data.item"
-                                @update:model-value="
-                                    updateItem(collectionId, data.item, c.field!, $event)
-                                "
+                                @update:model-value="updateItem(data.item, c.field!, $event)"
                             />
                         </v-td>
                     </v-tr>
                 </template>
 
                 <template #append>
-                    <v-tr
-                        class="cursor-pointer hover:bg-b-secondary"
-                        @click="store.item.create(collectionId)"
-                    >
+                    <v-tr class="cursor-pointer hover:bg-b-secondary" @click="create">
                         <v-td class="!border-x-0"></v-td>
 
                         <v-td
