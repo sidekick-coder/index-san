@@ -4,7 +4,11 @@ import hljs from 'highlight.js'
 
 import { componentPlugin } from '@mdit-vue/plugin-component'
 
-export function parse(source: string) {
+interface Options {
+    basePath?: string
+}
+
+export function parse(source: string, options?: Options) {
     const md = MarkdownIt({
         html: true,
         xhtmlOut: true,
@@ -22,20 +26,23 @@ export function parse(source: string) {
         },
     })
 
+    md.renderer.rules.image = function (tokens, idx, tokenOptions, env, slf) {
+        const token = tokens[idx]
+
+        token.tag = 'e-img'
+
+        if (options?.basePath) {
+            token.attrPush(['base-path', options.basePath])
+        }
+
+        return slf.renderToken(tokens, idx, tokenOptions)
+    }
+
     md.use(componentPlugin)
 
     return md.render(source)
 }
 
-export function validate(source: string) {
-    const template = parse(source)
-
-    console.log(template)
-
-    return false
-}
-
 export const markdown = {
     parse,
-    validate,
 }

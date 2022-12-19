@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { markdown } from '../composables/markdown'
-import { onErrorCaptured, defineComponent, ref, watch } from 'vue'
+import { onErrorCaptured, defineComponent, ref, watch, defineAsyncComponent } from 'vue'
 
-import SChart from '@/modules/script/components/SChart.vue'
 import { useVModel } from '@vueuse/core'
 import { useNonReactive } from '@/composables/utils'
 
@@ -15,6 +14,10 @@ const props = defineProps({
     },
     state: {
         type: Object,
+        default: null,
+    },
+    basePath: {
+        type: String,
         default: null,
     },
 })
@@ -35,10 +38,17 @@ watch(
 
 // render
 
+const components = {
+    SChart: defineAsyncComponent(() => import('@/modules/script/components/SChart.vue')),
+    EImg: defineAsyncComponent(() => import('@/modules/entry/components/EImg.vue')),
+}
+
 const view = defineComponent({
-    components: { SChart },
+    components,
     setup: () => ({ state: innerState }),
-    template: markdown.parse(props.content),
+    template: markdown.parse(props.content, {
+        basePath: props.basePath,
+    }),
 })
 
 // catch errors

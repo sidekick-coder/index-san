@@ -131,6 +131,7 @@ const state = useState(key, {}, { localStorage: true })
                         v-model:state="state"
                         class="w-full pb-32"
                         :content="content"
+                        :base-path="DirectoryEntry.dirname(path)"
                     />
                 </div>
             </div>

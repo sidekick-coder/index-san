@@ -4,8 +4,13 @@ import { ref, computed, watch } from 'vue'
 
 import { useStore } from '../store'
 import { toCssMeasurement } from '@/composables/utils'
+import DirectoryEntry from '@/../core/entities/directory-entry'
 
 const props = defineProps({
+    basePath: {
+        type: String,
+        default: '/',
+    },
     src: {
         type: String,
         default: null,
@@ -38,10 +43,24 @@ async function setSrc() {
 
     if (!props.src) return
 
+    let path = props.src
+
+    if (props.src.startsWith('./')) {
+        path = props.src.replace('./', '')
+    }
+
+    if (props.src.startsWith('/')) {
+        path = props.src.replace('/', '')
+    }
+
+    if (props.src.startsWith('./')) {
+        path = DirectoryEntry.normalize(props.basePath, path)
+    }
+
     loading.value = true
 
     await store
-        .read({ path: props.src }, true)
+        .read({ path }, true)
         .then((buffer) => {
             const base64 = window.btoa(
                 buffer.reduce((data, b) => data + String.fromCharCode(b), '')
@@ -119,4 +138,10 @@ const classes = computed(() => {
         :class="classes"
         :style="style"
     />
+
+    <v-card v-else :height="height || 100" :width="width" color="b-secondary">
+        <v-card-content class="items-center justify-center h-full">
+            <is-icon name="image" class="text-2xl" />
+        </v-card-content>
+    </v-card>
 </template>
