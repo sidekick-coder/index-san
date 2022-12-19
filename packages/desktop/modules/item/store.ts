@@ -20,7 +20,7 @@ export const useStore = defineStore('item', () => {
 
     const items = ref<StoreItems[]>([])
 
-    async function setItems(collectionId: string) {
+    async function setItems(collectionId: string, forceUpdate = false) {
         let storeItem = items.value.find((i) => i.collectionId === collectionId)
 
         if (!storeItem) {
@@ -32,6 +32,8 @@ export const useStore = defineStore('item', () => {
 
             items.value.push(storeItem)
         }
+
+        if (!forceUpdate && storeItem.items.length) return
 
         storeItem.loading = true
 

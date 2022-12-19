@@ -183,7 +183,7 @@ onMounted(() => {
                 :placeholder="placeholder"
                 :readonly="readonly"
                 v-bind="bindings.input"
-                class="bg-transparent outline-none grow max-w-full"
+                class="bg-transparent outline-none grow max-w-full placeholder:text-t-secondary/50"
                 @focus="onFocus"
                 @blur="onBlur"
             />

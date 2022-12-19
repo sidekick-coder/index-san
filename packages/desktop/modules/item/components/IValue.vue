@@ -148,13 +148,21 @@ function upload() {
 </script>
 
 <template>
-    <is-input v-if="column.type === 'number'" v-model="model" flat type="number" class="w-full" />
+    <is-input
+        v-if="column.type === 'number'"
+        v-model="model"
+        :placeholder="column.label"
+        flat
+        type="number"
+        class="w-full"
+    />
 
     <is-select
         v-else-if="column.type === 'select'"
         v-model="model"
         :options="select.options"
         flat
+        :placeholder="column.label"
     />
 
     <v-dialog v-else-if="column.type === 'script'">
@@ -165,6 +173,7 @@ function upload() {
                 readonly
                 flat
                 input:class="cursor-pointer w-full"
+                :placeholder="column.label"
             />
         </template>
 
@@ -182,6 +191,7 @@ function upload() {
         v-model="model"
         :label-key="column.displayField"
         :options="relation.items"
+        :placeholder="column.label"
         return-object
         value-key="id"
         flat
@@ -213,7 +223,7 @@ function upload() {
         </div>
     </template>
 
-    <is-input v-else-if="column.type === 'text'" v-model="model" flat />
+    <is-input v-else-if="column.type === 'text'" v-model="model" flat :placeholder="column.label" />
 
     <div v-else class="text-danger px-4 py-2">
         {{ $t('errors.unknown') }}
