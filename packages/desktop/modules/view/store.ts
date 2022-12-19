@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
+import { ref, watch } from 'vue'
+import debounce from 'lodash/debounce'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import ShowViewsDTO from '@core/use-cases/show-views/show-views.dto'
 
 import { useCase } from '@/composables/use-case'
-import { waitFor } from '@/composables/utils'
+import { useNonReactive } from '@/composables/utils'
 import View from '@/../core/entities/view'
 import UpdateViewsDTO from '@/../core/use-cases/update-views/update-views.dto'
 
@@ -14,16 +16,69 @@ interface UpdatePayload {
     data: Partial<View>
 }
 
+interface Register<T = View> {
+    collectionId: string
+    loaded: boolean
+    viewId: string
+    view: T
+}
+
 export const useStore = defineStore('view', () => {
     const loaded = new Map<string, View[]>()
     const workspace = useWorkspace()
 
-    let loading = false
+    const registers = ref<Register[]>([])
 
-    async function list(
-        payload: Partial<ShowViewsDTO.Input>,
-        ignoreLoaded = false
-    ): Promise<View[]> {
+    function getRegister<T = View>(collectionId: string, viewId: string) {
+        let result = registers.value
+            .filter((r) => r.collectionId === collectionId)
+            .find((r) => r.viewId === viewId)
+
+        if (result) return result as Register<T>
+
+        result = {
+            collectionId,
+            loaded: false,
+            viewId,
+            view: new View({}, viewId),
+        }
+
+        registers.value.push(result)
+
+        return result as Register<T>
+    }
+
+    async function setRegister(collectionId: string, viewId: string) {
+        const data = getRegister(collectionId, viewId)
+
+        if (data.loaded) return
+
+        await show(collectionId, viewId)
+            .then((view) => (view ? (data.view = view) : true))
+            .finally(() => {
+                registers.value = registers.value.slice()
+            })
+
+        watch(
+            () => data.view,
+            debounce(() => saveRegister(collectionId, viewId), 500),
+            {
+                deep: true,
+            }
+        )
+    }
+
+    async function saveRegister(collectionId: string, viewId: string) {
+        const data = getRegister(collectionId, viewId)
+
+        const old = useNonReactive(data.view)
+
+        await updateOrCreate({ collectionId, viewId, data: data.view }).catch(() => {
+            data.view = old
+        })
+    }
+
+    async function list(payload: Partial<ShowViewsDTO.Input>): Promise<View[]> {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -34,23 +89,12 @@ export const useStore = defineStore('view', () => {
             return []
         }
 
-        if (loaded.has(collectionId) && !ignoreLoaded) {
-            return loaded.get(collectionId) as View[]
-        }
-
-        if (loading) {
-            await waitFor(() => !loading)
-        }
-
-        loading = true
-
         return useCase('show-views', { workspaceId, collectionId })
             .then((r) => {
                 loaded.set(collectionId, r.data)
                 return r.data
             })
             .catch(() => [])
-            .finally(() => (loading = false))
     }
 
     async function save(payload: Partial<UpdateViewsDTO.Input>) {
@@ -110,6 +154,10 @@ export const useStore = defineStore('view', () => {
 
     return {
         loaded,
+
+        getRegister,
+        setRegister,
+        saveRegister,
 
         list,
         show,

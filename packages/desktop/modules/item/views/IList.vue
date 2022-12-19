@@ -44,12 +44,11 @@ watch(() => props.collectionId, load, {
 <template>
     <div v-if="collection" class="w-full h-full">
         <!-- <c-table
-            
             :collection-id="collectionId"
             :title="meta.title"
             view-id="default"
             height="100%"
-            head:class="px-10"
+            head:class="pl pr-7"
         /> -->
         <c-gallery
             :collection-id="collectionId"

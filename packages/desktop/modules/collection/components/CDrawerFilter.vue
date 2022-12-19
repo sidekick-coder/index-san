@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { CollectionColumn } from '@/../core/entities/collection'
+import Column from '@core/entities/column'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { Filter } from '../composables/filter'
+import { ViewFilter } from '@core/entities/view'
 
 import CFilter from './CFilter.vue'
 
 const props = defineProps({
     modelValue: {
-        type: Array as () => Filter[],
+        type: Array as () => ViewFilter[],
         default: () => [],
     },
     columns: {
-        type: Array as () => CollectionColumn[],
+        type: Array as () => Column[],
         default: () => [],
     },
 })
@@ -28,7 +28,7 @@ function clear() {
     filters.value = []
 }
 
-function add(column: CollectionColumn) {
+function add(column: Column) {
     filters.value.push({
         columnId: column.id,
         field: column.field,

@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-import { CollectionColumn } from '@/../core/entities/collection'
+import { computed, ref } from 'vue'
 import { useVModel } from '@vueuse/core'
-import { ViewGalleryColumn } from '@/../core/entities/view'
+
+import View, { ViewColumn } from '@/../core/entities/view'
 
 import VDraggable from 'vuedraggable'
+import { useStore } from '../store'
 
 const props = defineProps({
     modelValue: {
-        type: Array as () => (ViewGalleryColumn & CollectionColumn)[],
+        type: Array as () => View['columns'],
         default: () => [],
+    },
+    collectionId: {
+        type: String,
+        required: true,
     },
 })
 
@@ -30,6 +34,17 @@ function hideAll() {
     columns.value.forEach((c) => {
         c.hide = true
     })
+}
+
+// get label
+const store = useStore()
+
+const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
+
+function getLabel(viewColumn: ViewColumn) {
+    const column = collection.value?.columns.find((c) => c.id === viewColumn.id)
+
+    return column?.label || viewColumn.id
 }
 </script>
 
@@ -75,7 +90,7 @@ function hideAll() {
                     </v-btn>
 
                     <div>
-                        {{ column.label }}
+                        {{ getLabel(column) }}
                     </div>
                 </is-list-item>
             </template>

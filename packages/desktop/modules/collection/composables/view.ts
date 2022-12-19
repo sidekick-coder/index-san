@@ -28,7 +28,7 @@ export function useView<T extends View>(defaultView: T, serialize = (d: T) => d)
 
         await store.view
             .show(collection.id, viewId)
-            .then((response: View) => view.value.merge(response || {}))
+            // .then((response: View) => view.value.merge(response || {}))
             .finally(() => (loading.value = false))
     }
 

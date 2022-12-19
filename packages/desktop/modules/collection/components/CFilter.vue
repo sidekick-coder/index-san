@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { CollectionColumn } from '@/../core/entities/collection'
+import Column from '@core/entities/column'
 import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { Filter } from '../composables/filter'
+import { ViewFilter } from '@core/entities/view'
 
 import CFilterNumber from './CFilterNumber.vue'
 import CFilterRelation from './CFilterRelation.vue'
@@ -14,11 +14,11 @@ import CFilterText from './CFilterText.vue'
 
 const props = defineProps({
     modelValue: {
-        type: Object as () => Filter,
+        type: Object as () => ViewFilter,
         default: null,
     },
     columns: {
-        type: Array as () => CollectionColumn[],
+        type: Array as () => Column[],
         default: () => [],
     },
 })
@@ -29,12 +29,13 @@ const emit = defineEmits(['update:modelValue', 'destroy'])
 const model = useVModel(props, 'modelValue', emit)
 
 // set component
-const components: Record<CollectionColumn['type'], any> = {
+const components: Record<Column['type'], any> = {
     text: CFilterText,
     number: CFilterNumber,
     relation: CFilterRelation,
     select: CFilterSelect,
     script: CFilterScript,
+    entry: CFilterText,
 }
 
 const column = computed(() => props.columns.find((c) => c.id === model.value.columnId))

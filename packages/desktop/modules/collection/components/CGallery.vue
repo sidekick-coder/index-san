@@ -11,11 +11,10 @@ import { useNonReactive } from '@/composables/utils'
 import { useStore } from '../store'
 
 // components
-import CDrawerFilter from './CDrawerFilter.vue'
-import CDrawerHideColumns from './CDrawerHideColumns.vue'
+import CActions from './CActions.vue'
+
 import IValue from '@/modules/item/components/IValue.vue'
 import EImg from '@/modules/entry/components/EImg.vue'
-import { useView } from '../composables/view'
 
 // Props & Emits
 const props = defineProps({
@@ -24,10 +23,6 @@ const props = defineProps({
         required: true,
     },
     viewId: {
-        type: String,
-        default: null,
-    },
-    title: {
         type: String,
         default: null,
     },
@@ -57,21 +52,36 @@ watch(() => props.collectionId, setCollection, {
 
 // view
 
-const { view, setView } = useView(new ViewGallery(), (payload) => {
-    const data = useNonReactive(payload)
+const view = computed(
+    () => store.view.getRegister<ViewGallery>(props.collectionId, props.viewId).view
+)
 
-    data.columns = data.columns
-        .filter((c) => !c.id.startsWith('_'))
-        .map((c) => ({
-            id: c.id,
-            hide: c.hide,
-        }))
+// columns
 
-    return data
-})
+const columns = computed({
+    get() {
+        const columns: any[] = useNonReactive(collection.value?.columns || [])
 
-watch(collection, () => setView(collection.value!, props.viewId), {
-    deep: true,
+        useNonReactive(view.value.columns).forEach((c) => {
+            const cColumn = columns.find((cv) => cv.id === c.id)
+
+            Object.assign(cColumn || {}, c)
+        })
+
+        columns.sort((a, b) => {
+            const aIndex = view.value.columns.findIndex((s) => s.id === a.id)
+            const bIndex = view.value.columns.findIndex((s) => s.id === b.id)
+
+            if (aIndex === -1 || bIndex === -1) return 0
+
+            return aIndex - bIndex
+        })
+
+        return columns
+    },
+    set(value) {
+        view.value.columns = value.filter((c) => !c.id.startsWith('_'))
+    },
 })
 
 // count visible columns
@@ -80,32 +90,28 @@ const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).
 
 // items
 
-const search = ref({
-    input: '',
-    show: false,
-    onInput: debounce((v) => (search.value.input = v), 100),
-})
+const items = computed(() => store.item.getRegister(props.collectionId).items)
+
+const loading = computed(() => store.item.getRegister(props.collectionId).loading)
 
 async function load() {
-    store.item.current.collection = collection.value || null
-
-    await store.item.setItems(view.value.filters, search.value.input)
+    await store.item.setRegister(props.collectionId, {
+        filters: view.value.filters,
+    })
 }
 
-watch(collection, load)
-
-watch(() => view.value.filters, debounce(load, 500), { deep: true })
-
-watch(() => search.value.input, debounce(load, 500))
+watch(() => view.value?.filters, debounce(load, 500), { deep: true })
 
 // update item with debounce
 
-const updateItem = debounce(store.item.update, 1000)
+const updateItem = debounce(store.item.update, 500)
 </script>
 
 <template>
     <v-card width="100%">
-        <v-card-head v-bind="bindings.head">
+        <c-actions v-bind="bindings.head" :collection-id="props.collectionId" :view-id="viewId" />
+
+        <!-- <v-card-head v-bind="bindings.head">
             <v-card-title v-if="title" class="grow">
                 {{ title }}
             </v-card-title>
@@ -199,14 +205,14 @@ const updateItem = debounce(store.item.update, 1000)
 
             <c-drawer-hide-columns v-model="view.columns" />
             <c-drawer-filter v-model="view.filters" :columns="collection?.columns" />
-        </v-card-head>
+        </v-card-head> -->
 
         <div class="overflow-auto w-full h-[calc(100%_-_53px)]">
             <v-gallery
-                :items="store.item.current.items"
-                :columns="view.columns"
+                :items="items"
+                :columns="columns"
                 v-bind="bindings.gallery"
-                :loading="store.item.current.loading"
+                :loading="loading"
                 :sizes="view.sizes"
             >
                 <template #item="data">
@@ -234,7 +240,9 @@ const updateItem = debounce(store.item.update, 1000)
                                     :column="c"
                                     :item="data.item"
                                     class="w-full"
-                                    @update:model-value="updateItem(data.item, c.field, $event)"
+                                    @update:model-value="
+                                        updateItem(collectionId, data.item, c.field, $event)
+                                    "
                                 />
                             </is-list-item>
                         </template>

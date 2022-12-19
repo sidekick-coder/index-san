@@ -1,8 +1,4 @@
-import View, { ViewColumn } from './view'
-
-export interface ViewGalleryColumn extends ViewColumn {
-    hide: boolean
-}
+import View from './view'
 
 export interface ViewGallerySize {
     width: number | string
@@ -23,8 +19,6 @@ export interface ViewGalleryThumbnail {
 
 export default class ViewGallery extends View {
     public readonly component = 'gallery'
-
-    public columns: ViewGalleryColumn[] = []
 
     public thumbnail: ViewGalleryThumbnail = {
         key: '',

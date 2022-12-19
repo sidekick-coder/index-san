@@ -3,14 +3,10 @@ import { ref } from 'vue'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useStore as useEntry } from '@/modules/entry/store'
+import { useStore as useCollection } from '@/modules/collection/store'
 
 import ListItemsDTO from '@/../core/use-cases/list-items/list-items.dto'
 import { useCase } from '@/composables/use-case'
-
-import UpdateItemDTO from '@core/use-cases/update-item/update-item.dto'
-import CreateItemDTO from '@core/use-cases/create-item/create-item.dto'
-import DeleteItemDTO from '@core/use-cases/delete-item/delete-item.dto'
-import ShowItemDTO from '@core/use-cases/show-item/show-item.dto'
 
 import Item from '@core/entities/item'
 import Collection from '@/../core/entities/collection'
@@ -19,47 +15,66 @@ import { ViewFilter } from '@/../core/entities/view'
 import { filter } from '../collection/composables/filter'
 import { ColumnType } from '@/../core/entities/column'
 
+interface Register {
+    collectionId: string
+    items: Item[]
+    loading: boolean
+    filters: ViewFilter[]
+    search: string
+}
+
 export const useStore = defineStore('item', () => {
     const workspace = useWorkspace()
+    const collectionStore = useCollection()
     const entry = useEntry()
 
-    const current = ref({
-        loading: false,
-        items: [] as Item[],
-        filters: [] as ViewFilter[],
-        collection: null as Collection | null,
-    })
+    const registers = ref<Register[]>([])
 
-    async function setItems(filters: ViewFilter[] = [], search = '') {
-        if (!current.value.collection) {
-            current.value.items = []
-            return
+    function getRegister(collectionId: string): Register {
+        let result = registers.value.find((r) => r.collectionId === collectionId)
+
+        if (result) return result
+
+        result = {
+            collectionId,
+            search: '',
+            loading: false,
+            filters: [],
+            items: [],
         }
 
-        if (current.value.loading) {
-            waitFor(() => !current.value.loading)
-        }
+        registers.value.push(result)
 
-        current.value.loading = true
+        return result
+    }
+
+    async function setRegister(collectionId: string, payload?: Partial<Register>) {
+        const data = getRegister(collectionId)
+
+        data.filters = payload?.filters || []
+        data.search = payload?.search || ''
+
+        data.loading = true
 
         const raw: Item[] = await useCase('list-items', {
             workspaceId: workspace.currentId!,
-            collectionId: current.value.collection.id,
+            collectionId,
         })
             .then((r) => r.data)
             .catch(() => [])
 
-        current.value.filters = filters
+        data.items = raw.filter((i) => {
+            let valid = !!JSON.stringify(i).toLowerCase().includes(data.search.toLowerCase())
 
-        current.value.items = raw.filter((i) => {
-            let valid = !!JSON.stringify(i).toLowerCase().includes(search.toLowerCase())
-
-            valid = filters.reduce((r, f) => r && filter(i, f), valid)
+            valid = data.filters.reduce((r, f) => r && filter(i, f), valid)
 
             return valid
         })
 
-        setTimeout(() => (current.value.loading = false), 800)
+        setTimeout(() => {
+            data!.loading = false
+            registers.value = registers.value.slice()
+        }, 800)
     }
 
     async function list(payload: Partial<ListItemsDTO.Input>) {
@@ -70,8 +85,11 @@ export const useStore = defineStore('item', () => {
         return useCase('list-items', payload as any)
     }
 
-    async function create() {
-        if (!current.value.collection) return
+    async function create(collectionId: string) {
+        const register = registers.value.find((r) => r.collectionId === collectionId)
+        const collection = collectionStore.collections.find((c) => c.id === collectionId)
+
+        if (!collection || !register) return
 
         const payload = {}
 
@@ -82,8 +100,8 @@ export const useStore = defineStore('item', () => {
             ColumnType.relation,
         ]
 
-        current.value.filters.forEach((f) => {
-            const column = current.value.collection?.columns.find((c) => c.id === f.columnId)
+        register.filters.forEach((f) => {
+            const column = collection.columns.find((c) => c.id === f.columnId)
 
             if (!column || !column.type || !column.field) return
 
@@ -94,30 +112,33 @@ export const useStore = defineStore('item', () => {
 
         const item = new Item(payload)
 
-        current.value.items.push(item)
+        register.items.push(item)
 
         await useCase('create-item', {
-            collectionId: current.value.collection.id,
+            collectionId,
             workspaceId: workspace.currentId!,
             data: item,
         }).catch(() => {
-            const index = current.value.items.indexOf(item)
+            const index = register.items.indexOf(item)
 
             if (index !== -1) {
-                current.value.items.splice(index, 1)
+                register.items.splice(index, 1)
             }
         })
     }
 
-    async function update(item: Item, field: string, value: any) {
-        if (!current.value.collection) return
+    async function update(collectionId: string, item: Item, field: string, value: any) {
+        const register = registers.value.find((r) => r.collectionId === collectionId)
+        const collection = collectionStore.collections.find((c) => c.id === collectionId)
+
+        if (!collection || !register) return
 
         const old = useNonReactive(item)
 
         item[field] = value
 
         const payload = {
-            collectionId: current.value.collection.id,
+            collectionId,
             workspaceId: workspace.currentId!,
             itemId: old.id,
             data: {
@@ -128,30 +149,33 @@ export const useStore = defineStore('item', () => {
         await useCase('update-item', payload).catch(() => (item[field] = old))
     }
 
-    async function destroy(item: Item) {
-        if (!current.value.collection) return
+    async function destroy(collectionId: string, item: Item) {
+        const register = registers.value.find((r) => r.collectionId === collectionId)
+        const collection = collectionStore.collections.find((c) => c.id === collectionId)
 
-        const index = current.value.items.indexOf(item)
+        if (!collection || !register) return
+
+        const index = register.items.indexOf(item)
 
         const old = useNonReactive(item)
 
         if (index === -1) return
 
-        current.value.items.splice(index, 1)
+        register.items.splice(index, 1)
 
         await useCase('delete-item', {
-            collectionId: current.value.collection.id,
+            collectionId: collection.id,
             workspaceId: workspace.currentId!,
             itemId: old.id,
-        }).catch(() => current.value.items.push(old))
+        }).catch(() => register.items.push(old))
     }
 
     return {
         workspace,
         entry,
 
-        current,
-        setItems,
+        getRegister,
+        setRegister,
 
         list,
 
