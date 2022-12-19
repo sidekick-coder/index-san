@@ -17,6 +17,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    offsetX: {
+        type: Boolean,
+        default: false,
+    },
     maxHeight: {
         type: String,
         default: null,
@@ -24,6 +28,10 @@ const props = defineProps({
     closeOnContentClick: {
         type: Boolean,
         default: false,
+    },
+    openOnClick: {
+        type: Boolean,
+        default: true,
     },
 })
 
@@ -53,7 +61,9 @@ const show = computed({
 })
 
 function onClick() {
-    show.value = !show.value
+    if (props.openOnClick) {
+        show.value = !show.value
+    }
 }
 
 // set max y & x position
@@ -81,6 +91,8 @@ const mouse = ref({
     el: null as null | HTMLElement,
     x: 0,
     y: 0,
+    elWidth: 0,
+    elHeight: 0,
 })
 
 function onMouseenter(event: MouseEvent) {
@@ -93,12 +105,10 @@ function onMouseenter(event: MouseEvent) {
     let y = rect.y
     let x = rect.x
 
-    if (props.offsetY && el) {
-        y += el.clientHeight
-    }
-
     mouse.value.y = y
     mouse.value.x = x
+    mouse.value.elWidth = el.clientWidth
+    mouse.value.elHeight = el.clientHeight
     mouse.value.el = el
 }
 
@@ -122,9 +132,20 @@ onUnmounted(() => document.removeEventListener('click', onClickDom))
 
 // style
 const style = computed(() => {
+    let y = Math.min(mouse.value.y, max.value.y)
+    let x = Math.min(mouse.value.x, max.value.x)
+
+    if (props.offsetY) {
+        y += mouse.value.elHeight
+    }
+
+    if (props.offsetX) {
+        x -= mouse.value.elWidth
+    }
+
     const result = {
-        top: `${Math.min(mouse.value.y, max.value.y)}px`,
-        left: `${Math.min(mouse.value.x, max.value.x)}px`,
+        top: `${y}px`,
+        left: `${x}px`,
     }
 
     // console.log(mouse.value.x, max.value.x)

@@ -50,6 +50,10 @@ async function load() {
 }
 
 watch(() => search.value.input, debounce(load, 500))
+
+// menu
+
+const menu = ref(false)
 </script>
 <template>
     <v-card-head :class="register?.loading ? 'border-b-accent' : ''">
@@ -87,7 +91,7 @@ watch(() => search.value.input, debounce(load, 500))
                         <is-icon name="search" />
                     </v-btn>
 
-                    <v-btn text size="sm" @click="load">
+                    <v-btn text size="sm" @click="store.item.setItems(collectionId, true)">
                         <is-icon name="rotate" />
                     </v-btn>
 
@@ -97,11 +101,13 @@ watch(() => search.value.input, debounce(load, 500))
                 </div>
             </template>
 
-            <is-menu offset-y>
+            <is-menu v-model="menu" offset-y offset-x :open-on-click="false">
                 <template #activator="{ on }">
-                    <v-btn text size="sm" v-bind="on">
-                        <is-icon name="cog" />
-                    </v-btn>
+                    <div class="h-[44px] flex items-center" v-bind="on">
+                        <v-btn text size="sm" @click="menu = !menu">
+                            <is-icon name="cog" />
+                        </v-btn>
+                    </div>
                 </template>
 
                 <v-card color="b-secondary">
