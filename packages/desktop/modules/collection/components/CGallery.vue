@@ -84,6 +84,39 @@ const columns = computed({
     },
 })
 
+// thumbnail
+
+const thumbnail = computed(() => {
+    if (view.value.thumbnail) return view.value.thumbnail
+
+    return {
+        key: '',
+        position: '',
+        fit: '',
+    }
+})
+
+// sizes
+
+const sizes = computed(() => {
+    if (view.value.sizes) return view.value.sizes
+
+    return {
+        sm: {
+            width: 200,
+            height: 'auto',
+        },
+        md: {
+            width: 282,
+            height: 'auto',
+        },
+        lg: {
+            width: 200,
+            height: 'auto',
+        },
+    }
+})
+
 // count visible columns
 
 const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).length)
@@ -213,7 +246,8 @@ const updateItem = debounce(store.item.update, 500)
                 :columns="columns"
                 v-bind="bindings.gallery"
                 :loading="loading"
-                :sizes="view.sizes"
+                :sizes="sizes"
+                item-key="id"
             >
                 <template #item="data">
                     <v-card
@@ -224,17 +258,21 @@ const updateItem = debounce(store.item.update, 500)
                         v-bind="data.bindings.card"
                     >
                         <e-img
-                            v-if="view.thumbnail.key"
-                            :src="data.item[view.thumbnail.key]"
+                            v-if="thumbnail.key"
+                            :src="data.item[thumbnail.key]"
                             :height="`calc(100% - ${visibleColumns * 48}px)`"
-                            :fit="view.thumbnail.fit"
-                            :position="view.thumbnail.position"
+                            :fit="thumbnail.fit"
+                            :position="thumbnail.position"
                             width="100%"
                             class="object-cover"
                         />
 
-                        <template v-for="(c, cIndex) in data.columns" :key="cIndex">
-                            <is-list-item v-if="!c.hide" size="px-1 py-1">
+                        <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">
+                            <is-list-item
+                                v-if="!c.hide"
+                                :id="`${c.id}-${data.item.id}`"
+                                size="px-1 py-1"
+                            >
                                 <i-value
                                     :model-value="data.item[c.field]"
                                     :column="c"

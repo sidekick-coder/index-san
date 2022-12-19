@@ -5,12 +5,6 @@ export interface ViewGallerySize {
     height: number | string
 }
 
-export interface ViewGallerySizes {
-    sm: ViewGallerySize
-    md: ViewGallerySize
-    lg: ViewGallerySize
-}
-
 export interface ViewGalleryThumbnail {
     key?: string
     position?: string
@@ -20,24 +14,7 @@ export interface ViewGalleryThumbnail {
 export default class ViewGallery extends View {
     public readonly component = 'gallery'
 
-    public thumbnail: ViewGalleryThumbnail = {
-        key: '',
-        position: '',
-        fit: '',
-    }
+    public thumbnail?: ViewGalleryThumbnail
 
-    public sizes: Record<string, ViewGallerySize> = {
-        sm: {
-            width: 200,
-            height: 'auto',
-        },
-        md: {
-            width: 282,
-            height: 'auto',
-        },
-        lg: {
-            width: 200,
-            height: 'auto',
-        },
-    }
+    public sizes?: Record<'sm' | 'md' | 'lg', ViewGallerySize>
 }

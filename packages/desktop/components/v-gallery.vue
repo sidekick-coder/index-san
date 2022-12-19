@@ -24,6 +24,14 @@ const props = defineProps({
         type: [String, Number],
         default: 20,
     },
+    loading: {
+        type: Boolean,
+        default: false,
+    },
+    itemKey: {
+        type: String,
+        default: '',
+    },
 })
 
 // bindings
@@ -82,9 +90,26 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
 </script>
 
 <template>
-    <div ref="rootRef" class="flex flex-wrap gap-4">
+    <div
+        ref="rootRef"
+        class="flex flex-wrap gap-4 relative"
+        :class="loading ? 'animate-pulse' : ''"
+    >
+        <div v-if="loading" class="absolute top-0 left-0 h-[1px] w-full bg-accent animate-pulse" />
+
+        <v-card
+            v-else-if="!items.length"
+            width="100%"
+            height="100"
+            :color="color"
+            class="flex items-center justify-center"
+        >
+            {{ $t('noEntity', [$t('item', 2)]) }}
+        </v-card>
+
         <slot
             v-for="(item, index) in visibleItems"
+            :key="item[itemKey]"
             name="item"
             :size="size"
             :index="index"
@@ -94,7 +119,6 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
             :item="item"
         >
             <v-card
-                :key="index"
                 :width="size.width"
                 :height="size.height"
                 class="overflow-auto"
@@ -108,16 +132,6 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
                 </template>
             </v-card>
         </slot>
-
-        <v-card
-            v-if="!items.length"
-            width="100%"
-            height="100"
-            :color="color"
-            class="flex items-center justify-center"
-        >
-            {{ $t('noEntity', [$t('item', 2)]) }}
-        </v-card>
 
         <slot
             name="append-body"

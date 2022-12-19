@@ -71,6 +71,7 @@ export default {
     heightEntity: 'Height {0}',
     position: 'Position',
     fit: 'Fit',
+    loadingEntity: 'Loading {0}',
     errors: {
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',

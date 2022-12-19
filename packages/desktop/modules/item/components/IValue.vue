@@ -4,8 +4,9 @@ import template from 'lodash/template'
 
 import uuid from 'uuid-random'
 
-import { CollectionColumn } from '@core/entities/collection'
+import Column from '@core/entities/column'
 import Item from '@core/entities/item'
+import DirectoryEntry from '@core/entities/directory-entry'
 import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 
 import SOutput from '@/modules/script/components/SOutput.vue'
@@ -13,7 +14,6 @@ import EEntryIcon from '@/modules/entry/components/EEntryIcon.vue'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '../store'
-import DirectoryEntry from '@/../core/entities/directory-entry'
 
 const props = defineProps({
     modelValue: {
@@ -21,7 +21,7 @@ const props = defineProps({
         default: null,
     },
     column: {
-        type: Object as () => CollectionColumn,
+        type: Object as () => Column,
         required: true,
     },
     item: {
@@ -213,5 +213,5 @@ function upload() {
         </div>
     </template>
 
-    <is-input v-else v-model="model" flat />
+    <is-input v-else-if="typeof model === 'string'" v-model="model" flat />
 </template>
