@@ -15,8 +15,9 @@ import CActions from './CActions.vue'
 
 import IValue from '@/modules/item/components/IValue.vue'
 import EImg from '@/modules/entry/components/EImg.vue'
-import { createPayload } from '../composables/filter'
+import { createPayload, withViewFilters } from '../composables/filter'
 import Item from '@/../core/entities/item'
+import { withoutOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 
 // Props & Emits
 const props = defineProps({
@@ -82,29 +83,20 @@ watch(props, setViews, {
 
 // columns
 
+watch(
+    () => props.collectionId,
+    (id) => store.column.set(id),
+    { immediate: true }
+)
+
 const columns = computed({
     get() {
-        const columns: any[] = useNonReactive(collection.value?.columns || [])
-
-        useNonReactive(view.value.columns).forEach((c) => {
-            const cColumn = columns.find((cv) => cv.id === c.id)
-
-            Object.assign(cColumn || {}, c)
-        })
-
-        columns.sort((a, b) => {
-            const aIndex = view.value.columns.findIndex((s) => s.id === a.id)
-            const bIndex = view.value.columns.findIndex((s) => s.id === b.id)
-
-            if (aIndex === -1 || bIndex === -1) return 0
-
-            return aIndex - bIndex
-        })
-
-        return columns
+        return withView(store.column.all(props.collectionId), view.value?.columns)
     },
     set(value) {
-        view.value.columns = value.filter((c) => !c.id.startsWith('_'))
+        if (!view.value) return
+
+        view.value.columns = withoutOnlyView(value)
     },
 })
 
@@ -147,7 +139,13 @@ const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).
 
 // items
 
-const items = computed(() => store.item.getItems(props.collectionId))
+const items = computed(() => {
+    if (view.value) {
+        return withViewFilters(store.item.get(props.collectionId), view.value)
+    }
+
+    return store.item.get(props.collectionId)
+})
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
 

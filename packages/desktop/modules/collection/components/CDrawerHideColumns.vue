@@ -1,50 +1,75 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useVModel } from '@vueuse/core'
 
-import View, { ViewColumn } from '@/../core/entities/view'
+import ViewCommon from '@core/entities/view-common'
 
 import VDraggable from 'vuedraggable'
 import { useStore } from '../store'
+import { withView, withoutOnlyView } from '@/modules/collection-column/composables/with-view'
 
 const props = defineProps({
-    modelValue: {
-        type: Array as () => View['columns'],
-        default: () => [],
-    },
     collectionId: {
+        type: String,
+        required: true,
+    },
+    viewId: {
         type: String,
         required: true,
     },
 })
 
-const emit = defineEmits(['update:modelValue'])
-
-const columns = useVModel(props, 'modelValue', emit)
+// const model = useVModel(props, 'modelValue', emit)
 
 const drawer = ref(false)
 
+// columns
+const store = useStore()
+
+const view = computed(() => store.view.get<ViewCommon>(props.collectionId, props.viewId))
+
+const columns = computed({
+    get() {
+        const viewColumns = view.value?.columns
+
+        return withView(store.column.all(props.collectionId), viewColumns)
+    },
+    set(value) {
+        if (!view.value) return
+
+        const data = withoutOnlyView(value)
+
+        view.value.columns = data
+    },
+})
+
+// actions
+
+function toggle(id: string) {
+    if (!view.value) return
+
+    columns.value = columns.value.map((c) => {
+        if (c.id === id) {
+            c.hide = !c.hide
+        }
+
+        return c
+    })
+}
+
 function showAll() {
-    columns.value.forEach((c) => {
+    columns.value = columns.value.map((c) => {
         c.hide = false
+
+        return c
     })
 }
 
 function hideAll() {
-    columns.value.forEach((c) => {
+    columns.value = columns.value.map((c) => {
         c.hide = true
+
+        return c
     })
-}
-
-// get label
-const store = useStore()
-
-const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
-
-function getLabel(viewColumn: ViewColumn) {
-    const column = collection.value?.columns.find((c) => c.id === viewColumn.id)
-
-    return column?.label || viewColumn.id
 }
 </script>
 
@@ -85,12 +110,12 @@ function getLabel(viewColumn: ViewColumn) {
                         <is-icon name="grip-vertical" />
                     </v-btn>
 
-                    <v-btn class="drag mr-2" size="sm" text @click="column.hide = !column.hide">
+                    <v-btn class="drag mr-2" size="sm" text @click="toggle(column.id)">
                         <is-icon :name="column.hide ? 'eye-slash' : 'eye'" />
                     </v-btn>
 
                     <div>
-                        {{ getLabel(column) }}
+                        {{ column.label }}
                     </div>
                 </is-list-item>
             </template>

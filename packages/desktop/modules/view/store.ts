@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch, WatchStopHandle } from 'vue'
+import { ref, watch, computed, WatchStopHandle } from 'vue'
 import debounce from 'lodash/debounce'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
@@ -32,6 +32,22 @@ export const useStore = defineStore('view', () => {
     const views = ref<StoreView[]>([])
     const watchers = ref<Watchers[]>([])
 
+    function instantiate(data: View) {
+        if (data.component === 'group') {
+            return Object.assign(new ViewGroup(), data)
+        }
+
+        if (data.component === 'table') {
+            return Object.assign(new ViewTable(), data)
+        }
+
+        if (data.component === 'gallery') {
+            return Object.assign(new ViewGallery(), data)
+        }
+
+        return Object.assign(new View(), data)
+    }
+
     async function setViews(collectionId: string, forceUpdate = false) {
         if (!forceUpdate && getViews(collectionId).length) {
             return
@@ -52,21 +68,7 @@ export const useStore = defineStore('view', () => {
             .then((r) => r.data)
             .catch(() => [])
 
-        raw.map((v) => {
-            if (v.component === 'group') {
-                return Object.assign(new ViewGroup(), v)
-            }
-
-            if (v.component === 'table') {
-                return Object.assign(new ViewTable(), v)
-            }
-
-            if (v.component === 'gallery') {
-                return Object.assign(new ViewGallery(), v)
-            }
-
-            return Object.assign(new View(), v)
-        }).forEach((v) => create(collectionId, v, true))
+        raw.map(instantiate).forEach((v) => create(collectionId, v, true))
 
         return getViews(collectionId)
     }
@@ -117,15 +119,27 @@ export const useStore = defineStore('view', () => {
         return views.value.filter((v) => v.collectionId === collectionId).map((v) => v.view)
     }
 
+    /** @deprecated */
     function getView<T = AnyView>(collectionId: string, viewId: string) {
         const views = getViews(collectionId)
 
         return views.find((v) => v.id === viewId) as T
     }
 
+    function get<T = AnyView>(collectionId: string, viewId: string) {
+        const index = views.value.findIndex(
+            (v) => v.collectionId === collectionId && v.viewId === viewId
+        )
+
+        if (index === -1) return null
+
+        return views.value[index].view as T
+    }
+
     return {
         views,
         setViews,
+        get,
         getViews,
         getView,
         create,

@@ -1,8 +1,9 @@
 import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
 import Item from '@core/entities/item'
 
-import { ViewFilter } from '@core/entities/view-common'
+import ViewCommon, { ViewFilter } from '@core/entities/view-common'
 import Column, { ColumnType } from '@core/entities/column'
+import View from '@/../core/entities/view'
 
 export const operations = {
     text: {
@@ -125,4 +126,17 @@ export function createPayload(filters: ViewFilter[] = [], columns: Column[] = []
     })
 
     return payload
+}
+
+export function withViewFilters(items: Item[], view?: View) {
+    if (view instanceof ViewCommon) {
+        return items.filter((item) => {
+            return view.filters.reduce(
+                (valid, f) => valid && filter(item, f),
+                !!JSON.stringify(item).toLowerCase().match(view.search.toLocaleLowerCase())
+            )
+        })
+    }
+
+    return view
 }

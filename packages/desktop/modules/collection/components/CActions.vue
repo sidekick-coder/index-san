@@ -33,27 +33,35 @@ onMounted(async () => {
 
 // view
 
-const view = computed(() => store.view.getView(props.collectionId, props.viewId))
+const view = computed(() => store.view.get<ViewCommon>(props.collectionId, props.viewId))
 
 // items
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
 
-const search = ref({
-    input: '',
-    show: false,
-    onInput: debounce((v) => (search.value.input = v), 100),
+// search
+const showInput = ref(false)
+
+const input = computed({
+    get() {
+        return view.value?.search || ''
+    },
+    set: debounce((v: string) => {
+        if (!view.value) return
+
+        view.value.search = v
+    }, 1000),
 })
 
-async function load() {
-    await store.item.setItems(props.collectionId)
-}
-
-watch(() => search.value.input, debounce(load, 500))
-
-// menu
-
 const menu = ref(false)
+
+// refresh
+
+async function refresh() {
+    await store.item.setItems(props.collectionId, true)
+
+    await store.column.set(props.collectionId, true)
+}
 </script>
 <template>
     <v-card-head :class="register?.loading ? 'border-b-accent' : ''">
@@ -66,20 +74,19 @@ const menu = ref(false)
                 <div class="flex items-center transition-all">
                     <transition name="slide-left">
                         <is-input
-                            v-if="search.show || !!search.input"
-                            :model-value="search.input"
+                            v-if="showInput || !!input"
+                            v-model="input"
                             :placeholder="$t('search')"
                             size="sm"
                             class="w-[300px] mr-2"
-                            @update:model-value="search.onInput"
                         >
                             <template #append>
                                 <v-btn
-                                    v-if="search.input"
+                                    v-if="input"
                                     text
                                     size="none"
                                     class="w-5 h-5"
-                                    @click="search.input = ''"
+                                    @click="input = ''"
                                 >
                                     <is-icon name="times" />
                                 </v-btn>
@@ -87,15 +94,15 @@ const menu = ref(false)
                         </is-input>
                     </transition>
 
-                    <v-btn text size="sm" @click="search.show = !search.show">
+                    <v-btn text size="sm" @click="showInput = !showInput">
                         <is-icon name="search" />
                     </v-btn>
 
-                    <v-btn text size="sm" @click="store.item.setItems(collectionId, true)">
+                    <v-btn text size="sm" @click="refresh">
                         <is-icon name="rotate" />
                     </v-btn>
 
-                    <c-drawer-hide-columns v-model="view.columns" :collection-id="collectionId" />
+                    <c-drawer-hide-columns :collection-id="collectionId" :view-id="viewId" />
 
                     <c-drawer-filter v-model="view.filters" :columns="collection?.columns" />
                 </div>

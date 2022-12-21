@@ -9,18 +9,18 @@ import debounce from 'lodash/debounce'
 
 import Column from '@core/entities/column'
 
-import { useNonReactive } from '@/composables/utils'
 import { createBindings } from '@/composables/binding'
 import { useStore } from '@/modules/collection/store'
 
 import Draggable from 'vuedraggable'
-import CColumn from './CColumn.vue'
+import CcColumn from '@/modules/collection-column/components/CcColumn.vue'
 import CActions from './CActions.vue'
 
 import IValue from '@/modules/item/components/IValue.vue'
 import ViewTable from '@/../core/entities/view-table'
 import Item from '@/../core/entities/item'
-import { createPayload } from '../composables/filter'
+import { createPayload, withViewFilters } from '../composables/filter'
+import { withoutOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 
 const props = defineProps({
     width: {
@@ -78,7 +78,7 @@ watch(() => props.collectionId, setCollection, {
 // view
 const innerViewId = ref('')
 
-const view = computed(() => store.view.getView<ViewTable>(props.collectionId, innerViewId.value))
+const view = computed(() => store.view.get<ViewTable>(props.collectionId, innerViewId.value))
 
 async function setViews() {
     innerViewId.value = props.viewId || ''
@@ -101,24 +101,17 @@ watch(props, setViews, {
 
 // columns
 
+watch(
+    () => props.collectionId,
+    (id) => store.column.set(id),
+    { immediate: true }
+)
+
 const columns = computed({
     get() {
-        const columns: any[] = useNonReactive(collection.value?.columns || [])
+        const columns: any[] = withView(store.column.all(props.collectionId), view.value?.columns)
 
-        useNonReactive(view.value.columns).forEach((c) => {
-            const cColumn = columns.find((cv) => cv.id === c.id)
-
-            Object.assign(cColumn || {}, c)
-        })
-
-        columns.sort((a, b) => {
-            const aIndex = view.value.columns.findIndex((s) => s.id === a.id)
-            const bIndex = view.value.columns.findIndex((s) => s.id === b.id)
-
-            if (aIndex === -1 || bIndex === -1) return 0
-
-            return aIndex - bIndex
-        })
+        // console.log(columns)
 
         columns.unshift({
             id: '_actions_left',
@@ -133,24 +126,31 @@ const columns = computed({
         return columns
     },
     set(value) {
-        view.value.columns = value.filter((c) => !c.id.startsWith('_'))
+        if (!view.value) return
+
+        view.value.columns = withoutOnlyView(value)
     },
 })
 
 function resizeColumn(id: string, width: number) {
-    const column = view.value.columns.find((c) => c.id === id)
+    columns.value = columns.value.map((c) => {
+        if (c.id === id) {
+            c.width = width
+        }
 
-    if (column) {
-        column.width = width
-        return
-    }
-
-    view.value.columns.push({ id, width })
+        return c
+    })
 }
 
 // items
 
-const items = computed(() => store.item.getItems(props.collectionId))
+const items = computed(() => {
+    if (view.value) {
+        return withViewFilters(store.item.get(props.collectionId), view.value)
+    }
+
+    return store.item.get(props.collectionId)
+})
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
 
@@ -158,7 +158,7 @@ async function load() {
     await store.item.setItems(props.collectionId)
 }
 
-watch(() => view.value.filters, debounce(load, 500), { deep: true, immediate: true })
+watch(() => view.value?.filters, debounce(load, 500), { deep: true, immediate: true })
 
 // update item with debounce
 
@@ -175,7 +175,7 @@ const updateItem = debounce((item: Item, field: string, value: any) => {
 // create item
 
 async function create() {
-    const item = new Item(createPayload(view.value.filters, collection.value?.columns))
+    const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
 
     await store.item.create(props.collectionId, item)
 }
@@ -214,21 +214,16 @@ async function create() {
                                     size="sm"
                                     text
                                     class="text-t-secondary mx-2"
-                                    @click="store.createColumn(collectionId)"
+                                    @click="store.column.create(collectionId)"
                                 >
                                     <is-icon name="plus" />
                                 </v-btn>
 
                                 <template v-else-if="!c.id.startsWith('_')">
-                                    <c-column
+                                    <cc-column
                                         class="drag"
                                         :collection-id="collectionId"
-                                        :model-value="c"
-                                        :collection="collection!"
-                                        @update:model-value="
-                                            store.updateColumn($event, collectionId)
-                                        "
-                                        @destroy="store.deleteColumn(c, collectionId)"
+                                        :column-id="c.id"
                                     />
 
                                     <is-resize-line

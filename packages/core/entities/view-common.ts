@@ -15,6 +15,7 @@ export interface ViewColumn extends Partial<Column> {
 }
 
 export default class ViewCommon extends View {
+    public search = ''
     public filters: ViewFilter[] = []
     public columns: ViewColumn[] = []
 }

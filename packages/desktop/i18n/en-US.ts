@@ -75,6 +75,7 @@ export default {
     loadingEntity: 'Loading {0}',
     table: 'Table',
     gallery: 'Gallery',
+    loading: 'Loading',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

@@ -52,7 +52,14 @@ export const useStore = defineStore('item', () => {
         }, 800)
     }
 
+    /** @deprecated */
     function getItems(collectionId: string): Item[] {
+        const storeItem = items.value.find((i) => i.collectionId === collectionId)
+
+        return storeItem?.items || []
+    }
+
+    function get(collectionId: string): Item[] {
         const storeItem = items.value.find((i) => i.collectionId === collectionId)
 
         return storeItem?.items || []
@@ -120,6 +127,7 @@ export const useStore = defineStore('item', () => {
         workspace,
         entry,
 
+        get,
         getItems,
         getStoreItem,
         setItems,
