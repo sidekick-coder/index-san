@@ -224,7 +224,7 @@ async function create() {
                                         :column-id="c.id"
                                     />
 
-                                    <is-resize-line
+                                    <v-resize-line
                                         :model-value="c.width || 200"
                                         :min-width="100"
                                         @update:model-value="(v: number) => resizeColumn(c.id, v)"
