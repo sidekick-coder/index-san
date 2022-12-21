@@ -21,7 +21,14 @@ const drawer = ref(false)
 // columns
 const store = useStore()
 
-const view = computed(() => store.view.get(props.collectionId, props.viewId))
+const view = computed({
+    get: () => store.view.get(props.collectionId, props.viewId),
+    set: (value) => {
+        if (!value) return
+
+        store.view.set(props.collectionId, props.viewId, value)
+    },
+})
 
 const columns = computed({
     get() {
@@ -32,7 +39,10 @@ const columns = computed({
     set(value) {
         if (!view.value) return
 
-        view.value.columns = withOnlyView(value)
+        view.value = {
+            ...view.value,
+            columns: withOnlyView(value),
+        }
     },
 })
 

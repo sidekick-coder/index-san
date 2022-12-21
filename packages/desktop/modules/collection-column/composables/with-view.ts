@@ -1,5 +1,4 @@
 import { useNonReactive } from '@/composables/utils'
-import pick from 'lodash/pick'
 
 import { ViewColumn } from '@core/entities/view-common'
 import Column from '@core/entities/column'
@@ -27,11 +26,20 @@ export function withView<T = ViewColumn>(columns: Column[], viewColumns: ViewCol
     return result as (Column & T)[]
 }
 
-export function withOnlyView<T = ViewColumn>(columns: (Column & T)[]): T[] {
-    if (!columns[0]) return []
+export function withNonColumnProperties<T = ViewColumn>(column: Column & T) {
+    const result: any = {}
 
     const cKeys = Object.keys(new Column({}))
-    const keys = Object.keys(columns[0]).filter((k) => k === 'id' || !cKeys.includes(k))
 
-    return useNonReactive(columns).map((c) => pick(c, keys)) as T[]
+    Object.keys(column)
+        .filter((key) => key === 'id' || !cKeys.includes(key))
+        .forEach((key) => {
+            result[key] = column[key]
+        })
+
+    return result
+}
+
+export function withOnlyView<T = ViewColumn>(columns: (Column & T)[]): T[] {
+    return useNonReactive(columns).map(withNonColumnProperties) as T[]
 }

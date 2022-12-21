@@ -61,7 +61,14 @@ const collection = computed(() => store.collection.get(props.collectionId))
 // view
 const innerViewId = ref('')
 
-const view = computed(() => store.view.get<ViewTable>(props.collectionId, innerViewId.value))
+const view = computed({
+    get: () => store.view.get<ViewTable>(props.collectionId, innerViewId.value),
+    set: (value) => {
+        if (!value) return
+
+        store.view.set<ViewTable>(props.collectionId, innerViewId.value, value)
+    },
+})
 
 async function setViews() {
     innerViewId.value = props.viewId || ''
@@ -111,7 +118,10 @@ const columns = computed({
     set(value) {
         if (!view.value) return
 
-        view.value.columns = withOnlyView(value).filter((c) => !c.id.startsWith('_'))
+        view.value = {
+            ...view.value,
+            columns: withOnlyView(value).filter((c) => !c.id.startsWith('_')),
+        }
     },
 })
 

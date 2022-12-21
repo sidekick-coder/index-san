@@ -50,7 +50,7 @@ export const useStore = defineStore('view', () => {
     }
 
     async function setViews(collectionId: string, forceUpdate = false) {
-        if (!forceUpdate && getViews(collectionId).length) {
+        if (!forceUpdate && all(collectionId).length) {
             return
         }
 
@@ -71,7 +71,7 @@ export const useStore = defineStore('view', () => {
 
         raw.map(instantiate).forEach((v) => create(collectionId, v, true))
 
-        return getViews(collectionId)
+        return all(collectionId)
     }
 
     async function save(collectionId: string) {
@@ -103,9 +103,7 @@ export const useStore = defineStore('view', () => {
             const stop = watch(
                 () => views.value[index].view,
                 debounce(() => save(collectionId), 500),
-                {
-                    deep: true,
-                }
+                { deep: true }
             )
 
             watchers.value.push({
@@ -140,6 +138,19 @@ export const useStore = defineStore('view', () => {
         return views.value[index].view as T
     }
 
+    function set<T = ViewCommon>(collectionId: string, viewId: string, payload: T) {
+        const index = views.value.findIndex(
+            (v) => v.collectionId === collectionId && v.viewId === viewId
+        )
+
+        if (index === -1) return
+
+        views.value[index] = {
+            ...views.value[index],
+            view: Object.assign(views.value[index].view, payload),
+        }
+    }
+
     async function destroy(collectionId: string, viewId: string) {
         const index = views.value.findIndex(
             (i) => i.collectionId === collectionId && i.viewId === viewId
@@ -167,6 +178,7 @@ export const useStore = defineStore('view', () => {
         setViews,
         all,
         get,
+        set,
         getViews,
         getView,
         create,
