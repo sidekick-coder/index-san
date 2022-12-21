@@ -323,6 +323,7 @@ function show(item: DirectoryEntry) {
                             @keydown.enter="show(item)"
                             @keydown.f2="editItem = index"
                             @keydown.esc="updateSelection"
+                            @mousedown.prevent
                         >
                             <v-td class="pl-10 flex pr-7">
                                 <div class="w-4 mr-2">
