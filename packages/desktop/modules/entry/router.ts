@@ -7,13 +7,13 @@ export default (router: Router) => {
         children: [
             {
                 path: '',
-                component: () => import('./views/ESingle.vue'),
+                component: () => import('./pages/ESingle.vue'),
                 props: true,
             },
             {
                 path: ':entryId(.*)',
                 props: true,
-                component: () => import('./views/ESingle.vue'),
+                component: () => import('./pages/ESingle.vue'),
             },
         ],
     })

@@ -9,7 +9,7 @@ export default (router: Router) => {
             {
                 path: '',
                 name: '404',
-                component: () => import('./views/404.vue'),
+                component: () => import('./pages/404.vue'),
             },
         ],
     })

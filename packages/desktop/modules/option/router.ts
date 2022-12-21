@@ -8,15 +8,15 @@ export default (router: Router) => {
         children: [
             {
                 path: 'general',
-                component: () => import('./views/OGeneral.vue'),
+                component: () => import('./pages/OGeneral.vue'),
             },
             {
                 path: 'menu',
-                component: () => import('./views/OMenu.vue'),
+                component: () => import('./pages/OMenu.vue'),
             },
             {
                 path: 'theme',
-                component: () => import('./views/OTheme.vue'),
+                component: () => import('./pages/OTheme.vue'),
             },
         ],
     })

@@ -12,7 +12,7 @@ export default (router: Router) => {
         children: [
             {
                 path: '',
-                component: () => import('./views/WList.vue'),
+                component: () => import('./pages/WList.vue'),
             },
         ],
     })

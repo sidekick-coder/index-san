@@ -3,7 +3,7 @@ import { Router } from 'vue-router'
 export default (router: Router) => {
     router.addRoute({
         path: '/collections/:collectionId',
-        component: () => import('./views/CSingle.vue'),
+        component: () => import('./pages/CSingle.vue'),
         props: true,
     })
 
@@ -13,12 +13,12 @@ export default (router: Router) => {
         children: [
             {
                 path: '',
-                component: () => import('./views/CList.vue'),
+                component: () => import('./pages/CList.vue'),
                 props: true,
             },
             {
                 path: ':collectionId',
-                component: () => import('./views/CSingle.vue'),
+                component: () => import('./pages/CSingle.vue'),
                 props: true,
             },
         ],

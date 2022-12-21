@@ -7,7 +7,7 @@ export default (router: Router) => {
         children: [
             {
                 path: '',
-                component: () => import('./views/IList.vue'),
+                component: () => import('./pages/IList.vue'),
                 props: true,
             },
         ],

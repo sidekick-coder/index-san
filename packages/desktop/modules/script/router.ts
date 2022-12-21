@@ -7,13 +7,13 @@ export default (router: Router) => {
         children: [
             {
                 path: '',
-                component: () => import('./views/SList.vue'),
+                component: () => import('./pages/SList.vue'),
                 props: true,
             },
             {
                 path: ':id',
                 props: true,
-                component: () => import('./views/SSingle.vue'),
+                component: () => import('./pages/SSingle.vue'),
             },
         ],
     })
