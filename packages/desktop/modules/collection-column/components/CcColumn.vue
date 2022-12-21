@@ -198,7 +198,7 @@ const relation = computed(() => {
                         </div>
                     </template>
 
-                    <is-drawer v-if="payload.type === 'script'" width="800">
+                    <v-drawer v-if="payload.type === 'script'" width="800">
                         <template #activator="{ attrs }">
                             <is-input
                                 v-bind="attrs"
@@ -220,7 +220,7 @@ const relation = computed(() => {
                                 :libs="libScriptColumn.mount(store.all(collectionId))"
                             />
                         </v-card>
-                    </is-drawer>
+                    </v-drawer>
 
                     <div v-if="payload.type === 'entry'" class="mb-4">
                         <is-input

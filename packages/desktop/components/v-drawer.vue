@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({

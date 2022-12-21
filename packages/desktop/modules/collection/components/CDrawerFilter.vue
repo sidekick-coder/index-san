@@ -40,7 +40,7 @@ function add(column: Column) {
 </script>
 
 <template>
-    <is-drawer v-model="drawer">
+    <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
             <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
                 <is-icon name="filter" />
@@ -94,5 +94,5 @@ function add(column: Column) {
                 </v-card>
             </is-menu>
         </v-card-content>
-    </is-drawer>
+    </v-drawer>
 </template>

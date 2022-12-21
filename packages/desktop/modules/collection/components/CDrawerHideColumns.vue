@@ -74,7 +74,7 @@ function hideAll() {
 </script>
 
 <template>
-    <is-drawer v-model="drawer">
+    <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
             <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
                 <is-icon name="columns" />
@@ -120,5 +120,5 @@ function hideAll() {
                 </is-list-item>
             </template>
         </v-draggable>
-    </is-drawer>
+    </v-drawer>
 </template>
