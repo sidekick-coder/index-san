@@ -30,7 +30,7 @@ function removeChildren(index: number) {
 </script>
 <template>
     <div class="my-2 border border-lines rounded">
-        <is-list-item class="border-lines items-center">
+        <v-list-item class="border-lines items-center">
             <v-btn class="w-[38px] h-[38px] drag-handle" text>
                 <v-icon name="grip-vertical" />
             </v-btn>
@@ -44,7 +44,7 @@ function removeChildren(index: number) {
                 </template>
             </v-icon-picker>
 
-            <is-input v-model="item.label" class="ml-2 w-full max-w-[500px]" />
+            <v-input v-model="item.label" class="ml-2 w-full max-w-[500px]" />
 
             <v-btn
                 class="w-[38px] h-[38px] ml-2"
@@ -54,7 +54,7 @@ function removeChildren(index: number) {
             >
                 <v-icon name="trash" />
             </v-btn>
-        </is-list-item>
+        </v-list-item>
 
         <div class="ml-8 mr-4">
             <Draggable v-model="item.children" v-bind="dragOptions">

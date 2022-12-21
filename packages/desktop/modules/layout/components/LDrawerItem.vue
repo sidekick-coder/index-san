@@ -36,7 +36,7 @@ function toggle() {
 const show = computed(() => visibleSections.value.includes(props.item.id))
 </script>
 <template>
-    <is-list-item :to="item.to" size="none" class="py-3 px-1 text-sm">
+    <v-list-item :to="item.to" size="none" class="py-3 px-1 text-sm">
         <v-btn
             class="w-[20px] h-[20px] mr-1 text-xs"
             text
@@ -63,7 +63,7 @@ const show = computed(() => visibleSections.value.includes(props.item.id))
 
             <div>{{ item.label }}</div>
         </template>
-    </is-list-item>
+    </v-list-item>
 
     <div v-if="show && item.children.length" :style="`margin-left: ${deep * 20}px`">
         <l-drawer-item

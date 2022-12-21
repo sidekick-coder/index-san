@@ -148,7 +148,7 @@ const relation = computed(() => {
             <v-card-content>
                 <w-form class="w-full" @submit="submit">
                     <div class="mb-4">
-                        <is-input v-model="payload.label" label="Label" />
+                        <v-input v-model="payload.label" label="Label" />
                     </div>
 
                     <div class="mb-4">
@@ -163,11 +163,11 @@ const relation = computed(() => {
                     </div>
 
                     <div class="mb-4">
-                        <is-input v-model="payload.field" label="Field" />
+                        <v-input v-model="payload.field" label="Field" />
                     </div>
 
                     <div v-if="payload.type === 'select'" class="mb-4">
-                        <is-input
+                        <v-input
                             v-model="payload.options"
                             label="Options (separate by comma)"
                             placeholder="item-01,item-02"
@@ -200,7 +200,7 @@ const relation = computed(() => {
 
                     <v-drawer v-if="payload.type === 'script'" width="800">
                         <template #activator="{ attrs }">
-                            <is-input
+                            <v-input
                                 v-bind="attrs"
                                 :model-value="$t('editEntity', [$t('script')])"
                                 :label="$t('content')"
@@ -211,7 +211,7 @@ const relation = computed(() => {
                                 <template #append>
                                     <v-icon name="code" class="ml-auto" />
                                 </template>
-                            </is-input>
+                            </v-input>
                         </template>
 
                         <v-card color="b-secondary" class="h-full">
@@ -223,7 +223,7 @@ const relation = computed(() => {
                     </v-drawer>
 
                     <div v-if="payload.type === 'entry'" class="mb-4">
-                        <is-input
+                        <v-input
                             v-model="payload.filename"
                             :label="$t('filename')"
                             placeholder="thumbnail.jpg"

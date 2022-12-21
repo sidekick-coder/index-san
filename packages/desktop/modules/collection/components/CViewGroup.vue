@@ -198,9 +198,9 @@ function showMenu(id: string, handler: () => void) {
                                     </template>
 
                                     <v-card color="b-secondary">
-                                        <is-list-item size="sm" @click="deleteView(v.id)">
+                                        <v-list-item size="sm" @click="deleteView(v.id)">
                                             {{ $t('deleteEntity', ['view']) }}
-                                        </is-list-item>
+                                        </v-list-item>
                                     </v-card>
                                 </is-menu>
                             </div>
@@ -227,12 +227,12 @@ function showMenu(id: string, handler: () => void) {
                         </template>
 
                         <v-card color="b-secondary">
-                            <is-list-item @click="addView('table')">
+                            <v-list-item @click="addView('table')">
                                 {{ $t('addEntity', [$t('table')]) }}
-                            </is-list-item>
-                            <is-list-item @click="addView('gallery')">
+                            </v-list-item>
+                            <v-list-item @click="addView('gallery')">
                                 {{ $t('addEntity', [$t('gallery')]) }}
-                            </is-list-item>
+                            </v-list-item>
                         </v-card>
                     </is-menu>
                 </div>

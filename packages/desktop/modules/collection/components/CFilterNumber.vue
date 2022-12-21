@@ -50,6 +50,6 @@ const options = Object.keys(operations.number).map((key) => ({
             class="mr-4 max-w-[80px]"
         />
 
-        <is-input v-model="model.value" type="number" :placeholder="$t('value')" class="w-full" />
+        <v-input v-model="model.value" type="number" :placeholder="$t('value')" class="w-full" />
     </div>
 </template>

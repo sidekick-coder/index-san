@@ -148,7 +148,7 @@ function upload() {
 </script>
 
 <template>
-    <is-input
+    <v-input
         v-if="column.type === 'number'"
         v-model="model"
         :placeholder="column.label"
@@ -167,7 +167,7 @@ function upload() {
 
     <v-dialog v-else-if="column.type === 'script'">
         <template #activator="{ attrs }">
-            <is-input
+            <v-input
                 v-bind="attrs"
                 :model-value="scriptLabel"
                 readonly
@@ -212,18 +212,18 @@ function upload() {
                     </v-btn>
                 </template>
                 <v-card color="b-secondary">
-                    <is-list-item @click="upload">
+                    <v-list-item @click="upload">
                         {{ $t('upload') }}
-                    </is-list-item>
-                    <is-list-item @click="deleteEntry">
+                    </v-list-item>
+                    <v-list-item @click="deleteEntry">
                         {{ $t('deleteEntity', [$t('entry')]) }}
-                    </is-list-item>
+                    </v-list-item>
                 </v-card>
             </is-menu>
         </div>
     </template>
 
-    <is-input v-else-if="column.type === 'text'" v-model="model" flat :placeholder="column.label" />
+    <v-input v-else-if="column.type === 'text'" v-model="model" flat :placeholder="column.label" />
 
     <div v-else class="text-danger px-4 py-2">
         {{ $t('errors.unknown') }}

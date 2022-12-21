@@ -81,11 +81,11 @@ async function deleteItem(collectionId: string) {
                 <v-card-content>
                     <w-form class="w-full" @submit="submit">
                         <div class="mb-4">
-                            <is-input v-model="payload.id" label="ID" placeholder="collection-01" />
+                            <v-input v-model="payload.id" label="ID" placeholder="collection-01" />
                         </div>
 
                         <div class="mb-4">
-                            <is-input
+                            <v-input
                                 v-model="payload.name"
                                 label="Name"
                                 placeholder="Collection 01"
@@ -93,7 +93,7 @@ async function deleteItem(collectionId: string) {
                         </div>
 
                         <div class="mb-4">
-                            <is-input
+                            <v-input
                                 v-model="payload.path"
                                 label="Path"
                                 placeholder="/collections/collection-01"

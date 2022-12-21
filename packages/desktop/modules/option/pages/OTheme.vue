@@ -115,7 +115,7 @@ watch(payload, save, { deep: true })
                 </div>
             </div>
 
-            <is-input v-model="payload[color.key]" :label="color.label" />
+            <v-input v-model="payload[color.key]" :label="color.label" />
         </div>
     </v-container>
 </template>

@@ -105,7 +105,7 @@ function hideAll() {
 
         <v-draggable v-model="columns" item-key="id" handle=".drag">
             <template #item="{ element: column }">
-                <is-list-item class="hover:bg-b-secondary">
+                <v-list-item class="hover:bg-b-secondary">
                     <v-btn class="drag mr-2" size="sm" text>
                         <v-icon name="grip-vertical" />
                     </v-btn>
@@ -117,7 +117,7 @@ function hideAll() {
                     <div>
                         {{ column.label }}
                     </div>
-                </is-list-item>
+                </v-list-item>
             </template>
         </v-draggable>
     </v-drawer>

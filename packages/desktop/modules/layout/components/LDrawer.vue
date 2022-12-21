@@ -61,7 +61,7 @@ const title = computed(() => {
         v-model="drawer"
         class="bg-b-secondary text-t-primary border-r border-b-primary group"
     >
-        <is-list-item to="/" class="pl-7 border-b border-lines">
+        <v-list-item to="/" class="pl-7 border-b border-lines">
             <h1 class="text-lg font-bold mr-auto">
                 {{ title }}
             </h1>
@@ -73,7 +73,7 @@ const title = computed(() => {
             >
                 <v-icon name="chevron-left" />
             </v-btn>
-        </is-list-item>
+        </v-list-item>
 
         <l-drawer-item v-for="(item, index) in items" :key="index" :item="item" />
     </v-layout-drawer>

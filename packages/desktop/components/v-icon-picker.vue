@@ -63,7 +63,7 @@ function onSelect(option: string) {
             class="max-h-[300px] overflow-y-auto flex items-baseline flex-wrap bg-b-secondary"
             width="300"
         >
-            <is-input
+            <v-input
                 v-model="search"
                 :placeholder="$t('search')"
                 flat

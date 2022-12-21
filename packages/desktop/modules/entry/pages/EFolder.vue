@@ -266,12 +266,12 @@ function show(item: DirectoryEntry) {
                     </template>
 
                     <v-card color="b-secondary">
-                        <is-list-item @click="addFile">
+                        <v-list-item @click="addFile">
                             {{ $t('addEntity', [$t('file')]) }}
-                        </is-list-item>
-                        <is-list-item @click="addFolder">
+                        </v-list-item>
+                        <v-list-item @click="addFolder">
                             {{ $t('addEntity', [$t('folder')]) }}
-                        </is-list-item>
+                        </v-list-item>
                     </v-card>
                 </is-menu>
 
@@ -290,7 +290,7 @@ function show(item: DirectoryEntry) {
                     </div>
                 </template>
 
-                <is-input
+                <v-input
                     v-model="search"
                     placeholder="search"
                     size="sm"
@@ -330,7 +330,7 @@ function show(item: DirectoryEntry) {
                                     <e-entry-icon :model-value="item" />
                                 </div>
 
-                                <is-input
+                                <v-input
                                     v-if="editItem === index"
                                     v-model="item.name"
                                     flat

@@ -61,7 +61,7 @@ async function onItemDelete(item: Script) {
         <w-form @submit="submit">
             <v-card color="b-secondary">
                 <v-card-content class="flex flex-wrap">
-                    <is-input v-model="payload.name" class="mb-4" label="Name" />
+                    <v-input v-model="payload.name" class="mb-4" label="Name" />
 
                     <v-btn class="w-full">Create</v-btn>
                 </v-card-content>

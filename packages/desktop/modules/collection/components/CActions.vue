@@ -68,7 +68,7 @@ async function refresh() {
             <template v-if="view instanceof ViewCommon">
                 <div class="flex items-center transition-all">
                     <transition name="slide-left">
-                        <is-input
+                        <v-input
                             v-if="showInput || !!input"
                             v-model="input"
                             :placeholder="$t('search')"
@@ -86,7 +86,7 @@ async function refresh() {
                                     <v-icon name="times" />
                                 </v-btn>
                             </template>
-                        </is-input>
+                        </v-input>
                     </transition>
 
                     <v-btn text size="sm" @click="showInput = !showInput">
@@ -114,7 +114,7 @@ async function refresh() {
 
                 <v-card color="b-secondary">
                     <v-card-content class="flex flex-wrap gap-y-4">
-                        <is-input v-model="view.label" :label="$t('label')" />
+                        <v-input v-model="view.label" :label="$t('label')" />
 
                         <template v-if="view instanceof ViewGallery">
                             <is-select
@@ -149,19 +149,19 @@ async function refresh() {
                             />
 
                             <div class="flex gap-x-4">
-                                <is-input
+                                <v-input
                                     v-model="view.sizes.sm.width"
                                     :label="$t('widthEntity', ['sm'])"
                                     class="max-w-[80px]"
                                 />
 
-                                <is-input
+                                <v-input
                                     v-model="view.sizes.md.width"
                                     :label="$t('widthEntity', ['md'])"
                                     class="max-w-[80px]"
                                 />
 
-                                <is-input
+                                <v-input
                                     v-model="view.sizes.lg.width"
                                     :label="$t('widthEntity', ['lg'])"
                                     class="max-w-[80px]"
@@ -169,19 +169,19 @@ async function refresh() {
                             </div>
 
                             <div class="flex gap-x-4">
-                                <is-input
+                                <v-input
                                     v-model="view.sizes.sm.height"
                                     :label="$t('heightEntity', ['sm'])"
                                     class="max-w-[80px]"
                                 />
 
-                                <is-input
+                                <v-input
                                     v-model="view.sizes.md.height"
                                     :label="$t('heightEntity', ['md'])"
                                     class="max-w-[80px]"
                                 />
 
-                                <is-input
+                                <v-input
                                     v-model="view.sizes.lg.height"
                                     :label="$t('heightEntity', ['lg'])"
                                     class="max-w-[80px]"

@@ -94,15 +94,15 @@ async function deleteItem(id: string) {
                 <v-card-content>
                     <w-form class="mb-4 w-full" @submit="submit">
                         <div class="mb-4">
-                            <is-input v-model="payload.id" label="Id" />
+                            <v-input v-model="payload.id" label="Id" />
                         </div>
 
                         <div class="mb-4">
-                            <is-input v-model="payload.name" label="Name" />
+                            <v-input v-model="payload.name" label="Name" />
                         </div>
 
                         <div class="mb-4">
-                            <is-input v-model="payload.path" label="Path" />
+                            <v-input v-model="payload.path" label="Path" />
                         </div>
 
                         <v-btn :disabled="!payload.name || !payload.path" class="w-full">

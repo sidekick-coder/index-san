@@ -264,7 +264,7 @@ async function create() {
                                 </template>
 
                                 <v-card color="b-primary">
-                                    <is-list-item
+                                    <v-list-item
                                         size="xs"
                                         color="danger"
                                         dark
@@ -272,7 +272,7 @@ async function create() {
                                     >
                                         <v-icon name="trash" class="mr-2" />
                                         {{ $t('deleteEntity', [$t('item')]) }}
-                                    </is-list-item>
+                                    </v-list-item>
                                 </v-card>
                             </is-menu>
 

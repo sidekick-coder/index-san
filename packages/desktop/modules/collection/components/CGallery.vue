@@ -217,7 +217,7 @@ async function create() {
                         />
 
                         <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">
-                            <is-list-item
+                            <v-list-item
                                 v-if="!c.hide"
                                 :id="`${c.id}-${data.item.id}`"
                                 size="px-1 py-1"
@@ -229,7 +229,7 @@ async function create() {
                                     class="w-full"
                                     @update:model-value="updateItem(data.item, c.field, $event)"
                                 />
-                            </is-list-item>
+                            </v-list-item>
                         </template>
                     </v-card>
                 </template>

@@ -130,9 +130,9 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
                 v-bind="bindings.card"
             >
                 <template v-for="(column, cIndex) in columns" :key="cIndex">
-                    <is-list-item class="px-4 py-2">
+                    <v-list-item class="px-4 py-2">
                         {{ item[column.field] }}
-                    </is-list-item>
+                    </v-list-item>
                 </template>
             </v-card>
         </slot>

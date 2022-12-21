@@ -148,7 +148,7 @@ function onShowMenu(value: boolean) {
         @update:model-value="onShowMenu"
     >
         <template #activator="{ on }">
-            <is-input
+            <v-input
                 v-bind="{ ...on, ...bindings.main }"
                 :model-value="displayLabel"
                 :label="label"
@@ -161,15 +161,15 @@ function onShowMenu(value: boolean) {
                 <template #append>
                     <v-icon name="chevron-down" class="ml-auto text-t-secondary" />
                 </template>
-            </is-input>
+            </v-input>
         </template>
 
         <v-card color="b-secondary" v-bind="bindings.card">
             <template v-for="option in options" :key="option">
                 <slot name="option" :option="option">
-                    <is-list-item dark @click="onSelect(option)">
+                    <v-list-item dark @click="onSelect(option)">
                         {{ getLabel(option) }}
-                    </is-list-item>
+                    </v-list-item>
                 </slot>
             </template>
         </v-card>

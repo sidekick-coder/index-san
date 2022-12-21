@@ -88,9 +88,9 @@ function add(column: Column) {
                 </template>
 
                 <v-card color="b-secondary">
-                    <is-list-item v-for="c in columns" :key="c.id" @click="add(c)">
+                    <v-list-item v-for="c in columns" :key="c.id" @click="add(c)">
                         {{ c.label }}
-                    </is-list-item>
+                    </v-list-item>
                 </v-card>
             </is-menu>
         </v-card-content>
