@@ -43,7 +43,7 @@ const classes = computed(() => {
     const result: string[] = []
 
     if (props.color) {
-        result.push(colors.value[props.color])
+        result.push(colors.value[props.color] || props.color)
     }
 
     return result

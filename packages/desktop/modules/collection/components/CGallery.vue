@@ -213,7 +213,7 @@ async function create() {
                             :fit="thumbnail.fit"
                             :position="thumbnail.position"
                             width="100%"
-                            card:color="b-primary"
+                            card:color="bg-b-primary/25"
                         />
 
                         <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">

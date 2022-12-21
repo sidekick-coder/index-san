@@ -19,5 +19,20 @@ export function createBindings<K extends string>(attrs: Record<string, any>, bin
 
     result['root'] = root
 
-    return result as Record<K | 'root', any>
+    function multiple(options: (K | 'root')[]) {
+        let multipleResult: any = {}
+
+        options.forEach((option) => {
+            multipleResult = {
+                ...multipleResult,
+                ...result[option],
+            }
+        })
+
+        return multipleResult
+    }
+
+    result.multiple = multiple
+
+    return result as Record<K | 'root', any> & Record<'multiple', typeof multiple>
 }

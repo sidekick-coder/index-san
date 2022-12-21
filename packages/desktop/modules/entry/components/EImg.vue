@@ -1,10 +1,16 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
 import mime from 'mime'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, useAttrs } from 'vue'
 
 import { useStore } from '../store'
 import { toCssMeasurement } from '@/composables/utils'
 import DirectoryEntry from '@/../core/entities/directory-entry'
+import { createBindings } from '@/composables/binding'
 
 const props = defineProps({
     basePath: {
@@ -62,6 +68,8 @@ async function setSrc() {
     await store
         .read({ path }, true)
         .then((buffer) => {
+            if (!buffer) return
+
             const base64 = window.btoa(
                 buffer.reduce((data, b) => data + String.fromCharCode(b), '')
             )
@@ -128,6 +136,11 @@ const classes = computed(() => {
 
     return result
 })
+
+// bindings
+const attrs = useAttrs()
+
+const bindings = computed(() => createBindings(attrs, ['card', 'img']))
 </script>
 
 <template>
@@ -137,9 +150,15 @@ const classes = computed(() => {
         :src="innerSrc"
         :class="classes"
         :style="style"
+        v-bind="bindings.multiple(['img', 'root'])"
     />
 
-    <v-card v-else :height="height || 100" :width="width">
+    <v-card
+        v-else
+        :height="height || 100"
+        :width="width"
+        v-bind="bindings.multiple(['card', 'root'])"
+    >
         <v-card-content class="items-center justify-center h-full">
             <is-icon name="image" class="text-2xl" />
         </v-card-content>

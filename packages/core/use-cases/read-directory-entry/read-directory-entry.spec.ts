@@ -8,19 +8,6 @@ test.group('read-directory-entry (use-case', () => {
 
     const useCase = new ReadDirectoryEntry(app)
 
-    test('should throw an error if directory-entry not exist', async ({ expect }) => {
-        const workspace = await app.workspaceRepository.createFake()
-
-        expect.assertions(1)
-
-        await useCase
-            .execute({
-                workspaceId: workspace.id,
-                path: '22',
-            })
-            .catch((err) => expect(err.message).toEqual('DirectoryEntry not found'))
-    })
-
     test('should return content buffer', async ({ expect }) => {
         const workspace = await app.workspaceRepository.createFake()
 
