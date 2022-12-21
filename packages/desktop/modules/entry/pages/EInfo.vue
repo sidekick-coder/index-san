@@ -25,7 +25,7 @@ async function load() {
 load()
 </script>
 <template>
-    <is-container class="h-full flex items-center justify-center">
+    <v-container class="h-full flex items-center justify-center">
         <v-card class="border border-lines w-[500px] overflow-auto">
             <v-card-content v-if="entry" class="flex flex-wrap">
                 <div class="w-full"><b>Name: </b> {{ entry.name }}</div>
@@ -33,5 +33,5 @@ load()
                 <div class="w-full"><b>Type: </b> {{ entry.type }}</div>
             </v-card-content>
         </v-card>
-    </is-container>
+    </v-container>
 </template>

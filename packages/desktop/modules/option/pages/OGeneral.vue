@@ -17,7 +17,7 @@ async function save() {
 }
 </script>
 <template>
-    <is-container class="py-5">
+    <v-container class="py-5">
         <is-select
             v-model="locale"
             :label="$t('language')"
@@ -25,5 +25,5 @@ async function save() {
             card:width="300"
             @update:model-value="save"
         />
-    </is-container>
+    </v-container>
 </template>

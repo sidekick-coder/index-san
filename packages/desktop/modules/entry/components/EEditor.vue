@@ -46,7 +46,7 @@ async function save() {
 <template>
     <w-layout use-percentage>
         <w-toolbar class="border-b border-b-lines">
-            <is-container class="-mr-3 flex justify-end w-full">
+            <v-container class="-mr-3 flex justify-end w-full">
                 <v-btn size="sm" class="mr-2" text @click="setContent">
                     <is-icon name="arrows-rotate" class="mr-2" />
                     {{ $t('reload') }}
@@ -55,7 +55,7 @@ async function save() {
                     <is-icon name="save" class="mr-2" />
                     {{ $t('save') }}
                 </v-btn>
-            </is-container>
+            </v-container>
         </w-toolbar>
 
         <w-content>

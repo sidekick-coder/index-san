@@ -78,7 +78,7 @@ const state = useState(key, {}, { localStorage: true })
 <template>
     <w-layout use-percentage>
         <w-toolbar class="border-b border-b-lines">
-            <is-container class="-mr-3 flex justify-end w-full">
+            <v-container class="-mr-3 flex justify-end w-full">
                 <v-card-title class="mr-auto">
                     {{ DirectoryEntry.basename(path) }}
                 </v-card-title>
@@ -97,7 +97,7 @@ const state = useState(key, {}, { localStorage: true })
                     <is-icon :name="!edit ? 'pen' : 'eye'" class="mr-2" />
                     {{ !edit ? $t('editMode') : $t('viewMode') }}
                 </v-btn>
-            </is-container>
+            </v-container>
         </w-toolbar>
 
         <w-content>

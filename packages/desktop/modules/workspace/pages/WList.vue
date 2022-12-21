@@ -113,14 +113,14 @@ async function deleteItem(id: string) {
             </v-card>
         </v-dialog>
 
-        <is-container class="w-full py-4 border-b border-lines flex items-center">
+        <v-container class="w-full py-4 border-b border-lines flex items-center">
             <div class="text-2xl font-bold">
                 {{ meta.title }}
             </div>
             <v-btn class="ml-auto" @click="dialog = true">
                 {{ $t('addEntity', [$t('workspace')]) }}
             </v-btn>
-        </is-container>
+        </v-container>
 
         <v-table :columns="columns" :items="store.workspaces" :fixed="false">
             <template #item-active="{ item }">

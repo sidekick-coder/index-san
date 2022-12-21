@@ -112,7 +112,7 @@ async function execute() {
 <template>
     <w-layout use-percentage>
         <w-toolbar class="border-b border-lines">
-            <is-container>
+            <v-container>
                 <div class="grow" />
 
                 <v-btn
@@ -128,7 +128,7 @@ async function execute() {
                 <v-btn color="accent" size="sm" :loading="execution.loading" @click="execute">
                     {{ $t('execute') }}
                 </v-btn>
-            </is-container>
+            </v-container>
         </w-toolbar>
 
         <w-content>
