@@ -25,3 +25,4 @@ dist-electron
 tmp
 
 out/
+components/components.d.ts

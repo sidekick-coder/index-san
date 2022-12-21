@@ -19,7 +19,8 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "build:debug": "electron-forge start --inspect-electron"
+    "build:debug": "electron-forge start --inspect-electron",
+    "make:gc-types": "node scripts/make-gc-types.js"
   },
   "dependencies": {
     "@editorjs/header": "^2.7.0",

@@ -20,7 +20,7 @@ interface Column {
 // Props & Emits
 const props = defineProps({
     items: {
-        type: Array as () => Record<string, string>[],
+        type: Array as () => any[],
         default: () => [],
     },
     columns: {

@@ -22,5 +22,5 @@
       ]
     }
   },
-  "exclude": ["out", "dist"]
+  "exclude": ["out", "dist", "scripts"],
 }
