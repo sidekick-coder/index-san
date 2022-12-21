@@ -57,7 +57,7 @@ store.item
 </script>
 <template>
     <div class="flex w-full">
-        <is-select
+        <v-select
             v-model="operation"
             menu:offset-y
             :options="options"
@@ -66,7 +66,7 @@ store.item
             class="mr-4 max-w-[80px]"
         />
 
-        <is-select
+        <v-select
             v-model="model.value"
             :placeholder="$t('value')"
             :options="relation.items"

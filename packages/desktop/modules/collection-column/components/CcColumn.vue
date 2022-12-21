@@ -152,7 +152,7 @@ const relation = computed(() => {
                     </div>
 
                     <div class="mb-4">
-                        <is-select
+                        <v-select
                             v-model="payload.type"
                             label="Type"
                             :options="types"
@@ -176,7 +176,7 @@ const relation = computed(() => {
 
                     <template v-if="payload.type === 'relation'">
                         <div class="mb-4">
-                            <is-select
+                            <v-select
                                 v-model="payload.collectionId"
                                 label="Collection"
                                 :options="collectionStore.collections"
@@ -187,7 +187,7 @@ const relation = computed(() => {
                         </div>
 
                         <div v-if="payload.collectionId" class="mb-4">
-                            <is-select
+                            <v-select
                                 v-model="payload.displayField"
                                 label="Collection display field"
                                 :options="relation ? relation.columns : []"

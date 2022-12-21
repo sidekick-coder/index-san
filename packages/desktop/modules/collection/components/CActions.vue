@@ -117,7 +117,7 @@ async function refresh() {
                         <v-input v-model="view.label" :label="$t('label')" />
 
                         <template v-if="view instanceof ViewGallery">
-                            <is-select
+                            <v-select
                                 v-model="view.thumbnail.key"
                                 :options="columns"
                                 label-key="label"
@@ -125,13 +125,13 @@ async function refresh() {
                                 :label="$t('thumbnail')"
                             />
 
-                            <is-select
+                            <v-select
                                 v-model="view.thumbnail.fit"
                                 :options="['cover', 'contain', 'fill', 'none', 'scale-down']"
                                 :label="$t('fit')"
                             />
 
-                            <is-select
+                            <v-select
                                 v-model="view.thumbnail.position"
                                 :options="[
                                     'top',

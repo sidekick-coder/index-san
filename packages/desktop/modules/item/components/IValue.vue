@@ -157,7 +157,7 @@ function upload() {
         class="w-full"
     />
 
-    <is-select
+    <v-select
         v-else-if="column.type === 'select'"
         v-model="model"
         :options="select.options"
@@ -186,7 +186,7 @@ function upload() {
         </v-card>
     </v-dialog>
 
-    <is-select
+    <v-select
         v-else-if="column.type === 'relation'"
         v-model="model"
         :label-key="column.displayField"

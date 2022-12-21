@@ -41,7 +41,7 @@ const options = Object.keys(operations.script).map((key) => ({
 </script>
 <template>
     <div class="flex w-full">
-        <is-select
+        <v-select
             v-model="operation"
             menu:offset-y
             :options="options"

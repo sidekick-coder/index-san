@@ -49,7 +49,7 @@ if (props.column.options) {
 </script>
 <template>
     <div class="flex w-full">
-        <is-select
+        <v-select
             v-model="operation"
             :options="options"
             label-key="label"
@@ -58,7 +58,7 @@ if (props.column.options) {
             class="mr-4 max-w-[80px]"
         />
 
-        <is-select
+        <v-select
             v-model="model.value"
             :placeholder="$t('value')"
             :options="select.options"

@@ -18,7 +18,7 @@ async function save() {
 </script>
 <template>
     <v-container class="py-5">
-        <is-select
+        <v-select
             v-model="locale"
             :label="$t('language')"
             :options="languages"
