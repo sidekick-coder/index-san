@@ -115,6 +115,7 @@ export const useStore = defineStore('view', () => {
         }
     }
 
+    /** @deprecated */
     function getViews(collectionId: string) {
         return views.value.filter((v) => v.collectionId === collectionId).map((v) => v.view)
     }
@@ -124,6 +125,10 @@ export const useStore = defineStore('view', () => {
         const views = getViews(collectionId)
 
         return views.find((v) => v.id === viewId) as T
+    }
+
+    function all(collectionId: string) {
+        return views.value.filter((v) => v.collectionId === collectionId).map((v) => v.view)
     }
 
     function get<T = AnyView>(collectionId: string, viewId: string) {
@@ -136,13 +141,37 @@ export const useStore = defineStore('view', () => {
         return views.value[index].view as T
     }
 
+    async function destroy(collectionId: string, viewId: string) {
+        const index = views.value.findIndex(
+            (i) => i.collectionId === collectionId && i.viewId === viewId
+        )
+
+        if (index === -1) return
+
+        watchers.value.forEach((w, index) => {
+            if (w.collectionId !== collectionId) return
+
+            if (w.viewId !== viewId) return
+
+            w.stop()
+
+            watchers.value.splice(index, 1)
+        })
+
+        views.value.splice(index, 1)
+
+        await save(collectionId)
+    }
+
     return {
         views,
         setViews,
+        all,
         get,
         getViews,
         getView,
         create,
         save,
+        destroy,
     }
 })

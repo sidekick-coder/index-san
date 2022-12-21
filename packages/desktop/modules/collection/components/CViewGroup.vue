@@ -12,6 +12,9 @@ import CTable from './CTable.vue'
 import ViewTable from '@/../core/entities/view-table'
 import ViewGallery from '@/../core/entities/view-gallery'
 
+import VDraggable from 'vuedraggable'
+import { useNonReactive } from '@/composables/utils'
+
 // Props & emit
 
 const props = defineProps({
@@ -57,7 +60,7 @@ watch(() => props.collectionId, setCollection, {
 // view
 const innerViewId = ref('')
 
-const view = computed(() => store.view.getView<ViewGroup>(props.collectionId, innerViewId.value))
+const view = computed(() => store.view.get<ViewGroup>(props.collectionId, innerViewId.value))
 
 async function setViews() {
     innerViewId.value = props.viewId || ''
@@ -65,15 +68,11 @@ async function setViews() {
     await store.view.setViews(props.collectionId)
 
     if (!view.value) {
-        const view = new ViewGroup()
+        const view = new ViewGroup({}, props.viewId)
 
         innerViewId.value = view.id
 
         await store.view.create(props.collectionId, view, !!props.viewId)
-    }
-
-    if (!view.value.selected && all.value[0]) {
-        view.value.selected = all.value[0].id
     }
 }
 
@@ -85,8 +84,46 @@ watch(props, setViews, {
 // selection
 
 const all = computed(() =>
-    store.view.getViews(props.collectionId).filter((v) => v.component !== 'group')
+    store.view.all(props.collectionId).filter((v) => v.component !== 'group')
 )
+
+const group = computed({
+    get() {
+        if (!view.value) return []
+
+        const viewIds = view.value.viewIds
+
+        const items = useNonReactive(all.value).filter((v) => viewIds.includes(v.id))
+
+        items.sort((a, b) => {
+            const aIndex = viewIds.findIndex((id) => id === a.id)
+            const bIndex = viewIds.findIndex((id) => id === b.id)
+
+            if (aIndex === -1 || bIndex === -1) return 0
+
+            return aIndex - bIndex
+        })
+
+        return items
+    },
+    set(value) {
+        if (!view.value) return
+
+        view.value.viewIds = value.map((v) => v.id)
+    },
+})
+
+function seleteView(id: string) {
+    if (!view.value) return
+
+    view.value.selected = id
+}
+
+function isActive(id: string) {
+    if (!view.value) return
+
+    return view.value.selected === id && !register.value?.loading
+}
 
 // add new view
 
@@ -102,32 +139,73 @@ async function addView(type: keyof typeof options) {
 
     await store.view.create(props.collectionId, payload, !!props.viewId)
 
-    view.value.selected = payload.id
+    if (view.value) {
+        view.value.selected = payload.id
+
+        view.value.viewIds.push(payload.id)
+    }
 }
 
 // items
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
+
+// delete
+
+async function deleteView(id: string) {
+    await store.view.destroy(props.collectionId, id)
+
+    seleteView(group.value[0].id)
+}
+
+// menu
+
+function showMenu(id: string, handler: () => void) {
+    if (isActive(id)) {
+        return handler()
+    }
+
+    seleteView(id)
+}
 </script>
 <template>
     <v-card v-if="view" v-bind="bindings.root">
         <c-actions v-bind="bindings.head" :collection-id="collectionId" :view-id="view.selected">
             <template #left>
                 <div class="flex -mb-[1px]">
-                    <v-btn
-                        v-for="v in all"
-                        :key="v.id"
-                        text
-                        size="text-sm px-4 h-[45px]"
-                        tile
-                        color="border-b border-transparent hover:bg-b-secondary/50"
-                        :class="
-                            view.selected === v.id && !register?.loading ? 'border-t-primary' : ''
-                        "
-                        @click="view.selected = v.id"
+                    <v-draggable
+                        v-model="group"
+                        item-key="id"
+                        handle=".drag"
+                        :component-data="{ class: 'flex -mb-[1px]' }"
                     >
-                        {{ v.label || v.id }}
-                    </v-btn>
+                        <template #item="{ element: v }">
+                            <div>
+                                <is-menu offset-y :open-on-click="false" close-on-content-click>
+                                    <template #activator="{ on, toggle }">
+                                        <v-btn
+                                            v-bind="on"
+                                            text
+                                            size="text-sm px-4 h-[45px]"
+                                            tile
+                                            color="border-b border-transparent hover:bg-b-secondary/50"
+                                            class="drag"
+                                            :class="isActive(v.id) ? 'border-t-primary' : ''"
+                                            @click="showMenu(v.id, toggle)"
+                                        >
+                                            {{ v.label || v.id }}
+                                        </v-btn>
+                                    </template>
+
+                                    <v-card color="b-secondary">
+                                        <is-list-item size="sm" @click="deleteView(v.id)">
+                                            {{ $t('deleteEntity', ['view']) }}
+                                        </is-list-item>
+                                    </v-card>
+                                </is-menu>
+                            </div>
+                        </template>
+                    </v-draggable>
 
                     <is-menu offset-y close-on-content-click>
                         <template #activator="{ on }">

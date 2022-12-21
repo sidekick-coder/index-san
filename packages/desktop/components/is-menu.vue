@@ -60,9 +60,13 @@ const show = computed({
     },
 })
 
+function toggle() {
+    show.value = !show.value
+}
+
 function onClick() {
     if (props.openOnClick) {
-        show.value = !show.value
+        toggle()
     }
 }
 
@@ -170,7 +174,7 @@ function onContentClick() {
 </script>
 
 <template>
-    <slot name="activator" :on="{ onClick, onMouseenter }" />
+    <slot name="activator" :on="{ onClick, onMouseenter }" :toggle="toggle" />
 
     <teleport to="body">
         <transition name="slide-down">
