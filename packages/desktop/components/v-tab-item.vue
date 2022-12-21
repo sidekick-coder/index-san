@@ -1,6 +1,5 @@
 <script>
 export default {
-    name: 'IsTabItem',
     props: {
         label: {
             type: String,
