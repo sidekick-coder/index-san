@@ -4,7 +4,7 @@ import ViewGroup from '@core/entities/view-group'
 import { createBindings } from '@/composables/binding'
 import { computed, useAttrs, watch, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from '../store'
+import { useStore } from '@/store/global'
 
 import CActions from './CActions.vue'
 import CGallery from './CGallery.vue'
@@ -36,24 +36,7 @@ const bindings = computed(() => createBindings(useAttrs(), ['head', 'table', 'ga
 
 // collection
 
-const router = useRouter()
 const store = useStore()
-
-const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
-
-async function setCollection() {
-    if (!collection.value) {
-        await store.setCollections()
-    }
-
-    if (!collection.value) {
-        router.push('404')
-    }
-}
-
-watch(() => props.collectionId, setCollection, {
-    immediate: true,
-})
 
 // view
 const innerViewId = ref('')

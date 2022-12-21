@@ -3,8 +3,8 @@ import ViewCommon from '@/../core/entities/view-common'
 import ViewGallery from '@/../core/entities/view-gallery'
 
 import { debounce } from 'lodash'
-import { ref, watch, computed, onMounted } from 'vue'
-import { useStore } from '../store'
+import { ref, computed } from 'vue'
+import { useStore } from '@/store/global'
 
 import CDrawerFilter from './CDrawerFilter.vue'
 import CDrawerHideColumns from './CDrawerHideColumns.vue'

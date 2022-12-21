@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch, computed, WatchStopHandle } from 'vue'
+import { ref, watch, WatchStopHandle } from 'vue'
 import debounce from 'lodash/debounce'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
@@ -10,6 +10,7 @@ import ViewGallery from '@core/entities/view-gallery'
 import ViewGroup from '@core/entities/view-group'
 
 import { useCase } from '@/composables/use-case'
+import ViewCommon from '@/../core/entities/view-common'
 
 type AnyView = View | ViewTable | ViewGallery
 
@@ -121,17 +122,15 @@ export const useStore = defineStore('view', () => {
     }
 
     /** @deprecated */
-    function getView<T = AnyView>(collectionId: string, viewId: string) {
-        const views = getViews(collectionId)
-
-        return views.find((v) => v.id === viewId) as T
+    function getView<T = ViewCommon>(collectionId: string, viewId: string) {
+        return get<T>(collectionId, viewId)
     }
 
     function all(collectionId: string) {
         return views.value.filter((v) => v.collectionId === collectionId).map((v) => v.view)
     }
 
-    function get<T = AnyView>(collectionId: string, viewId: string) {
+    function get<T = ViewCommon>(collectionId: string, viewId: string) {
         const index = views.value.findIndex(
             (v) => v.collectionId === collectionId && v.viewId === viewId
         )

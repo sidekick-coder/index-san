@@ -1,13 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import get from 'lodash/get'
 
 import Collection from '@core/entities/collection'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useStore as useItem } from '@/modules/item/store'
-import { useStore as useView } from '@/modules/view/store'
-import { useStore as useColumn } from '@/modules/collection-column/store'
 import { useCase } from '@/composables/use-case'
 
 import UpdateCollectionsDTO from '@core/use-cases/update-collection/update-collection.dto'
@@ -15,13 +11,10 @@ import CreateCollectionDTO from '@core/use-cases/create-collection/create-collec
 import DeleteCollectionsDTO from '@core/use-cases/delete-collection/delete-collection.dto'
 import ShowCollectionsDTO from '@core/use-cases/show-collection/show-collection.dto'
 
-export const useStore = defineStore('collections', () => {
-    const collections = ref<Collection[]>([])
-
+export const useStore = defineStore('collection', () => {
     const workspace = useWorkspace()
-    const item = useItem()
-    const view = useView()
-    const column = useColumn()
+
+    const collections = ref<Collection[]>([])
 
     async function setCollections(workspaceId = workspace.currentId as string) {
         return await useCase('list-collections', {
@@ -78,11 +71,6 @@ export const useStore = defineStore('collections', () => {
     watch(() => workspace.currentId, setCollections)
 
     return {
-        workspace,
-        item,
-        view,
-        column,
-
         collections,
 
         setCollections,

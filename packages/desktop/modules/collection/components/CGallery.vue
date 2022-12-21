@@ -7,8 +7,7 @@ import Collection from '@core/entities/collection'
 import ViewGallery from '@core/entities/view-gallery'
 
 import { createBindings } from '@/composables/binding'
-import { useNonReactive } from '@/composables/utils'
-import { useStore } from '../store'
+import { useStore } from '@/store/global'
 
 // components
 import CActions from './CActions.vue'
@@ -17,7 +16,7 @@ import IValue from '@/modules/item/components/IValue.vue'
 import EImg from '@/modules/entry/components/EImg.vue'
 import { createPayload, withViewFilters } from '../composables/filter'
 import Item from '@/../core/entities/item'
-import { withoutOnlyView, withView } from '@/modules/collection-column/composables/with-view'
+import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 
 // Props & Emits
 const props = defineProps({
@@ -42,25 +41,13 @@ const bindings = computed(() => createBindings(attrs, ['card', 'head', 'gallery'
 
 // set collection
 const store = useStore()
-const router = useRouter()
 
-const collection = ref<Collection>()
-
-async function setCollection() {
-    await store
-        .show({ collectionId: props.collectionId })
-        .then((r) => (collection.value = r.data))
-        .catch(() => router.push('/404'))
-}
-
-watch(() => props.collectionId, setCollection, {
-    immediate: true,
-})
+const collection = computed(() => store.collection.get(props.collectionId))
 
 // view
 const innerViewId = ref('')
 
-const view = computed(() => store.view.getView<ViewGallery>(props.collectionId, innerViewId.value))
+const view = computed(() => store.view.get<ViewGallery>(props.collectionId, innerViewId.value))
 
 async function setViews() {
     innerViewId.value = props.viewId || ''
@@ -96,14 +83,14 @@ const columns = computed({
     set(value) {
         if (!view.value) return
 
-        view.value.columns = withoutOnlyView(value)
+        view.value.columns = withOnlyView(value)
     },
 })
 
 // thumbnail
 
 const thumbnail = computed(() => {
-    if (view.value.thumbnail) return view.value.thumbnail
+    if (view.value?.thumbnail) return view.value.thumbnail
 
     return {
         key: '',
@@ -115,7 +102,7 @@ const thumbnail = computed(() => {
 // sizes
 
 const sizes = computed(() => {
-    if (view.value.sizes) return view.value.sizes
+    if (view.value?.sizes) return view.value.sizes
 
     return {
         sm: {
@@ -135,7 +122,9 @@ const sizes = computed(() => {
 
 // count visible columns
 
-const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).length)
+const visibleColumns = computed(() =>
+    !view.value ? columns.value.length : view.value?.columns.filter((c) => !c.hide).length
+)
 
 // items
 
@@ -153,7 +142,7 @@ async function load() {
     await store.item.setItems(props.collectionId)
 }
 
-watch(() => view.value.filters, debounce(load, 500), { deep: true, immediate: true })
+watch(() => view.value?.filters, debounce(load, 500), { deep: true, immediate: true })
 
 // update item with debounce
 
@@ -170,7 +159,7 @@ const updateItem = debounce((item: Item, field: string, value: any) => {
 // create item
 
 async function create() {
-    const item = new Item(createPayload(view.value.filters, collection.value?.columns))
+    const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
 
     await store.item.create(props.collectionId, item)
 }

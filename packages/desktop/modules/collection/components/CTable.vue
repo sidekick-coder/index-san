@@ -10,7 +10,7 @@ import debounce from 'lodash/debounce'
 import Column from '@core/entities/column'
 
 import { createBindings } from '@/composables/binding'
-import { useStore } from '@/modules/collection/store'
+import { useStore } from '@/store/global'
 
 import Draggable from 'vuedraggable'
 import CcColumn from '@/modules/collection-column/components/CcColumn.vue'
@@ -20,7 +20,7 @@ import IValue from '@/modules/item/components/IValue.vue'
 import ViewTable from '@/../core/entities/view-table'
 import Item from '@/../core/entities/item'
 import { createPayload, withViewFilters } from '../composables/filter'
-import { withoutOnlyView, withView } from '@/modules/collection-column/composables/with-view'
+import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 
 const props = defineProps({
     width: {
@@ -54,24 +54,9 @@ const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
 
 // collection
 
-const router = useRouter()
 const store = useStore()
 
-const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
-
-async function setCollection() {
-    if (!collection.value) {
-        await store.setCollections()
-    }
-
-    if (!collection.value) {
-        router.push('404')
-    }
-}
-
-watch(() => props.collectionId, setCollection, {
-    immediate: true,
-})
+const collection = computed(() => store.collection.get(props.collectionId))
 
 // view
 const innerViewId = ref('')
@@ -99,15 +84,16 @@ watch(props, setViews, {
 
 // columns
 
-watch(
-    () => props.collectionId,
-    (id) => store.column.set(id),
-    { immediate: true }
-)
-
 const columns = computed({
     get() {
         const columns: any[] = withView(store.column.all(props.collectionId), view.value?.columns)
+
+        if (!columns.length) {
+            columns.push({
+                id: '_actions_no_columns',
+                width: 200,
+            })
+        }
 
         columns.unshift({
             id: '_actions_left',
@@ -125,7 +111,7 @@ const columns = computed({
     set(value) {
         if (!view.value) return
 
-        view.value.columns = withoutOnlyView(value)
+        view.value.columns = withOnlyView(value).filter((c) => !c.id.startsWith('_'))
     },
 })
 
@@ -138,6 +124,12 @@ function resizeColumn(id: string, width: number) {
         return c
     })
 }
+
+watch(
+    () => props.collectionId,
+    (id) => store.column.set(id),
+    { immediate: true }
+)
 
 // items
 
@@ -220,7 +212,16 @@ async function create() {
                                     <v-icon name="plus" />
                                 </v-btn>
 
-                                <div v-else-if="c.id === '_actions_left'"></div>
+                                <div
+                                    v-else-if="c.id === '_actions_no_columns'"
+                                    class="text-t-secondary text-sm"
+                                >
+                                    {{
+                                        store.column.isLoading(collectionId)
+                                            ? $t('loading')
+                                            : $t('noEntity', [$t('column', 2)])
+                                    }}
+                                </div>
 
                                 <template v-else-if="!c.id.startsWith('_')">
                                     <cc-column
@@ -291,10 +292,10 @@ async function create() {
                                 </v-menu>
                             </div>
 
-                            <div v-else-if="c.id === '_actions_right'"></div>
+                            <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>
 
                             <i-value
-                                v-else
+                                v-else-if="!c.id.startsWith('_')"
                                 :model-value="data.item[c.field as string]"
                                 :column="(c as Column)"
                                 :item="data.item"
@@ -314,6 +315,27 @@ async function create() {
                             >
                                 <v-icon name="eye" />
                             </v-btn>
+                        </v-td>
+                    </v-tr>
+                </template>
+
+                <template #pagination="{ pagination, limit, visibleLength }">
+                    <v-tr
+                        v-if="items.length > pagination.limit"
+                        class="cursor-pointer hover:bg-b-secondary"
+                        @click="pagination.limit = pagination.limit + Number(limit)"
+                    >
+                        <v-td class="!border-x-0"></v-td>
+
+                        <v-td
+                            :colspan="collection?.columns.length"
+                            class="!border-x-0 !px-0 text-t-secondary text-sm"
+                        >
+                            <fa-icon icon="arrow-down" class="mr-2" />
+
+                            <span>{{
+                                `${$t('loadMore')} (${visibleLength}/${items.length})`
+                            }}</span>
                         </v-td>
                     </v-tr>
                 </template>

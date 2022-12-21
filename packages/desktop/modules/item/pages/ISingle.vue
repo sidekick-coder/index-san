@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 
 import debounce from 'lodash/debounce'
 
-import { useStore } from '../store'
+import { useStore } from '@/store/global'
 
 import LLayout from '@/modules/layout/LLayout.vue'
 import LToolbar from '@/modules/layout/components/LToolbar.vue'
@@ -35,11 +35,11 @@ const collection = computed(() => store.collection.get(props.collectionId))
 // item
 const router = useRouter()
 
-const item = computed(() => store.get(props.collectionId, props.itemId))
+const item = computed(() => store.item.get(props.collectionId, props.itemId))
 
 async function setItem() {
     if (!item.value) {
-        await store.setItems(props.collectionId)
+        await store.item.setItems(props.collectionId)
     }
 
     if (!item.value) {
@@ -71,7 +71,7 @@ const updateItem = debounce((item: Item, field: string, value: any) => {
 
     item[field] = value
 
-    store.update(props.collectionId, item.id, { [field]: value }).catch(() => {
+    store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
         item[field] = old
     })
 }, 500)

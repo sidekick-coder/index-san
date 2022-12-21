@@ -27,7 +27,7 @@ export function withView<T = ViewColumn>(columns: Column[], viewColumns: ViewCol
     return result as (Column & T)[]
 }
 
-export function withoutOnlyView<T = ViewColumn>(columns: (Column & T)[]): T[] {
+export function withOnlyView<T = ViewColumn>(columns: (Column & T)[]): T[] {
     if (!columns[0]) return []
 
     const cKeys = Object.keys(new Column({}))

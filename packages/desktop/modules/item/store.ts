@@ -142,11 +142,6 @@ export const useStore = defineStore('item', () => {
     }
 
     return {
-        workspace: stores.workspace,
-        entry: stores.entry,
-        column: stores.column,
-        collection: stores.collection,
-
         get,
         all,
         getItems,

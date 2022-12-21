@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import ViewCommon from '@core/entities/view-common'
-
 import VDraggable from 'vuedraggable'
-import { useStore } from '../store'
-import { withView, withoutOnlyView } from '@/modules/collection-column/composables/with-view'
+import { useStore } from '@/store/global'
+import { withView, withOnlyView } from '@/modules/collection-column/composables/with-view'
 
 const props = defineProps({
     collectionId: {
@@ -18,14 +16,12 @@ const props = defineProps({
     },
 })
 
-// const model = useVModel(props, 'modelValue', emit)
-
 const drawer = ref(false)
 
 // columns
 const store = useStore()
 
-const view = computed(() => store.view.get<ViewCommon>(props.collectionId, props.viewId))
+const view = computed(() => store.view.get(props.collectionId, props.viewId))
 
 const columns = computed({
     get() {
@@ -36,9 +32,7 @@ const columns = computed({
     set(value) {
         if (!view.value) return
 
-        const data = withoutOnlyView(value)
-
-        view.value.columns = data
+        view.value.columns = withOnlyView(value)
     },
 })
 

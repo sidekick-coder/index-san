@@ -127,17 +127,24 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
             </v-td>
         </v-tr>
 
-        <v-tr v-if="items.length > pagination.limit">
-            <v-td
-                :colspan="columns.length"
-                class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
-                @click="pagination.limit = pagination.limit + Number(limit)"
-            >
-                <fa-icon icon="arrow-down" class="mr-2" />
+        <slot
+            name="pagination"
+            :pagination="pagination"
+            :limit="limit"
+            :visible-length="visibleItems.length"
+        >
+            <v-tr v-if="items.length > pagination.limit">
+                <v-td
+                    :colspan="columns.length"
+                    class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
+                    @click="pagination.limit = pagination.limit + Number(limit)"
+                >
+                    <fa-icon icon="arrow-down" class="mr-2" />
 
-                <span>{{ `${$t('loadMore')} (${visibleItems.length}/${items.length})` }}</span>
-            </v-td>
-        </v-tr>
+                    <span>{{ `${$t('loadMore')} (${visibleItems.length}/${items.length})` }}</span>
+                </v-td>
+            </v-tr>
+        </slot>
 
         <slot name="append" />
     </table>
