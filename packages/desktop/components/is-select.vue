@@ -140,16 +140,16 @@ function onShowMenu(value: boolean) {
 }
 </script>
 <template>
-    <is-menu
+    <v-menu
         :model-value="menu"
         max-height="132"
         v-bind="bindings.menu"
         close-on-content-click
         @update:model-value="onShowMenu"
     >
-        <template #activator="{ on }">
+        <template #activator="{ attrs }">
             <v-input
-                v-bind="{ ...on, ...bindings.main }"
+                v-bind="{ ...attrs, ...bindings.main }"
                 :model-value="displayLabel"
                 :label="label"
                 :color="color"
@@ -173,5 +173,5 @@ function onShowMenu(value: boolean) {
                 </slot>
             </template>
         </v-card>
-    </is-menu>
+    </v-menu>
 </template>

@@ -203,9 +203,14 @@ function upload() {
                 {{ $t('upload') }}
             </v-btn>
 
-            <is-menu v-else offset-y close-on-content-click>
-                <template #activator="{ on }">
-                    <v-btn size="sm" v-bind="on" color="b-secondary" class="w-full !justify-start">
+            <v-menu v-else offset-y close-on-content-click>
+                <template #activator="{ attrs }">
+                    <v-btn
+                        size="sm"
+                        v-bind="attrs"
+                        color="b-secondary"
+                        class="w-full !justify-start"
+                    >
                         <e-entry-icon :model-value="model" class="mr-2" />
 
                         {{ DirectoryEntry.basename(model as string) }}
@@ -219,7 +224,7 @@ function upload() {
                         {{ $t('deleteEntity', [$t('entry')]) }}
                     </v-list-item>
                 </v-card>
-            </is-menu>
+            </v-menu>
         </div>
     </template>
 

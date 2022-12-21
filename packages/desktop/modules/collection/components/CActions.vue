@@ -103,9 +103,9 @@ async function refresh() {
                 </div>
             </template>
 
-            <is-menu v-model="menu" offset-y offset-x :open-on-click="false">
-                <template #activator="{ on }">
-                    <div class="h-[44px] flex items-center" v-bind="on">
+            <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
+                <template #activator="{ attrs }">
+                    <div class="h-[44px] flex items-center" v-bind="attrs">
                         <v-btn text size="sm" @click="menu = !menu">
                             <v-icon name="cog" />
                         </v-btn>
@@ -190,7 +190,7 @@ async function refresh() {
                         </template>
                     </v-card-content>
                 </v-card>
-            </is-menu>
+            </v-menu>
         </template>
     </v-card-head>
 </template>

@@ -258,9 +258,9 @@ function show(item: DirectoryEntry) {
                     <v-icon name="rotate" />
                 </v-btn>
 
-                <is-menu v-model="menu" offset-y>
-                    <template #activator="{ on }">
-                        <v-btn text size="sm" v-bind="on">
+                <v-menu v-model="menu" offset-y>
+                    <template #activator="{ attrs }">
+                        <v-btn text size="sm" v-bind="attrs">
                             <v-icon name="plus" />
                         </v-btn>
                     </template>
@@ -273,7 +273,7 @@ function show(item: DirectoryEntry) {
                             {{ $t('addEntity', [$t('folder')]) }}
                         </v-list-item>
                     </v-card>
-                </is-menu>
+                </v-menu>
 
                 <template v-for="(link, index) in data.links" :key="index">
                     <v-btn v-if="link.to" size="sm" text :to="link.to">

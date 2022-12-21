@@ -174,7 +174,7 @@ function onContentClick() {
 </script>
 
 <template>
-    <slot name="activator" :on="{ onClick, onMouseenter }" :toggle="toggle" />
+    <slot name="activator" :attrs="{ onClick, onMouseenter }" :toggle="toggle" />
 
     <teleport to="body">
         <transition name="slide-down">
@@ -182,7 +182,7 @@ function onContentClick() {
                 v-if="show"
                 :ref="(el: any) => (max.el = el)"
                 :style="style"
-                class="is-menu z-20 fixed transition-all overflow-auto max-h-screen"
+                class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
                 v-bind="$attrs"
                 @click.stop="onContentClick"
             >

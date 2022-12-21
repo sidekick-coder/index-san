@@ -50,9 +50,7 @@ const props = defineProps({
 })
 
 // bindings
-const attrs = useAttrs()
-
-const bindings = computed(() => createBindings(attrs, ['table', 'head']))
+const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
 
 // collection
 
@@ -246,18 +244,14 @@ async function create() {
                             no-padding
                             :class="c.id[0] === '_' ? '!border-x-0' : ''"
                         >
-                            <is-menu
-                                v-if="c.id === '_actions_left'"
-                                offset-y
-                                close-on-content-click
-                            >
-                                <template #activator="{ on }">
+                            <v-menu v-if="c.id === '_actions_left'" offset-y close-on-content-click>
+                                <template #activator="{ attrs }">
                                     <v-btn
                                         class="w-full h-[40px] opacity-0 group-hover/item:opacity-100"
                                         size="none"
                                         color="b-secondary"
                                         tile
-                                        v-bind="on"
+                                        v-bind="attrs"
                                     >
                                         <v-icon name="ellipsis-vertical" />
                                     </v-btn>
@@ -274,7 +268,7 @@ async function create() {
                                         {{ $t('deleteEntity', [$t('item')]) }}
                                     </v-list-item>
                                 </v-card>
-                            </is-menu>
+                            </v-menu>
 
                             <div v-else-if="c.id === '_actions_right'"></div>
 

@@ -32,9 +32,7 @@ const props = defineProps({
     },
 })
 // bindings
-const attrs = useAttrs()
-
-const bindings = computed(() => createBindings(attrs, ['head', 'table', 'gallery']))
+const bindings = computed(() => createBindings(useAttrs(), ['head', 'table', 'gallery']))
 
 // collection
 
@@ -181,10 +179,10 @@ function showMenu(id: string, handler: () => void) {
                     >
                         <template #item="{ element: v }">
                             <div>
-                                <is-menu offset-y :open-on-click="false" close-on-content-click>
-                                    <template #activator="{ on, toggle }">
+                                <v-menu offset-y :open-on-click="false" close-on-content-click>
+                                    <template #activator="{ attrs, toggle }">
                                         <v-btn
-                                            v-bind="on"
+                                            v-bind="attrs"
                                             text
                                             size="text-sm px-4 h-[45px]"
                                             tile
@@ -202,19 +200,19 @@ function showMenu(id: string, handler: () => void) {
                                             {{ $t('deleteEntity', ['view']) }}
                                         </v-list-item>
                                     </v-card>
-                                </is-menu>
+                                </v-menu>
                             </div>
                         </template>
                     </v-draggable>
 
-                    <is-menu offset-y close-on-content-click>
-                        <template #activator="{ on }">
+                    <v-menu offset-y close-on-content-click>
+                        <template #activator="{ attrs }">
                             <v-btn
                                 text
                                 size="text-sm px-4 h-[45px]"
                                 tile
                                 color="border-b border-transparent hover:bg-b-secondary/50"
-                                v-bind="on"
+                                v-bind="attrs"
                             >
                                 <template v-if="!all.length">
                                     <span class="mr-4">
@@ -234,7 +232,7 @@ function showMenu(id: string, handler: () => void) {
                                 {{ $t('addEntity', [$t('gallery')]) }}
                             </v-list-item>
                         </v-card>
-                    </is-menu>
+                    </v-menu>
                 </div>
             </template>
         </c-actions>

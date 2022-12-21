@@ -49,10 +49,10 @@ function onSelect(option: string) {
 }
 </script>
 <template>
-    <is-menu v-model="menu" offset-y>
-        <template #activator="{ on }">
-            <slot name="activator" :attrs="on">
-                <v-btn class="w-[32px] h-[32px]" v-bind="on">
+    <v-menu v-model="menu" offset-y>
+        <template #activator="{ attrs }">
+            <slot name="activator" :attrs="attrs">
+                <v-btn class="w-[32px] h-[32px]" v-bind="attrs">
                     <v-icon v-if="model" :name="model"></v-icon>
                     <v-icon v-else name="dice"></v-icon>
                 </v-btn>
@@ -90,5 +90,5 @@ function onSelect(option: string) {
                 {{ $t('loadMore') }}...
             </v-btn>
         </v-card>
-    </is-menu>
+    </v-menu>
 </template>

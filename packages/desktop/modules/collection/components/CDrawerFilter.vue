@@ -79,9 +79,9 @@ function add(column: Column) {
                 {{ $t('noEntity', [$t('filter', 2)]) }}
             </div>
 
-            <is-menu offset-y close-on-content-click>
-                <template #activator="{ on }">
-                    <v-btn v-bind="on" class="w-full" color="info">
+            <v-menu offset-y close-on-content-click>
+                <template #activator="{ attrs }">
+                    <v-btn v-bind="attrs" class="w-full" color="info">
                         <v-icon name="plus" class="mr-4" />
                         {{ $t('addEntity', [$t('filter')]) }}
                     </v-btn>
@@ -92,7 +92,7 @@ function add(column: Column) {
                         {{ c.label }}
                     </v-list-item>
                 </v-card>
-            </is-menu>
+            </v-menu>
         </v-card-content>
     </v-drawer>
 </template>
