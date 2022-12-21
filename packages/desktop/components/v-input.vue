@@ -117,7 +117,7 @@ const classes = computed(() => {
 
     let color = inputColors.default[props.color]
 
-    if (props.flat) {
+    if (props.flat && color) {
         color = inputColors.flat[props.color]
     }
 
@@ -125,11 +125,11 @@ const classes = computed(() => {
         result.push(props.rounded ? 'rounded-full' : 'rounded-sm')
     }
 
-    result.push(color.normal)
+    result.push(color ? color.normal : props.color)
 
     result.push(sizes[props.size] || props.size)
 
-    if (input.value.isFocus) {
+    if (input.value.isFocus && color) {
         result.push(color.focus)
     }
 
@@ -183,7 +183,7 @@ onMounted(() => {
                 :placeholder="placeholder"
                 :readonly="readonly"
                 v-bind="bindings.input"
-                class="bg-transparent outline-none grow max-w-full placeholder:text-t-secondary/50"
+                class="bg-transparent outline-none grow w-full placeholder:text-t-secondary/50"
                 @focus="onFocus"
                 @blur="onBlur"
             />

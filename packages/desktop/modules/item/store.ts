@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useStore as useCollection } from '@/modules/collection/store'
+import { useStore as useColumn } from '@/modules/collection-column/store'
 import { useStore as useEntry } from '@/modules/entry/store'
 
 import ListItemsDTO from '@core/use-cases/list-items/list-items.dto'
@@ -15,8 +17,12 @@ interface StoreItems {
 }
 
 export const useStore = defineStore('item', () => {
-    const workspace = useWorkspace()
-    const entry = useEntry()
+    const stores = {
+        workspace: useWorkspace(),
+        column: useColumn(),
+        entry: useEntry(),
+        collection: useCollection(),
+    }
 
     const items = ref<StoreItems[]>([])
 
@@ -39,12 +45,14 @@ export const useStore = defineStore('item', () => {
 
         const raw: Item[] = await useCase('list-items', {
             collectionId,
-            workspaceId: workspace.currentId!,
+            workspaceId: stores.workspace.currentId!,
         })
             .then((r) => r.data)
             .catch(() => [])
 
         storeItem.items = raw
+
+        items.value = items.value.slice()
 
         setTimeout(() => {
             storeItem!.loading = false
@@ -59,10 +67,22 @@ export const useStore = defineStore('item', () => {
         return storeItem?.items || []
     }
 
-    function get(collectionId: string): Item[] {
+    function all(collectionId: string): Item[] {
         const storeItem = items.value.find((i) => i.collectionId === collectionId)
 
         return storeItem?.items || []
+    }
+
+    function get(collectionId: string, itemId: string) {
+        const storeItem = items.value.find((i) => i.collectionId === collectionId)
+
+        if (!storeItem) return null
+
+        const item = storeItem.items.find((i) => i.id === itemId)
+
+        if (item) return item
+
+        return null
     }
 
     function getStoreItem(collectionId: string) {
@@ -70,9 +90,7 @@ export const useStore = defineStore('item', () => {
     }
 
     async function list(payload: Partial<ListItemsDTO.Input>) {
-        if (!payload.workspaceId && workspace.currentId) {
-            payload.workspaceId = workspace.currentId
-        }
+        payload.workspaceId = stores.workspace.currentId!
 
         return useCase('list-items', payload as any)
     }
@@ -86,7 +104,7 @@ export const useStore = defineStore('item', () => {
 
         await useCase('create-item', {
             collectionId,
-            workspaceId: workspace.currentId!,
+            workspaceId: stores.workspace.currentId!,
             data: payload,
         }).catch(() => {
             if (storeItem) {
@@ -98,7 +116,7 @@ export const useStore = defineStore('item', () => {
     async function update(collectionId: string, id: string, payload: Partial<Item>) {
         await useCase('update-item', {
             collectionId,
-            workspaceId: workspace.currentId!,
+            workspaceId: stores.workspace.currentId!,
             itemId: id,
             data: payload,
         })
@@ -118,16 +136,19 @@ export const useStore = defineStore('item', () => {
 
         await useCase('delete-item', {
             collectionId,
-            workspaceId: workspace.currentId!,
+            workspaceId: stores.workspace.currentId!,
             itemId,
         }).catch(() => storeItem.items.push(item))
     }
 
     return {
-        workspace,
-        entry,
+        workspace: stores.workspace,
+        entry: stores.entry,
+        column: stores.column,
+        collection: stores.collection,
 
         get,
+        all,
         getItems,
         getStoreItem,
         setItems,

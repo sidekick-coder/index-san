@@ -1,5 +1,10 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
-import { computed, ref, watch, PropType } from 'vue'
+import { computed, ref, watch, useAttrs, PropType } from 'vue'
 import template from 'lodash/template'
 
 import uuid from 'uuid-random'
@@ -14,6 +19,7 @@ import EEntryIcon from '@/modules/entry/components/EEntryIcon.vue'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '../store'
+import { createBindings } from '@/composables/binding'
 
 const props = defineProps({
     modelValue: {
@@ -145,33 +151,43 @@ function upload() {
 
     input.click()
 }
+
+// bindings
+
+const bindings = computed(() => createBindings(useAttrs(), ['input']))
 </script>
 
 <template>
     <v-input
-        v-if="column.type === 'number'"
+        v-if="column.type === 'text'"
         v-model="model"
         :placeholder="column.label"
-        flat
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
+
+    <v-input
+        v-else-if="column.type === 'number'"
+        v-model="model"
+        :placeholder="column.label"
         type="number"
         class="w-full"
+        v-bind="bindings.multiple(['root', 'input'])"
     />
 
     <v-select
         v-else-if="column.type === 'select'"
         v-model="model"
         :options="select.options"
-        flat
         :placeholder="column.label"
+        v-bind="bindings.multiple(['root'])"
     />
 
     <v-dialog v-else-if="column.type === 'script'">
         <template #activator="{ attrs }">
             <v-input
-                v-bind="attrs"
+                v-bind="{ ...attrs, ...bindings.multiple(['root', 'input']) }"
                 :model-value="scriptLabel"
                 readonly
-                flat
                 input:class="cursor-pointer w-full"
                 :placeholder="column.label"
             />
@@ -194,41 +210,31 @@ function upload() {
         :placeholder="column.label"
         return-object
         value-key="id"
-        flat
+        v-bind="bindings.multiple(['root'])"
     />
 
-    <template v-else-if="column.type === 'entry'">
-        <div class="px-4">
-            <v-btn v-if="!model" color="info" size="sm" @click="upload">
-                {{ $t('upload') }}
-            </v-btn>
-
-            <v-menu v-else offset-y close-on-content-click>
-                <template #activator="{ attrs }">
-                    <v-btn
-                        size="sm"
-                        v-bind="attrs"
-                        color="b-secondary"
-                        class="w-full !justify-start"
-                    >
-                        <e-entry-icon :model-value="model" class="mr-2" />
-
-                        {{ DirectoryEntry.basename(model as string) }}
-                    </v-btn>
+    <v-menu v-else-if="column.type === 'entry'" offset-y close-on-content-click>
+        <template #activator="{ attrs }">
+            <v-input
+                :model-value="!model ? $t('upload') : DirectoryEntry.basename(model)"
+                v-bind="{ ...attrs, ...bindings.multiple(['root', 'input']) }"
+                readonly
+                input:class="cursor-pointer"
+            >
+                <template #append>
+                    <e-entry-icon :model-value="model" class="mr-2" />
                 </template>
-                <v-card color="b-secondary">
-                    <v-list-item @click="upload">
-                        {{ $t('upload') }}
-                    </v-list-item>
-                    <v-list-item @click="deleteEntry">
-                        {{ $t('deleteEntity', [$t('entry')]) }}
-                    </v-list-item>
-                </v-card>
-            </v-menu>
-        </div>
-    </template>
-
-    <v-input v-else-if="column.type === 'text'" v-model="model" flat :placeholder="column.label" />
+            </v-input>
+        </template>
+        <v-card color="b-secondary">
+            <v-list-item @click="upload">
+                {{ $t('upload') }}
+            </v-list-item>
+            <v-list-item @click="deleteEntry">
+                {{ $t('deleteEntity', [$t('entry')]) }}
+            </v-list-item>
+        </v-card>
+    </v-menu>
 
     <div v-else class="text-danger px-4 py-2">
         {{ $t('errors.unknown') }}

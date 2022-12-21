@@ -26,6 +26,8 @@ export function parse(source: string, options?: Options) {
         },
     })
 
+    md.disable('code')
+
     md.renderer.rules.image = function (tokens, idx, tokenOptions, env, slf) {
         const token = tokens[idx]
 

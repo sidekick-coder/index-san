@@ -1,17 +1,27 @@
+<script lang="ts">
+export default {
+    inheritAttrs: true,
+}
+</script>
 <script setup lang="ts">
 import { useState } from '@/composables/state'
-import { ref, watch } from 'vue'
+import { ref, watch, computed, useAttrs } from 'vue'
 import { useStore } from '@/modules/entry/store'
 
 import EMarkdownDoc from '../components/EMarkdownDoc.vue'
 import MEditor from '@/modules/monaco/components/MEditor.vue'
 import DirectoryEntry from '@/../core/entities/directory-entry'
 import { useRoute } from 'vue-router'
+import { createBindings } from '@/composables/binding'
 
 const props = defineProps({
     path: {
         type: String,
         required: true,
+    },
+    hideActions: {
+        type: Boolean,
+        default: false,
     },
 })
 
@@ -44,6 +54,8 @@ async function setContent() {
         path: props.path,
     })
 
+    if (!contentBuffer) return
+
     content.value = decoder.decode(contentBuffer)
 
     setPreview()
@@ -74,10 +86,22 @@ const route = useRoute()
 const key = `app:markdown:states:${route.path}`
 
 const state = useState(key, {}, { localStorage: true })
+
+// define expose
+
+defineExpose({
+    edit,
+    save,
+    setPreview,
+})
+
+// bindings
+
+const bindings = computed(() => createBindings(useAttrs(), ['doc']))
 </script>
 <template>
-    <w-layout use-percentage>
-        <w-toolbar class="border-b border-b-lines">
+    <v-layout :id="path" use-percentage v-bind="bindings.root">
+        <v-layout-toolbar v-if="!hideActions" class="border-b border-b-lines">
             <v-container class="-mr-3 flex justify-end w-full">
                 <v-card-title class="mr-auto">
                     {{ DirectoryEntry.basename(path) }}
@@ -98,9 +122,9 @@ const state = useState(key, {}, { localStorage: true })
                     {{ !edit ? $t('editMode') : $t('viewMode') }}
                 </v-btn>
             </v-container>
-        </w-toolbar>
+        </v-layout-toolbar>
 
-        <w-content>
+        <v-layout-content>
             <div class="h-full flex">
                 <div v-show="edit" class="min-h-full w-6/12 pl-[calc(40px_-_26px)]">
                     <m-editor
@@ -132,9 +156,10 @@ const state = useState(key, {}, { localStorage: true })
                         class="w-full pb-32"
                         :content="content"
                         :base-path="DirectoryEntry.dirname(path)"
+                        v-bind="bindings.doc"
                     />
                 </div>
             </div>
-        </w-content>
-    </w-layout>
+        </v-layout-content>
+    </v-layout>
 </template>

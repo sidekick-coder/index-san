@@ -12,6 +12,8 @@ const props = defineProps({
 const icon = computed(() => {
     let entry = props.modelValue
 
+    if (!entry) return 'file'
+
     if (typeof entry === 'string') {
         entry = DirectoryEntry.file(entry)
     }
@@ -41,6 +43,8 @@ const icon = computed(() => {
 
 const color = computed(() => {
     let entry = props.modelValue
+
+    if (!entry) return 'text-t-primary'
 
     if (typeof entry === 'string') {
         entry = DirectoryEntry.file(entry)

@@ -130,6 +130,8 @@ onKeyStroke(['ArrowRight'], (e) => {
                 <v-icon name="arrow-right" />
             </v-btn>
 
+            <slot name="append-navigation" />
+
             <template v-for="(link, index) in links" :key="index">
                 <v-btn v-if="link.to" size="sm" text :to="link.to">
                     {{ link.label }}
@@ -142,7 +144,11 @@ onKeyStroke(['ArrowRight'], (e) => {
                 <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
             </template>
 
-            <v-btn class="ml-auto" text size="sm" @click="menu.toggle">
+            <slot name="append-links">
+                <div class="grow"></div>
+            </slot>
+
+            <v-btn text size="sm" @click="menu.toggle">
                 <v-icon :name="menu.item ? 'star' : 'fa-regular fa-star'" />
             </v-btn>
         </slot>

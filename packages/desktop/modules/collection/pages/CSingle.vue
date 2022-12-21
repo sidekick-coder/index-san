@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from '../store'
 
 import LLayout from '@/modules/layout/LLayout.vue'
-import EFolder from '@/modules/entry/views/EFolder.vue'
+import EFolder from '@/modules/entry/pages/EFolder.vue'
 
 const props = defineProps({
     collectionId: {
@@ -17,15 +17,11 @@ const props = defineProps({
 const router = useRouter()
 const store = useStore()
 
-const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
+const collection = computed(() => store.get(props.collectionId))
 
 async function load() {
     if (!collection.value) {
-        await store.setCollections()
-    }
-
-    if (!collection.value) {
-        await router.push('/404')
+        router.push('/404')
     }
 }
 

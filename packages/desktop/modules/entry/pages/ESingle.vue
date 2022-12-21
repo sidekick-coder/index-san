@@ -36,7 +36,7 @@ async function setEntry() {
         .then((r) => {
             entry.value = r.data
 
-            meta.value.title = entry.value.name || 'Entries'
+            meta.value.title = r.data.name || 'Entries'
         })
         .catch(() => router.push('/404'))
 }
@@ -83,6 +83,8 @@ async function setView() {
 }
 
 watch(() => entry.value?.path, setView, { deep: true })
+
+// check if is item
 </script>
 <template>
     <component :is="views[current]" v-if="entry" :path="entry.path" />

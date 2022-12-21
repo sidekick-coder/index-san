@@ -231,33 +231,10 @@ function show(item: DirectoryEntry) {
 <template>
     <v-layout use-percentage>
         <l-toolbar>
-            <template #default="data">
-                <v-btn v-if="!data.drawer.show" text size="sm" @click="data.drawer.toggle">
-                    <v-icon name="bars" />
-                </v-btn>
-
-                <v-btn
-                    :disabled="!data.navigation.haveBack"
-                    text
-                    size="sm"
-                    @click="data.navigation.goBack"
-                >
-                    <v-icon name="arrow-left" />
-                </v-btn>
-
-                <v-btn
-                    :disabled="!data.navigation.haveForward"
-                    text
-                    size="sm"
-                    @click="data.navigation.goForward"
-                >
-                    <v-icon name="arrow-right" />
-                </v-btn>
-
+            <template #append-navigation>
                 <v-btn text size="sm" @click="setEntries">
                     <v-icon name="rotate" />
                 </v-btn>
-
                 <v-menu v-model="menu" offset-y>
                     <template #activator="{ attrs }">
                         <v-btn text size="sm" v-bind="attrs">
@@ -274,22 +251,9 @@ function show(item: DirectoryEntry) {
                         </v-list-item>
                     </v-card>
                 </v-menu>
+            </template>
 
-                <template v-for="(link, index) in data.links" :key="index">
-                    <v-btn v-if="link.to" size="sm" text :to="link.to">
-                        {{ link.label }}
-                    </v-btn>
-
-                    <div v-else class="text-xs px-3 py-1" v-text="link.label" />
-
-                    <div
-                        v-if="data.links.length >= 2 && index !== data.links.length - 1"
-                        class="px-1"
-                    >
-                        /
-                    </div>
-                </template>
-
+            <template #append-links>
                 <v-input
                     v-model="search"
                     placeholder="search"
@@ -298,10 +262,6 @@ function show(item: DirectoryEntry) {
                     rounded
                     wrapper:class="h-full"
                 />
-
-                <v-btn text size="sm" @click="data.menu.toggle">
-                    <v-icon :name="data.menu.item ? 'star' : 'fa-regular fa-star'" />
-                </v-btn>
             </template>
         </l-toolbar>
 

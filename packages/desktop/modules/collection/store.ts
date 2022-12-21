@@ -27,8 +27,16 @@ export const useStore = defineStore('collections', () => {
         return await useCase('list-collections', {
             workspaceId,
         })
-            .then((r) => (collections.value = get(r, 'data', [])))
+            .then((r) => (collections.value = r.data))
             .catch(() => (collections.value = [] as Collection[]))
+    }
+
+    function get(collectionId: string) {
+        const collection = collections.value.find((c) => c.id === collectionId)
+
+        if (collection) return collection
+
+        return null
     }
 
     async function show(payload: Partial<ShowCollectionsDTO.Input>) {
@@ -78,6 +86,7 @@ export const useStore = defineStore('collections', () => {
         collections,
 
         setCollections,
+        get,
         show,
         create,
         update,

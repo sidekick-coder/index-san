@@ -16,6 +16,10 @@ const props = defineProps({
         type: Object,
         default: null,
     },
+    scope: {
+        type: Object,
+        default: () => ({}),
+    },
     basePath: {
         type: String,
         default: null,
@@ -45,7 +49,7 @@ const components = {
 
 const view = defineComponent({
     components,
-    setup: () => ({ state: innerState }),
+    setup: () => ({ ...props.scope, state: innerState }),
     template: markdown.parse(props.content, {
         basePath: props.basePath,
     }),

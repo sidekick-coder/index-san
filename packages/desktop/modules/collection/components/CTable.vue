@@ -109,11 +109,10 @@ const columns = computed({
     get() {
         const columns: any[] = withView(store.column.all(props.collectionId), view.value?.columns)
 
-        // console.log(columns)
-
         columns.unshift({
             id: '_actions_left',
-            width: 26,
+            label: '#',
+            width: 43,
         })
 
         columns.push({
@@ -144,10 +143,10 @@ function resizeColumn(id: string, width: number) {
 
 const items = computed(() => {
     if (view.value) {
-        return withViewFilters(store.item.get(props.collectionId), view.value)
+        return withViewFilters(store.item.all(props.collectionId), view.value)
     }
 
-    return store.item.get(props.collectionId)
+    return store.item.all(props.collectionId)
 })
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
@@ -200,22 +199,28 @@ async function create() {
             >
                 <template #column>
                     <Draggable v-model="columns" handle=".drag" item-key="id" tag="v-tr">
-                        <template #item="{ element: c }">
+                        <template #item="{ element: c, index }">
                             <v-th
                                 v-show="!c.hide"
                                 :id="c.id"
                                 :width="c.width || 200"
-                                :class="c.id.startsWith('_') ? '!border-x-0 !px-0' : ''"
+                                :class="[
+                                    c.id.startsWith('_') ? '!border-x-0 !px-2' : '',
+                                    index === 1 ? '!pl-0' : '',
+                                ]"
                             >
                                 <v-btn
                                     v-if="c.id === '_actions_right'"
-                                    size="sm"
+                                    size="h-8 w-8 text-xs"
+                                    class="text-t-secondary"
+                                    rounded
                                     text
-                                    class="text-t-secondary mx-2"
                                     @click="store.column.create(collectionId)"
                                 >
                                     <v-icon name="plus" />
                                 </v-btn>
+
+                                <div v-else-if="c.id === '_actions_left'"></div>
 
                                 <template v-else-if="!c.id.startsWith('_')">
                                     <cc-column
@@ -238,37 +243,53 @@ async function create() {
                 <template #item="data">
                     <v-tr class="relative group/item">
                         <v-td
-                            v-for="c in columns"
+                            v-for="(c, cIndex) in columns"
                             v-show="!c.hide"
                             :key="c.id"
                             no-padding
-                            :class="c.id[0] === '_' ? '!border-x-0' : ''"
+                            :class="[c.id.startsWith('_') ? '!border-x-0' : '']"
+                            class="relative"
                         >
-                            <v-menu v-if="c.id === '_actions_left'" offset-y close-on-content-click>
-                                <template #activator="{ attrs }">
-                                    <v-btn
-                                        class="w-full h-[40px] opacity-0 group-hover/item:opacity-100"
-                                        size="none"
-                                        color="b-secondary"
-                                        tile
-                                        v-bind="attrs"
-                                    >
-                                        <v-icon name="ellipsis-vertical" />
-                                    </v-btn>
-                                </template>
+                            <div
+                                v-if="c.id === '_actions_left'"
+                                class="flex justify-center opacity-0 group-hover/item:opacity-100"
+                            >
+                                <v-menu offset-y close-on-content-click>
+                                    <template #activator="{ attrs }">
+                                        <v-btn
+                                            size="h-8 w-8 text-xs"
+                                            class="text-t-secondary"
+                                            rounded
+                                            text
+                                            v-bind="attrs"
+                                        >
+                                            <v-icon name="ellipsis-vertical" />
+                                        </v-btn>
+                                    </template>
 
-                                <v-card color="b-primary">
-                                    <v-list-item
-                                        size="xs"
-                                        color="danger"
-                                        dark
-                                        @click="store.item.destroy(collectionId, data.item.id)"
-                                    >
-                                        <v-icon name="trash" class="mr-2" />
-                                        {{ $t('deleteEntity', [$t('item')]) }}
-                                    </v-list-item>
-                                </v-card>
-                            </v-menu>
+                                    <v-card color="b-secondary">
+                                        <v-list-item
+                                            size="xs"
+                                            color="info"
+                                            dark
+                                            :to="`/collections/${collectionId}/items/${data.item.id}`"
+                                        >
+                                            <v-icon name="eye" class="mr-2" />
+                                            {{ $t('viewEntity', [$t('item')]) }}
+                                        </v-list-item>
+
+                                        <v-list-item
+                                            size="xs"
+                                            color="danger"
+                                            dark
+                                            @click="store.item.destroy(collectionId, data.item.id)"
+                                        >
+                                            <v-icon name="trash" class="mr-2" />
+                                            {{ $t('deleteEntity', [$t('item')]) }}
+                                        </v-list-item>
+                                    </v-card>
+                                </v-menu>
+                            </div>
 
                             <div v-else-if="c.id === '_actions_right'"></div>
 
@@ -277,8 +298,22 @@ async function create() {
                                 :model-value="data.item[c.field as string]"
                                 :column="(c as Column)"
                                 :item="data.item"
+                                :size="cIndex === 1 ? 'none' : 'md'"
+                                color="none"
+                                flat
                                 @update:model-value="updateItem(data.item, c.field!, $event)"
                             />
+
+                            <v-btn
+                                v-if="cIndex === 1"
+                                size="h-8 w-8 text-xs"
+                                rounded
+                                text
+                                class="absolute right-2 top-1 text-t-secondary opacity-0 group-hover/item:opacity-100"
+                                :to="`/collections/${collectionId}/items/${data.item.id}`"
+                            >
+                                <v-icon name="eye" />
+                            </v-btn>
                         </v-td>
                     </v-tr>
                 </template>
@@ -289,7 +324,7 @@ async function create() {
 
                         <v-td
                             :colspan="collection?.columns.length"
-                            class="!border-x-0 !px-4 text-t-secondary text-sm"
+                            class="!border-x-0 !px-0 text-t-secondary text-sm"
                         >
                             <fa-icon icon="plus" class="mr-2" />
 

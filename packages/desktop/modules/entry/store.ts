@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import { useCase } from '@/composables/use-case'
 import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useStore as useCollection } from '@/modules/collection/store'
 
 import ListDirectoryEntryDTO from '@core/use-cases/list-directory-entry/list-directory.dto'
 import ShowDirectoryEntryDTO from '@core/use-cases/show-directory-entry/show-directory-entry.dto'
@@ -15,6 +16,10 @@ import WriteDirectoryEntryDTO from '@core/use-cases/write-directory-entry/write-
 
 export const useStore = defineStore('entry', () => {
     const workspace = useWorkspace()
+
+    const stores = {
+        collection: useCollection(),
+    }
 
     const layout = ref({
         toolbar: true,
@@ -77,6 +82,8 @@ export const useStore = defineStore('entry', () => {
     }
 
     return {
+        collection: stores.collection,
+
         layout,
 
         list,

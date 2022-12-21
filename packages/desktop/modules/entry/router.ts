@@ -4,6 +4,7 @@ export default (router: Router) => {
     router.addRoute({
         path: '/entries',
         component: () => import('./ELayout.vue'),
+        props: true,
         children: [
             {
                 path: '',

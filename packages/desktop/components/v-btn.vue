@@ -34,6 +34,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    href: {
+        type: String,
+        default: null,
+    },
     loading: {
         type: Boolean,
         default: false,
@@ -96,8 +100,10 @@ const classes = computed(() => {
 </script>
 <template>
     <component
-        :is="to ? 'router-link' : 'button'"
+        :is="to ? 'router-link' : href ? 'a' : 'button'"
         :to="to"
+        :href="href"
+        :target="href ? '_blank' : undefined"
         :class="classes"
         :disabled="disabled"
         :type="type"

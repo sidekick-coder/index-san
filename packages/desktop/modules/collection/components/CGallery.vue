@@ -141,10 +141,10 @@ const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).
 
 const items = computed(() => {
     if (view.value) {
-        return withViewFilters(store.item.get(props.collectionId), view.value)
+        return withViewFilters(store.item.all(props.collectionId), view.value)
     }
 
-    return store.item.get(props.collectionId)
+    return store.item.all(props.collectionId)
 })
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
@@ -226,7 +226,7 @@ async function create() {
                                     :model-value="data.item[c.field]"
                                     :column="c"
                                     :item="data.item"
-                                    class="w-full"
+                                    flat
                                     @update:model-value="updateItem(data.item, c.field, $event)"
                                 />
                             </v-list-item>

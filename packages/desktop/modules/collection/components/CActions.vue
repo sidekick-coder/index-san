@@ -112,7 +112,7 @@ async function refresh() {
                     </div>
                 </template>
 
-                <v-card color="b-secondary">
+                <v-card color="b-secondary" width="300">
                     <v-card-content class="flex flex-wrap gap-y-4">
                         <v-input v-model="view.label" :label="$t('label')" />
 
