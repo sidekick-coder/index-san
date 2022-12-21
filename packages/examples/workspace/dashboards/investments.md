@@ -7,7 +7,7 @@ Investments management template
     collection-id="investments-extract"
     view-id="extract"
 >
-    <is-table :limit="5" />
+    <v-table :limit="5" />
 </is-collection>
 
 ## Assets

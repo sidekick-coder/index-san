@@ -26,7 +26,7 @@ function setItem() {
 onMounted(setItem)
 </script>
 <template>
-    <div class="is-tab">
+    <div class="v-tab">
         <header class="flex gap-x-4 border-b border-b-primary bg-b-primary">
             <div
                 v-for="(item, index) in items"
