@@ -38,20 +38,6 @@ const items = computed(() => {
             id: 'options',
             icon: 'cog',
         },
-        {
-            label: tm.t('collection', 2),
-            to: '/collections',
-            children: [],
-            id: 'collections',
-            icon: 'database',
-        },
-        {
-            label: tm.t('script', 2),
-            to: '/scripts',
-            children: [],
-            id: 'scripts',
-            icon: 'code',
-        },
     ]
 
     return result.concat(menuStore.menu)
