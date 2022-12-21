@@ -83,10 +83,10 @@ async function onItemDelete(item: Script) {
         <template #item-actions="{ item }">
             <v-td class="px-2 flex">
                 <v-btn text size="sm" :to="`/scripts/${item.id}`">
-                    <is-icon name="eye" />
+                    <v-icon name="eye" />
                 </v-btn>
                 <v-btn text size="sm" color="danger" @click="onItemDelete(item)">
-                    <is-icon name="trash" />
+                    <v-icon name="trash" />
                 </v-btn>
             </v-td>
         </template>

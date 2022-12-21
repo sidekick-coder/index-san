@@ -83,18 +83,18 @@ async function refresh() {
                                     class="w-5 h-5"
                                     @click="input = ''"
                                 >
-                                    <is-icon name="times" />
+                                    <v-icon name="times" />
                                 </v-btn>
                             </template>
                         </is-input>
                     </transition>
 
                     <v-btn text size="sm" @click="showInput = !showInput">
-                        <is-icon name="search" />
+                        <v-icon name="search" />
                     </v-btn>
 
                     <v-btn text size="sm" @click="refresh">
-                        <is-icon name="rotate" />
+                        <v-icon name="rotate" />
                     </v-btn>
 
                     <c-drawer-hide-columns :collection-id="collectionId" :view-id="viewId" />
@@ -107,7 +107,7 @@ async function refresh() {
                 <template #activator="{ on }">
                     <div class="h-[44px] flex items-center" v-bind="on">
                         <v-btn text size="sm" @click="menu = !menu">
-                            <is-icon name="cog" />
+                            <v-icon name="cog" />
                         </v-btn>
                     </div>
                 </template>

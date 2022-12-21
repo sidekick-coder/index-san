@@ -119,7 +119,7 @@ const relation = computed(() => {
     </div>
 
     <div v-else-if="!column" class="text-t-secondary text-sm overflow-hidden" v-bind="$attrs">
-        <is-icon name="triangle-exclamation" class="mr-2 text-xs" />
+        <v-icon name="triangle-exclamation" class="mr-2 text-xs" />
         {{ $t('errors.unknown') }}
     </div>
 
@@ -141,7 +141,7 @@ const relation = computed(() => {
                     {{ $t('editEntity', [$t('column')]) }}
                 </v-card-title>
                 <v-btn text color="danger" class="ml-auto" @click="deleteColumn">
-                    <is-icon name="trash" />
+                    <v-icon name="trash" />
                 </v-btn>
             </v-card-head>
 
@@ -209,7 +209,7 @@ const relation = computed(() => {
                                 input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
                             >
                                 <template #append>
-                                    <is-icon name="code" class="ml-auto" />
+                                    <v-icon name="code" class="ml-auto" />
                                 </template>
                             </is-input>
                         </template>

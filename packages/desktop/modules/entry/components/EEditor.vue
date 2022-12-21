@@ -48,11 +48,11 @@ async function save() {
         <w-toolbar class="border-b border-b-lines">
             <v-container class="-mr-3 flex justify-end w-full">
                 <v-btn size="sm" class="mr-2" text @click="setContent">
-                    <is-icon name="arrows-rotate" class="mr-2" />
+                    <v-icon name="arrows-rotate" class="mr-2" />
                     {{ $t('reload') }}
                 </v-btn>
                 <v-btn size="sm" class="mr-2" text @click="save">
-                    <is-icon name="save" class="mr-2" />
+                    <v-icon name="save" class="mr-2" />
                     {{ $t('save') }}
                 </v-btn>
             </v-container>

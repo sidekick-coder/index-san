@@ -58,5 +58,5 @@ const color = computed(() => {
 })
 </script>
 <template>
-    <is-icon :name="icon" :class="color" />
+    <v-icon :name="icon" :class="color" />
 </template>

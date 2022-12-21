@@ -141,15 +141,15 @@ async function deleteItem(id: string) {
             <template #item-actions="{ item }">
                 <v-td class="flex gap-x-2 p-2">
                     <v-btn size="sm" text class="mr-2" to="/scripts">
-                        <is-icon name="code" />
+                        <v-icon name="code" />
                     </v-btn>
 
                     <v-btn size="sm" text class="mr-2" to="/collections">
-                        <is-icon name="database" />
+                        <v-icon name="database" />
                     </v-btn>
 
                     <v-btn size="sm" text class="mr-2" to="/entries">
-                        <is-icon name="folder" />
+                        <v-icon name="folder" />
                     </v-btn>
 
                     <v-btn size="sm" text color="danger" @click="deleteItem(item.id)">

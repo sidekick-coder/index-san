@@ -233,7 +233,7 @@ function show(item: DirectoryEntry) {
         <l-toolbar>
             <template #default="data">
                 <v-btn v-if="!data.drawer.show" text size="sm" @click="data.drawer.toggle">
-                    <is-icon name="bars" />
+                    <v-icon name="bars" />
                 </v-btn>
 
                 <v-btn
@@ -242,7 +242,7 @@ function show(item: DirectoryEntry) {
                     size="sm"
                     @click="data.navigation.goBack"
                 >
-                    <is-icon name="arrow-left" />
+                    <v-icon name="arrow-left" />
                 </v-btn>
 
                 <v-btn
@@ -251,17 +251,17 @@ function show(item: DirectoryEntry) {
                     size="sm"
                     @click="data.navigation.goForward"
                 >
-                    <is-icon name="arrow-right" />
+                    <v-icon name="arrow-right" />
                 </v-btn>
 
                 <v-btn text size="sm" @click="setEntries">
-                    <is-icon name="rotate" />
+                    <v-icon name="rotate" />
                 </v-btn>
 
                 <is-menu v-model="menu" offset-y>
                     <template #activator="{ on }">
                         <v-btn text size="sm" v-bind="on">
-                            <is-icon name="plus" />
+                            <v-icon name="plus" />
                         </v-btn>
                     </template>
 
@@ -300,14 +300,14 @@ function show(item: DirectoryEntry) {
                 />
 
                 <v-btn text size="sm" @click="data.menu.toggle">
-                    <is-icon :name="data.menu.item ? 'star' : 'fa-regular fa-star'" />
+                    <v-icon :name="data.menu.item ? 'star' : 'fa-regular fa-star'" />
                 </v-btn>
             </template>
         </l-toolbar>
 
         <v-layout-content class="overflow-auto h-[calc(100vh_-_45px)]">
             <div v-if="loading" class="flex w-full h-full items-center justify-center">
-                <is-icon name="folder" class="text-[5rem] text-t-secondary animate-pulse" />
+                <v-icon name="folder" class="text-[5rem] text-t-secondary animate-pulse" />
             </div>
 
             <div class="h-full overflow-auto">
@@ -353,7 +353,7 @@ function show(item: DirectoryEntry) {
                                     class="ml-auto text-t-secondary opacity-0 group-hover:opacity-100"
                                     :to="`/entries/${item.path}`"
                                 >
-                                    <is-icon name="eye"></is-icon>
+                                    <v-icon name="eye"></v-icon>
                                 </v-btn>
 
                                 <v-btn
@@ -363,7 +363,7 @@ function show(item: DirectoryEntry) {
                                     class="text-t-secondary opacity-0 group-hover:opacity-100"
                                     @click.prevent.stop="deleteEntry(item)"
                                 >
-                                    <is-icon name="trash"></is-icon>
+                                    <v-icon name="trash"></v-icon>
                                 </v-btn>
                             </v-td>
                         </v-tr>

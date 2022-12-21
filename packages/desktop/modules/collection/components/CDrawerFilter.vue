@@ -43,7 +43,7 @@ function add(column: Column) {
     <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
             <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
-                <is-icon name="filter" />
+                <v-icon name="filter" />
                 <div
                     v-if="filters.length"
                     class="bg-accent h-2 w-2 rounded-full absolute top-0 right-0 group-hover/btn:text-t-primary"
@@ -57,11 +57,11 @@ function add(column: Column) {
             </v-card-title>
 
             <v-btn class="mr-4 text-uppercase" text color="warn" @click="clear">
-                <is-icon name="brush" class="rotate-180 block" />
+                <v-icon name="brush" class="rotate-180 block" />
             </v-btn>
 
             <v-btn color="danger" text @click="drawer = false">
-                <is-icon name="times" />
+                <v-icon name="times" />
             </v-btn>
         </v-card-head>
 
@@ -82,7 +82,7 @@ function add(column: Column) {
             <is-menu offset-y close-on-content-click>
                 <template #activator="{ on }">
                     <v-btn v-bind="on" class="w-full" color="info">
-                        <is-icon name="plus" class="mr-4" />
+                        <v-icon name="plus" class="mr-4" />
                         {{ $t('addEntity', [$t('filter')]) }}
                     </v-btn>
                 </template>

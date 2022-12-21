@@ -44,7 +44,7 @@ const show = computed(() => visibleSections.value.includes(props.item.id))
             :class="[item.children.length && !item.isSection ? 'opacity-100' : 'opacity-0']"
             @click.prevent.stop="toggle"
         >
-            <is-icon :name="show ? 'chevron-down' : 'chevron-right'" />
+            <v-icon :name="show ? 'chevron-down' : 'chevron-right'" />
         </v-btn>
         <template v-if="item.isSection">
             <v-btn
@@ -59,7 +59,7 @@ const show = computed(() => visibleSections.value.includes(props.item.id))
         </template>
 
         <template v-else>
-            <is-icon v-if="item.icon" :name="item.icon || 'circle'" class="mr-4" />
+            <v-icon v-if="item.icon" :name="item.icon || 'circle'" class="mr-4" />
 
             <div>{{ item.label }}</div>
         </template>

@@ -103,7 +103,7 @@ const classes = computed(() => {
         :type="type"
     >
         <div v-if="loading" class="absolute flex items-center justify-center">
-            <is-icon name="spinner" class="animate-spin" />
+            <v-icon name="spinner" class="animate-spin" />
         </div>
 
         <div :class="[loading ? 'opacity-0' : '']">

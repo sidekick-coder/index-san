@@ -147,7 +147,7 @@ async function execute() {
                             <div class="font-bold text-xl mr-auto">Output</div>
 
                             <v-btn text @click="reset">
-                                <is-icon name="times" />
+                                <v-icon name="times" />
                             </v-btn>
                         </v-card-head>
 

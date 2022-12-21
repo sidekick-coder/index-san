@@ -159,7 +159,7 @@ function onShowMenu(value: boolean) {
                 input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
             >
                 <template #append>
-                    <is-icon name="chevron-down" class="ml-auto text-t-secondary" />
+                    <v-icon name="chevron-down" class="ml-auto text-t-secondary" />
                 </template>
             </is-input>
         </template>

@@ -222,7 +222,7 @@ function showMenu(id: string, handler: () => void) {
                                     </span>
                                 </template>
 
-                                <is-icon name="plus" />
+                                <v-icon name="plus" />
                             </v-btn>
                         </template>
 
@@ -263,7 +263,7 @@ function showMenu(id: string, handler: () => void) {
 
             <div v-if="!all.length" class="h-full w-full flex items-center justify-center">
                 <div class="text-center mb-2 text-t-secondary">
-                    <is-icon name="box-open" class="text-2xl" />
+                    <v-icon name="box-open" class="text-2xl" />
 
                     <div class="block">
                         {{ $t('noEntity', [$t('view', 2)]) }}

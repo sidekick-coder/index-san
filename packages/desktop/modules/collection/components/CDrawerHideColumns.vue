@@ -77,7 +77,7 @@ function hideAll() {
     <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
             <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
-                <is-icon name="columns" />
+                <v-icon name="columns" />
                 <div
                     v-if="columns.some((c) => c.hide)"
                     class="bg-accent h-2 w-2 rounded-full absolute top-0 right-0 group-hover/btn:text-t-primary"
@@ -99,7 +99,7 @@ function hideAll() {
             </v-btn>
 
             <v-btn color="danger" text @click="drawer = false">
-                <is-icon name="times" />
+                <v-icon name="times" />
             </v-btn>
         </v-card-head>
 
@@ -107,11 +107,11 @@ function hideAll() {
             <template #item="{ element: column }">
                 <is-list-item class="hover:bg-b-secondary">
                     <v-btn class="drag mr-2" size="sm" text>
-                        <is-icon name="grip-vertical" />
+                        <v-icon name="grip-vertical" />
                     </v-btn>
 
                     <v-btn class="drag mr-2" size="sm" text @click="toggle(column.id)">
-                        <is-icon :name="column.hide ? 'eye-slash' : 'eye'" />
+                        <v-icon :name="column.hide ? 'eye-slash' : 'eye'" />
                     </v-btn>
 
                     <div>

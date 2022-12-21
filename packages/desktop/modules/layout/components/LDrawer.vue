@@ -71,7 +71,7 @@ const title = computed(() => {
                 size="sm"
                 @click.prevent.stop="drawer = false"
             >
-                <is-icon name="chevron-left" />
+                <v-icon name="chevron-left" />
             </v-btn>
         </is-list-item>
 

@@ -119,15 +119,15 @@ onKeyStroke(['ArrowRight'], (e) => {
     <v-layout-toolbar class="px-7 border-b border-lines text-sm" :height="45">
         <slot :links="links" :drawer="drawer" :navigation="navigation" :menu="menu">
             <v-btn v-if="!drawer.show" text size="sm" @click="drawer.toggle">
-                <is-icon name="bars" />
+                <v-icon name="bars" />
             </v-btn>
 
             <v-btn :disabled="!navigation.haveBack" text size="sm" @click="navigation.goBack">
-                <is-icon name="arrow-left" />
+                <v-icon name="arrow-left" />
             </v-btn>
 
             <v-btn :disabled="!navigation.haveForward" text size="sm" @click="navigation.goForward">
-                <is-icon name="arrow-right" />
+                <v-icon name="arrow-right" />
             </v-btn>
 
             <template v-for="(link, index) in links" :key="index">
@@ -143,7 +143,7 @@ onKeyStroke(['ArrowRight'], (e) => {
             </template>
 
             <v-btn class="ml-auto" text size="sm" @click="menu.toggle">
-                <is-icon :name="menu.item ? 'star' : 'fa-regular fa-star'" />
+                <v-icon :name="menu.item ? 'star' : 'fa-regular fa-star'" />
             </v-btn>
         </slot>
     </v-layout-toolbar>

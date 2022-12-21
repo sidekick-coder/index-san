@@ -50,7 +50,7 @@ const column = computed(() => props.columns.find((c) => c.id === model.value.col
                     </v-card-title>
 
                     <v-btn color="danger" text size="sm" @click="$emit('destroy')">
-                        <is-icon name="trash" />
+                        <v-icon name="trash" />
                     </v-btn>
                 </v-card-head>
                 <v-card-content class="flex flex-wrap">

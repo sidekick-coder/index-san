@@ -103,19 +103,19 @@ function refresh() {
             </v-card-title>
 
             <v-btn text size="sm" class="ml-auto text-t-secondary" @click="refresh">
-                <is-icon name="chart-pie" />
+                <v-icon name="chart-pie" />
             </v-btn>
 
             <v-btn text size="sm" class="text-t-secondary" @click="refresh">
-                <is-icon name="rotate" />
+                <v-icon name="rotate" />
             </v-btn>
 
             <v-btn text size="sm" class="text-t-secondary" @click="current = 'raw'">
-                <is-icon name="code" />
+                <v-icon name="code" />
             </v-btn>
 
             <v-btn text size="sm" class="text-t-secondary" @click="current = 'debug'">
-                <is-icon name="check-circle" />
+                <v-icon name="check-circle" />
             </v-btn>
         </v-card-head>
 
@@ -132,7 +132,7 @@ function refresh() {
             style="height: calc(100% - 54px)"
             class="flex items-center justify-center animate-pulse"
         >
-            <is-icon name="chart-pie" class="text-[10rem] text-lines" />
+            <v-icon name="chart-pie" class="text-[10rem] text-lines" />
         </v-card-content>
 
         <transition v-else name="fade">

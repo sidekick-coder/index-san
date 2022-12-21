@@ -216,7 +216,7 @@ async function create() {
                                     class="text-t-secondary mx-2"
                                     @click="store.column.create(collectionId)"
                                 >
-                                    <is-icon name="plus" />
+                                    <v-icon name="plus" />
                                 </v-btn>
 
                                 <template v-else-if="!c.id.startsWith('_')">
@@ -259,7 +259,7 @@ async function create() {
                                         tile
                                         v-bind="on"
                                     >
-                                        <is-icon name="ellipsis-vertical" />
+                                        <v-icon name="ellipsis-vertical" />
                                     </v-btn>
                                 </template>
 
@@ -270,7 +270,7 @@ async function create() {
                                         dark
                                         @click="store.item.destroy(collectionId, data.item.id)"
                                     >
-                                        <is-icon name="trash" class="mr-2" />
+                                        <v-icon name="trash" class="mr-2" />
                                         {{ $t('deleteEntity', [$t('item')]) }}
                                     </is-list-item>
                                 </v-card>

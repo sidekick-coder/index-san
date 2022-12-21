@@ -160,7 +160,7 @@ const bindings = computed(() => createBindings(attrs, ['card', 'img']))
         v-bind="bindings.multiple(['card', 'root'])"
     >
         <v-card-content class="items-center justify-center h-full">
-            <is-icon name="image" class="text-2xl" />
+            <v-icon name="image" class="text-2xl" />
         </v-card-content>
     </v-card>
 </template>

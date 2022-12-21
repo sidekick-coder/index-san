@@ -84,17 +84,17 @@ const state = useState(key, {}, { localStorage: true })
                 </v-card-title>
 
                 <v-btn size="sm" class="mr-2" text @click="setPreview">
-                    <is-icon name="arrows-rotate" class="mr-2" />
+                    <v-icon name="arrows-rotate" class="mr-2" />
                     {{ $t('reload') }}
                 </v-btn>
                 <template v-if="edit">
                     <v-btn size="sm" class="mr-2" text @click="save">
-                        <is-icon name="save" class="mr-2" />
+                        <v-icon name="save" class="mr-2" />
                         {{ $t('save') }}
                     </v-btn>
                 </template>
                 <v-btn size="sm" text @click="edit = !edit">
-                    <is-icon :name="!edit ? 'pen' : 'eye'" class="mr-2" />
+                    <v-icon :name="!edit ? 'pen' : 'eye'" class="mr-2" />
                     {{ !edit ? $t('editMode') : $t('viewMode') }}
                 </v-btn>
             </v-container>
@@ -119,7 +119,7 @@ const state = useState(key, {}, { localStorage: true })
                         :style="`min-height: ${preview.height}px`"
                         class="flex w-full h-full items-center justify-center"
                     >
-                        <is-icon
+                        <v-icon
                             name="fa-brands fa-markdown"
                             class="text-[5rem] text-t-secondary animate-pulse"
                         />

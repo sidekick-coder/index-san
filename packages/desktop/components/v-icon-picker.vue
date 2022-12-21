@@ -53,8 +53,8 @@ function onSelect(option: string) {
         <template #activator="{ on }">
             <slot name="activator" :attrs="on">
                 <v-btn class="w-[32px] h-[32px]" v-bind="on">
-                    <is-icon v-if="model" :name="model"></is-icon>
-                    <is-icon v-else name="dice"></is-icon>
+                    <v-icon v-if="model" :name="model"></v-icon>
+                    <v-icon v-else name="dice"></v-icon>
                 </v-btn>
             </slot>
         </template>
@@ -77,7 +77,7 @@ function onSelect(option: string) {
                 text
                 @click="onSelect(option)"
             >
-                <is-icon :name="option"></is-icon>
+                <v-icon :name="option"></v-icon>
             </v-btn>
 
             <v-btn

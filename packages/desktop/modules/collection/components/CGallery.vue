@@ -242,7 +242,7 @@ async function create() {
                         v-bind="data.bindings.card"
                         @click="create"
                     >
-                        <is-icon class="text-2xl text-lines" name="plus" />
+                        <v-icon class="text-2xl text-lines" name="plus" />
                     </v-card>
                 </template>
             </v-gallery>
