@@ -138,5 +138,5 @@ export function withViewFilters(items: Item[], view?: View) {
         })
     }
 
-    return view
+    return items
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ViewCommon from '@/../core/entities/view-common'
+import ViewGallery from '@/../core/entities/view-gallery'
 
 import { debounce } from 'lodash'
 import { ref, watch, computed, onMounted } from 'vue'
@@ -23,13 +24,7 @@ const props = defineProps({
 // collection
 const store = useStore()
 
-const collection = computed(() => store.collections.find((c) => c.id === props.collectionId))
-
-onMounted(async () => {
-    if (!collection.value) {
-        await store.setCollections()
-    }
-})
+const columns = computed(() => store.column.all(props.collectionId))
 
 // view
 
@@ -104,7 +99,7 @@ async function refresh() {
 
                     <c-drawer-hide-columns :collection-id="collectionId" :view-id="viewId" />
 
-                    <c-drawer-filter v-model="view.filters" :columns="collection?.columns" />
+                    <c-drawer-filter v-model="view.filters" :columns="columns" />
                 </div>
             </template>
 
@@ -118,8 +113,81 @@ async function refresh() {
                 </template>
 
                 <v-card color="b-secondary">
-                    <v-card-content>
+                    <v-card-content class="flex flex-wrap gap-y-4">
                         <is-input v-model="view.label" :label="$t('label')" />
+
+                        <template v-if="view instanceof ViewGallery">
+                            <is-select
+                                v-model="view.thumbnail.key"
+                                :options="columns"
+                                label-key="label"
+                                value-key="field"
+                                :label="$t('thumbnail')"
+                            />
+
+                            <is-select
+                                v-model="view.thumbnail.fit"
+                                :options="['cover', 'contain', 'fill', 'none', 'scale-down']"
+                                :label="$t('fit')"
+                            />
+
+                            <is-select
+                                v-model="view.thumbnail.position"
+                                :options="[
+                                    'top',
+                                    'bottom',
+                                    'center',
+                                    'left',
+                                    'right',
+
+                                    'left-top',
+                                    'left-bottom',
+                                    'right-top',
+                                    'right-bottom',
+                                ]"
+                                :label="$t('position')"
+                            />
+
+                            <div class="flex gap-x-4">
+                                <is-input
+                                    v-model="view.sizes.sm.width"
+                                    :label="$t('widthEntity', ['sm'])"
+                                    class="max-w-[80px]"
+                                />
+
+                                <is-input
+                                    v-model="view.sizes.md.width"
+                                    :label="$t('widthEntity', ['md'])"
+                                    class="max-w-[80px]"
+                                />
+
+                                <is-input
+                                    v-model="view.sizes.lg.width"
+                                    :label="$t('widthEntity', ['lg'])"
+                                    class="max-w-[80px]"
+                                />
+                            </div>
+
+                            <div class="flex gap-x-4">
+                                <is-input
+                                    v-model="view.sizes.sm.height"
+                                    :label="$t('heightEntity', ['sm'])"
+                                    class="max-w-[80px]"
+                                />
+
+                                <is-input
+                                    v-model="view.sizes.md.height"
+                                    :label="$t('heightEntity', ['md'])"
+                                    class="max-w-[80px]"
+                                />
+
+                                <is-input
+                                    v-model="view.sizes.lg.height"
+                                    :label="$t('heightEntity', ['lg'])"
+                                    class="max-w-[80px]"
+                                />
+                            </div>
+                        </template>
                     </v-card-content>
                 </v-card>
             </is-menu>

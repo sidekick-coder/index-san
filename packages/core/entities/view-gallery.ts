@@ -14,7 +14,24 @@ export interface ViewGalleryThumbnail {
 export default class ViewGallery extends ViewCommon {
     public readonly component = 'gallery'
 
-    public thumbnail?: ViewGalleryThumbnail
+    public thumbnail: ViewGalleryThumbnail = {
+        fit: '',
+        key: '',
+        position: '',
+    }
 
-    public sizes?: Record<'sm' | 'md' | 'lg', ViewGallerySize>
+    public sizes: Record<'sm' | 'md' | 'lg', ViewGallerySize> = {
+        sm: {
+            width: 200,
+            height: 'auto',
+        },
+        md: {
+            width: 200,
+            height: 'auto',
+        },
+        lg: {
+            width: 200,
+            height: 'auto',
+        },
+    }
 }

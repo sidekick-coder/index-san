@@ -139,7 +139,7 @@ const classes = computed(() => {
         :style="style"
     />
 
-    <v-card v-else :height="height || 100" :width="width" color="b-secondary">
+    <v-card v-else :height="height || 100" :width="width">
         <v-card-content class="items-center justify-center h-full">
             <is-icon name="image" class="text-2xl" />
         </v-card-content>

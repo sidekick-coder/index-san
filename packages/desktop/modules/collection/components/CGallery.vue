@@ -185,102 +185,6 @@ async function create() {
             :view-id="viewId"
         />
 
-        <!-- <v-card-head v-bind="bindings.head">
-            <v-card-title v-if="title" class="grow">
-                {{ title }}
-            </v-card-title>
-
-            <v-btn text size="sm" @click="load">
-                <is-icon name="rotate" />
-            </v-btn>
-
-            <is-menu offset-y>
-                <template #activator="{ on }">
-                    <v-btn text size="sm" v-bind="on">
-                        <is-icon name="cog" />
-                    </v-btn>
-                </template>
-
-                <v-card color="b-secondary" width="300">
-                    <v-card-content class="flex flex-wrap gap-y-4">
-                        <is-select
-                            v-model="view.thumbnail.key"
-                            :options="view.columns"
-                            label-key="label"
-                            value-key="field"
-                            :label="$t('thumbnail')"
-                        />
-
-                        <is-select
-                            v-model="view.thumbnail.fit"
-                            :options="['cover', 'contain', 'fill', 'none', 'scale-down']"
-                            :label="$t('fit')"
-                        />
-
-                        <is-select
-                            v-model="view.thumbnail.position"
-                            :options="[
-                                'top',
-                                'bottom',
-                                'center',
-                                'left',
-                                'right',
-
-                                'left-top',
-                                'left-bottom',
-                                'right-top',
-                                'right-bottom',
-                            ]"
-                            :label="$t('position')"
-                        />
-
-                        <div class="flex gap-x-4">
-                            <is-input
-                                v-model="view.sizes.sm.width"
-                                :label="$t('widthEntity', ['sm'])"
-                                class="max-w-[80px]"
-                            />
-
-                            <is-input
-                                v-model="view.sizes.md.width"
-                                :label="$t('widthEntity', ['md'])"
-                                class="max-w-[80px]"
-                            />
-
-                            <is-input
-                                v-model="view.sizes.lg.width"
-                                :label="$t('widthEntity', ['lg'])"
-                                class="max-w-[80px]"
-                            />
-                        </div>
-
-                        <div class="flex gap-x-4">
-                            <is-input
-                                v-model="view.sizes.sm.height"
-                                :label="$t('heightEntity', ['sm'])"
-                                class="max-w-[80px]"
-                            />
-
-                            <is-input
-                                v-model="view.sizes.md.height"
-                                :label="$t('heightEntity', ['md'])"
-                                class="max-w-[80px]"
-                            />
-
-                            <is-input
-                                v-model="view.sizes.lg.height"
-                                :label="$t('heightEntity', ['lg'])"
-                                class="max-w-[80px]"
-                            />
-                        </div>
-                    </v-card-content>
-                </v-card>
-            </is-menu>
-
-            <c-drawer-hide-columns v-model="view.columns" />
-            <c-drawer-filter v-model="view.filters" :columns="collection?.columns" />
-        </v-card-head> -->
-
         <div
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
@@ -309,7 +213,7 @@ async function create() {
                             :fit="thumbnail.fit"
                             :position="thumbnail.position"
                             width="100%"
-                            class="object-cover"
+                            card:color="b-primary"
                         />
 
                         <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">
@@ -332,8 +236,8 @@ async function create() {
 
                 <template #append-body="data">
                     <v-card
-                        :width="data.size.width"
-                        :height="data.size.height"
+                        :width="!items.length ? '100%' : data.size.width"
+                        :height="!items.length ? '100' : data.size.height"
                         class="rounded border border-lines flex items-center justify-center cursor-pointer"
                         v-bind="data.bindings.card"
                         @click="create"
