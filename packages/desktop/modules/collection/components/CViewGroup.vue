@@ -197,7 +197,7 @@ function showMenu(id: string, handler: () => void) {
                                 color="border-b border-transparent hover:bg-b-secondary/50"
                                 v-bind="attrs"
                             >
-                                <template v-if="!all.length">
+                                <template v-if="!group.length">
                                     <span class="mr-4">
                                         {{ $t('addEntity', [$t('view')]) }}
                                     </span>
@@ -242,7 +242,7 @@ function showMenu(id: string, handler: () => void) {
                 </template>
             </transition-group>
 
-            <div v-if="!all.length" class="h-full w-full flex items-center justify-center">
+            <div v-if="!group.length" class="h-full w-full flex items-center justify-center">
                 <div class="text-center mb-2 text-t-secondary">
                     <v-icon name="box-open" class="text-2xl" />
 
