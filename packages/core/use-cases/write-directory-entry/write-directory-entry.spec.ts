@@ -16,6 +16,7 @@ test.group('write-directory-entry (use-case', () => {
             workspaceId: workspace.id,
             path: 'test.txt',
             data: Buffer.from('update hello word'),
+            contentType: 'Uint8Array',
         })
 
         const result = await app.memoryDrive.read('test.txt')
