@@ -56,7 +56,7 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
 const model = useVModel(props, 'modelValue', emit)
 
@@ -106,10 +106,12 @@ const input = ref({
 
 function onFocus() {
     input.value.isFocus = true
+    emit('focus')
 }
 
 function onBlur() {
     input.value.isFocus = false
+    emit('blur')
 }
 
 const classes = computed(() => {

@@ -18,7 +18,7 @@ import SOutput from '@/modules/script/components/SOutput.vue'
 import EEntryIcon from '@/modules/entry/components/EEntryIcon.vue'
 
 import { useVModel } from 'vue-wind/composables/v-model'
-import { useStore } from '../store'
+import { useStore } from '@/store/global'
 import { createBindings } from '@/composables/binding'
 
 const props = defineProps({
@@ -91,7 +91,7 @@ async function setRelation() {
         return
     }
 
-    await store
+    await store.item
         .list({
             collectionId: props.column.collectionId,
         })
@@ -154,21 +154,19 @@ function upload() {
 
 // bindings
 
-const bindings = computed(() => createBindings(useAttrs(), ['input']))
+const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
 </script>
 
 <template>
     <v-input
         v-if="column.type === 'text'"
         v-model="model"
-        :placeholder="column.label"
         v-bind="bindings.multiple(['root', 'input'])"
     />
 
     <v-input
         v-else-if="column.type === 'number'"
         v-model="model"
-        :placeholder="column.label"
         type="number"
         class="w-full"
         v-bind="bindings.multiple(['root', 'input'])"
@@ -178,8 +176,7 @@ const bindings = computed(() => createBindings(useAttrs(), ['input']))
         v-else-if="column.type === 'select'"
         v-model="model"
         :options="select.options"
-        :placeholder="column.label"
-        v-bind="bindings.multiple(['root'])"
+        v-bind="bindings.multiple(['root', 'select'])"
     />
 
     <v-dialog v-else-if="column.type === 'script'">
@@ -189,7 +186,6 @@ const bindings = computed(() => createBindings(useAttrs(), ['input']))
                 :model-value="scriptLabel"
                 readonly
                 input:class="cursor-pointer w-full"
-                :placeholder="column.label"
             />
         </template>
 
@@ -207,23 +203,20 @@ const bindings = computed(() => createBindings(useAttrs(), ['input']))
         v-model="model"
         :label-key="column.displayField"
         :options="relation.items"
-        :placeholder="column.label"
         return-object
         value-key="id"
-        v-bind="bindings.multiple(['root'])"
+        v-bind="bindings.multiple(['root', 'select'])"
     />
 
     <v-menu v-else-if="column.type === 'entry'" offset-y close-on-content-click>
         <template #activator="{ attrs }">
             <v-input
-                :model-value="!model ? $t('upload') : DirectoryEntry.basename(model)"
+                :model-value="!model ? '' : DirectoryEntry.basename(model)"
                 v-bind="{ ...attrs, ...bindings.multiple(['root', 'input']) }"
                 readonly
+                class="cursor-pointer"
                 input:class="cursor-pointer"
             >
-                <template #append>
-                    <e-entry-icon :model-value="model" class="mr-2" />
-                </template>
             </v-input>
         </template>
         <v-card color="b-secondary">

@@ -19,6 +19,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    to: {
+        type: String,
+        default: null,
+    },
 })
 
 // colors
@@ -67,7 +71,7 @@ const style = computed(() => {
 </script>
 
 <template>
-    <div :class="classes" :style="style">
+    <component :is="to ? 'router-link' : 'div'" :to="to" :class="classes" :style="style">
         <slot />
-    </div>
+    </component>
 </template>

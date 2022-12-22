@@ -2,6 +2,7 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
+import { createBindings } from '@/composables/binding'
 import { computed, ref, useAttrs } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
@@ -44,9 +45,17 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    noChevron: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+// Bindings
+
+const bindings = computed(() => createBindings(useAttrs(), ['menu', 'card']))
 
 // Selection
 
@@ -80,36 +89,6 @@ function getLabel(option: any) {
 
     return option
 }
-
-// Elements attrs
-
-const attrs = useAttrs()
-
-const bindings = computed(() => {
-    const main = {}
-    const card = {}
-    const menu = {}
-
-    Object.keys(attrs).forEach((key) => {
-        if (key.startsWith('card:')) {
-            card[key.replace('card:', '')] = attrs[key]
-            return
-        }
-
-        if (key.startsWith('menu:')) {
-            menu[key.replace('menu:', '')] = attrs[key]
-            return
-        }
-
-        main[key] = attrs[key]
-    })
-
-    return {
-        menu,
-        main,
-        card,
-    }
-})
 
 // display label
 
@@ -147,18 +126,21 @@ function onShowMenu(value: boolean) {
         close-on-content-click
         @update:model-value="onShowMenu"
     >
-        <template #activator="{ attrs }">
+        <template #activator="{ attrs, toggle }">
             <v-input
-                v-bind="{ ...attrs, ...bindings.main }"
+                v-bind="{ ...attrs, ...bindings.root }"
                 :model-value="displayLabel"
                 :label="label"
                 :color="color"
                 :flat="flat"
-                readonly
                 class="cursor-pointer"
-                input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
+                input:class="cursor-pointer"
+                readonly
+                @keydown.enter="toggle"
+                @keydown.esc="menu = false"
+                @blur="menu = false"
             >
-                <template #append>
+                <template v-if="!noChevron" #append>
                     <v-icon name="chevron-down" class="ml-auto text-t-secondary" />
                 </template>
             </v-input>

@@ -141,6 +141,10 @@ const classes = computed(() => {
 const attrs = useAttrs()
 
 const bindings = computed(() => createBindings(attrs, ['card', 'img']))
+
+// expose
+
+defineExpose({ setSrc })
 </script>
 
 <template>

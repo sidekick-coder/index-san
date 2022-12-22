@@ -35,9 +35,7 @@ const props = defineProps({
 })
 
 // bindings
-const attrs = useAttrs()
-
-const bindings = computed(() => createBindings(attrs, ['card', 'head', 'gallery']))
+const bindings = computed(() => createBindings(useAttrs(), ['card', 'head', 'gallery']))
 
 // set collection
 const store = useStore()
@@ -144,14 +142,28 @@ async function load() {
 
 watch(() => view.value?.filters, debounce(load, 500), { deep: true, immediate: true })
 
+const thumbnails = ref(new Map<string, InstanceType<typeof EImg>>())
+
+function reloadThumbnail(itemId: string) {
+    const eImg = thumbnails.value.get(itemId)
+
+    if (eImg) {
+        eImg.setSrc()
+    }
+}
+
 // update item with debounce
 
-const updateItem = debounce((item: Item, field: string, value: any) => {
+const updateItem = debounce(async (item: Item, field: string, value: any) => {
     const old = item[field]
 
     item[field] = value
 
-    store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
+    if (field === thumbnail.value.key) {
+        reloadThumbnail(item.id)
+    }
+
+    await store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
         item[field] = old
     })
 }, 500)
@@ -162,6 +174,13 @@ async function create() {
     const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
 
     await store.item.create(props.collectionId, item)
+}
+
+// on item click
+const router = useRouter()
+
+function onClick(item: Item) {
+    router.push(`/collections/${props.collectionId}/items/${item.id}`)
 }
 </script>
 
@@ -191,30 +210,81 @@ async function create() {
                     <v-card
                         :width="data.size.width"
                         :height="data.size.height"
-                        class="overflow-auto rounded"
+                        class="overflow-auto rounded cursor-pointer relative group/item"
                         :color="data.color"
                         v-bind="data.bindings.card"
+                        tabindex="0"
+                        @click="onClick(data.item)"
                     >
+                        <div
+                            class="absolute right-0 top-0 transition-opacity opacity-0 flex group-hover/item:opacity-100 px-2 py-2 rounded"
+                            @click.stop
+                        >
+                            <v-btn
+                                size="h-8 w-8 text-xs mr-2"
+                                rounded
+                                color="info"
+                                :to="`/collections/${collectionId}/items/${data.item.id}`"
+                            >
+                                <v-icon name="eye" />
+                            </v-btn>
+                            <v-menu offset-y close-on-content-click>
+                                <template #activator="{ attrs }">
+                                    <v-btn
+                                        size="h-8 w-8 text-xs"
+                                        color="info"
+                                        rounded
+                                        v-bind="attrs"
+                                    >
+                                        <v-icon name="ellipsis-vertical" />
+                                    </v-btn>
+                                </template>
+
+                                <v-card color="b-secondary">
+                                    <v-list-item
+                                        size="xs"
+                                        color="danger"
+                                        dark
+                                        @click="store.item.destroy(collectionId, data.item.id)"
+                                    >
+                                        <v-icon name="trash" class="mr-2" />
+                                        {{ $t('deleteEntity', [$t('item')]) }}
+                                    </v-list-item>
+                                </v-card>
+                            </v-menu>
+                        </div>
+
                         <e-img
                             v-if="thumbnail.key"
+                            :ref="(el: any) => thumbnails.set(data.item.id, el)"
                             :src="data.item[thumbnail.key]"
-                            :height="`calc(100% - ${visibleColumns * 48}px)`"
+                            :height="`calc(100% - ${visibleColumns * 44}px)`"
                             :fit="thumbnail.fit"
                             :position="thumbnail.position"
                             width="100%"
                             card:color="bg-b-primary/25"
+                            class="min-h-[20%]"
                         />
 
                         <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">
                             <v-list-item
                                 v-if="!c.hide"
                                 :id="`${c.id}-${data.item.id}`"
-                                size="px-1 py-1"
+                                size="none"
+                                color="none"
+                                class="hover:bg-b-primary/25"
+                                @click.stop
                             >
                                 <i-value
                                     :model-value="data.item[c.field]"
                                     :column="c"
                                     :item="data.item"
+                                    :placeholder="c.label"
+                                    card:color="b-primary"
+                                    select:no-chevron
+                                    menu:offset-y
+                                    color="none"
+                                    size="px-4 py-3 text-sm"
                                     flat
                                     @update:model-value="updateItem(data.item, c.field, $event)"
                                 />

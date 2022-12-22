@@ -310,8 +310,10 @@ async function create() {
                                 :column="(c as Column)"
                                 :item="data.item"
                                 :size="cIndex === 1 ? 'none' : 'md'"
+                                select:no-chevron
                                 color="none"
                                 flat
+                                menu:offset-y
                                 @update:model-value="updateItem(data.item, c.field!, $event)"
                             />
 
