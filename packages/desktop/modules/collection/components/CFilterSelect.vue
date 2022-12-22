@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { CollectionColumn } from '@core/entities/collection'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
+import Column from '@core/entities/column'
+import { ViewFilter } from '@core/entities/view-common'
+
 import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { Filter, operations } from '../composables/filter'
+import { operations } from '../composables/filter'
 
 const props = defineProps({
     modelValue: {
-        type: Object as () => Filter,
+        type: Object as () => ViewFilter,
         default: () => ({}),
     },
     column: {
-        type: Object as () => CollectionColumn,
+        type: Object as () => Column,
         default: () => ({}),
     },
 })

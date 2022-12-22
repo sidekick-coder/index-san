@@ -18,13 +18,13 @@ export const useStore = defineStore('workspace', () => {
     const current = computed(() => workspaces.value.find((w) => w.id === currentId.value))
 
     async function setWorkspaces() {
-        await useCase<ListWorkspacesDTO.Output>('list-workspaces')
+        await useCase('list-workspaces')
             .then(({ data }) => (workspaces.value = data))
             .catch(() => (workspaces.value = []))
     }
 
     async function create(data: Partial<Workspace>) {
-        return useCase('create-workspace', data)
+        return useCase('create-workspace', data as any)
     }
 
     async function destroy(id: string) {

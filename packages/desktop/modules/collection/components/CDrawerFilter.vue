@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import Column from '@core/entities/column'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { ViewFilter } from '@core/entities/view'
+import { ViewFilter } from '@core/entities/view-common'
 
 import CFilter from './CFilter.vue'
 

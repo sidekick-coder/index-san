@@ -2,7 +2,7 @@
 import Column from '@core/entities/column'
 import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { ViewFilter } from '@core/entities/view'
+import { ViewFilter } from '@core/entities/view-common'
 
 import CFilterNumber from './CFilterNumber.vue'
 import CFilterRelation from './CFilterRelation.vue'

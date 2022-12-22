@@ -55,7 +55,6 @@ async function submit() {
             name: payload.value.name,
             path: payload.value.path,
             columns: [],
-            views: [],
         },
     })
 

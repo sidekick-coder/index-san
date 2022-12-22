@@ -3,7 +3,6 @@ import { ref, watch } from 'vue'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 
-import ShowMenuDTO from '@core/use-cases/show-menu/show-menu.dto'
 import { useCase } from '@/composables/use-case'
 import Menu from '@core/entities/menu'
 
@@ -13,8 +12,8 @@ export const useStore = defineStore('menu', () => {
     const workspace = useWorkspace()
 
     async function setMenu(workspaceId = workspace.currentId) {
-        await useCase<ShowMenuDTO.Output>('show-menu', {
-            workspaceId,
+        await useCase('show-menu', {
+            workspaceId: workspaceId || workspace.currentId!,
         })
             .then((r) => (menu.value = r.data))
             .catch(() => (menu.value = []))
@@ -22,7 +21,7 @@ export const useStore = defineStore('menu', () => {
 
     async function save() {
         await useCase('update-menu', {
-            workspaceId: workspace.currentId,
+            workspaceId: workspace.currentId!,
             data: menu.value,
         })
     }

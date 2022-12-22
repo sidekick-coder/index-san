@@ -27,6 +27,8 @@ async function setContent() {
         path: props.path,
     })
 
+    if (!contentBuffer) return
+
     content.value = decoder.decode(contentBuffer)
 }
 

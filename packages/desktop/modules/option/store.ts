@@ -32,8 +32,8 @@ export const useStore = defineStore('option', () => {
     const workspace = useWorkspace()
 
     async function setOptions(workspaceId = workspace.currentId) {
-        await useCase<ShowWorkspaceOptionsDTO.Output>('show-workspace-options', {
-            workspaceId,
+        await useCase('show-workspace-options', {
+            workspaceId: workspaceId || workspace.currentId!,
         })
             .then((r) => (options.value = get(r, 'data', {})))
             .catch(() => (options.value = {}))
@@ -41,7 +41,7 @@ export const useStore = defineStore('option', () => {
 
     async function save({ workspaceId, data }: SaveArgs) {
         await useCase('update-workspace-options', {
-            workspaceId: workspaceId ?? workspace.currentId,
+            workspaceId: workspaceId || workspace.currentId!,
             data,
         })
     }

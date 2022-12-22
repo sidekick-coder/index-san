@@ -1,14 +1,15 @@
-import { CollectionColumn, CollectionColumnType } from '@/../core/entities/collection'
+import Column, { ColumnType } from '@core/entities/column'
+
 import { lib as script } from './script'
 
-export function mount(columns: CollectionColumn[], name = 'ItemPayload') {
+export function mount(columns: Column[], name = 'ItemPayload') {
     const uri = 'ts:runtime/item.d.ts'
 
     const libs = script.mount()
 
     const source: string[] = []
 
-    const types: Record<CollectionColumnType, string> = {
+    const types: Record<ColumnType, string> = {
         entry: 'string | null',
         number: 'number',
         relation: 'null | any',
