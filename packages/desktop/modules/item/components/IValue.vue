@@ -15,7 +15,6 @@ import DirectoryEntry from '@core/entities/directory-entry'
 import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 
 import SOutput from '@/modules/script/components/SOutput.vue'
-import EEntryIcon from '@/modules/entry/components/EEntryIcon.vue'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '@/store/global'

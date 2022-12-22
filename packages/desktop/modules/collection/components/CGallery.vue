@@ -3,7 +3,6 @@ import { debounce } from 'lodash'
 import { computed, ref, useAttrs, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import Collection from '@core/entities/collection'
 import ViewGallery from '@core/entities/view-gallery'
 
 import { createBindings } from '@/composables/binding'

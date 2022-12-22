@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useState } from '@/composables/state'
 import Menu from '@core/entities/menu'
-import { convertToObject } from 'typescript'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
     item: {

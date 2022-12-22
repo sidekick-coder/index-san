@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import get from 'lodash/get'
 
-import ShowWorkspaceOptionsDTO from '@core/use-cases/show-workspace-options/show-workspace-options.dto'
-
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useCase } from '@/composables/use-case'
 

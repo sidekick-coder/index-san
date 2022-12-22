@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useMeta } from '@/composables/metas'
 import { useStore as useCollection } from '@/modules/collection/store'
-import { useStore as useWorkspace } from '@/modules/workspace/store'
 
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -16,7 +15,6 @@ const props = defineProps({
 })
 
 const collectionStore = useCollection()
-const workspaceStore = useWorkspace()
 
 const collection = computed(() =>
     collectionStore.collections.find((c) => c.id === props.collectionId)

@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { ListWorkspacesDTO } from '@core/use-cases/list-workspaces/list-workspaces.dto'
-
 import { useCase } from '@/composables/use-case'
 
 import Workspace from '@core/entities/workspace'

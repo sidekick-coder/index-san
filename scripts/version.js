@@ -1,8 +1,4 @@
-const path = require('path')
-const fs = require('fs')
 const { command } = require('./utils')
-
-const BASE_PATH = path.resolve(__dirname, '..')
 
 const [versionName] = process.argv.slice(2)
 

@@ -3,7 +3,6 @@ import ViewGroup from '@core/entities/view-group'
 
 import { createBindings } from '@/composables/binding'
 import { computed, useAttrs, watch, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useStore } from '@/store/global'
 
 import CActions from './CActions.vue'

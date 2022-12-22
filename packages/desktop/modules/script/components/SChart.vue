@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useSlots, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useStore } from '@/modules/script/store'
 
 import SOutput from './SOutput.vue'

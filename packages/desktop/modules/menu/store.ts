@@ -26,14 +26,6 @@ export const useStore = defineStore('menu', () => {
         })
     }
 
-    async function destroy(item: Menu) {
-        // if (!option.options.menu) return
-        // const index = option.options.menu.indexOf(item)
-        // if (index === -1) return
-        // option.options.menu.splice(index, 1)
-        // await save()
-    }
-
     async function create(item: Menu) {
         menu.value.push(item)
 
@@ -48,6 +40,5 @@ export const useStore = defineStore('menu', () => {
         setMenu,
         save,
         create,
-        destroy,
     }
 })

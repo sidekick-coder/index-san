@@ -23,10 +23,12 @@ test.group('update-menu (use-case)', (group) => {
             ])
         )
 
-        const payload = {
+        const payload = new Menu({
             to: 'item-update',
+            icon: '',
             label: 'item-update',
-        }
+            children: [],
+        })
 
         await useCase.execute({
             workspaceId: workspace.id,

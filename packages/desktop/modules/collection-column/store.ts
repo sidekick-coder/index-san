@@ -6,7 +6,7 @@ import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useStore as useCollection } from '@/modules/collection/store'
 
 import Column from '@core/entities/column'
-import { useNonReactive, waitFor } from '@/composables/utils'
+import { useNonReactive } from '@/composables/utils'
 
 interface StoreItem {
     collectionId: string
