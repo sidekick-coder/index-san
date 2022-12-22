@@ -83,11 +83,7 @@ const meta = useMeta()
 
 const menu = ref({
     item: computed(() => store.menu.find((i) => i.to === route.path)),
-    async toggle() {
-        if (menu.value.item) {
-            return await store.destroy(menu.value.item)
-        }
-
+    async create() {
         await store.create({
             label: meta.value.title,
             to: route.path,
@@ -148,8 +144,8 @@ onKeyStroke(['ArrowRight'], (e) => {
                 <div class="grow"></div>
             </slot>
 
-            <v-btn text size="sm" @click="menu.toggle">
-                <v-icon :name="menu.item ? 'star' : 'fa-regular fa-star'" />
+            <v-btn text size="sm" @click="menu.create">
+                <v-icon name="bookmark" />
             </v-btn>
         </slot>
     </v-layout-toolbar>
