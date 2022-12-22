@@ -1,6 +1,3 @@
-// based on https://github.com/electron-userland/electron-forge/issues/2306#issuecomment-1034882039
-'use strict'
-
 /**
  * @typedef {{
  *   new (options: { path: string }): {
@@ -57,7 +54,7 @@ const bundle = async (source, destination) => {
     const sourceNode = getWorkspaceByPath(rootNode, source)
 
     if (!sourceNode) {
-        throw new Error('couldn\'t find source node')
+        throw new Error('could not find source node')
     }
 
     const prodDeps = collectProdDeps(sourceNode)

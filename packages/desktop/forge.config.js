@@ -1,4 +1,4 @@
-const { bundle } = require("./scripts/bundler");
+const { bundle } = require('./scripts/bundler')
 
 module.exports = {
     packagerConfig: {
@@ -23,15 +23,9 @@ module.exports = {
         //     config: {},
         // },
     ],
-    packageAfterCopy: async (
-        /** @type {any} */ forgeConfig,
-        /** @type {string} */ buildPath,
-        /** @type {string} */ electronVersion,
-        /** @type {string} */ platform,
-        /** @type {string} */ arch,
-      ) => {
+    packageAfterCopy: async (/** @type {any} */ forgeConfig, /** @type {string} */ buildPath) => {
         // this is a workaround until we find a proper solution
         // for running electron-forge in a mono repository
-        await bundle(__dirname, buildPath);
-      },
+        await bundle(__dirname, buildPath)
+    },
 }
