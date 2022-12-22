@@ -3,7 +3,6 @@ export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
 import { ref, watch, computed, useAttrs } from 'vue'
-import { useRouter } from 'vue-router'
 
 import debounce from 'lodash/debounce'
 
@@ -76,7 +75,7 @@ async function setViews() {
     await store.view.setViews(props.collectionId)
 
     if (!view.value) {
-        const view = new ViewTable()
+        const view = new ViewTable({}, props.viewId)
 
         innerViewId.value = view.id
 
@@ -207,7 +206,7 @@ async function create() {
                                 :id="c.id"
                                 :width="c.width || 200"
                                 :class="[
-                                    c.id.startsWith('_') ? '!border-x-0 !px-2' : '',
+                                    c.id.startsWith('_') ? '!border-x-0 py-0 !px-2' : '',
                                     index === 1 ? '!pl-0' : '',
                                 ]"
                             >

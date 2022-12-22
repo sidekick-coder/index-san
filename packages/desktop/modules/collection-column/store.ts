@@ -36,9 +36,7 @@ export const useStore = defineStore('column', () => {
             items.value.push(item)
         }
 
-        if (item.loading) {
-            await waitFor(() => !item?.loading)
-        }
+        if (item.loading) return
 
         if (!forceUpdate && item.columns.length) return
 

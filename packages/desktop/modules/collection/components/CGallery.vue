@@ -53,7 +53,7 @@ async function setViews() {
     await store.view.setViews(props.collectionId)
 
     if (!view.value) {
-        const view = new ViewGallery()
+        const view = new ViewGallery({}, props.viewId)
 
         innerViewId.value = view.id
 
