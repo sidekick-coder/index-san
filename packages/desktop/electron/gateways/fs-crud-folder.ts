@@ -117,7 +117,7 @@ export default class FolderCrud implements Crud {
             ...data,
             id: data.id,
             _createdAt: Date.now(),
-            _updateAt: Date.now(),
+            _updatedAt: Date.now(),
         })
 
         await this.setMetas(collectionPath, metas)
@@ -146,7 +146,7 @@ export default class FolderCrud implements Crud {
         })
 
         meta.id = payload.id || itemId
-        meta._updateAt = Date.now()
+        meta._updatedAt = Date.now()
         meta._createdAt = meta._createdAt || Date.now()
 
         if (metaIndex === -1) metas.push(meta)
