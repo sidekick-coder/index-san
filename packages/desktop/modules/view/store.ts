@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, watch, WatchStopHandle } from 'vue'
+
 import debounce from 'lodash/debounce'
+import uniqBy from 'lodash/uniqBy'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 
@@ -83,11 +85,15 @@ export const useStore = defineStore('view', () => {
         await useCase('update-views', {
             workspaceId: workspace.currentId!,
             collectionId,
-            data,
+            data: uniqBy(data, 'id'),
         })
     }
 
     async function create(collectionId: string, payload: View, persist = false) {
+        if (views.value.some((v) => v.viewId === payload.id)) {
+            return
+        }
+
         const view: StoreView = {
             collectionId,
             viewId: payload.id,
