@@ -62,6 +62,14 @@ async function submit() {
         column.value![key] = payload.value[key]
     })
 
+    if (payload.value.type === ColumnType.createdAt) {
+        column.value.field = '_createdAt'
+    }
+
+    if (payload.value.type === ColumnType.updatedAt) {
+        column.value.field = '_updatedAt'
+    }
+
     dialog.value = false
 }
 
@@ -73,6 +81,8 @@ const icons: Record<Column['type'], any> = {
     relation: 'arrow-up',
     script: 'code',
     entry: 'file',
+    createdAt: 'fa-regular fa-calendar',
+    updatedAt: 'fa-regular fa-calendar',
 }
 
 // dialog

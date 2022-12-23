@@ -9,15 +9,21 @@ export interface ViewFilter {
     value: string
 }
 
-export interface ViewColumn extends Partial<Column> {
+export interface ViewColumn {
     id: string // link with column
     hide?: boolean
+}
+
+export interface ViewOrder {
+    field?: string
+    desc?: 'asc' | 'desc'
 }
 
 export default class ViewCommon extends View {
     public search = ''
     public filters: ViewFilter[] = []
     public columns: ViewColumn[] = []
+    public orderBy: ViewOrder[] = []
 
     constructor(props?: Partial<ViewCommon>, id?: string) {
         super(props, id)
@@ -25,5 +31,6 @@ export default class ViewCommon extends View {
         this.search = props?.search || ''
         this.filters = props?.filters || []
         this.columns = props?.columns || []
+        this.orderBy = props?.orderBy || []
     }
 }

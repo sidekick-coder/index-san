@@ -10,7 +10,7 @@ import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
     modelValue: {
-        type: [String, Number, Object],
+        type: [String, Number, Object, Boolean],
         default: '',
     },
     label: {
@@ -138,7 +138,6 @@ function onShowMenu(value: boolean) {
                 readonly
                 @keydown.enter="toggle"
                 @keydown.esc="menu = false"
-                @blur="menu = false"
             >
                 <template v-if="!noChevron" #append>
                     <v-icon name="chevron-down" class="ml-auto text-t-secondary" />

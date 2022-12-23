@@ -79,6 +79,9 @@ export default {
     duplicateEntity: 'Duplicate {0}',
     createdAt: 'Created at',
     updatedAt: 'Updated at',
+    orderBy: 'Order by',
+    ascendant: 'Ascendant',
+    descendant: 'Descendant',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

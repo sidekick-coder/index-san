@@ -18,9 +18,12 @@ import CActions from './CActions.vue'
 import IValue from '@/modules/item/components/IValue.vue'
 import ViewTable from '@/../core/entities/view-table'
 import Item from '@/../core/entities/item'
+
 import { createPayload, withViewFilters } from '../composables/filter'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 import { useNonReactive } from '@/composables/utils'
+
+import { withViewIterations } from '@/modules/view/composables'
 
 const props = defineProps({
     width: {
@@ -143,13 +146,7 @@ watch(
 
 // items
 
-const items = computed(() => {
-    if (view.value) {
-        return withViewFilters(store.item.all(props.collectionId), view.value)
-    }
-
-    return store.item.all(props.collectionId)
-})
+const items = computed(() => withViewIterations(store.item.all(props.collectionId), view.value))
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
 

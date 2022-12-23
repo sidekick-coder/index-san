@@ -13,8 +13,11 @@ import CActions from './CActions.vue'
 
 import IValue from '@/modules/item/components/IValue.vue'
 import EImg from '@/modules/entry/components/EImg.vue'
-import { createPayload, withViewFilters } from '../composables/filter'
+import { createPayload } from '../composables/filter'
 import Item from '@/../core/entities/item'
+
+import { withViewIterations } from '@/modules/view/composables'
+
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 import { useNonReactive } from '@/composables/utils'
 
@@ -126,13 +129,7 @@ const visibleColumns = computed(() =>
 
 // items
 
-const items = computed(() => {
-    if (view.value) {
-        return withViewFilters(store.item.all(props.collectionId), view.value)
-    }
-
-    return store.item.all(props.collectionId)
-})
+const items = computed(() => withViewIterations(store.item.all(props.collectionId), view.value))
 
 const register = computed(() => store.item.getStoreItem(props.collectionId))
 

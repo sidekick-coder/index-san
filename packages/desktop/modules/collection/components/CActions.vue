@@ -8,6 +8,7 @@ import { useStore } from '@/store/global'
 
 import CDrawerFilter from './CDrawerFilter.vue'
 import CDrawerHideColumns from './CDrawerHideColumns.vue'
+import CActionsOrder from './CActionsOrder.vue'
 
 // Props & emit
 const props = defineProps({
@@ -97,9 +98,11 @@ async function refresh() {
                         <v-icon name="rotate" />
                     </v-btn>
 
-                    <c-drawer-hide-columns :collection-id="collectionId" :view-id="viewId" />
+                    <c-actions-order :collection-id="collectionId" :view-id="viewId" />
 
                     <c-drawer-filter v-model="view.filters" :columns="columns" />
+
+                    <c-drawer-hide-columns :collection-id="collectionId" :view-id="viewId" />
                 </div>
             </template>
 

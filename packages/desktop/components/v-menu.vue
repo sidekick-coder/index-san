@@ -72,6 +72,7 @@ function onClick() {
 
 // set max y & x position
 const max = ref({
+    loading: false,
     el: null as null | HTMLElement,
     x: window.innerWidth,
     y: window.innerHeight - 300,
@@ -81,6 +82,8 @@ watch(
     () => max.value.el,
     (el) => {
         if (!el) return
+
+        max.value.loading = true
 
         setTimeout(() => {
             max.value.y = window.innerHeight - el.clientHeight
