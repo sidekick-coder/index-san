@@ -171,6 +171,12 @@ function updateSelection() {
 }
 
 watch(selected, updateSelection)
+watch(
+    () => props.path,
+    () => {
+        selected.value = []
+    }
+)
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
     if (!entries.value.length) return
@@ -201,7 +207,12 @@ async function updateItem(item: DirectoryEntry) {
 
     const index = editItem.value
 
-    if (!index) return
+    if (index === undefined) return
+
+    if (newPath === item.path) {
+        editItem.value = undefined
+        return
+    }
 
     await store
         .update({
@@ -215,6 +226,8 @@ async function updateItem(item: DirectoryEntry) {
         .catch(() => {
             item.name = DirectoryEntry.basename(item.path)
         })
+
+    editItem.value = undefined
 }
 
 watch(selected, () => (editItem.value = undefined))
@@ -222,9 +235,19 @@ watch(selected, () => (editItem.value = undefined))
 // show
 
 function show(item: DirectoryEntry) {
-    if (editItem.value) return
+    if (editItem.value !== undefined) return
 
-    router.push(`/entries/${item.path}`)
+    return router.push(`/entries/${item.path}`)
+}
+
+async function onEnter(item: DirectoryEntry) {
+    const index = entries.value.indexOf(item)
+
+    const promise = editItem.value === index ? updateItem : show
+
+    await promise(item)
+
+    updateSelection()
 }
 </script>
 
@@ -280,10 +303,9 @@ function show(item: DirectoryEntry) {
                             tabindex="0"
                             @dblclick="show(item)"
                             @click="onSelect($event, index)"
-                            @keydown.enter="show(item)"
+                            @keyup.enter="onEnter(item)"
                             @keydown.f2="editItem = index"
                             @keydown.esc="updateSelection"
-                            @mousedown.prevent
                         >
                             <v-td class="pl-10 flex pr-7">
                                 <div class="w-4 mr-2">
@@ -297,7 +319,6 @@ function show(item: DirectoryEntry) {
                                     size="sm"
                                     class="w-full max-w-[70%]"
                                     autofocus
-                                    @keypress.enter="updateItem(item)"
                                 />
 
                                 <div

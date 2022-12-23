@@ -61,6 +61,8 @@ async function submit() {
     Object.keys(payload.value).forEach((key) => {
         payload.value[key] = ''
     })
+
+    dialog.value = false
 }
 
 // Delete collection
@@ -72,7 +74,7 @@ async function deleteItem(collectionId: string) {
     <div>
         <v-dialog v-model="dialog">
             <v-card color="b-secondary" width="500">
-                <v-card-head>
+                <v-card-head class="px-4">
                     <v-card-title>
                         {{ $t('addEntity', [$t('collection')]) }}
                     </v-card-title>
@@ -99,7 +101,11 @@ async function deleteItem(collectionId: string) {
                             />
                         </div>
 
-                        <v-btn :disabled="!payload.name || !payload.path" class="w-full">
+                        <v-btn
+                            :disabled="!payload.name || !payload.path"
+                            class="w-full"
+                            type="submit"
+                        >
                             {{ $t('create') }}
                         </v-btn>
                     </w-form>
