@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useMeta } from '@/composables/metas'
-import { useStore as useCollection } from '@/modules/collection/store'
+import { useStore } from '@/modules/collection/store'
 
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -14,18 +14,20 @@ const props = defineProps({
     },
 })
 
-const collectionStore = useCollection()
-
-const collection = computed(() =>
-    collectionStore.collections.find((c) => c.id === props.collectionId)
-)
-
-// redirect to 404 if not have collection
+const store = useStore()
 const router = useRouter()
 
-if (!collection.value) {
-    router.push('/404')
-}
+const collection = computed(() => store.get(props.collectionId))
+
+watch(
+    () => props.collectionId,
+    () => {
+        if (!collection.value) {
+            router.push('/404')
+        }
+    },
+    { immediate: true }
+)
 
 // set meta
 const meta = useMeta({ title: collection.value?.name ?? 'collection' })

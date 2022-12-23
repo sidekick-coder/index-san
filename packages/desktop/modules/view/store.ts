@@ -90,7 +90,11 @@ export const useStore = defineStore('view', () => {
     }
 
     async function create(collectionId: string, payload: View, persist = false) {
-        if (views.value.some((v) => v.viewId === payload.id)) {
+        const exists = views.value
+            .filter((v) => v.collectionId === collectionId)
+            .some((v) => v.viewId === payload.id)
+
+        if (exists) {
             return
         }
 
