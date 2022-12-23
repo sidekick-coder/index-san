@@ -151,7 +151,12 @@ async function execute() {
                             </v-btn>
                         </v-card-head>
 
-                        <m-editor readonly :model-value="output" language="shell" />
+                        <m-editor
+                            readonly
+                            :model-value="output"
+                            language="shell"
+                            :libs="lib.mount()"
+                        />
                     </v-card>
                 </w-drawer>
             </w-layout>
