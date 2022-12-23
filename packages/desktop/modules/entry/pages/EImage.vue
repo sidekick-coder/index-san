@@ -10,6 +10,6 @@ defineProps({
 </script>
 <template>
     <div class="flex items-center justify-center w-full h-full">
-        <e-img :src="path" />
+        <e-img :src="path" class="max-h-[80%]" />
     </div>
 </template>
