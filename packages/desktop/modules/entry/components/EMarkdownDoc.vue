@@ -1,3 +1,8 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
 import { markdown } from '../composables/markdown'
 import { onErrorCaptured, defineComponent, ref, watch, defineAsyncComponent } from 'vue'
@@ -109,6 +114,11 @@ onErrorCaptured((err) => {
 
     pre {
         @apply bg-b-secondary text-sm p-4 rounded my-4;
+        @apply overflow-y-auto whitespace-normal;
+
+        code {
+            @apply whitespace-pre;
+        }
     }
 
     ul {

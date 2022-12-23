@@ -1,6 +1,6 @@
 <script lang="ts">
 export default {
-    inheritAttrs: true,
+    inheritAttrs: false,
 }
 </script>
 <script setup lang="ts">
