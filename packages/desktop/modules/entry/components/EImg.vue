@@ -49,6 +49,11 @@ async function setSrc() {
 
     if (!props.src) return
 
+    if (props.src.includes('http')) {
+        innerSrc.value = props.src
+        return
+    }
+
     let path = props.src
 
     if (props.src.startsWith('./')) {
