@@ -16,6 +16,7 @@ import EImg from '@/modules/entry/components/EImg.vue'
 import { createPayload, withViewFilters } from '../composables/filter'
 import Item from '@/../core/entities/item'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
+import { useNonReactive } from '@/composables/utils'
 
 // Props & Emits
 const props = defineProps({
@@ -154,7 +155,7 @@ function reloadThumbnail(itemId: string) {
 // update item with debounce
 
 const updateItem = debounce(async (item: Item, field: string, value: any) => {
-    const old = item[field]
+    const old = useNonReactive(item)
 
     item[field] = value
 
@@ -162,8 +163,8 @@ const updateItem = debounce(async (item: Item, field: string, value: any) => {
         reloadThumbnail(item.id)
     }
 
-    await store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
-        item[field] = old
+    await store.item.update(props.collectionId, old.id, { [field]: value }).catch(() => {
+        item[field] = old[field]
     })
 }, 500)
 

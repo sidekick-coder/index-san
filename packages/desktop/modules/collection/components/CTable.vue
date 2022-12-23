@@ -20,6 +20,7 @@ import ViewTable from '@/../core/entities/view-table'
 import Item from '@/../core/entities/item'
 import { createPayload, withViewFilters } from '../composables/filter'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
+import { useNonReactive } from '@/composables/utils'
 
 const props = defineProps({
     width: {
@@ -161,12 +162,12 @@ watch(() => view.value?.filters, debounce(load, 500), { deep: true, immediate: t
 // update item with debounce
 
 const updateItem = debounce((item: Item, field: string, value: any) => {
-    const old = item[field]
+    const old = useNonReactive(item)
 
     item[field] = value
 
-    store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
-        item[field] = old
+    store.item.update(props.collectionId, old.id, { [field]: value }).catch(() => {
+        item[field] = old[field]
     })
 }, 500)
 
