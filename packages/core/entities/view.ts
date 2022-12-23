@@ -6,8 +6,7 @@ export default class View {
     public readonly component: string = 'unknown'
 
     constructor(props?: Partial<View>, id?: string) {
-        Object.assign(this, props)
-
         this.id = id || uuid()
+        this.label = props?.label || ''
     }
 }

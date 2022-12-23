@@ -35,20 +35,20 @@ export const useStore = defineStore('view', () => {
     const views = ref<StoreView[]>([])
     const watchers = ref<Watchers[]>([])
 
-    function instantiate(data: View) {
+    function instantiate(data: AnyView) {
         if (data.component === 'group') {
-            return Object.assign(new ViewGroup(), data)
+            return new ViewGroup(data as any, data.id)
         }
 
         if (data.component === 'table') {
-            return Object.assign(new ViewTable(), data)
+            return new ViewTable(data as any, data.id)
         }
 
         if (data.component === 'gallery') {
-            return Object.assign(new ViewGallery(), data)
+            return new ViewGallery(data as any, data.id)
         }
 
-        return Object.assign(new View(), data)
+        return new View(data as any, data.id)
     }
 
     async function setViews(collectionId: string, forceUpdate = false) {

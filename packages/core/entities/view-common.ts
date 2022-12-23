@@ -18,4 +18,12 @@ export default class ViewCommon extends View {
     public search = ''
     public filters: ViewFilter[] = []
     public columns: ViewColumn[] = []
+
+    constructor(props?: Partial<ViewCommon>, id?: string) {
+        super(props, id)
+
+        this.search = props?.search || ''
+        this.filters = props?.filters || []
+        this.columns = props?.columns || []
+    }
 }

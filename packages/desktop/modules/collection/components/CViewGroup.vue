@@ -108,21 +108,21 @@ function isActive(id: string) {
 // add new view
 
 const options = {
-    table: () => new ViewTable(),
-    gallery: () => new ViewGallery(),
+    table: ViewTable,
+    gallery: ViewGallery,
 }
 
-async function addView(type: keyof typeof options) {
-    const payload = options[type]()
+async function addView(type: keyof typeof options, payload: any = {}) {
+    const entity = new options[type](payload)
 
-    payload.label = 'New'
+    entity.label = 'New view'
 
-    await store.view.create(props.collectionId, payload, !!props.viewId)
+    await store.view.create(props.collectionId, entity, !!props.viewId)
 
     if (view.value) {
-        view.value.selected = payload.id
+        view.value.selected = entity.id
 
-        view.value.viewIds.push(payload.id)
+        view.value.viewIds.push(entity.id)
     }
 }
 
@@ -147,6 +147,18 @@ function showMenu(id: string, handler: () => void) {
 
     seleteView(id)
 }
+
+// duplicate view
+
+async function duplicate(view: ViewTable | ViewGallery) {
+    let type: keyof typeof options = 'table'
+
+    if (view.component === 'gallery') {
+        type = 'gallery'
+    }
+
+    await addView(type, view)
+}
 </script>
 <template>
     <v-card v-if="view" v-bind="bindings.root">
@@ -159,26 +171,43 @@ function showMenu(id: string, handler: () => void) {
                         handle=".drag"
                         :component-data="{ class: 'flex -mb-[1px]' }"
                     >
-                        <template #item="{ element: v }">
+                        <template #item="{ element: v, index }">
                             <div>
                                 <v-menu offset-y :open-on-click="false" close-on-content-click>
                                     <template #activator="{ attrs, toggle }">
                                         <v-btn
                                             v-bind="attrs"
                                             text
-                                            size="text-sm px-4 h-[45px]"
+                                            size="text-sm h-[45px]"
                                             tile
-                                            color="border-b border-transparent hover:bg-b-secondary/50"
+                                            color="hover:text-t-primary"
                                             class="drag"
-                                            :class="isActive(v.id) ? 'border-t-primary' : ''"
+                                            :class="[
+                                                isActive(v.id)
+                                                    ? 'text-t-primary'
+                                                    : 'text-t-secondary',
+                                                index === 0 ? 'pl-0 pr-4' : 'px-4',
+                                            ]"
                                             @click="showMenu(v.id, toggle)"
                                         >
+                                            <v-icon
+                                                :name="v.component === 'table' ? 'table' : 'grip'"
+                                                class="mr-2"
+                                            />
+
                                             {{ v.label || v.id }}
                                         </v-btn>
                                     </template>
 
                                     <v-card color="b-secondary">
+                                        <v-list-item size="sm" @click="duplicate(v)">
+                                            <v-icon name="clone" class="mr-4" />
+                                            {{ $t('duplicateEntity', ['view']) }}
+                                        </v-list-item>
+
                                         <v-list-item size="sm" @click="deleteView(v.id)">
+                                            <v-icon name="trash" class="mr-4" />
+
                                             {{ $t('deleteEntity', ['view']) }}
                                         </v-list-item>
                                     </v-card>
@@ -193,7 +222,7 @@ function showMenu(id: string, handler: () => void) {
                                 text
                                 size="text-sm px-4 h-[45px]"
                                 tile
-                                color="border-b border-transparent hover:bg-b-secondary/50"
+                                color="border-b border-transparent hover:bg-b-secondary/50 text-t-secondary"
                                 v-bind="attrs"
                             >
                                 <template v-if="!group.length">

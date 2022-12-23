@@ -34,4 +34,16 @@ export default class ViewGallery extends ViewCommon {
             height: 'auto',
         },
     }
+
+    constructor(props?: Partial<ViewGallery>, id?: string) {
+        super(props, id)
+
+        if (props?.thumbnail) {
+            this.thumbnail = props?.thumbnail
+        }
+
+        if (props?.sizes) {
+            this.sizes = props?.sizes
+        }
+    }
 }
