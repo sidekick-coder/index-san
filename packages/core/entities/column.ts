@@ -7,6 +7,8 @@ export enum ColumnType {
     relation = 'relation',
     script = 'script',
     entry = 'entry',
+    createdAt = 'createdAt',
+    updatedAt = 'updatedAt',
 }
 
 export default class Column {

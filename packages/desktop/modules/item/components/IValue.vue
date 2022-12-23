@@ -5,6 +5,8 @@ export default {
 </script>
 <script setup lang="ts">
 import { computed, ref, watch, useAttrs, PropType } from 'vue'
+import moment from 'moment'
+
 import template from 'lodash/template'
 
 import uuid from 'uuid-random'
@@ -227,6 +229,14 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
             </v-list-item>
         </v-card>
     </v-menu>
+
+    <div v-else-if="column.type === 'createdAt'" class="px-4 py-2">
+        {{ moment(item._createdAt).format('L LT') }}
+    </div>
+
+    <div v-else-if="column.type === 'updatedAt'" class="px-4 py-2">
+        {{ moment(item._updatedAt).format('L LT') }}
+    </div>
 
     <div v-else class="text-danger px-4 py-2">
         {{ $t('errors.unknown') }}

@@ -116,8 +116,8 @@ export default class FolderCrud implements Crud {
         metas.push({
             ...data,
             id: data.id,
-            _createdAt: Date.now(),
-            _updatedAt: Date.now(),
+            _createdAt: data._createdAt ?? Date.now(),
+            _updatedAt: data._updatedAt ?? Date.now(),
         })
 
         await this.setMetas(collectionPath, metas)

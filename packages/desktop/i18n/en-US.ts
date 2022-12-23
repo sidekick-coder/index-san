@@ -77,6 +77,8 @@ export default {
     gallery: 'Gallery',
     loading: 'Loading',
     duplicateEntity: 'Duplicate {0}',
+    createdAt: 'Created at',
+    updatedAt: 'Updated at',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

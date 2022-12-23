@@ -159,10 +159,14 @@ const relation = computed(() => {
                             label-key="label"
                             value-key="value"
                             card:color="b-primary"
+                            menu:offset-y
                         />
                     </div>
 
-                    <div class="mb-4">
+                    <div
+                        v-if="![ColumnType.createdAt, ColumnType.updatedAt].includes(payload.type)"
+                        class="mb-4"
+                    >
                         <v-input v-model="payload.field" label="Field" />
                     </div>
 
