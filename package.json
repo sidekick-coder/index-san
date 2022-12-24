@@ -1,6 +1,6 @@
 {
     "name": "index-san",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
         "lint": "eslint . --ext .vue,.ts,.js",
