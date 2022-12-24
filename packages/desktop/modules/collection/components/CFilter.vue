@@ -36,6 +36,9 @@ const components: Record<Column['type'], any> = {
     select: CFilterSelect,
     script: CFilterScript,
     entry: CFilterText,
+    createdAt: CFilterText,
+    updatedAt: CFilterText,
+    link: CFilterText,
 }
 
 const column = computed(() => props.columns.find((c) => c.id === model.value.columnId))

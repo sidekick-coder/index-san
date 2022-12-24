@@ -83,6 +83,7 @@ const icons: Record<Column['type'], any> = {
     entry: 'file',
     createdAt: 'fa-regular fa-calendar',
     updatedAt: 'fa-regular fa-calendar',
+    link: 'link',
 }
 
 // dialog

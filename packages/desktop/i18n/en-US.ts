@@ -82,6 +82,7 @@ export default {
     orderBy: 'Order by',
     ascendant: 'Ascendant',
     descendant: 'Descendant',
+    link: 'Link',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

@@ -11,12 +11,13 @@ import template from 'lodash/template'
 
 import uuid from 'uuid-random'
 
-import Column from '@core/entities/column'
+import Column, { ColumnType } from '@core/entities/column'
 import Item from '@core/entities/item'
 import DirectoryEntry from '@core/entities/directory-entry'
 import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 
 import SOutput from '@/modules/script/components/SOutput.vue'
+import IValueLink from './IValueLink.vue'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '@/store/global'
@@ -230,13 +231,25 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
         </v-card>
     </v-menu>
 
-    <div v-else-if="column.type === 'createdAt'" class="px-4 py-2">
-        {{ moment(item._createdAt).format('L LT') }}
-    </div>
+    <v-input
+        v-else-if="column.type === 'createdAt'"
+        :model-value="moment(item._createdAt).format('L LT')"
+        readonly
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
 
-    <div v-else-if="column.type === 'updatedAt'" class="px-4 py-2">
-        {{ moment(item._updatedAt).format('L LT') }}
-    </div>
+    <v-input
+        v-else-if="column.type === 'updatedAt'"
+        :model-value="moment(item._updatedAt).format('L LT')"
+        readonly
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
+
+    <i-value-link
+        v-else-if="column.type === ColumnType.link"
+        v-model="model"
+        v-bind="bindings.root"
+    />
 
     <div v-else class="text-danger px-4 py-2">
         {{ $t('errors.unknown') }}
