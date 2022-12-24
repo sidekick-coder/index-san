@@ -9,6 +9,7 @@ import CFilterRelation from './CFilterRelation.vue'
 import CFilterScript from './CFilterScript.vue'
 import CFilterSelect from './CFilterSelect.vue'
 import CFilterText from './CFilterText.vue'
+import CFilterDate from './CFilterDate.vue'
 
 // Props & Emits
 
@@ -39,6 +40,7 @@ const components: Record<Column['type'], any> = {
     createdAt: CFilterText,
     updatedAt: CFilterText,
     link: CFilterText,
+    date: CFilterDate,
 }
 
 const column = computed(() => props.columns.find((c) => c.id === model.value.columnId))

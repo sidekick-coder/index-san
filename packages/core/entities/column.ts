@@ -10,6 +10,7 @@ export enum ColumnType {
     createdAt = 'createdAt',
     updatedAt = 'updatedAt',
     link = 'link',
+    date = 'date',
 }
 
 export default class Column {

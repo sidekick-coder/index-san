@@ -18,6 +18,7 @@ import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 
 import SOutput from '@/modules/script/components/SOutput.vue'
 import IValueLink from './IValueLink.vue'
+import IValueDate from './IValueDate.vue'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '@/store/global'
@@ -248,6 +249,13 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
     <i-value-link
         v-else-if="column.type === ColumnType.link"
         v-model="model"
+        v-bind="bindings.root"
+    />
+
+    <i-value-date
+        v-else-if="column.type === ColumnType.date"
+        v-model="model"
+        :column="column"
         v-bind="bindings.root"
     />
 

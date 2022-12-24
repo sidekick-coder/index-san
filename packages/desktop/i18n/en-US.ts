@@ -83,6 +83,9 @@ export default {
     ascendant: 'Ascendant',
     descendant: 'Descendant',
     link: 'Link',
+    date: 'Date',
+    displayFormat: 'Display format',
+    saveFormat: 'Save format',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

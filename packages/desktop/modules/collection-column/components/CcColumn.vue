@@ -84,6 +84,7 @@ const icons: Record<Column['type'], any> = {
     createdAt: 'fa-regular fa-calendar',
     updatedAt: 'fa-regular fa-calendar',
     link: 'link',
+    date: 'fa-regular fa-calendar',
 }
 
 // dialog
@@ -189,7 +190,7 @@ const relation = computed(() => {
                         />
                     </div>
 
-                    <template v-if="payload.type === 'relation'">
+                    <template v-if="payload.type === ColumnType.relation">
                         <div class="mb-4">
                             <v-select
                                 v-model="payload.collectionId"
@@ -213,7 +214,7 @@ const relation = computed(() => {
                         </div>
                     </template>
 
-                    <v-drawer v-if="payload.type === 'script'" width="800">
+                    <v-drawer v-if="payload.type === ColumnType.script" width="800">
                         <template #activator="{ attrs }">
                             <v-input
                                 v-bind="attrs"
@@ -237,13 +238,30 @@ const relation = computed(() => {
                         </v-card>
                     </v-drawer>
 
-                    <div v-if="payload.type === 'entry'" class="mb-4">
+                    <div v-if="payload.type === ColumnType.entry" class="mb-4">
                         <v-input
                             v-model="payload.filename"
                             :label="$t('filename')"
                             placeholder="thumbnail.jpg"
                         />
                     </div>
+
+                    <template v-if="payload.type === ColumnType.date">
+                        <div class="mb-4">
+                            <v-input
+                                v-model="payload.displayFormat"
+                                :label="$t('displayFormat')"
+                                placeholder="YYYY-MM-DD"
+                            />
+                        </div>
+                        <div class="mb-4">
+                            <v-input
+                                v-model="payload.saveFormat"
+                                :label="$t('saveFormat')"
+                                placeholder="YYYY-MM-DD"
+                            />
+                        </div>
+                    </template>
 
                     <div>
                         <v-btn type="submit" class="w-full">{{ $t('save') }}</v-btn>

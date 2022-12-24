@@ -16,6 +16,10 @@ export function mount(columns: Column[], name = 'ItemPayload') {
         script: 'undefined',
         select: 'string',
         text: 'string',
+        date: 'string',
+        createdAt: 'string',
+        link: 'string',
+        updatedAt: 'string',
     }
 
     columns.forEach((c) => {

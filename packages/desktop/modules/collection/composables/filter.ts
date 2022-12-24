@@ -4,6 +4,7 @@ import Item from '@core/entities/item'
 import ViewCommon, { ViewFilter } from '@core/entities/view-common'
 import Column, { ColumnType } from '@core/entities/column'
 import View from '@/../core/entities/view'
+import moment, { Moment } from 'moment'
 
 export const operations = {
     text: {
@@ -30,6 +31,14 @@ export const operations = {
     script: {
         '=': (a: ExecuteScriptDTO.Output, b: any) => a.result === b,
         '!=': (a: ExecuteScriptDTO.Output, b: any) => a.result != b,
+    },
+    date: {
+        '=': (a: Moment, b: Moment) => a.isSame(b),
+        '!=': (a: Moment, b: Moment) => !a.isSame(b),
+        '>': (a: Moment, b: Moment) => a.isAfter(b),
+        '<': (a: Moment, b: Moment) => a.isBefore(b),
+        '>=': (a: Moment, b: Moment) => a.isSameOrAfter(b),
+        '<=': (a: Moment, b: Moment) => a.isSameOrBefore(b),
     },
 }
 
@@ -89,10 +98,32 @@ export function filterScript(value: ExecuteScriptDTO.Output | null, filter: View
     return false
 }
 
+export function filterDate(value: string | null, filter: ViewFilter) {
+    const operation: keyof typeof operations.date = filter.config.operation
+    const format: keyof typeof operations.date = filter.config.format
+
+    if (!value) return false
+
+    const a = moment(value, format, true)
+    const b = moment(filter.value, format, true)
+
+    if (!a.isValid() || !b.isValid()) return false
+
+    if (operations.date[operation]) {
+        return operations.date[operation](a, b)
+    }
+
+    return false
+}
+
 export function filter(item: Item, filter: ViewFilter) {
     const value = item[filter.field]
 
     if (filter.value === undefined || filter.value === '') return true
+
+    if (filter.type === 'date') {
+        return filterDate(value, filter)
+    }
 
     if (filter.type === 'number') {
         return filterNumber(value, filter)
@@ -113,7 +144,13 @@ export function filter(item: Item, filter: ViewFilter) {
 export function createPayload(filters: ViewFilter[] = [], columns: Column[] = []) {
     const payload = {}
 
-    const safeList = [ColumnType.text, ColumnType.select, ColumnType.number, ColumnType.relation]
+    const safeList = [
+        ColumnType.text,
+        ColumnType.select,
+        ColumnType.number,
+        ColumnType.link,
+        ColumnType.date,
+    ]
 
     filters.forEach((f) => {
         const column = columns.find((c) => c.id === f.columnId)
@@ -126,17 +163,4 @@ export function createPayload(filters: ViewFilter[] = [], columns: Column[] = []
     })
 
     return payload
-}
-
-export function withViewFilters(items: Item[], view?: View) {
-    if (view instanceof ViewCommon) {
-        return items.filter((item) => {
-            return view.filters.reduce(
-                (valid, f) => valid && filter(item, f),
-                !!JSON.stringify(item).toLowerCase().match(view.search.toLocaleLowerCase())
-            )
-        })
-    }
-
-    return items
 }

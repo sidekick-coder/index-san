@@ -19,7 +19,7 @@ import IValue from '@/modules/item/components/IValue.vue'
 import ViewTable from '@/../core/entities/view-table'
 import Item from '@/../core/entities/item'
 
-import { createPayload, withViewFilters } from '../composables/filter'
+import { createPayload } from '../composables/filter'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 import { useNonReactive } from '@/composables/utils'
 
