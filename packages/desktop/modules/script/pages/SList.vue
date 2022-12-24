@@ -63,7 +63,7 @@ async function onItemDelete(item: Script) {
                 <v-card-content class="flex flex-wrap">
                     <v-input v-model="payload.name" class="mb-4" label="Name" />
 
-                    <v-btn class="w-full">Create</v-btn>
+                    <v-btn type="submit" class="w-full">Create</v-btn>
                 </v-card-content>
             </v-card>
         </w-form>
