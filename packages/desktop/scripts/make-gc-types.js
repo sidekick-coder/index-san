@@ -11,6 +11,7 @@ async function main() {
 
     const output = files
         .filter((f) => f !== 'components.d.ts')
+        .filter((f) => !/.spec.ts/.test(f))
         .map((filename) => [upperFirst(camelCase(filename.replace('.vue', ''))), filename])
         .map(
             ([name, filename]) =>
