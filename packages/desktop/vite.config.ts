@@ -20,6 +20,7 @@ const alias = {
 export default defineConfig({
     test: {
         watch: false,
+        environment: 'jsdom',
         exclude: [...configDefaults.exclude, 'packages/core/*', 'out'],
     },
     resolve: { alias },
