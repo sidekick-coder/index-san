@@ -1,19 +1,19 @@
 import { test } from '@japa/runner'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
-import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
+import InMemoryApp from '../../__tests__/app'
 import DeleteWorkspace from './delete-workspace'
 
 test.group('delete-workspace (use-case)', (group) => {
-    const repository = new InMemoryWorkspaceRepository()
-    const useCase = new DeleteWorkspace(repository)
+    const app = new InMemoryApp()
 
-    group.each.teardown(() => repository.clear())
+    const useCase = new DeleteWorkspace(app)
+
+    group.each.teardown(() => app.clear())
 
     test('should delete workspace', async ({ expect }) => {
-        const workspace = await repository.create(WorkspaceFactory.create())
+        const workspace = app.workspaceRepository.createFakeSync()
 
         await useCase.execute({ id: workspace.id })
 
-        expect(repository.items.length).toEqual(0)
+        expect(app.workspaceRepository.items.length).toEqual(0)
     })
 })

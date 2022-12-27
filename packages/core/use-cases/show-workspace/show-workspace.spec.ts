@@ -1,18 +1,16 @@
 import { test } from '@japa/runner'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
-import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
+import InMemoryApp from '../../__tests__/app'
 import ShowWorkspace from './show-workspace'
 
 test.group('show-workspace (use-case)', (group) => {
-    const repository = new InMemoryWorkspaceRepository()
-    const useCase = new ShowWorkspace(repository)
+    const app = new InMemoryApp()
 
-    group.teardown(() => repository.clear())
+    const useCase = new ShowWorkspace(app)
+
+    group.teardown(() => app.clear())
 
     test('should return a workspace', async ({ expect }) => {
-        const workspace = WorkspaceFactory.create()
-
-        await repository.create(workspace)
+        const workspace = app.workspaceRepository.createFakeSync()
 
         const result = await useCase.execute({
             id: workspace.id,

@@ -1,15 +1,15 @@
 import Workspace from '../../entities/workspace'
-import WorkspaceRepository from '../../repositories/workspace-repository'
+import WorkspaceRepository from '../../repositories/workspace/workspace-repository'
 import WorkspaceFactory from '../factories/workspace-factory'
 
 export default class InMemoryWorkspaceRepository implements WorkspaceRepository {
     public items: Workspace[] = []
 
-    public findAll(): Promise<Workspace[]> {
+    public list(): Promise<Workspace[]> {
         return Promise.resolve(this.items)
     }
 
-    public findById(id: string): Promise<Workspace | null> {
+    public show(id: string): Promise<Workspace | null> {
         const item = this.items.find((i) => i.id === id)
 
         return Promise.resolve(item ?? null)
@@ -35,7 +35,7 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
         return this.createSync(WorkspaceFactory.create(payload))
     }
 
-    public async updateById(id: string, data: Partial<Workspace>) {
+    public async update(id: string, data: Partial<Workspace>) {
         const index = this.items.findIndex((w) => w.id === id)
 
         if (index === -1) return
@@ -44,7 +44,7 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
         this.items[index].config = data.config ?? this.items[index].config
     }
 
-    public async delete(id: string) {
+    public async destroy(id: string) {
         const index = this.items.findIndex((i) => i.id === id)
 
         if (index !== -1) {

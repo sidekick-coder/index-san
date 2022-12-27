@@ -2,7 +2,7 @@ import CrudManager from '../gateways/crud-manager'
 import DriveManager from '../gateways/drive/manager'
 import IEvaluationService from '../gateways/evaluation/evaluation'
 import ICollectionRepository from '../repositories/collection/collection-repository'
-import IWorkspaceRepository from '../repositories/workspace-repository'
+import IWorkspaceRepository from '../repositories/workspace/workspace-repository'
 
 interface Managers {
     drive: DriveManager

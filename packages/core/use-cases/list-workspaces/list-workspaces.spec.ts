@@ -1,19 +1,17 @@
 import { test } from '@japa/runner'
-import Workspace from '../../entities/workspace'
+import InMemoryApp from '../../__tests__/app'
 import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 import ListWorkspaces from './list-workspaces'
 
 test.group('list-workspaces (use-case)', () => {
     const repository = new InMemoryWorkspaceRepository()
-    const useCase = new ListWorkspaces(repository)
+
+    const app = new InMemoryApp()
+
+    const useCase = new ListWorkspaces(app)
 
     test('should return a list of workspaces', async ({ expect }) => {
-        const workspace = new Workspace({
-            name: 'test',
-            path: 'test',
-            drive: 'local',
-            config: {},
-        })
+        const workspace = app.workspaceRepository.createFakeSync()
 
         await repository.create(workspace)
 

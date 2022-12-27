@@ -1,16 +1,12 @@
 import Workspace from '../../entities/workspace'
-import DriveManager from '../../gateways/drive-manager'
-import IWorkspaceRepository from '../../repositories/workspace-repository'
+import AppService from '../../services/app-service'
 import CreateWorkspaceDTO from './create-workspace.dto'
 
 export default class CreateWorkspace {
-    constructor(
-        private readonly repository: IWorkspaceRepository,
-        private readonly drive: DriveManager
-    ) {}
+    constructor(private readonly app: AppService) {}
 
     public async execute(args: CreateWorkspaceDTO.Input) {
-        const validDrives = Object.keys(this.drive.listDrives())
+        const validDrives = Object.keys(this.app.managers.drive.listDrives())
 
         if (!validDrives.includes(args.driveName)) {
             throw new Error('Invalid drive')
@@ -18,7 +14,7 @@ export default class CreateWorkspace {
 
         const workspace = new Workspace(args, args.id)
 
-        await this.repository.create(workspace)
+        await this.app.repositories.workspace.create(workspace)
 
         return workspace
     }

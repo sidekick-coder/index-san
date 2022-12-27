@@ -19,7 +19,7 @@ export default class WorkspaceService extends Workspace {
     }
 
     public static async from(service: AppService, id: string) {
-        const data = await service.repositories.workspace.findById(id)
+        const data = await service.repositories.workspace.show(id)
 
         if (!data) {
             throw new WorkspaceNotFound(id)
@@ -54,7 +54,7 @@ export default class WorkspaceService extends Workspace {
     public async save() {
         const payload = this.toObject()
 
-        this.app.repositories.workspace.updateById(this.id, payload)
+        this.app.repositories.workspace.update(this.id, payload)
 
         await this.drive.write('.is/collections.json', JSON.stringify(this.collections, null, 4))
     }
