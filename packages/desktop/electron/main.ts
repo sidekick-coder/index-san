@@ -14,6 +14,7 @@ import WorkspaceRepository from './repositories/workspace-repository'
 
 import DriveManager from '@core/gateways/drive-manager'
 import CrudManager from '@core/gateways/crud-manager'
+import NodeVMEvaluation from '@core/gateways/evaluation/implementations/node-vm-evaluation'
 
 import FSDrive from './gateways/fs-drive'
 import FSCrudFolder from './gateways/fs-crud-folder'
@@ -26,11 +27,13 @@ const fsDrive = new FSDrive()
 const fsCrudFolder = new FSCrudFolder()
 const driveManager = new DriveManager({ fs: fsDrive })
 const crudManger = new CrudManager({ fsFolder: fsCrudFolder })
+const evaluation = new NodeVMEvaluation()
 
 const indexSan = new IndexSan({
     crudManger,
     driveManager,
     workspaceRepository,
+    evaluation,
 })
 
 if (process.env.VITE_DEV_SERVER_URL) {

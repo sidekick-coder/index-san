@@ -24,7 +24,7 @@ export default class TestFS {
             fs.rmSync(this.tmpdir, { recursive: true, force: true })
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 100))
+        await new Promise((resolve) => setTimeout(resolve, 200))
 
         await fs.promises.mkdir(this.tmpdir, { recursive: true })
     }

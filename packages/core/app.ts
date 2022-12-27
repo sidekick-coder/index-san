@@ -1,7 +1,3 @@
-import IWorkspaceRepository from './repositories/workspace-repository'
-import DriveManager from './gateways/drive-manager'
-import CrudManager from './gateways/crud-manager'
-
 import ListWorkspaces from './use-cases/list-workspaces/list-workspaces'
 import CreateWorkspace from './use-cases/create-workspace/create-workspace'
 import DeleteWorkspace from './use-cases/delete-workspace/delete-workspace'
@@ -27,7 +23,7 @@ import ShowItem from './use-cases/show-item/show-item'
 import CreateItem from './use-cases/create-item/create-item'
 import UpdateItem from './use-cases/update-item/update-item'
 import DeleteItem from './use-cases/delete-item/delete-item'
-import AppService from './services/app-service'
+import AppService, { AppServiceArgs } from './services/app-service'
 import ListScripts from './use-cases/list-scripts/list-scripts'
 import CreateScript from './use-cases/create-script/create-script'
 import UpdateScript from './use-cases/update-script/update-script'
@@ -38,12 +34,6 @@ import UpdateMenu from './use-cases/update-menu/update-menu'
 import UpdateDirectoryEntry from './use-cases/update-directory-entry/update-directory-entry'
 import ShowViews from './use-cases/show-views/show-views'
 import UpdateViews from './use-cases/update-views/update-views'
-
-interface AppArgs {
-    workspaceRepository: IWorkspaceRepository
-    driveManager: DriveManager
-    crudManger: CrudManager
-}
 
 function createUseCases(app: AppService) {
     return {
@@ -91,8 +81,8 @@ function createUseCases(app: AppService) {
 export default class App extends AppService {
     public cases: ReturnType<typeof createUseCases>
 
-    constructor({ workspaceRepository, driveManager, crudManger }: AppArgs) {
-        super({ workspaceRepository, driveManager, crudManger })
+    constructor(props: AppServiceArgs) {
+        super(props)
 
         this.cases = createUseCases(this)
     }

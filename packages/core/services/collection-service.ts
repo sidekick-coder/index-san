@@ -4,7 +4,6 @@ import Item from '../entities/item'
 import CollectionNotFound from '../exceptions/collection-not-found'
 import ItemNotFound from '../exceptions/item-not-found'
 import ArrayService from './array-service'
-import ScriptService from './script-service'
 import WorkspaceService from './workspace-service'
 
 type ListOptionsInclude = 'relations' | 'scripts' | 'entries'
@@ -15,8 +14,6 @@ export interface ListOptions {
 
 export default class CollectionService extends Collection {
     public workspace: WorkspaceService
-
-    public scriptService = new ScriptService()
 
     public get crud() {
         return this.workspace.app.managers.crud.useDrive(this.workspace.drive).use(this.crudName)
@@ -66,10 +63,13 @@ export default class CollectionService extends Collection {
 
             for await (const column of scripts) {
                 for await (const item of items) {
-                    item[column.field] = await this.scriptService.evaluate(column.content, {
-                        item,
-                        workspace: this.workspace,
-                    })
+                    item[column.field] = await this.workspace.app.evaluation.evaluate(
+                        column.content,
+                        {
+                            item,
+                            workspace: this.workspace,
+                        }
+                    )
                 }
             }
         }

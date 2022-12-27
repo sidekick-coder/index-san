@@ -1,8 +1,8 @@
 import { test } from '@japa/runner'
-import ScriptService from './script-service'
+import NodeVMEvaluation from './node-vm-evaluation'
 
 test.group('script-service (service)', () => {
-    const service = new ScriptService()
+    const service = new NodeVMEvaluation()
 
     test('should execute script and return result', async ({ expect }) => {
         const result = await service.evaluate('setResult(4)')
