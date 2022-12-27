@@ -2,6 +2,7 @@ import CrudManager from '../gateways/crud-manager'
 import DriveManager from '../gateways/drive/manager'
 import NodeVMEvaluation from '../gateways/evaluation/implementations/node-vm-evaluation'
 import CollectionRepository from '../repositories/collection/implementations/collection-repository'
+import EntryItemRepository from '../repositories/item/implementations/entry-item-repository'
 import AppService, { AppServiceArgs } from '../services/app-service'
 import InMemoryCrud from './gateways/in-memory-crud'
 import InMemoryDrive from './gateways/in-memory-drive'
@@ -28,6 +29,7 @@ export default class InMemoryApp extends AppService {
         const repositories: AppServiceArgs['repositories'] = {
             workspace: workspaceRepository,
             collection: new CollectionRepository(managers.drive),
+            item: new EntryItemRepository(managers.drive),
         }
 
         super({

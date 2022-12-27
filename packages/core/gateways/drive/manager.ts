@@ -1,3 +1,4 @@
+import DirectoryEntry from '../../entities/directory-entry'
 import Drive from './drive'
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
@@ -47,49 +48,61 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         return result
     }
 
-    public async exists(entryPath: string) {
-        return this.execute((d) => d.exists(entryPath))
+    public async exists(...paths: string[]) {
+        const normalize = DirectoryEntry.normalize(...paths)
+
+        return this.execute((d) => d.exists(normalize))
     }
 
-    public async list(entryPath: string) {
-        return this.execute((d) => d.list(entryPath))
+    public async list(...paths: string[]) {
+        const normalize = DirectoryEntry.normalize(...paths)
+
+        return this.execute((d) => d.list(normalize))
     }
 
-    public async get(entryPath: string) {
-        return this.execute((d) => d.get(entryPath))
+    public async get(...paths: string[]) {
+        const normalize = DirectoryEntry.normalize(...paths)
+
+        return this.execute((d) => d.get(normalize))
     }
 
-    public async mkdir(entryPath: string) {
-        return this.execute((d) => d.mkdir(entryPath))
+    public async mkdir(...paths: string[]) {
+        const normalize = DirectoryEntry.normalize(...paths)
+
+        return this.execute((d) => d.mkdir(normalize))
     }
 
     public async move(source: string, target: string) {
         return this.execute((d) => d.move(source, target))
     }
 
-    public async read(entryPath: string) {
-        return this.execute((d) => d.read(entryPath))
+    public async read(...paths: string[]) {
+        const normalize = DirectoryEntry.normalize(...paths)
+
+        return this.execute((d) => d.read(normalize))
     }
 
-    public async readAsString(entryPath: string) {
+    public async readAsString(...paths: string[]) {
         const decoder = new TextDecoder()
 
-        const uint = await this.execute((d) => d.read(entryPath))
+        const uint = await this.read(...paths)
 
         return uint ? decoder.decode(uint) : uint
     }
 
-    public async write(entryPath: string, content: Uint8Array | string) {
+    public async write(path: string, content: Uint8Array | string) {
         const encoder = new TextEncoder()
 
         if (typeof content === 'string') {
             content = encoder.encode(content)
         }
 
-        return this.execute((d) => d.write(entryPath, content as Uint8Array))
+        return this.execute((d) => d.write(path, content as Uint8Array))
     }
 
-    public async delete(entryPath: string) {
-        return this.execute((d) => d.delete(entryPath))
+    public async delete(...paths: string[]) {
+        const normalize = DirectoryEntry.normalize(...paths)
+
+        return this.execute((d) => d.delete(normalize))
     }
 }

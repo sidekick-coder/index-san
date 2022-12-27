@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import NodeVMEvaluation from './node-vm-evaluation'
 
-test.group('script-service (service)', () => {
+test.group('node-vm-evaluation (unit)', () => {
     const service = new NodeVMEvaluation()
 
     test('should execute script and return result', async ({ expect }) => {

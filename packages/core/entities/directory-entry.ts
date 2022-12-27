@@ -8,14 +8,10 @@ export default class DirectoryEntry {
     }
 
     public static normalize(...paths: string[]) {
-        let result = paths
+        const result = paths
             .map((p) => p.split('/'))
             .reduce((all, p) => all.concat(p), [])
             .join('/')
-
-        if (result[0] === '/') {
-            result = result.slice(1)
-        }
 
         return result
     }

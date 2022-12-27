@@ -2,7 +2,6 @@ import vm from 'vm'
 import util from 'util'
 
 import * as ts from 'typescript'
-import IEvaluationService from '../evaluation'
 
 function tsCompile(source: string, options: ts.TranspileOptions = {}): string {
     // Default options -- you could also perform a merge, or use the project tsconfig.json
@@ -20,7 +19,7 @@ const format = (args: any) => {
     return util.inspect(args)
 }
 
-export default class NodeVMEvaluation implements IEvaluationService {
+export default class ScriptService {
     protected async _evaluate(code: string, scope?: Record<string, any>) {
         const logs: string[] = []
         let result = null

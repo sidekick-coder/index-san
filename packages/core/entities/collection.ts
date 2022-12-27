@@ -3,6 +3,7 @@ import Column from './column'
 export default class Collection {
     public id: string
     public workspaceId?: string
+
     public name: string
     public path: string
 

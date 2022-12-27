@@ -2,6 +2,7 @@ import CrudManager from '../gateways/crud-manager'
 import DriveManager from '../gateways/drive/manager'
 import IEvaluationService from '../gateways/evaluation/evaluation'
 import ICollectionRepository from '../repositories/collection/collection-repository'
+import IItemRepository from '../repositories/item/item-repository'
 import IWorkspaceRepository from '../repositories/workspace/workspace-repository'
 
 interface Managers {
@@ -12,6 +13,7 @@ interface Managers {
 interface Repositories {
     workspace: IWorkspaceRepository
     collection: ICollectionRepository
+    item: IItemRepository
 }
 
 export interface AppServiceArgs {

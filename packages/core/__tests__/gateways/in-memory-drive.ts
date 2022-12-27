@@ -37,6 +37,8 @@ export default class InMemoryDrive implements Drive {
 
         if (!entry) return
 
+        entry.name = DirectoryEntry.basename(target)
+
         entry.path = target
     }
 
@@ -55,13 +57,17 @@ export default class InMemoryDrive implements Drive {
     public async write(path: string, content: Uint8Array) {
         this.content.set(DirectoryEntry.normalize(path), content)
 
-        this.entries.push(DirectoryEntry.file(path))
+        if (!this.entries.some((e) => e.path === path)) {
+            this.entries.push(DirectoryEntry.file(path))
+        }
     }
 
-    public async mkdir(entryPath: string) {
-        const entry = DirectoryEntry.directory(entryPath)
+    public async mkdir(path: string) {
+        const entry = DirectoryEntry.directory(path)
 
-        this.entries.push(entry)
+        if (!this.entries.some((e) => e.path === path)) {
+            this.entries.push(entry)
+        }
 
         return entry
     }
@@ -76,8 +82,8 @@ export default class InMemoryDrive implements Drive {
         this.entries.splice(index, 1)
     }
 
-    public createFile(entryPath: string, content: any = '') {
-        const entry = DirectoryEntry.file(entryPath)
+    public createFile(path: string, content: any = '') {
+        const entry = DirectoryEntry.file(path)
 
         if (Array.isArray(content)) {
             content = JSON.stringify(content)
@@ -87,7 +93,10 @@ export default class InMemoryDrive implements Drive {
             content = JSON.stringify(content)
         }
 
-        this.entries.push(entry)
+        if (!this.entries.some((e) => e.path === path)) {
+            this.entries.push(entry)
+        }
+
         this.content.set(entry.path, Buffer.from(content))
     }
 
