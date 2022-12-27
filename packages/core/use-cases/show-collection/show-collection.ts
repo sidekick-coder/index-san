@@ -1,3 +1,4 @@
+import CollectionNotFound from '../../exceptions/collection-not-found'
 import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
 import ShowCollectionsDTO from './show-collection.dto'
@@ -11,9 +12,9 @@ export default class ShowCollection {
     }: ShowCollectionsDTO.Input): Promise<ShowCollectionsDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const collection = workspace.collections.find((c) => c.id === collectionId)
+        const collection = await workspace.app.repositories.collection.show(collectionId)
 
-        if (!collection) throw new Error('Collection not found')
+        if (!collection) throw new CollectionNotFound(collectionId)
 
         collection.workspaceId = workspaceId
 

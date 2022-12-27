@@ -1,14 +1,8 @@
 import CrudManager from '../gateways/crud-manager'
-import DriveManager from '../gateways/drive-manager'
+import DriveManager from '../gateways/drive/manager'
 import IEvaluationService from '../gateways/evaluation/evaluation'
+import ICollectionRepository from '../repositories/collection/collection-repository'
 import IWorkspaceRepository from '../repositories/workspace-repository'
-
-export interface AppServiceArgs {
-    workspaceRepository: IWorkspaceRepository
-    driveManager: DriveManager
-    crudManger: CrudManager
-    evaluation: IEvaluationService
-}
 
 interface Managers {
     drive: DriveManager
@@ -17,6 +11,13 @@ interface Managers {
 
 interface Repositories {
     workspace: IWorkspaceRepository
+    collection: ICollectionRepository
+}
+
+export interface AppServiceArgs {
+    repositories: Repositories
+    managers: Managers
+    evaluation: IEvaluationService
 }
 
 export default class AppService {
@@ -24,15 +25,10 @@ export default class AppService {
     public repositories: Repositories
     public evaluation: IEvaluationService
 
-    constructor({ workspaceRepository, driveManager, crudManger, evaluation }: AppServiceArgs) {
-        this.repositories = {
-            workspace: workspaceRepository,
-        }
+    constructor({ repositories, managers, evaluation }: AppServiceArgs) {
+        this.repositories = repositories
 
-        this.managers = {
-            drive: driveManager,
-            crud: crudManger,
-        }
+        this.managers = managers
 
         this.evaluation = evaluation
     }

@@ -11,6 +11,7 @@ configure({
             './entities/*.spec.ts',
             './services/*.spec.ts',
             './exceptions/*.spec.ts',
+            './repositories/**/**/*.spec.ts',
             './use-cases/**/*.spec.ts',
         ],
         plugins: [expect()],

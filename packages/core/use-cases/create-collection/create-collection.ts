@@ -12,9 +12,9 @@ export default class CreateCollection {
     }: CreateCollectionDTO.Input): Promise<CreateCollectionDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const collection = new Collection(data, data.id)
-
-        await workspace.createCollection(collection)
+        const collection = await workspace.app.repositories.collection.create(
+            new Collection(data, data.id)
+        )
 
         return {
             data: collection,

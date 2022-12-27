@@ -10,12 +10,8 @@ export default class UpdateCollection {
     public async execute({ workspaceId, collectionId, data }: UpdateCollectionsDTO.Input) {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
-        const index = workspace.collections.findIndex((c) => c.id === collectionId)
+        const update = await workspace.app.repositories.collection.update(collectionId, data)
 
-        if (index === -1) throw new Error('Collection not found')
-
-        workspace.collections[index] = Object.assign(workspace.collections[index], data)
-
-        await workspace.save()
+        return update
     }
 }

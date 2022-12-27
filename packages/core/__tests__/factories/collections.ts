@@ -12,7 +12,6 @@ const CollectionFactory = new Factory<Collection>((data) => {
             path: id,
             crudName: 'memory',
             columns: [],
-            views: [],
             ...data,
         },
         id

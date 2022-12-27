@@ -10,8 +10,10 @@ export default class ListCollections {
     }: ListCollectionsDTO.Input): Promise<ListCollectionsDTO.Output> {
         const workspace = await WorkspaceService.from(this.app, workspaceId)
 
+        const collections = await workspace.app.repositories.collection.list()
+
         return {
-            data: workspace.collections,
+            data: collections,
         }
     }
 }
