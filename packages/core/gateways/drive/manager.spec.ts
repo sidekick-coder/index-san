@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import DirectoryEntry from '../entities/directory-entry'
-import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
-import DriveManager from './drive-manager'
+import DirectoryEntry from '../../entities/directory-entry'
+import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
+import DriveManager from './manager'
 
 test.group('drive-manager', () => {
     const localDrive = new InMemoryDrive()

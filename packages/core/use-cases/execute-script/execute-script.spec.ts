@@ -51,7 +51,7 @@ test.group('execute-script (use-case)', (group) => {
             content: `await workspace.drive.write("hello.txt", "Hello word")`,
         })
 
-        const content = await app.memoryDrive.read('hello.txt')
+        const content = await app.managers.drive.readAsString('hello.txt')
 
         expect(content?.toString()).toBe('Hello word')
     })

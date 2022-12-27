@@ -11,7 +11,7 @@ test.group('delete-collection (use-case)', (group) => {
 
     const useCase = new DeleteCollection(app)
 
-    group.tap((t) => t.teardown(() => app.memoryDrive.clear()))
+    group.tap((t) => t.teardown(() => app.clear()))
 
     test('should delete a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
@@ -20,32 +20,22 @@ test.group('delete-collection (use-case)', (group) => {
 
         app.memoryDrive.createFile(entry.path, [collection])
 
-        const workspace = await app.workspaceRepository.create(
-            WorkspaceFactory.create({
-                drive: 'memory',
-            })
-        )
+        const workspace = await app.workspaceRepository.createFake()
 
         await useCase.execute({
             workspaceId: workspace.id,
             collectionId: collection.id,
         })
 
-        const content = app.memoryDrive.content.get('.is/collections.json')
+        const content = await app.memoryDrive.readArray('.is/collections.json')
 
-        const json = content ? JSON.parse(content.toString()) : []
-
-        expect(json.length).toEqual(0)
+        expect(content.length).toEqual(0)
     })
 
     test('should trigger an error if collection was not found', async ({ expect }) => {
         expect.assertions(1)
 
-        const workspace = await app.workspaceRepository.create(
-            WorkspaceFactory.create({
-                drive: 'memory',
-            })
-        )
+        const workspace = await app.workspaceRepository.createFake()
 
         await useCase
             .execute({

@@ -13,9 +13,9 @@ test.group('workspace-service (service)', (group) => {
 
     group.each.setup(() => {
         workspace = app.workspaceRepository.createFakeSync()
-
-        return () => app.clear()
     })
+
+    group.each.teardown(() => app.clear())
 
     test('should throw an error if a workspace not exists', async ({ expect }) => {
         expect.assertions(1)

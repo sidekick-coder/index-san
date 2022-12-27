@@ -1,46 +1,28 @@
 import { test } from '@japa/runner'
 import Item from '../../entities/item'
-import CrudManager from '../../gateways/crud-manager'
-import DriveManager from '../../gateways/drive-manager'
-import AppService from '../../services/app-service'
+import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
-import InMemoryCrud from '../../__tests__/gateways/in-memory-crud'
-import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
-import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 
 import DeleteItem from './delete-item'
 
 test.group('delete-item (use-case)', (group) => {
-    const memoryDrive = new InMemoryDrive()
-    const memoryCrud = new InMemoryCrud()
-    const driveManager = new DriveManager({ memory: memoryDrive })
-    const crudManger = new CrudManager({ memory: memoryCrud })
+    const app = new InMemoryApp()
 
-    const workspaceRepository = new InMemoryWorkspaceRepository()
+    const useCase = new DeleteItem(app)
 
-    const appService = new AppService({
-        workspaceRepository,
-        driveManager,
-        crudManger,
-    })
-
-    const useCase = new DeleteItem(appService)
-
-    const workspace = WorkspaceFactory.create({ drive: 'memory' })
+    const workspace = WorkspaceFactory.create({ driveName: 'memory' })
     const collection = CollectionFactory.create({ crudName: 'memory' })
 
-    memoryCrud.drive = memoryDrive
-
     group.each.setup(() => {
-        memoryDrive.createFile('.is/collections.json', [collection])
-        workspaceRepository.createSync(workspace)
+        app.memoryDrive.createFile('.is/collections.json', [collection])
+        app.workspaceRepository.createSync(workspace)
     })
 
-    group.each.teardown(() => memoryDrive.clear())
+    group.each.teardown(() => app.clear())
 
     test('should delete an item in collection', async ({ expect }) => {
-        const item = await memoryCrud.create(
+        const item = await app.memoryCrud.create(
             collection.path,
             new Item({
                 name: 'test',
@@ -54,7 +36,7 @@ test.group('delete-item (use-case)', (group) => {
             itemId: item.id,
         })
 
-        expect(memoryDrive.entries.length).toEqual(1)
-        expect(memoryCrud.metas.length).toEqual(0)
+        expect(app.memoryDrive.entries.length).toEqual(1)
+        expect(app.memoryCrud.metas.length).toEqual(0)
     })
 })

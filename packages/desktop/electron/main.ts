@@ -12,7 +12,7 @@ interface Preference {
 
 import WorkspaceRepository from './repositories/workspace-repository'
 
-import DriveManager from '@core/gateways/drive-manager'
+import DriveManager from '@core/gateways/drive/manager'
 import CrudManager from '@core/gateways/crud-manager'
 import NodeVMEvaluation from '@core/gateways/evaluation/implementations/node-vm-evaluation'
 

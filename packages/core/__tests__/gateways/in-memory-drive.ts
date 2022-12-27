@@ -1,9 +1,9 @@
 import DirectoryEntry from '../../entities/directory-entry'
-import { Drive } from '../../gateways/drive-manager'
+import Drive from '../../gateways/drive/drive'
 
 export default class InMemoryDrive implements Drive {
     public entries: DirectoryEntry[] = []
-    public content = new Map<string, Buffer>()
+    public content = new Map<string, Uint8Array>()
 
     public config = {}
 
@@ -47,10 +47,12 @@ export default class InMemoryDrive implements Drive {
     public async readArray(path: string): Promise<any[]> {
         const content = await this.read(path)
 
-        return content ? JSON.parse(content.toString()) : []
+        const decoder = new TextDecoder()
+
+        return content ? JSON.parse(decoder.decode(content)) : []
     }
 
-    public async write(path: string, content: Buffer) {
+    public async write(path: string, content: Uint8Array) {
         this.content.set(DirectoryEntry.normalize(path), content)
 
         this.entries.push(DirectoryEntry.file(path))

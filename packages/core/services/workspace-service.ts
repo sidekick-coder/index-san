@@ -27,7 +27,7 @@ export default class WorkspaceService extends Workspace {
 
         const workspace = new WorkspaceService(data, service)
 
-        const content = await workspace.drive.read('.is/collections.json')
+        const content = await workspace.drive.readAsString('.is/collections.json')
 
         const collections: Collection[] = []
 

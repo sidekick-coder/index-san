@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import DriveManager from '../../gateways/drive-manager'
+import DriveManager from '../../gateways/drive/manager'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 import InMemoryDrive from '../../__tests__/gateways/in-memory-drive'
 import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
@@ -21,7 +21,7 @@ test.group('create-workspace (use-case)', () => {
 
         expect(item.name).toEqual(workspace.name)
         expect(item.driveName).toEqual(workspace.driveName)
-        expect(item.path).toEqual(workspace.path)
+        expect(item.config).toEqual(workspace.config)
     })
 
     test('should throw an error if drive is invalid', async ({ expect }) => {

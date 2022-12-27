@@ -26,11 +26,9 @@ test.group('update-collection (use-case)', (group) => {
             },
         })
 
-        const content = app.memoryDrive.content.get('.is/collections.json')
+        const content = await app.memoryDrive.readArray('.is/collections.json')
 
-        const json = content ? JSON.parse(content.toString()) : []
-
-        expect(json[0].name).toEqual('update-name')
+        expect(content[0].name).toEqual('update-name')
     })
 
     test('should trigger an error if collection was not found', async ({ expect }) => {

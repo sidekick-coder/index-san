@@ -1,18 +1,4 @@
-import DirectoryEntry from '../entities/directory-entry'
-
-export interface Drive {
-    config: Record<string, any>
-    exists: (entryPath: string) => Promise<boolean>
-    list: (entryPath: string) => Promise<DirectoryEntry[]>
-    get: (entryPath: string) => Promise<DirectoryEntry | null>
-    mkdir: (entryPath: string) => Promise<DirectoryEntry>
-
-    move: (source: string, target: string) => Promise<void>
-    read: (entryPath: string) => Promise<Buffer | null>
-    write: (entryPath: string, content: Buffer) => Promise<void>
-
-    delete(entryPath: string): Promise<void>
-}
+import Drive from './drive'
 
 export default class DriveManager<T extends Record<string, Drive> = any> implements Drive {
     private _currentConfig = {}
@@ -85,12 +71,22 @@ export default class DriveManager<T extends Record<string, Drive> = any> impleme
         return this.execute((d) => d.read(entryPath))
     }
 
-    public async write(entryPath: string, content: Buffer | string) {
+    public async readAsString(entryPath: string) {
+        const decoder = new TextDecoder()
+
+        const uint = await this.execute((d) => d.read(entryPath))
+
+        return uint ? decoder.decode(uint) : uint
+    }
+
+    public async write(entryPath: string, content: Uint8Array | string) {
+        const encoder = new TextEncoder()
+
         if (typeof content === 'string') {
-            content = Buffer.from(content)
+            content = encoder.encode(content)
         }
 
-        return this.execute((d) => d.write(entryPath, content as Buffer))
+        return this.execute((d) => d.write(entryPath, content as Uint8Array))
     }
 
     public async delete(entryPath: string) {

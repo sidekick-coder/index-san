@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import CrudManager from '../gateways/crud-manager'
-import DriveManager from '../gateways/drive-manager'
+import DriveManager from '../gateways/drive/manager'
+import NodeVMEvaluation from '../gateways/evaluation/implementations/node-vm-evaluation'
 import InMemoryCrud from '../__tests__/gateways/in-memory-crud'
 import InMemoryDrive from '../__tests__/gateways/in-memory-drive'
 import InMemoryWorkspaceRepository from '../__tests__/repositories/in-memory-workspace-repository'
@@ -12,16 +13,19 @@ test.group('app-service (service)', () => {
     const driveManager = new DriveManager({ memory: memoryDrive })
     const crudManger = new CrudManager({ memory: memoryCrud })
     const workspaceRepository = new InMemoryWorkspaceRepository()
+    const evaluation = new NodeVMEvaluation()
 
     test('should instantiate', async ({ expect }) => {
         const service = new AppService({
             workspaceRepository,
             driveManager,
             crudManger,
+            evaluation,
         })
 
         expect(service.managers.crud).toEqual(crudManger)
         expect(service.managers.drive).toEqual(driveManager)
         expect(service.repositories.workspace).toEqual(workspaceRepository)
+        expect(service.evaluation).toEqual(evaluation)
     })
 })

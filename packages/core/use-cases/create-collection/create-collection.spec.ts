@@ -21,12 +21,10 @@ test.group('create-collection (use-case)', (group) => {
             data: collection,
         })
 
-        const content = app.memoryDrive.content.get('.is/collections.json')
+        const content = await app.memoryDrive.readArray('.is/collections.json')
 
-        const json = content ? JSON.parse(content.toString()) : []
+        expect(content.length).toEqual(1)
 
-        expect(json.length).toEqual(1)
-
-        expect(json[0].path).toEqual(collection.path)
+        expect(content[0].path).toEqual(collection.path)
     })
 })

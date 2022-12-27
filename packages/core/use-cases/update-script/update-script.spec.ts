@@ -37,7 +37,7 @@ test.group('update-script (use-case)', (group) => {
             content: 'async main(){ return 2 }',
         })
 
-        const content = await app.memoryDrive.read('.is/scripts/hello.js')
+        const content = await app.managers.drive.readAsString('.is/scripts/hello.js')
 
         expect(content?.toString()).toBe('async main(){ return 2 }')
     })
