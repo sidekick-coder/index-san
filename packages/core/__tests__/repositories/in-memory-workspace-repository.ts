@@ -1,4 +1,5 @@
 import Workspace from '../../entities/workspace'
+import WorkspaceNotFound from '../../exceptions/workspace-not-found'
 import WorkspaceRepository from '../../repositories/workspace/workspace-repository'
 import WorkspaceFactory from '../factories/workspace-factory'
 
@@ -9,10 +10,14 @@ export default class InMemoryWorkspaceRepository implements WorkspaceRepository 
         return Promise.resolve(this.items)
     }
 
-    public show(id: string): Promise<Workspace | null> {
+    public show(id: string): Promise<Workspace> {
         const item = this.items.find((i) => i.id === id)
 
-        return Promise.resolve(item ?? null)
+        if (!item) {
+            throw new WorkspaceNotFound(id)
+        }
+
+        return Promise.resolve(item)
     }
 
     public create(workspace: Workspace): Promise<Workspace> {
