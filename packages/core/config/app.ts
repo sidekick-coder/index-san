@@ -1,5 +1,7 @@
 import CollectionFacade from '../facades/collection'
 import DriveFacade from '../facades/drive'
+import ItemFacade from '../facades/item'
+import ItemFacade from '../facades/item'
 import Drive from '../gateways/drive/drive'
 import IWorkspaceRepository from '../repositories/workspace/workspace-repository'
 
@@ -10,6 +12,7 @@ interface Repositories {
 interface Facades {
     drive: DriveFacade
     collection: CollectionFacade
+    item: ItemFacade
 }
 
 export default class AppConfig {
@@ -23,10 +26,12 @@ export default class AppConfig {
 
         const driveFacade = new DriveFacade(drives)
         const collectionFacade = new CollectionFacade(driveFacade)
+        const itemFacade = new ItemFacade(collectionFacade)
 
         this.facades = {
             drive: driveFacade,
             collection: collectionFacade,
+            item: itemFacade,
         }
     }
 }

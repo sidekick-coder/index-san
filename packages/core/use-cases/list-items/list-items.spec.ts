@@ -1,27 +1,24 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import DirectoryEntry from '../../entities/directory-entry'
 import CollectionFactory from '../../__tests__/factories/collections'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ListItems from './list-items'
 
 test.group('list-items (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new ListItems(app)
-
-    const workspace = WorkspaceFactory.create({ driveName: 'memory' })
-    const collection = CollectionFactory.create({ crudName: 'memory' })
-
-    group.each.setup(() => {
-        app.memoryDrive.write('.is/collections.json', Buffer.from(JSON.stringify([collection])))
-        app.workspaceRepository.createSync(workspace)
-    })
 
     group.each.teardown(() => app.clear())
 
     test('should return a list of items', async ({ expect }) => {
+        const workspace = app.workspaceRepository.createFakeSync()
+        const collection = CollectionFactory.create()
+
+        app.drive.createFile(DirectoryEntry.normalize('.is', 'collections.json'), [collection])
+
         for (let i = 0; i < 20; i++) {
-            app.memoryDrive.mkdir(`${collection.path}/${i}`)
+            app.drive.mkdir(DirectoryEntry.normalize(collection.path, String(i)))
         }
 
         const result = await useCase.execute({

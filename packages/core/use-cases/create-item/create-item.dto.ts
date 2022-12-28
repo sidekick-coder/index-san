@@ -1,20 +1,5 @@
-import Item from '../../entities/item'
-
-interface ItemWithWorkspace extends Item {
+export default interface CreateItemDTO {
     workspaceId: string
     collectionId: string
+    data: any
 }
-
-declare namespace CreateItemDTO {
-    export interface Input {
-        workspaceId: string
-        collectionId: string
-        data: any
-    }
-
-    export interface Output {
-        data: ItemWithWorkspace
-    }
-}
-
-export default CreateItemDTO

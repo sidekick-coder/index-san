@@ -10,28 +10,26 @@ import EntryItemRepository from './entry-item-repository'
 import ItemNotFound from '../../../exceptions/item-not-found'
 
 test.group('entry-item-repository (repository)', (group) => {
-    const memory = new InMemoryDrive()
-
-    const manager = new DriveManager({ memory }, 'memory')
-
-    const repository = new EntryItemRepository(manager)
+    const drive = new InMemoryDrive()
 
     const collection = CollectionFactory.create()
 
+    const repository = new EntryItemRepository(collection, drive)
+
     function saveMetas(metas: any[]) {
-        memory.createFile(DirectoryEntry.normalize(collection.path, '.is', 'metas.json'), metas)
+        drive.createFile(DirectoryEntry.normalize(collection.path, '.is', 'metas.json'), metas)
     }
 
     function getMetas() {
-        return memory.readArray(DirectoryEntry.normalize(collection.path, '.is', 'metas.json'))
+        return drive.readArray(DirectoryEntry.normalize(collection.path, '.is', 'metas.json'))
     }
 
-    group.each.teardown(() => memory.clear())
+    group.each.teardown(() => drive.clear())
 
     test('should list entries as items', async ({ expect }) => {
         const items = Array.from({ length: 20 })
             .map((_, i) => String(i))
-            .map((i) => memory.createDir(collection.path, i))
+            .map((i) => drive.createDir(collection.path, i))
             .map(({ name }) => {
                 const data = {
                     gender: faker.name.gender(),
@@ -43,15 +41,15 @@ test.group('entry-item-repository (repository)', (group) => {
 
         saveMetas(items)
 
-        const result = await repository.list(collection)
+        const result = await repository.list()
 
         expect(result).toEqual(items)
     })
 
     test('should show method return a item by id', async ({ expect }) => {
-        const entry = memory.createDir(collection.path, 'hello-word')
+        const entry = drive.createDir(collection.path, 'hello-word')
 
-        const result = await repository.show(collection, entry.name)
+        const result = await repository.show(entry.name)
 
         expect(result).toEqual(new Item({}, entry.name))
     })
@@ -60,46 +58,45 @@ test.group('entry-item-repository (repository)', (group) => {
         expect.assertions(1)
 
         await repository
-            .show(collection, 'invalid')
+            .show('invalid')
             .catch((err) => expect(err).toEqual(new ItemNotFound(collection.path, 'invalid')))
     })
 
     test('should create a item', async ({ expect }) => {
         const item = new Item({ age: faker.random.numeric() }, 'hello')
 
-        await repository.create(collection, item)
+        await repository.create(item)
 
-        const [result] = await repository.list(collection)
+        const [result] = await repository.list()
 
         expect(result.id).toEqual(item.id)
         expect(result.age).toEqual(item.age)
 
-        expect(manager.exists(collection.path, 'hello'))
+        const folderExists = await drive.exists(DirectoryEntry.normalize(collection.path, 'hello'))
+
+        expect(folderExists).toBe(true)
     })
 
     test('should update method throw an error if item not exists', async ({ expect }) => {
         expect.assertions(1)
 
         await repository
-            .update(collection, 'invalid', {
+            .update('invalid', {
                 hello: 'word',
             })
             .catch((err) => expect(err).toEqual(new ItemNotFound(collection.path, 'invalid')))
     })
 
     test('should update a item', async ({ expect }) => {
-        const item = await repository.create(
-            collection,
-            new Item({ age: faker.random.numeric() }, 'hello')
-        )
+        const item = await repository.create(new Item({ age: faker.random.numeric() }, 'hello'))
 
         saveMetas([item])
 
-        await repository.update(collection, item.id, {
+        await repository.update(item.id, {
             hello: 'word',
         })
 
-        const [result] = await repository.list(collection)
+        const [result] = await repository.list()
 
         expect(result.id).toBe(item.id)
         expect(result.age).toBe(item.age)
@@ -109,20 +106,19 @@ test.group('entry-item-repository (repository)', (group) => {
     })
 
     test('should update method move item folder when id is defined', async ({ expect }) => {
-        const item = await repository.create(
-            collection,
-            new Item({ age: faker.random.numeric() }, 'hello')
-        )
+        const item = await repository.create(new Item({ age: faker.random.numeric() }, 'hello'))
 
         saveMetas([item])
 
-        await repository.update(collection, item.id, {
+        await repository.update(item.id, {
             id: 'new-dir',
         })
 
-        const newItem = await repository.show(collection, 'new-dir')
+        const newItem = await repository.show('new-dir')
 
-        const folderExists = await manager.exists(collection.path, 'new-dir')
+        const folderExists = await drive.exists(
+            DirectoryEntry.normalize(collection.path, 'new-dir')
+        )
 
         expect(folderExists).toBe(true)
         expect(newItem.age).toBe(item.age)
@@ -132,21 +128,18 @@ test.group('entry-item-repository (repository)', (group) => {
         expect.assertions(1)
 
         await repository
-            .destroy(collection, 'invalid')
+            .destroy('invalid')
             .catch((err) => expect(err).toEqual(new ItemNotFound(collection.path, 'invalid')))
     })
 
     test('should delete an item', async ({ expect }) => {
-        const item = await repository.create(
-            collection,
-            new Item({ age: faker.random.numeric() }, 'hello')
-        )
+        const item = await repository.create(new Item({ age: faker.random.numeric() }, 'hello'))
 
         saveMetas([item])
 
-        await repository.destroy(collection, item.id)
+        await repository.destroy(item.id)
 
-        const items = await repository.list(collection)
+        const items = await repository.list()
         const metas = await getMetas()
 
         expect(items.length).toBe(0)

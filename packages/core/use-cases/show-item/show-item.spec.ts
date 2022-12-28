@@ -1,29 +1,31 @@
 import { test } from '@japa/runner'
+import DirectoryEntry from '../../entities/directory-entry'
 import Item from '../../entities/item'
 import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowItem from './show-item'
 
 test.group('show-item (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new ShowItem(app)
-
-    const workspace = WorkspaceFactory.create()
-    const collection = CollectionFactory.create()
-
-    group.each.setup(() => {
-        app.memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
-        app.workspaceRepository.createSync(workspace)
-    })
 
     group.each.teardown(() => app.clear())
 
     test('should return item by id', async ({ expect }) => {
-        const item = new Item({})
+        const workspace = app.workspaceRepository.createFakeSync()
+        const collection = CollectionFactory.create({ crudName: 'memory' })
 
-        app.memoryDrive.mkdir(`${collection.path}/${item.id}`)
+        app.drive.createFile('.is/collections.json', [collection])
+
+        const item = new Item({
+            name: 'test',
+        })
+
+        app.drive.createFile(DirectoryEntry.normalize(collection.path, '.is', 'metas.json'), [item])
+        app.drive.createDir(DirectoryEntry.normalize(collection.path, item.id))
 
         const result = await useCase.execute({
             workspaceId: workspace.id,
@@ -31,10 +33,7 @@ test.group('show-item (use-case)', (group) => {
             itemId: item.id,
         })
 
-        expect(result.data).toEqual({
-            id: item.id,
-            workspaceId: workspace.id,
-            collectionId: collection.id,
-        })
+        expect(result.data.id).toEqual(item.id)
+        expect(result.data.name).toEqual(item.name)
     })
 })

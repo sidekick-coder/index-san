@@ -1,17 +1,18 @@
+import AppConfig from '../../config/app'
 import DriveHelper from '../../gateways/drive/helper'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
 import UpdateWorkspaceOptionsDTO from './update-workspace-options.dto'
 
 export default class UpdateWorkspaceOptions {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
     public async execute({ workspaceId, data }: UpdateWorkspaceOptionsDTO.Input): Promise<void> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
+
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
         let options = {}
 
-        const contents = await workspace.drive.read('.is/options.json')
+        const contents = await drive.read('.is/options.json')
 
         if (contents) {
             options = DriveHelper.toObject(contents)
@@ -19,6 +20,6 @@ export default class UpdateWorkspaceOptions {
 
         Object.assign(options, data)
 
-        await workspace.drive.write('.is/options.json', DriveHelper.encode(options))
+        await drive.write('.is/options.json', DriveHelper.encode(options))
     }
 }

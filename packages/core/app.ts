@@ -23,7 +23,6 @@ import ShowItem from './use-cases/show-item/show-item'
 import CreateItem from './use-cases/create-item/create-item'
 import UpdateItem from './use-cases/update-item/update-item'
 import DeleteItem from './use-cases/delete-item/delete-item'
-import AppService, { AppServiceArgs } from './services/app-service'
 import ListScripts from './use-cases/list-scripts/list-scripts'
 import CreateScript from './use-cases/create-script/create-script'
 import UpdateScript from './use-cases/update-script/update-script'
@@ -34,12 +33,13 @@ import UpdateMenu from './use-cases/update-menu/update-menu'
 import UpdateDirectoryEntry from './use-cases/update-directory-entry/update-directory-entry'
 import ShowViews from './use-cases/show-views/show-views'
 import UpdateViews from './use-cases/update-views/update-views'
+import AppConfig from './config/app'
 
-function createUseCases(app: AppService) {
+function createUseCases(app: AppConfig) {
     return {
-        'list-workspaces': new ListWorkspaces(app.repositories.workspace),
-        'create-workspace': new CreateWorkspace(app.repositories.workspace, app.managers.drive),
-        'delete-workspace': new DeleteWorkspace(app.repositories.workspace),
+        'list-workspaces': new ListWorkspaces(app),
+        'create-workspace': new CreateWorkspace(app),
+        'delete-workspace': new DeleteWorkspace(app),
 
         'show-workspace-options': new ShowWorkspaceOptions(app),
         'update-workspace-options': new UpdateWorkspaceOptions(app),
@@ -78,12 +78,10 @@ function createUseCases(app: AppService) {
     }
 }
 
-export default class App extends AppService {
+export default class App {
     public cases: ReturnType<typeof createUseCases>
 
-    constructor(props: AppServiceArgs) {
-        super(props)
-
-        this.cases = createUseCases(this)
+    constructor(props: AppConfig) {
+        this.cases = createUseCases(props)
     }
 }

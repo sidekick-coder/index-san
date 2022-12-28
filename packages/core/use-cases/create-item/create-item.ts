@@ -1,23 +1,21 @@
+import AppConfig from '../../config/app'
 import Item from '../../entities/item'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
 import CreateItemDTO from './create-item.dto'
 
 export default class CreateItem {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        collectionId,
-        workspaceId,
-        data,
-    }: CreateItemDTO.Input): Promise<CreateItemDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ collectionId, workspaceId, data }: CreateItemDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const collection = await workspace.collection(collectionId)
+        const repository = await this.app.facades.item.createRepositoryFromWorkspace(
+            workspace,
+            collectionId
+        )
 
         const item = new Item(data, data.id)
 
-        await collection.create(item)
+        await repository.create(item)
 
         return {
             data: {

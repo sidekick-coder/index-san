@@ -1,24 +1,21 @@
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
 import ListItemsDTO from './list-items.dto'
 
 export default class ListItems {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        collectionId,
-    }: ListItemsDTO.Input): Promise<ListItemsDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, collectionId }: ListItemsDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const collection = await workspace.collection(collectionId)
+        const repository = await this.app.facades.item.createRepositoryFromWorkspace(
+            workspace,
+            collectionId
+        )
 
-        const items = await collection.list({
-            include: ['relations', 'scripts'],
-        })
+        const items = await repository.list()
 
         return {
             data: items,
-        } as ListItemsDTO.Output
+        }
     }
 }

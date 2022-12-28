@@ -1,29 +1,30 @@
 import { test } from '@japa/runner'
+import DirectoryEntry from '../../entities/directory-entry'
 
 import Item from '../../entities/item'
 import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateItem from './update-item'
 
 test.group('update-item (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new UpdateItem(app)
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    group.each.teardown(() => app.clear())
 
     test('should update an item in collection', async ({ expect }) => {
         const workspace = await app.workspaceRepository.createFake()
         const collection = CollectionFactory.create()
 
-        app.memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
+        app.drive.createFile('.is/collections.json', JSON.stringify([collection]))
 
-        const item = await app.memoryCrud.create(
-            collection.path,
-            new Item({
-                name: 'test',
-                custom: 'hello word',
-            })
-        )
+        const item = new Item({
+            name: 'test',
+        })
+
+        app.drive.createFile(DirectoryEntry.normalize(collection.path, '.is', 'metas.json'), [item])
+        app.drive.createDir(DirectoryEntry.normalize(collection.path, item.id))
 
         await useCase.execute({
             workspaceId: workspace.id,
@@ -34,8 +35,12 @@ test.group('update-item (use-case)', (group) => {
             },
         })
 
-        const updated = await app.memoryCrud.findById(collection.path, item.id)
+        const metas = await app.drive.readArray(
+            DirectoryEntry.normalize(collection.path, '.is', 'metas.json')
+        )
 
-        expect(updated?.custom).toEqual('update hello')
+        const meta = metas.find((i) => i.id === item.id)
+
+        expect(meta.custom).toEqual('update hello')
     })
 })

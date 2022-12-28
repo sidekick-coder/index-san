@@ -1,11 +1,11 @@
 import { test } from '@japa/runner'
 import DriveHelper from '../../gateways/drive/helper'
 
-import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateWorkspaceOptions from './update-workspace-options'
 
 test.group('update-workspace-options (use-case)', () => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new UpdateWorkspaceOptions(app)
 
     test('should update workspace options', async ({ expect }) => {
@@ -13,7 +13,7 @@ test.group('update-workspace-options (use-case)', () => {
             hello: 'word',
         }
 
-        app.memoryDrive.createFile('.is/options.json', options)
+        app.drive.createFile('.is/options.json', options)
 
         const workspace = await app.workspaceRepository.createFake()
 
@@ -24,7 +24,7 @@ test.group('update-workspace-options (use-case)', () => {
             },
         })
 
-        const contents = await app.memoryDrive.read('.is/options.json')
+        const contents = await app.drive.read('.is/options.json')
 
         const result = contents ? DriveHelper.toObject(contents) : {}
 

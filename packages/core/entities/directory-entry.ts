@@ -61,4 +61,28 @@ export default class DirectoryEntry {
             type: 'file',
         })
     }
+
+    public static encode(payload: any): Uint8Array {
+        const encoder = new TextEncoder()
+
+        if (Array.isArray(payload) || typeof payload === 'object') {
+            payload = JSON.stringify(payload, null, 4)
+        }
+
+        if (typeof payload === 'number') {
+            payload = String(payload)
+        }
+
+        if (typeof payload === 'string') {
+            payload = encoder.encode(payload)
+        }
+
+        return payload as Uint8Array
+    }
+
+    public static decode(payload: Uint8Array) {
+        const decoder = new TextDecoder()
+
+        return decoder.decode(payload)
+    }
 }

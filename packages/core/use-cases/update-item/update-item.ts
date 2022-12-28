@@ -1,20 +1,17 @@
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
 import UpdateItemDTO from './update-item.dto'
 
 export default class UpdateItem {
-    constructor(private readonly service: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        collectionId,
-        workspaceId,
-        itemId,
-        data,
-    }: UpdateItemDTO.Input): Promise<void> {
-        const workspace = await WorkspaceService.from(this.service, workspaceId)
+    public async execute({ collectionId, workspaceId, itemId, data }: UpdateItemDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const collection = await workspace.collection(collectionId)
+        const repository = await this.app.facades.item.createRepositoryFromWorkspace(
+            workspace,
+            collectionId
+        )
 
-        await collection.update(itemId, data)
+        await repository.update(itemId, data)
     }
 }
