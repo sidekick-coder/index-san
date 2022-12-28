@@ -1,5 +1,6 @@
-import Workspace from '../../../core/entities/workspace'
-import IWorkspaceRepository from '../../../core/repositories/workspace-repository'
+import Workspace from '@core/entities/workspace'
+import WorkspaceNotFound from '@core/exceptions/workspace-not-found'
+import IWorkspaceRepository from '@core/repositories/workspace/workspace-repository'
 import JSONService from '../services/json-service'
 
 export default class WorkspaceRepository implements IWorkspaceRepository {
@@ -9,18 +10,22 @@ export default class WorkspaceRepository implements IWorkspaceRepository {
         this.json = new JSONService(filename)
     }
 
-    public async findAll(): Promise<Workspace[]> {
+    public async list() {
         await this.json.load()
 
         return this.json.items
     }
 
-    public async findById(id: string): Promise<Workspace | null> {
+    public async show(id: string): Promise<Workspace> {
         await this.json.load()
 
         const item = this.json.items.find((i) => i.id === id)
 
-        return item ?? null
+        if (!item) {
+            throw new WorkspaceNotFound(id)
+        }
+
+        return item
     }
 
     public async create(workspace: Workspace): Promise<Workspace> {
@@ -33,7 +38,7 @@ export default class WorkspaceRepository implements IWorkspaceRepository {
         return workspace
     }
 
-    public async updateById(id: string, data: Partial<Omit<Workspace, 'id'>>): Promise<void> {
+    public async update(id: string, data: Partial<Omit<Workspace, 'id'>>): Promise<void> {
         await this.json.load()
 
         const workspace = this.json.items.find((i) => i.id === id)
@@ -46,7 +51,7 @@ export default class WorkspaceRepository implements IWorkspaceRepository {
         await this.json.save()
     }
 
-    public async delete(id: string): Promise<void> {
+    public async destroy(id: string): Promise<void> {
         await this.json.load()
 
         const index = this.json.items.findIndex((i) => i.id === id)

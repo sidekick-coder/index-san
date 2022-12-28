@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain, app, Menu, MenuItem } from 'electron'
 import path from 'path'
 import debounce from 'lodash/debounce'
 
+import AppConfig from '@core/config/app'
 import IndexSan from '@core/app'
 
 import JSONService from './services/json-service'
@@ -12,29 +13,23 @@ interface Preference {
 
 import WorkspaceRepository from './repositories/workspace-repository'
 
-import DriveManager from '@core/gateways/drive/manager'
-import CrudManager from '@core/gateways/crud-manager'
 import NodeVMEvaluation from '@core/gateways/evaluation/implementations/node-vm-evaluation'
 
 import FSDrive from './gateways/fs-drive'
-import FSCrudFolder from './gateways/fs-crud-folder'
 
 const workspaceRepository = new WorkspaceRepository(
     path.resolve(app.getPath('userData'), 'workspaces.json')
 )
 
-const fsDrive = new FSDrive()
-const fsCrudFolder = new FSCrudFolder()
-const driveManager = new DriveManager({ fs: fsDrive })
-const crudManger = new CrudManager({ fsFolder: fsCrudFolder })
 const evaluation = new NodeVMEvaluation()
 
-const indexSan = new IndexSan({
-    crudManger,
-    driveManager,
-    workspaceRepository,
-    evaluation,
+const config = new AppConfig({
+    repositories: { workspace: workspaceRepository },
+    drives: { fs: new FSDrive() },
+    services: { evaluation },
 })
+
+const indexSan = new IndexSan(config)
 
 if (process.env.VITE_DEV_SERVER_URL) {
     process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
