@@ -1,14 +1,30 @@
-import path from 'path'
-import fs from 'fs'
-import DirectoryEntry from '../../../core/entities/directory-entry'
-import { Drive } from '../../../core/gateways/drive-manager'
+import {
+    readDir,
+    exists,
+    readBinaryFile,
+    renameFile,
+    createDir,
+    writeBinaryFile,
+    removeDir,
+    removeFile,
+} from '@tauri-apps/api/fs'
+import { sep } from '@tauri-apps/api/path'
+
+import DirectoryEntry from '@core/entities/directory-entry'
+import Drive from '@core/gateways/drive/drive'
 
 export default class FSDrive implements Drive {
     public config = {
         path: '',
     }
 
-    public resolve(args: string | string[], separator = path.sep) {
+    public async isFolder(path: string) {
+        return readDir(path)
+            .then(() => true)
+            .catch(() => false)
+    }
+
+    public resolve(args: string | string[], separator = sep) {
         args = Array.isArray(args) ? args : [args]
 
         return args
@@ -21,19 +37,16 @@ export default class FSDrive implements Drive {
     public async list(path: string): Promise<DirectoryEntry[]> {
         const systemPath = this.resolve([this.config.path, path])
 
-        const isValid = await fs.promises
-            .stat(systemPath)
-            .then((s) => s.isDirectory())
-            .catch(() => false)
+        const isValid = await this.isFolder(systemPath)
 
         if (!isValid) return []
 
-        const entries = await fs.promises.readdir(systemPath, { withFileTypes: true })
+        const entries = await readDir(systemPath)
 
         return entries.map((e) => {
-            const filename = this.resolve([path, e.name], '/')
+            const filename = this.resolve([path, e.name || ''], '/')
 
-            if (e.isDirectory()) {
+            if (e.children) {
                 return DirectoryEntry.directory(filename)
             }
 
@@ -44,27 +57,23 @@ export default class FSDrive implements Drive {
     public async get(entryPath: string) {
         const systemPath = this.resolve([this.config.path, entryPath])
 
-        const exists = await this.exists(entryPath)
+        const entryExists = await this.exists(entryPath)
 
-        if (!exists) return null
+        if (!entryExists) return null
 
-        return await fs.promises
-            .stat(systemPath)
-            .then((e) =>
-                e.isDirectory()
-                    ? DirectoryEntry.directory(entryPath)
-                    : DirectoryEntry.file(entryPath)
-            )
-            .catch(() => null)
+        const isFolder = await this.isFolder(systemPath)
+
+        if (isFolder) {
+            return DirectoryEntry.directory(entryPath)
+        }
+
+        return DirectoryEntry.file(entryPath)
     }
 
     public async exists(path: string) {
         const systemPath = this.resolve([this.config.path, path])
 
-        return fs.promises
-            .stat(systemPath)
-            .then(() => true)
-            .catch(() => false)
+        return exists(systemPath)
     }
 
     public async move(source: string, target: string) {
@@ -79,41 +88,42 @@ export default class FSDrive implements Drive {
             throw new Error('Target filename already exists')
         }
 
-        await fs.promises.rename(systemPath.source, systemPath.target)
+        await renameFile(systemPath.source, systemPath.target)
     }
 
     public async mkdir(entryPath: string) {
         const systemPath = this.resolve([this.config.path, entryPath])
 
-        await fs.promises.mkdir(systemPath, { recursive: true })
+        await createDir(systemPath, { recursive: true })
 
         return DirectoryEntry.directory(entryPath)
     }
 
-    public async write(entryPath: string, content: Buffer) {
+    public async write(entryPath: string, content: Uint8Array) {
         const systemPath = this.resolve([this.config.path, entryPath])
 
-        await fs.promises.mkdir(path.dirname(systemPath), { recursive: true })
-
-        await fs.promises.writeFile(systemPath, content)
+        await writeBinaryFile(systemPath, content)
     }
 
-    public async read(entryPath: string): Promise<Buffer | null> {
+    public async read(entryPath: string): Promise<Uint8Array | null> {
         const systemPath = this.resolve([this.config.path, entryPath])
 
-        const isFile = await fs.promises
-            .stat(systemPath)
-            .then((s) => s.isFile())
-            .catch(() => false)
+        const isFolder = await this.isFolder(systemPath)
 
-        if (!isFile) return null
+        if (isFolder) return null
 
-        return await fs.promises.readFile(systemPath)
+        return readBinaryFile(systemPath).catch(() => null)
     }
 
     public async delete(path: string) {
         const systemPath = this.resolve([this.config.path, path])
 
-        await fs.promises.rm(systemPath, { recursive: true })
+        const isFolder = await this.isFolder(systemPath)
+
+        if (isFolder) {
+            return await removeDir(systemPath)
+        }
+
+        return await removeFile(systemPath)
     }
 }

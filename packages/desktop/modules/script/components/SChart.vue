@@ -5,7 +5,7 @@ import { useStore } from '@/modules/script/store'
 import SOutput from './SOutput.vue'
 import MEditor from '@/modules/monaco/components/MEditor.vue'
 import VChart from '@/components/v-chart.vue'
-import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
+import EvaluationOutput from '@/../core/entities/evaluation-output'
 
 // Props & Emits
 
@@ -48,7 +48,7 @@ const current = ref<'chart' | 'debug' | 'raw'>('chart')
 // execute script
 const store = useStore()
 
-const output = ref<ExecuteScriptDTO.Output>({
+const output = ref<EvaluationOutput>({
     error: null,
     result: null,
     logs: [],

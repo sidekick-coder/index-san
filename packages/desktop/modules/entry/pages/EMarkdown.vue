@@ -73,7 +73,7 @@ const edit = useState('app:markdown:preview', false, {
 
 async function save() {
     await store.write({
-        data: content.value,
+        data: DirectoryEntry.encode(content.value),
         path: props.path,
     })
 

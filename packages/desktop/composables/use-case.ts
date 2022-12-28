@@ -1,6 +1,7 @@
 import { useStore } from '@/modules/notify/store'
 
-import App from '@core/app'
+import App from '@/services/app'
+
 import { i18n } from '@/plugins/i18n'
 
 export interface DataResponse<T> {
@@ -8,16 +9,30 @@ export interface DataResponse<T> {
 }
 
 export async function useCase<
-    K extends keyof App['cases'],
-    T = ReturnType<App['cases'][K]['execute']>
->(name: K, args?: Parameters<App['cases'][K]['execute']>[0], silent = false): Promise<Awaited<T>> {
+    K extends keyof typeof App['cases'],
+    T = ReturnType<typeof App['cases'][K]['execute']>
+>(
+    name: K,
+    args?: Parameters<typeof App['cases'][K]['execute']>[0],
+    silent = false
+): Promise<Awaited<T>> {
     const notify = useStore()
 
     args = args ? JSON.parse(JSON.stringify(args)) : {}
 
-    const promise = () => (window as any).useCase(name, args) as Promise<any>
+    const option = App.cases[name]
 
-    const { error, result } = await promise()
+    if (!option) {
+        throw new Error(`use-case "${name}" not found`)
+    }
+
+    let result: any = undefined
+    let error: any = undefined
+
+    await option
+        .execute(args as any)
+        .then((r: any) => (result = r))
+        .catch((e: any) => (error = e))
 
     console.debug(`[app] use-case(${name}):`, {
         payload: args,
@@ -27,7 +42,7 @@ export async function useCase<
 
     if (!error) return Promise.resolve(result as T)
 
-    let message = error.message
+    let message = error.message || error
 
     if (error.i18nKey) {
         message = i18n.global.t(error.i18nKey, error.i18nArgs)
@@ -35,7 +50,7 @@ export async function useCase<
 
     if (!silent) {
         notify.error(message)
-        console.error(Object.assign(new Error(), error))
+        console.error(error)
     }
 
     return Promise.reject(error) as any

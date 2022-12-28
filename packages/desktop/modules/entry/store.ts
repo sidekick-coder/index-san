@@ -25,7 +25,7 @@ export const useStore = defineStore('entry', () => {
         toolbar: true,
     })
 
-    function list(payload: Partial<ListDirectoryEntryDTO.Input>) {
+    function list(payload: Partial<ListDirectoryEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -33,7 +33,7 @@ export const useStore = defineStore('entry', () => {
         return useCase('list-directory-entry', payload as any)
     }
 
-    function show(payload: Partial<ShowDirectoryEntryDTO.Input>) {
+    function show(payload: Partial<ShowDirectoryEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -41,7 +41,7 @@ export const useStore = defineStore('entry', () => {
         return useCase('show-directory-entry', payload as any)
     }
 
-    function create(payload: Partial<CreateDirectoryEntryDTO.Input>) {
+    function create(payload: Partial<CreateDirectoryEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -49,7 +49,7 @@ export const useStore = defineStore('entry', () => {
         return useCase('create-directory-entry', payload as any)
     }
 
-    function update(payload: Partial<UpdateDirectionEntryDTO.Input>) {
+    function update(payload: Partial<UpdateDirectionEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -57,7 +57,7 @@ export const useStore = defineStore('entry', () => {
         return useCase('update-directory-entry', payload as any)
     }
 
-    function destroy(payload: Partial<DeleteDirectoryEntryDTO.Input>) {
+    function destroy(payload: Partial<DeleteDirectoryEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -65,7 +65,7 @@ export const useStore = defineStore('entry', () => {
         return useCase('delete-directory-entry', payload as any)
     }
 
-    function read(payload: Partial<ReadDirectoryEntryDTO.Input>, silent?: boolean) {
+    function read(payload: Partial<ReadDirectoryEntryDTO>, silent?: boolean) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -73,7 +73,7 @@ export const useStore = defineStore('entry', () => {
         return useCase('read-directory-entry', payload as any, silent)
     }
 
-    function write(payload: Partial<WriteDirectoryEntryDTO.Input>) {
+    function write(payload: Partial<WriteDirectoryEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }

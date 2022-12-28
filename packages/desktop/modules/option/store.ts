@@ -1,21 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import get from 'lodash/get'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useCase } from '@/composables/use-case'
-
-interface Menu {
-    label: string
-    to: string
-    icon?: string
-    section?: string
-}
-
-interface Options {
-    menu?: Menu[]
-    [key: string]: any
-}
 
 interface SaveArgs {
     workspaceId?: string
@@ -23,17 +10,20 @@ interface SaveArgs {
 }
 
 export const useStore = defineStore('option', () => {
-    const options = ref<Options>({
-        menu: [],
-    })
+    const options = ref<any>({})
 
     const workspace = useWorkspace()
 
     async function setOptions(workspaceId = workspace.currentId) {
+        if (!workspaceId) {
+            options.value = {}
+            return
+        }
+
         await useCase('show-workspace-options', {
-            workspaceId: workspaceId || workspace.currentId!,
+            workspaceId: workspaceId,
         })
-            .then((r) => (options.value = get(r, 'data', {})))
+            .then((r) => (options.value = r.data || {}))
             .catch(() => (options.value = {}))
     }
 

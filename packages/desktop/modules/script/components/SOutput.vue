@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 import { computed } from 'vue'
 
 import MEditor from '@/modules/monaco/components/MEditor.vue'
+import EvaluationOutput from '@/../core/entities/evaluation-output'
 
 const props = defineProps({
     output: {
-        type: Object as () => ExecuteScriptDTO.Output | null,
+        type: Object as () => EvaluationOutput | null,
         default: null,
     },
     noErrorStack: {

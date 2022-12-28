@@ -86,7 +86,7 @@ async function deleteItem(id: string) {
     <div>
         <v-dialog v-model="dialog">
             <v-card color="b-secondary" width="500">
-                <v-card-head>
+                <v-card-head class="px-4">
                     <v-card-title>
                         {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
                     </v-card-title>
@@ -105,7 +105,11 @@ async function deleteItem(id: string) {
                             <v-input v-model="payload.path" label="Path" />
                         </div>
 
-                        <v-btn :disabled="!payload.name || !payload.path" class="w-full">
+                        <v-btn
+                            :disabled="!payload.name || !payload.path"
+                            class="w-full"
+                            type="submit"
+                        >
                             {{ $t('create') }}
                         </v-btn>
                     </w-form>

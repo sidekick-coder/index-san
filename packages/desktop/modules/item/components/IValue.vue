@@ -23,6 +23,7 @@ import IValueDate from './IValueDate.vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '@/store/global'
 import { createBindings } from '@/composables/binding'
+import EvaluationOutput from '@/../core/entities/evaluation-output'
 
 const props = defineProps({
     modelValue: {
@@ -77,7 +78,7 @@ const scriptOutput = computed(() => {
 
     if (typeof model.value !== 'object') return null
 
-    return model.value as ExecuteScriptDTO.Output
+    return model.value as EvaluationOutput
 })
 
 // relation options
@@ -131,7 +132,7 @@ function upload() {
         })
 
         const filename = compiled({
-            ext: DirectoryEntry.extname(file.path),
+            ext: DirectoryEntry.extname((file as any).path),
             itemPath: props.item._filename || '',
         })
 
@@ -142,7 +143,6 @@ function upload() {
         await store.entry.write({
             path,
             data: new Uint8Array(buffer),
-            contentType: 'Uint8Array',
         })
 
         if (filename !== model.value) {

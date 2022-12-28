@@ -89,7 +89,7 @@ export const useStore = defineStore('item', () => {
         return items.value.find((i) => i.collectionId === collectionId)
     }
 
-    async function list(payload: Partial<ListItemsDTO.Input>) {
+    async function list(payload: Partial<ListItemsDTO>) {
         payload.workspaceId = stores.workspace.currentId!
 
         return useCase('list-items', payload as any)

@@ -12,6 +12,11 @@ export const useStore = defineStore('menu', () => {
     const workspace = useWorkspace()
 
     async function setMenu(workspaceId = workspace.currentId) {
+        if (!workspaceId) {
+            menu.value = []
+            return
+        }
+
         await useCase('show-menu', {
             workspaceId: workspaceId || workspace.currentId!,
         })

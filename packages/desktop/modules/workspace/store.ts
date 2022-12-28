@@ -25,8 +25,8 @@ export const useStore = defineStore('workspace', () => {
         return useCase('create-workspace', data as any)
     }
 
-    async function destroy(id: string) {
-        await useCase('delete-workspace', { id })
+    async function destroy(workspaceId: string) {
+        await useCase('delete-workspace', { workspaceId })
     }
 
     return {

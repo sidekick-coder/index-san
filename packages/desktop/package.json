@@ -20,7 +20,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "build:debug": "electron-forge start --inspect-electron",
-    "make:gc-types": "node scripts/make-gc-types.js"
+    "make:gc-types": "node scripts/make-gc-types.js",
+    "tauri": "tauri"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
@@ -29,9 +30,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
     "@mdit-vue/plugin-component": "^0.11.1",
+    "@tauri-apps/cli": "^1.2.2",
     "@vueuse/core": "^9.8.2",
     "chart.js": "^4.1.1",
-    "electron-squirrel-startup": "^1.0.0",
     "highlight.js": "^11.7.0",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
@@ -47,28 +48,18 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.4",
-    "@electron-forge/maker-deb": "^6.0.4",
-    "@electron-forge/maker-rpm": "^6.0.4",
-    "@electron-forge/maker-squirrel": "^6.0.4",
-    "@electron-forge/maker-zip": "^6.0.4",
     "@faker-js/faker": "^7.6.0",
-    "@manypkg/find-root": "^1.1.0",
-    "@npmcli/arborist": "^6.1.5",
     "@types/lodash": "^4.14.191",
     "@types/mime": "^3.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/test-utils": "^2.0.0-rc.18",
     "autoprefixer": "^10.4.13",
-    "electron": "^22.0.0",
     "jsdom": "^20.0.3",
-    "keyv": "^4.5.2",
     "postcss": "^8.4.20",
     "sass": "^1.57.1",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4",
     "vite": "^4.0.3",
-    "vite-plugin-electron": "^0.10.4",
     "vitest": "^0.26.2",
     "vue-tsc": "^1.0.16"
   }

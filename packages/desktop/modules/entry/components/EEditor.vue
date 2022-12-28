@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useStore } from '@/modules/entry/store'
 
 import MEditor from '@/modules/monaco/components/MEditor.vue'
+import DirectoryEntry from '@/../core/entities/directory-entry'
 
 const props = defineProps({
     path: {
@@ -21,15 +22,13 @@ const store = useStore()
 const content = ref('')
 
 async function setContent() {
-    const decoder = new TextDecoder('utf-8')
-
-    const contentBuffer = await store.read({
+    const bytes = await store.read({
         path: props.path,
     })
 
-    if (!contentBuffer) return
+    if (!bytes) return
 
-    content.value = decoder.decode(contentBuffer)
+    content.value = DirectoryEntry.decode(bytes)
 }
 
 watch(() => props.path, setContent, {
@@ -40,7 +39,7 @@ watch(() => props.path, setContent, {
 
 async function save() {
     await store.write({
-        data: content.value,
+        data: DirectoryEntry.encode(content.value),
         path: props.path,
     })
 }

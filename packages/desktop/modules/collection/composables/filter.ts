@@ -5,6 +5,7 @@ import ViewCommon, { ViewFilter } from '@core/entities/view-common'
 import Column, { ColumnType } from '@core/entities/column'
 import View from '@/../core/entities/view'
 import moment, { Moment } from 'moment'
+import EvaluationOutput from '@/../core/entities/evaluation-output'
 
 export const operations = {
     text: {
@@ -29,8 +30,8 @@ export const operations = {
         '!=': (a: string, b: string) => a != b,
     },
     script: {
-        '=': (a: ExecuteScriptDTO.Output, b: any) => a.result === b,
-        '!=': (a: ExecuteScriptDTO.Output, b: any) => a.result != b,
+        '=': (a: EvaluationOutput, b: any) => a.result === b,
+        '!=': (a: EvaluationOutput, b: any) => a.result != b,
     },
     date: {
         '=': (a: Moment, b: Moment) => a.isSame(b),
@@ -83,7 +84,7 @@ export function filterRelation(value: Item | null, filter: ViewFilter) {
     return false
 }
 
-export function filterScript(value: ExecuteScriptDTO.Output | null, filter: ViewFilter) {
+export function filterScript(value: EvaluationOutput | null, filter: ViewFilter) {
     const operation: keyof typeof operations.script = filter.config.operation
 
     if (!value) return false

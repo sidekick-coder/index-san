@@ -16,7 +16,12 @@ export const useStore = defineStore('collection', () => {
 
     const collections = ref<Collection[]>([])
 
-    async function setCollections(workspaceId = workspace.currentId as string) {
+    async function setCollections(workspaceId = workspace.currentId) {
+        if (!workspaceId) {
+            collections.value = []
+            return
+        }
+
         return await useCase('list-collections', {
             workspaceId,
         })
@@ -32,7 +37,7 @@ export const useStore = defineStore('collection', () => {
         return null
     }
 
-    async function show(payload: Partial<ShowCollectionsDTO.Input>) {
+    async function show(payload: Partial<ShowCollectionsDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -40,7 +45,7 @@ export const useStore = defineStore('collection', () => {
         return useCase('show-collection', payload as any)
     }
 
-    async function create(payload: Partial<CreateCollectionDTO.Input>) {
+    async function create(payload: Partial<CreateCollectionDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -50,7 +55,7 @@ export const useStore = defineStore('collection', () => {
         await setCollections()
     }
 
-    async function update(payload: Partial<UpdateCollectionsDTO.Input>) {
+    async function update(payload: Partial<UpdateCollectionsDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }
@@ -58,7 +63,7 @@ export const useStore = defineStore('collection', () => {
         await useCase('update-collection', payload as any)
     }
 
-    async function destroy(payload: Partial<DeleteCollectionsDTO.Input>) {
+    async function destroy(payload: Partial<DeleteCollectionsDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
             payload.workspaceId = workspace.currentId
         }

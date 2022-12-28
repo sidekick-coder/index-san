@@ -82,6 +82,7 @@ export default class EntryItemRepository implements IItemRepository {
 
         Object.assign(item, payload)
 
+        item._createdAt = item._createdAt || new Date().toString()
         item._updatedAt = new Date().toString()
 
         const metas = await this.listMetas()
