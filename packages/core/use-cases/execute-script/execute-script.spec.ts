@@ -1,11 +1,13 @@
 import { test } from '@japa/runner'
+import DirectoryEntry from '../../entities/directory-entry'
 import Workspace from '../../entities/workspace'
 
 import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ExecuteScript from './execute-script'
 
 test.group('execute-script (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new ExecuteScript(app)
 
     let workspace: Workspace
@@ -35,8 +37,6 @@ test.group('execute-script (use-case)', (group) => {
     })
 
     test('should throw an error when trying to use import fs from "fs"', async ({ expect }) => {
-        app.memoryDrive.createFile('.is/scripts/hello.js', `import fs from "fs"`)
-
         const result = await useCase.execute({
             workspaceId: workspace.id,
             content: `import fs from "fs"`,
@@ -48,11 +48,13 @@ test.group('execute-script (use-case)', (group) => {
     test('should create a file in workspace', async ({ expect }) => {
         await useCase.execute({
             workspaceId: workspace.id,
-            content: `await workspace.drive.write("hello.txt", "Hello word")`,
+            content: `await Drive.write("hello.txt", Entry.encode("Hello word"))`,
         })
 
-        const content = await app.managers.drive.readAsString('hello.txt')
+        const content = await app.drive.read('hello.txt')
 
-        expect(content?.toString()).toBe('Hello word')
+        expect(content).toBeDefined()
+
+        expect(DirectoryEntry.decode(content!)).toBe('Hello word')
     })
 })

@@ -1,8 +1,8 @@
 import CollectionFacade from '../facades/collection'
 import DriveFacade from '../facades/drive'
 import ItemFacade from '../facades/item'
-import ItemFacade from '../facades/item'
 import Drive from '../gateways/drive/drive'
+import IEvaluationService from '../gateways/evaluation/evaluation'
 import IWorkspaceRepository from '../repositories/workspace/workspace-repository'
 
 interface Repositories {
@@ -15,14 +15,20 @@ interface Facades {
     item: ItemFacade
 }
 
+interface Services {
+    evaluation: IEvaluationService
+}
+
 export default class AppConfig {
     public drives: Record<string, Drive>
     public repositories: Repositories
     public facades: Facades
+    public services: Services
 
-    constructor({ drives, repositories }: Omit<AppConfig, 'facades'>) {
+    constructor({ drives, repositories, services }: Omit<AppConfig, 'facades'>) {
         this.drives = drives
         this.repositories = repositories
+        this.services = services
 
         const driveFacade = new DriveFacade(drives)
         const collectionFacade = new CollectionFacade(driveFacade)

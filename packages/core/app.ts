@@ -23,11 +23,9 @@ import ShowItem from './use-cases/show-item/show-item'
 import CreateItem from './use-cases/create-item/create-item'
 import UpdateItem from './use-cases/update-item/update-item'
 import DeleteItem from './use-cases/delete-item/delete-item'
-import ListScripts from './use-cases/list-scripts/list-scripts'
-import CreateScript from './use-cases/create-script/create-script'
-import UpdateScript from './use-cases/update-script/update-script'
-import DeleteScript from './use-cases/delete-script/delete-script'
+
 import ExecuteScript from './use-cases/execute-script/execute-script'
+
 import ShowMenu from './use-cases/show-menu/show-menu'
 import UpdateMenu from './use-cases/update-menu/update-menu'
 import UpdateDirectoryEntry from './use-cases/update-directory-entry/update-directory-entry'
@@ -64,10 +62,6 @@ function createUseCases(app: AppConfig) {
         'update-item': new UpdateItem(app),
         'delete-item': new DeleteItem(app),
 
-        'list-scripts': new ListScripts(app),
-        'create-script': new CreateScript(app),
-        'update-script': new UpdateScript(app),
-        'delete-script': new DeleteScript(app),
         'execute-script': new ExecuteScript(app),
 
         'show-menu': new ShowMenu(app),

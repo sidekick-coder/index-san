@@ -1,17 +1,20 @@
 import ExecuteScriptDTO from './execute-script.dto'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
+import DirectoryEntry from '../../entities/directory-entry'
 export default class ExecuteScript {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        content,
-    }: ExecuteScriptDTO.Input): Promise<ExecuteScriptDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, content }: ExecuteScriptDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const result = await this.app.evaluation.evaluate(content, { workspace })
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        return result
+        const scope = {
+            Drive: drive,
+            Facades: this.app.facades,
+            Entry: DirectoryEntry,
+        }
+
+        return this.app.services.evaluation.evaluate(content, scope)
     }
 }
