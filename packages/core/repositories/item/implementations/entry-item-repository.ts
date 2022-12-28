@@ -5,13 +5,14 @@ import Item from '../../../entities/item'
 import DirectoryEntry from '../../../entities/directory-entry'
 import ItemNotFound from '../../../exceptions/item-not-found'
 import Drive from '../../../gateways/drive/drive'
+import IItemRepository from '../item-repository'
 
 interface ItemMeta {
     id: string
     [key: string]: any
 }
 
-export default class EntryItemRepository {
+export default class EntryItemRepository implements IItemRepository {
     constructor(public collection: Collection, public readonly drive: Drive) {}
 
     public async listMetas(): Promise<ItemMeta[]> {

@@ -2,9 +2,10 @@ import Collection from '../../entities/collection'
 import Item from '../../entities/item'
 
 export default interface IItemRepository {
-    list(collection: Collection): Promise<Item[]>
-    show(collection: Collection, id: Item['id']): Promise<Item>
-    create(collection: Collection, payload: Item): Promise<Item>
-    update(collection: Collection, id: Item['id'], payload: Partial<Item>): Promise<Item>
-    destroy(collection: Collection, id: Item['id']): Promise<void>
+    collection: Collection
+    list(): Promise<Item[]>
+    show(id: Item['id']): Promise<Item>
+    create(payload: Item): Promise<Item>
+    update(id: Item['id'], payload: Partial<Item>): Promise<Item>
+    destroy(id: Item['id']): Promise<void>
 }

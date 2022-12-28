@@ -3,7 +3,6 @@ import { faker } from '@faker-js/faker'
 
 import DirectoryEntry from '../../../entities/directory-entry'
 import Item from '../../../entities/item'
-import DriveManager from '../../../gateways/drive/manager'
 import CollectionFactory from '../../../__tests__/factories/collections'
 import InMemoryDrive from '../../../__tests__/gateways/in-memory-drive'
 import EntryItemRepository from './entry-item-repository'

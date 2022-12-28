@@ -8,8 +8,8 @@
   "include": [
     "entities/*.ts",
     "exceptions/*.ts",
-    "gateways/*.ts",
-    "repositories/*.ts",
+    "gateways/**/*.ts",
+    "repositories/**/*.ts",
     "services/*.ts",
   ],
   "exclude": [
