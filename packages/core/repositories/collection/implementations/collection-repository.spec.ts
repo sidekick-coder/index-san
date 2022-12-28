@@ -1,26 +1,24 @@
 import { test } from '@japa/runner'
 import Collection from '../../../entities/collection'
 import CollectionNotFound from '../../../exceptions/collection-not-found'
-import DriveManager from '../../../gateways/drive/manager'
+import Drive from '../../../gateways/drive/drive'
 import CollectionFactory from '../../../__tests__/factories/collections'
 import InMemoryDrive from '../../../__tests__/gateways/in-memory-drive'
 import CollectionRepository from './collection-repository'
 
 test.group('collection-repository (unit)', (group) => {
-    const memory = new InMemoryDrive()
+    const drive = new InMemoryDrive()
 
-    const manager = new DriveManager({ memory }, 'memory')
+    const repository = new CollectionRepository(drive)
 
-    const repository = new CollectionRepository(manager)
-
-    group.each.teardown(() => memory.clear())
+    group.each.teardown(() => drive.clear())
 
     function saveCollections(payload: Collection[]) {
-        memory.createFile('.is/collections.json', JSON.stringify(payload))
+        drive.createFile('.is/collections.json', JSON.stringify(payload))
     }
 
     function findCollections(): Promise<Collection[]> {
-        return memory.readArray('.is/collections.json')
+        return drive.readArray('.is/collections.json')
     }
 
     test('should list collections', async ({ expect }) => {
