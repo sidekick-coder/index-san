@@ -1,28 +1,29 @@
 import ShowViewsDTO from './show-views.dto'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
 import DirectoryEntry from '../../entities/directory-entry'
 import View from '../../entities/view'
+import DriveHelper from '../../gateways/drive/helper'
+import AppConfig from '../../config/app'
 
 export default class ShowViews {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        collectionId,
-    }: ShowViewsDTO.Input): Promise<ShowViewsDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, collectionId }: ShowViewsDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const collection = await workspace.collection(collectionId)
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
+
+        const repository = this.app.facades.collection.createRepository(workspace)
+
+        const collection = await repository.show(collectionId)
 
         const filename = DirectoryEntry.normalize(collection.path, '.is', 'views.json')
 
-        const entry = await workspace.drive.read(filename)
+        const entry = await drive.read(filename)
 
         let views: View[] = []
 
         if (entry) {
-            views = JSON.parse(entry.toString())
+            views = DriveHelper.toArray(entry)
         }
 
         return {

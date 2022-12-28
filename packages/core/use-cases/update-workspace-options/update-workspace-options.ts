@@ -1,3 +1,4 @@
+import DriveHelper from '../../gateways/drive/helper'
 import AppService from '../../services/app-service'
 import WorkspaceService from '../../services/workspace-service'
 import UpdateWorkspaceOptionsDTO from './update-workspace-options.dto'
@@ -13,13 +14,11 @@ export default class UpdateWorkspaceOptions {
         const contents = await workspace.drive.read('.is/options.json')
 
         if (contents) {
-            options = JSON.parse(contents.toString())
+            options = DriveHelper.toObject(contents)
         }
 
         Object.assign(options, data)
 
-        const text = JSON.stringify(options, undefined, 4)
-
-        await workspace.drive.write('.is/options.json', Buffer.from(text))
+        await workspace.drive.write('.is/options.json', DriveHelper.encode(options))
     }
 }

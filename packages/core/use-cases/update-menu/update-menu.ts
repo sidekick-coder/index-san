@@ -1,18 +1,15 @@
 import UpdateMenuDTO from './update-menu.dto'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
+import DriveHelper from '../../gateways/drive/helper'
 
 export default class UpdateMenu {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        data,
-    }: UpdateMenuDTO.Input): Promise<UpdateMenuDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, data }: UpdateMenuDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        await workspace.drive.write('.is/menu.json', JSON.stringify(data, null, 4))
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        return {}
+        await drive.write('.is/menu.json', DriveHelper.encode(data))
     }
 }

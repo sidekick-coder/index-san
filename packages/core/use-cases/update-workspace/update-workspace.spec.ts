@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateWorkspace from './update-workspace'
 
 test.group('update-workspace (use-case)', () => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new UpdateWorkspace(app)
 
@@ -11,7 +11,7 @@ test.group('update-workspace (use-case)', () => {
         const workspace = app.workspaceRepository.createFakeSync()
 
         await useCase.execute({
-            id: workspace.id,
+            workspaceId: workspace.id,
             data: {
                 name: 'update-workspace',
                 config: {

@@ -2,26 +2,24 @@ import { test } from '@japa/runner'
 import Menu from '../../entities/menu'
 
 import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateMenu from './update-menu'
 
 test.group('update-menu (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new UpdateMenu(app)
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    group.each.teardown(() => app.clear())
 
     test('should update menu', async ({ expect }) => {
         const workspace = app.workspaceRepository.createFakeSync()
 
-        app.memoryDrive.createFile(
-            '.is/menu.json',
-            JSON.stringify([
-                {
-                    label: 'item-initial',
-                    to: 'item-initial',
-                },
-            ])
-        )
+        app.drive.createFile('.is/menu.json', [
+            {
+                label: 'item-initial',
+                to: 'item-initial',
+            },
+        ])
 
         const payload = new Menu({
             to: 'item-update',
@@ -35,7 +33,7 @@ test.group('update-menu (use-case)', (group) => {
             data: [payload],
         })
 
-        const menu = await app.memoryDrive.readArray('.is/menu.json')
+        const menu = await app.drive.readArray('.is/menu.json')
 
         expect(menu[0]).toEqual(payload)
     })

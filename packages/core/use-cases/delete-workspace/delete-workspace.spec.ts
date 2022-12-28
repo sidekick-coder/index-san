@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import DeleteWorkspace from './delete-workspace'
 
 test.group('delete-workspace (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new DeleteWorkspace(app)
 
@@ -12,7 +12,7 @@ test.group('delete-workspace (use-case)', (group) => {
     test('should delete workspace', async ({ expect }) => {
         const workspace = app.workspaceRepository.createFakeSync()
 
-        await useCase.execute({ id: workspace.id })
+        await useCase.execute({ workspaceId: workspace.id })
 
         expect(app.workspaceRepository.items.length).toEqual(0)
     })

@@ -1,16 +1,18 @@
 import ShowMenuDTO from './show-menu.dto'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import DriveHelper from '../../gateways/drive/helper'
+import AppConfig from '../../config/app'
 
 export default class ShowMenu {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({ workspaceId }: ShowMenuDTO.Input): Promise<ShowMenuDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId }: ShowMenuDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const content = await workspace.drive.read('.is/menu.json')
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        const data = content ? JSON.parse(content.toString()) : []
+        const content = await drive.read('.is/menu.json')
+
+        const data = content ? DriveHelper.toArray(content) : []
 
         return {
             data,

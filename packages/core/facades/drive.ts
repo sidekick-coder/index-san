@@ -5,14 +5,18 @@ import DriveInvalid from '../exceptions/drive-invalid'
 export default class DriveFacade {
     constructor(public readonly drives: AppConfig['drives']) {}
 
-    public get(driveName: string) {
+    public validate(driveName: string) {
         const drive = this.drives[driveName]
 
         if (!drive) {
             throw new DriveInvalid(driveName)
         }
+    }
 
-        return drive
+    public get(driveName: string) {
+        this.validate(driveName)
+
+        return this.drives[driveName]
     }
 
     public fromWorkspace(workspace: Workspace) {

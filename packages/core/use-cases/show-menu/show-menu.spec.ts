@@ -2,13 +2,14 @@ import { test } from '@japa/runner'
 import Menu from '../../entities/menu'
 
 import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowMenu from './show-menu'
 
 test.group('show-menu (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new ShowMenu(app)
 
-    group.each.teardown(() => app.memoryDrive.clear())
+    group.each.teardown(() => app.clear())
 
     test('should return list of menus', async ({ expect }) => {
         const menu: Menu[] = []
@@ -25,7 +26,7 @@ test.group('show-menu (use-case)', (group) => {
             )
         }
 
-        app.memoryDrive.createFile('.is/menu.json', menu)
+        app.drive.createFile('.is/menu.json', menu)
 
         const result = await useCase.execute({
             workspaceId: workspace.id,

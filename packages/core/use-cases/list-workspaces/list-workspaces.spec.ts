@@ -1,12 +1,12 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import InMemoryWorkspaceRepository from '../../__tests__/repositories/in-memory-workspace-repository'
 import ListWorkspaces from './list-workspaces'
 
 test.group('list-workspaces (use-case)', () => {
     const repository = new InMemoryWorkspaceRepository()
 
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new ListWorkspaces(app)
 
@@ -15,7 +15,7 @@ test.group('list-workspaces (use-case)', () => {
 
         await repository.create(workspace)
 
-        const result = await useCase.execute({})
+        const result = await useCase.execute()
 
         expect(result.data).toEqual([workspace])
     })

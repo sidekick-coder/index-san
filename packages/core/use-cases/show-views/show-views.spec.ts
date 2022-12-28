@@ -1,13 +1,13 @@
 import { test } from '@japa/runner'
 import DirectoryEntry from '../../entities/directory-entry'
 
-import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
 import ViewFactory from '../../__tests__/factories/view'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowViews from './show-views'
 
 test.group('show-views (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new ShowViews(app)
 
     group.each.teardown(() => app.clear())
@@ -17,7 +17,7 @@ test.group('show-views (use-case)', (group) => {
 
         const entry = DirectoryEntry.file('.is/collections.json')
 
-        app.memoryDrive.createFile(entry.path, [collection])
+        app.drive.createFile(entry.path, [collection])
 
         return collection
     }
@@ -31,7 +31,7 @@ test.group('show-views (use-case)', (group) => {
 
         const entry = DirectoryEntry.file(collection.path, '.is', 'views.json')
 
-        app.memoryDrive.createFile(entry.path, views)
+        app.drive.createFile(entry.path, views)
 
         const result = await useCase.execute({
             workspaceId: workspace.id,

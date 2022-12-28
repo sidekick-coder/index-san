@@ -1,10 +1,9 @@
-import AppService from '../../services/app-service'
-import { ListWorkspacesDTO } from './list-workspaces.dto'
+import AppConfig from '../../config/app'
 
 export default class ListWorkspaces {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute(_args?: ListWorkspacesDTO.Input): Promise<ListWorkspacesDTO.Output> {
+    public async execute() {
         const workspaces = await this.app.repositories.workspace.list()
 
         return { data: workspaces }

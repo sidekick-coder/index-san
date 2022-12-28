@@ -1,9 +1,10 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import WorkspaceNotFound from '../../exceptions/workspace-not-found'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowWorkspace from './show-workspace'
 
 test.group('show-workspace (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new ShowWorkspace(app)
 
@@ -13,7 +14,7 @@ test.group('show-workspace (use-case)', (group) => {
         const workspace = app.workspaceRepository.createFakeSync()
 
         const result = await useCase.execute({
-            id: workspace.id,
+            workspaceId: workspace.id,
         })
 
         expect(result).toEqual(workspace)
@@ -22,8 +23,8 @@ test.group('show-workspace (use-case)', (group) => {
     test('should throw an error if workspace was not found', async ({ expect }) => {
         expect.assertions(1)
 
-        await useCase.execute({ id: '999' }).catch((err) => {
-            expect(err.message).toEqual('Workspace not found')
+        await useCase.execute({ workspaceId: '999' }).catch((err) => {
+            expect(err).toBeInstanceOf(WorkspaceNotFound)
         })
     })
 })

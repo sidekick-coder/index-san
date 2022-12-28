@@ -1,10 +1,10 @@
-import AppService from '../../services/app-service'
+import AppConfig from '../../config/app'
 import UpdateWorkspaceDTO from './update-workspace.dto'
 
 export default class UpdateWorkspace {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({ id, data }: UpdateWorkspaceDTO.Input) {
-        await this.app.repositories.workspace.update(id, data)
+    public async execute({ workspaceId, data }: UpdateWorkspaceDTO) {
+        await this.app.repositories.workspace.update(workspaceId, data)
     }
 }

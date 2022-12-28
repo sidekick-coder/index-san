@@ -1,10 +1,10 @@
-import AppService from '../../services/app-service'
+import AppConfig from '../../config/app'
 import DeleteWorkspaceDto from './delete-workspace.dto'
 
 export default class DeleteWorkspace {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({ id }: DeleteWorkspaceDto.Input) {
-        await this.app.repositories.workspace.destroy(id)
+    public async execute({ workspaceId }: DeleteWorkspaceDto) {
+        await this.app.repositories.workspace.destroy(workspaceId)
     }
 }

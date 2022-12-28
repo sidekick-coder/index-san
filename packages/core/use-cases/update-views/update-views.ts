@@ -1,24 +1,20 @@
 import UpdateViewsDTO from './update-views.dto'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
 import DirectoryEntry from '../../entities/directory-entry'
+import AppConfig from '../../config/app'
+import DriveHelper from '../../gateways/drive/helper'
 
 export default class UpdateViews {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        collectionId,
-        data,
-    }: UpdateViewsDTO.Input): Promise<UpdateViewsDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, collectionId, data }: UpdateViewsDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const collection = await workspace.collection(collectionId)
+        const repository = this.app.facades.collection.createRepository(workspace)
+
+        const collection = await repository.show(collectionId)
 
         const filename = DirectoryEntry.normalize(collection.path, '.is', 'views.json')
 
-        await workspace.drive.write(filename, JSON.stringify(data, null, 4))
-
-        return {}
+        await repository.drive.write(filename, DriveHelper.encode(data))
     }
 }

@@ -1,13 +1,13 @@
 import { test } from '@japa/runner'
 import DirectoryEntry from '../../entities/directory-entry'
 
-import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
 import ViewFactory from '../../__tests__/factories/view'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateViews from './update-views'
 
 test.group('update-views (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new UpdateViews(app)
 
     group.each.teardown(() => app.clear())
@@ -17,7 +17,7 @@ test.group('update-views (use-case)', (group) => {
 
         const entry = DirectoryEntry.file('.is/collections.json')
 
-        app.memoryDrive.createFile(entry.path, [collection])
+        app.drive.createFile(entry.path, [collection])
 
         return collection
     }
@@ -29,7 +29,7 @@ test.group('update-views (use-case)', (group) => {
 
         const entry = DirectoryEntry.file(collection.path, '.is', 'views.json')
 
-        app.memoryDrive.createFile(entry.path, ViewFactory.createMany(5))
+        app.drive.createFile(entry.path, ViewFactory.createMany(5))
 
         const data = ViewFactory.createMany(5)
 
@@ -39,7 +39,7 @@ test.group('update-views (use-case)', (group) => {
             data,
         })
 
-        const content = await app.memoryDrive.readArray(entry.path)
+        const content = await app.drive.readArray(entry.path)
 
         expect(content).toEqual(data)
     })

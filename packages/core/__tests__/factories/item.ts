@@ -3,13 +3,15 @@ import uuid from 'uuid-random'
 import { Factory } from './base'
 
 const ItemFactory = new Factory<Item>((data) => {
-    const id = uuid()
+    const id = data?.id || uuid()
 
-    return new Item({
-        id,
-        name: id,
-        ...data,
-    })
+    return new Item(
+        {
+            name: id,
+            ...data,
+        },
+        id
+    )
 })
 
 export default ItemFactory

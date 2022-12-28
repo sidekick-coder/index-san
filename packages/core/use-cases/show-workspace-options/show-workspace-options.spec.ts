@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowWorkspaceOptions from './show-workspace-options'
 
 test.group('show-workspace-options (use-case)', () => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new ShowWorkspaceOptions(app)
 
@@ -15,7 +15,7 @@ test.group('show-workspace-options (use-case)', () => {
             },
         }
 
-        app.memoryDrive.createFile('.is/options.json', options)
+        app.drive.createFile('.is/options.json', options)
 
         const workspace = await app.workspaceRepository.createFake()
 

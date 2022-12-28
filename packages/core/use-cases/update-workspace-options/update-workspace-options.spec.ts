@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import DriveHelper from '../../gateways/drive/helper'
 
 import InMemoryApp from '../../__tests__/app'
 import UpdateWorkspaceOptions from './update-workspace-options'
@@ -25,7 +26,7 @@ test.group('update-workspace-options (use-case)', () => {
 
         const contents = await app.memoryDrive.read('.is/options.json')
 
-        const result = contents ? JSON.parse(contents.toString()) : {}
+        const result = contents ? DriveHelper.toObject(contents) : {}
 
         expect(result).toEqual({ hello: 'update' })
     })

@@ -1,12 +1,15 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
+import DriveInvalid from '../../exceptions/drive-invalid'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import CreateWorkspace from './create-workspace'
 
-test.group('create-workspace (use-case)', () => {
-    const app = new InMemoryApp()
+test.group('create-workspace (use-case)', (group) => {
+    const app = new InMemoryAppConfig()
 
     const useCase = new CreateWorkspace(app)
+
+    group.each.teardown(() => app.clear())
 
     test('should create a workspace', async ({ expect }) => {
         const workspace = app.workspaceRepository.createFakeSync()
@@ -27,8 +30,6 @@ test.group('create-workspace (use-case)', () => {
             driveName: 'invalid',
         })
 
-        await useCase
-            .execute(workspace)
-            .catch((err) => expect(err.message).toEqual('Invalid drive'))
+        await useCase.execute(workspace).catch((err) => expect(err).toBeInstanceOf(DriveInvalid))
     })
 })
