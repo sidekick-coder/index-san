@@ -1,24 +1,23 @@
 import { test } from '@japa/runner'
 
 import DirectoryEntry from '../../entities/directory-entry'
-import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import DeleteCollection from './delete-collection'
 
 test.group('delete-collection (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new DeleteCollection(app)
 
-    group.tap((t) => t.teardown(() => app.clear()))
+    group.each.teardown(() => app.clear())
 
     test('should delete a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
         const entry = DirectoryEntry.file('.is/collections.json')
 
-        app.memoryDrive.createFile(entry.path, [collection])
+        app.drive.createFile(entry.path, [collection])
 
         const workspace = await app.workspaceRepository.createFake()
 
@@ -27,7 +26,7 @@ test.group('delete-collection (use-case)', (group) => {
             collectionId: collection.id,
         })
 
-        const content = await app.memoryDrive.readArray('.is/collections.json')
+        const content = await app.drive.readArray('.is/collections.json')
 
         expect(content.length).toEqual(0)
     })

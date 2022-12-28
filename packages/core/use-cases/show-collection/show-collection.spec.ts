@@ -2,19 +2,20 @@ import { test } from '@japa/runner'
 
 import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowCollection from './show-collection'
 
 test.group('show-collection (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new ShowCollection(app)
 
-    group.tap((t) => t.teardown(() => app.memoryDrive.clear()))
+    group.tap((t) => t.teardown(() => app.clear()))
 
     test('should return a collection by id', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        app.memoryDrive.createFile('.is/collections.json', [collection])
+        app.drive.createFile('.is/collections.json', [collection])
 
         const workspace = await app.workspaceRepository.createFake()
 

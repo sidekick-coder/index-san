@@ -1,16 +1,15 @@
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
 import ListCollectionsDTO from './list-collections.dto'
 
 export default class ListCollections {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-    }: ListCollectionsDTO.Input): Promise<ListCollectionsDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId }: ListCollectionsDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const collections = await workspace.app.repositories.collection.list()
+        const repository = this.app.facades.collection.createRepository(workspace)
+
+        const collections = await repository.list()
 
         return {
             data: collections,

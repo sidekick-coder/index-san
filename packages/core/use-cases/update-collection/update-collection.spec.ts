@@ -2,19 +2,20 @@ import { test } from '@japa/runner'
 
 import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateCollection from './update-collection'
 
 test.group('update-collection (use-case)', (group) => {
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
 
     const useCase = new UpdateCollection(app)
 
-    group.tap((t) => t.teardown(() => app.memoryDrive.clear()))
+    group.each.teardown(() => app.clear())
 
     test('should update a collection in workspace', async ({ expect }) => {
         const collection = CollectionFactory.create()
 
-        app.memoryDrive.createFile('.is/collections.json', JSON.stringify([collection]))
+        app.drive.createFile('.is/collections.json', JSON.stringify([collection]))
 
         const workspace = await app.workspaceRepository.createFake()
 
@@ -26,7 +27,7 @@ test.group('update-collection (use-case)', (group) => {
             },
         })
 
-        const content = await app.memoryDrive.readArray('.is/collections.json')
+        const content = await app.drive.readArray('.is/collections.json')
 
         expect(content[0].name).toEqual('update-name')
     })

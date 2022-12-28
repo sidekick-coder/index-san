@@ -1,25 +1,30 @@
 import Collection from '../../../entities/collection'
 import CollectionNotFound from '../../../exceptions/collection-not-found'
-import DriveManager from '../../../gateways/drive/manager'
+import Drive from '../../../gateways/drive/drive'
+import DriveHelper from '../../../gateways/drive/helper'
 import ICollectionRepository from '../collection-repository'
 
 export default class CollectionRepository implements ICollectionRepository {
-    constructor(public readonly drive: DriveManager) {}
+    constructor(public readonly drive: Drive) {}
 
     public async save(collections: Collection[]) {
-        await this.drive.write('.is/collections.json', JSON.stringify(collections, null, 4))
+        await this.drive.write('.is/collections.json', DriveHelper.encode(collections))
     }
 
     public async list(): Promise<Collection[]> {
-        const content = await this.drive.readAsString('.is/collections.json')
+        const content = await this.drive.read('.is/collections.json')
 
-        return content ? JSON.parse(content) : []
+        return content ? DriveHelper.toArray(content) : []
     }
 
-    public async show(id: string): Promise<Collection | null> {
+    public async show(id: string): Promise<Collection> {
         const collections = await this.list()
 
         const collection = collections.find((c) => c.id === id)
+
+        if (!collection) {
+            throw new CollectionNotFound(id)
+        }
 
         return collection || null
     }
