@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 import DirectoryEntry from '../../entities/directory-entry'
 import Workspace from '../../entities/workspace'
 
-import InMemoryApp from '../../__tests__/app'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ExecuteScript from './execute-script'
 
@@ -25,24 +24,6 @@ test.group('execute-script (use-case)', (group) => {
         })
 
         expect(result).toBe('Hello word')
-    })
-
-    test('should throw an error when trying to use require("fs")', async ({ expect }) => {
-        const result = await useCase.execute({
-            workspaceId: workspace.id,
-            content: 'const fs = require("fs")',
-        })
-
-        expect(result.error.message).toBe('require is not defined')
-    })
-
-    test('should throw an error when trying to use import fs from "fs"', async ({ expect }) => {
-        const result = await useCase.execute({
-            workspaceId: workspace.id,
-            content: `import fs from "fs"`,
-        })
-
-        expect(result.error.message).toBe('exports is not defined')
     })
 
     test('should create a file in workspace', async ({ expect }) => {

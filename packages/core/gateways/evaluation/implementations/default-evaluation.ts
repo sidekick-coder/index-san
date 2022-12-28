@@ -1,28 +1,40 @@
-import vm from 'vm'
-
 import EvaluationOutput from '../../../entities/evaluation-output'
+import IEvaluationService from '../evaluation'
+import escapeRegExp from 'lodash/escapeRegExp'
 
-export default class ScriptService {
+export default class DefaultEvaluation implements IEvaluationService {
     protected async _evaluate(code: string, scope?: Record<string, any>) {
         const logs: string[] = []
         let result = null
-        let error = null
+        const error = null
 
         const sandbox = {
+            ...scope,
             setResult: (data: any) => (result = data),
             console: {
                 log: (...args: any) => logs.push(args.map(EvaluationOutput.formatLog).join(' ')),
             },
-            ...scope,
-            main: (): Promise<any> => Promise.resolve('Error executing script'),
         }
 
-        const executable = new vm.Script(`async function main(){ ${code} }`)
-        const context = vm.createContext(sandbox)
+        let fixCode = code
 
-        executable.runInContext(context, {})
+        for (const key in sandbox) {
+            fixCode = fixCode
+                .replace(new RegExp(escapeRegExp(`${key}.`), 'g'), `context.${key}.`)
+                .replace(new RegExp(escapeRegExp(`${key}(`), 'g'), `context.${key}(`)
+        }
 
-        await sandbox.main().catch((err) => (error = err))
+        const fn = new Function(`
+            const context = this
+
+            async function run(){
+                ${fixCode}
+            }
+
+            return run()
+        `)
+
+        await fn.bind(sandbox)()
 
         return {
             result,
