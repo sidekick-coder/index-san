@@ -1,29 +1,29 @@
+import AppConfig from '../../config/app'
 import DirectoryEntry from '../../entities/directory-entry'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import DirectoryEntryAlreadyExists from '../../exceptions/directory-entry-already-exists'
+import DriveHelper from '../../gateways/drive/helper'
 import CreateDirectoryEntryDTO from './create-directory-entry.dto'
 
 export default class CreateDirectoryEntry {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        data,
-    }: CreateDirectoryEntryDTO.Input): Promise<CreateDirectoryEntryDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, data }: CreateDirectoryEntryDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const exist = await workspace.drive.exists(data.path)
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        if (exist) throw new Error('DirectoryEntry already exists')
+        if (await drive.exists(data.path)) {
+            throw new DirectoryEntryAlreadyExists(data.path)
+        }
 
         const entry = new DirectoryEntry(data)
 
         if (data.type === 'directory') {
-            await workspace.drive.mkdir(data.path)
+            await drive.mkdir(data.path)
         }
 
         if (data.type === 'file') {
-            await workspace.drive.write(data.path, Buffer.from(''))
+            await drive.write(data.path, DriveHelper.encode(''))
         }
 
         return { data: entry }

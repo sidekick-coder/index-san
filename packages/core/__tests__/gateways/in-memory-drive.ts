@@ -1,11 +1,12 @@
 import DirectoryEntry from '../../entities/directory-entry'
 import Drive from '../../gateways/drive/drive'
+import DriveHelper from '../../gateways/drive/helper'
 
 export default class InMemoryDrive implements Drive {
     public entries: DirectoryEntry[] = []
     public content = new Map<string, Uint8Array>()
 
-    public config = {}
+    constructor(public config: any = {}) {}
 
     public clear() {
         this.entries = []
@@ -49,9 +50,7 @@ export default class InMemoryDrive implements Drive {
     public async readArray(path: string): Promise<any[]> {
         const content = await this.read(path)
 
-        const decoder = new TextDecoder()
-
-        return content ? JSON.parse(decoder.decode(content)) : []
+        return content ? DriveHelper.toArray(content) : []
     }
 
     public async write(path: string, content: Uint8Array) {
@@ -85,19 +84,11 @@ export default class InMemoryDrive implements Drive {
     public createFile(path: string, content: any = '') {
         const entry = DirectoryEntry.file(path)
 
-        if (Array.isArray(content)) {
-            content = JSON.stringify(content)
-        }
-
-        if (typeof content === 'object') {
-            content = JSON.stringify(content)
-        }
-
         if (!this.entries.some((e) => e.path === path)) {
             this.entries.push(entry)
         }
 
-        this.content.set(entry.path, Buffer.from(content))
+        this.content.set(entry.path, DriveHelper.encode(content))
     }
 
     public createDir(...entryPath: string[]) {

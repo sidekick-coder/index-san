@@ -1,19 +1,19 @@
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
+import DirectoryEntryNotFound from '../../exceptions/directory-entry-not-found'
+
 import ShowDirectoryEntryDTO from './show-directory-entry.dto'
 
 export default class ShowDirectoryEntry {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        path,
-    }: ShowDirectoryEntryDTO.Input): Promise<ShowDirectoryEntryDTO.Output> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, path }: ShowDirectoryEntryDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const entry = await workspace.drive.get(path)
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        if (!entry) throw new Error('DirectoryEntry not found')
+        const entry = await drive.get(path)
+
+        if (!entry) throw new DirectoryEntryNotFound(path)
 
         return {
             data: entry,

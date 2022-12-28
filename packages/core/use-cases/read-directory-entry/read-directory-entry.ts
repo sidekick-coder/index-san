@@ -1,17 +1,15 @@
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
 import ReadDirectoryEntryDTO from './read-directory-entry.dto'
 
 export default class ReadDirectoryEntry {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({
-        workspaceId,
-        path,
-    }: ReadDirectoryEntryDTO.Input): Promise<Buffer | null> {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, path }: ReadDirectoryEntryDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const content = await workspace.drive.read(path)
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
+
+        const content = await drive.read(path)
 
         return content
     }

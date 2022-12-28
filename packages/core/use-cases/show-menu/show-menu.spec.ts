@@ -16,14 +16,16 @@ test.group('show-menu (use-case)', (group) => {
         const workspace = app.workspaceRepository.createFakeSync()
 
         for (let i = 0; i < 20; i++) {
-            menu.push({
-                id: String(i),
-                label: `item-${i}`,
-                to: `item-${i}`,
-            })
+            menu.push(
+                new Menu({
+                    children: [],
+                    label: `item-${i}`,
+                    to: `item-${i}`,
+                })
+            )
         }
 
-        app.memoryDrive.createFile('.is/menu.json', JSON.stringify(menu))
+        app.memoryDrive.createFile('.is/menu.json', menu)
 
         const result = await useCase.execute({
             workspaceId: workspace.id,

@@ -1,23 +1,13 @@
-import BaseException from '../../exceptions/base'
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
 import WriteDirectoryEntryDTO from './write-directory-entry.dto'
 
 export default class WriteDirectoryEntry {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({ workspaceId, path, data, contentType }: WriteDirectoryEntryDTO.Input) {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, path, data }: WriteDirectoryEntryDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        contentType = contentType || 'string'
-
-        if (contentType === 'string' && typeof data !== 'string') {
-            throw new BaseException('Invalid content type')
-        }
-
-        if (contentType === 'string') {
-            return await workspace.drive.write(path, Buffer.from(data))
-        }
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
         const array: any[] = Object.values(data as any)
 
@@ -27,8 +17,6 @@ export default class WriteDirectoryEntry {
             result[i] = v
         })
 
-        const buffer = Buffer.from(result)
-
-        await workspace.drive.write(path, buffer)
+        await drive.write(path, result)
     }
 }

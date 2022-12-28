@@ -1,17 +1,21 @@
 import { test } from '@japa/runner'
 
 import DirectoryEntry from '../../entities/directory-entry'
+import DriveHelper from '../../gateways/drive/helper'
 import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowDirectoryEntry from './show-directory-entry'
 
-test.group('show-directory-entry (use-case', () => {
-    const app = new InMemoryApp()
+test.group('show-directory-entry (use-case)', (group) => {
+    const app = new InMemoryAppConfig()
     const useCase = new ShowDirectoryEntry(app)
+
+    group.each.teardown(() => app.clear())
 
     test('should show a directory-entry', async ({ expect }) => {
         const workspace = await app.workspaceRepository.createFake()
 
-        await app.memoryDrive.write('test.txt', Buffer.from(''))
+        await app.drive.write('test.txt', DriveHelper.encode(''))
 
         const result = await useCase.execute({
             workspaceId: workspace.id,

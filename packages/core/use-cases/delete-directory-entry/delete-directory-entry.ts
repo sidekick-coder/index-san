@@ -1,17 +1,19 @@
-import AppService from '../../services/app-service'
-import WorkspaceService from '../../services/workspace-service'
+import AppConfig from '../../config/app'
+import DirectoryEntryNotFound from '../../exceptions/directory-entry-not-found'
 import DeleteDirectoryEntryDTO from './delete-directory-entry.dto'
 
 export default class DeleteDirectoryEntry {
-    constructor(private readonly app: AppService) {}
+    constructor(private readonly app: AppConfig) {}
 
-    public async execute({ workspaceId, path }: DeleteDirectoryEntryDTO.Input) {
-        const workspace = await WorkspaceService.from(this.app, workspaceId)
+    public async execute({ workspaceId, path }: DeleteDirectoryEntryDTO) {
+        const workspace = await this.app.repositories.workspace.show(workspaceId)
 
-        const exists = await workspace.drive.exists(path)
+        const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        if (!exists) throw new Error('DirectoryEntry not exists')
+        if (!(await drive.exists(path))) {
+            throw new DirectoryEntryNotFound(path)
+        }
 
-        await workspace.drive.delete(path)
+        await drive.delete(path)
     }
 }
