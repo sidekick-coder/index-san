@@ -19,7 +19,7 @@ const props = defineProps({
     },
     size: {
         type: String,
-        default: null,
+        default: 'md',
     },
     color: {
         type: String,

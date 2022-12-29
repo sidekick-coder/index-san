@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-
-import moment from 'moment'
+import { computed, watch } from 'vue'
 
 import { useVModel } from '@vueuse/core'
-import Column from '@/../core/entities/column'
 import { useStore } from '../store'
+
+import Column from '@core/entities/column'
 
 const props = defineProps({
     modelValue: {
@@ -28,14 +27,6 @@ const model = useVModel(props, 'modelValue', emit)
 const store = useStore()
 
 const relatedItems = computed(() => store.all(props.column.collectionId))
-
-const related = computed(() => store.get(props.column.collectionId, model.value))
-
-const display = computed(() => {
-    console.log(related.value)
-
-    return null
-})
 
 watch(
     () => props.column.collectionId,

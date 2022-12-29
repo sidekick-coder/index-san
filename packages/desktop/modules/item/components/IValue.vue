@@ -23,7 +23,7 @@ import { createBindings } from '@/composables/binding'
 const IValueRelation = defineAsyncComponent(() => import('./IValueRelation.vue'))
 const IValueLink = defineAsyncComponent(() => import('./IValueLink.vue'))
 const IValueDate = defineAsyncComponent(() => import('./IValueDate.vue'))
-const SOutput = defineAsyncComponent(() => import('@/modules/script/components/SOutput.vue'))
+const IValueScript = defineAsyncComponent(() => import('./IValueScript.vue'))
 
 const props = defineProps({
     modelValue: {
@@ -171,7 +171,14 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
         v-else-if="column.type === ColumnType.relation"
         v-model="model"
         :column="column"
-        v-bind="bindings.multiple(['root', 'select'])"
+        v-bind="$attrs"
+    />
+
+    <i-value-script
+        v-else-if="column.type === ColumnType.script"
+        :column="column"
+        :item="item"
+        v-bind="$attrs"
     />
 
     <i-value-link
@@ -201,25 +208,6 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
         :options="select.options"
         v-bind="bindings.multiple(['root', 'select'])"
     />
-
-    <v-dialog v-else-if="column.type === 'script'">
-        <template #activator="{ attrs }">
-            <v-input
-                v-bind="{ ...attrs, ...bindings.multiple(['root', 'input']) }"
-                :model-value="scriptLabel"
-                readonly
-                input:class="cursor-pointer w-full"
-            />
-        </template>
-
-        <v-card width="500" height="500" color="b-secondary">
-            <v-card-head>
-                {{ $t('output') }}
-            </v-card-head>
-
-            <s-output :output="scriptOutput" />
-        </v-card>
-    </v-dialog>
 
     <v-menu v-else-if="column.type === 'entry'" offset-y close-on-content-click>
         <template #activator="{ attrs }">

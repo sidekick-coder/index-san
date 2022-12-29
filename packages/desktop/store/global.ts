@@ -7,6 +7,7 @@ import { useStore as useEntry } from '@/modules/entry/store'
 import { useStore as useView } from '@/modules/view/store'
 import { useStore as useColumn } from '@/modules/collection-column/store'
 import { useStore as useMenu } from '@/modules/menu/store'
+import { useStore as useScript } from '@/modules/script/store'
 
 export const useStore = defineStore('global', () => {
     const workspace = useWorkspace()
@@ -16,6 +17,7 @@ export const useStore = defineStore('global', () => {
     const entry = useEntry()
     const column = useColumn()
     const menu = useMenu()
+    const script = useScript()
 
     return {
         workspace,
@@ -25,5 +27,6 @@ export const useStore = defineStore('global', () => {
         view,
         column,
         menu,
+        script,
     }
 })

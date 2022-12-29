@@ -20,11 +20,6 @@ const content = computed(() => {
 
     if (!props.output) return
 
-    if (props.output.logs.length) {
-        result.push('[logs]')
-        result.push(...props.output.logs)
-    }
-
     if (props.output.error) {
         result.push('[error]')
         result.push(props.output.error.message)
@@ -32,6 +27,11 @@ const content = computed(() => {
 
     if (props.output.error && !props.noErrorStack) {
         result.push(props.output.error.stack)
+    }
+
+    if (props.output.logs.length) {
+        result.push('[logs]')
+        result.push(...props.output.logs)
     }
 
     if (props.output.result) {

@@ -54,6 +54,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    loading: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
@@ -171,7 +175,9 @@ onMounted(() => {
 })
 </script>
 <template>
-    <div v-bind="bindings.root" class="w-full">
+    <div v-bind="bindings.root" class="w-full relative">
+        <div v-if="loading" class="absolute bottom-0 h-[1px] bg-accent w-full animate-pulse"></div>
+
         <label v-if="label" :for="label" :class="labelClasses" v-bind="bindings.label">
             {{ label }}
         </label>

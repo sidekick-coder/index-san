@@ -4,17 +4,18 @@ import DirectoryEntry from '../../entities/directory-entry'
 export default class ExecuteScript {
     constructor(private readonly app: AppConfig) {}
 
-    public async execute({ workspaceId, content }: ExecuteScriptDTO) {
+    public async execute({ workspaceId, content, scope }: ExecuteScriptDTO) {
         const workspace = await this.app.repositories.workspace.show(workspaceId)
 
         const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        const scope = {
+        const sandbox = {
+            ...scope,
             Drive: drive,
             Facades: this.app.facades,
             Entry: DirectoryEntry,
         }
 
-        return this.app.services.evaluation.evaluate(content, scope)
+        return this.app.services.evaluation.evaluate(content, sandbox)
     }
 }
