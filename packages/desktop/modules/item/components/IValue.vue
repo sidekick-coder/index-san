@@ -4,7 +4,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, ref, watch, useAttrs, PropType } from 'vue'
+import { computed, ref, watch, useAttrs, PropType, defineAsyncComponent } from 'vue'
 import moment from 'moment'
 
 import template from 'lodash/template'
@@ -14,16 +14,16 @@ import uuid from 'uuid-random'
 import Column, { ColumnType } from '@core/entities/column'
 import Item from '@core/entities/item'
 import DirectoryEntry from '@core/entities/directory-entry'
-import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
-
-import SOutput from '@/modules/script/components/SOutput.vue'
-import IValueLink from './IValueLink.vue'
-import IValueDate from './IValueDate.vue'
+import EvaluationOutput from '@core/entities/evaluation-output'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 import { useStore } from '@/store/global'
 import { createBindings } from '@/composables/binding'
-import EvaluationOutput from '@/../core/entities/evaluation-output'
+
+const IValueRelation = defineAsyncComponent(() => import('./IValueRelation.vue'))
+const IValueLink = defineAsyncComponent(() => import('./IValueLink.vue'))
+const IValueDate = defineAsyncComponent(() => import('./IValueDate.vue'))
+const SOutput = defineAsyncComponent(() => import('@/modules/script/components/SOutput.vue'))
 
 const props = defineProps({
     modelValue: {
@@ -167,6 +167,26 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
         v-bind="bindings.multiple(['root', 'input'])"
     />
 
+    <i-value-relation
+        v-else-if="column.type === ColumnType.relation"
+        v-model="model"
+        :column="column"
+        v-bind="bindings.multiple(['root', 'select'])"
+    />
+
+    <i-value-link
+        v-else-if="column.type === ColumnType.link"
+        v-model="model"
+        v-bind="bindings.root"
+    />
+
+    <i-value-date
+        v-else-if="column.type === ColumnType.date"
+        v-model="model"
+        :column="column"
+        v-bind="bindings.root"
+    />
+
     <v-input
         v-else-if="column.type === 'number'"
         v-model="model"
@@ -201,16 +221,6 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
         </v-card>
     </v-dialog>
 
-    <v-select
-        v-else-if="column.type === 'relation'"
-        v-model="model"
-        :label-key="column.displayField"
-        :options="relation.items"
-        return-object
-        value-key="id"
-        v-bind="bindings.multiple(['root', 'select'])"
-    />
-
     <v-menu v-else-if="column.type === 'entry'" offset-y close-on-content-click>
         <template #activator="{ attrs }">
             <v-input
@@ -244,19 +254,6 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
         :model-value="moment(item._updatedAt).format('L LT')"
         readonly
         v-bind="bindings.multiple(['root', 'input'])"
-    />
-
-    <i-value-link
-        v-else-if="column.type === ColumnType.link"
-        v-model="model"
-        v-bind="bindings.root"
-    />
-
-    <i-value-date
-        v-else-if="column.type === ColumnType.date"
-        v-model="model"
-        :column="column"
-        v-bind="bindings.root"
     />
 
     <div v-else class="text-danger px-4 py-2">

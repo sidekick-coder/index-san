@@ -307,11 +307,11 @@ async function create() {
                                 :model-value="data.item[c.field as string]"
                                 :column="(c as Column)"
                                 :item="data.item"
-                                :size="cIndex === 1 ? 'none' : 'md'"
+                                :size="cIndex === 1 ? 'py-2' : 'md'"
                                 select:no-chevron
+                                menu:offset-y
                                 color="none"
                                 flat
-                                menu:offset-y
                                 @update:model-value="updateItem(data.item, c.field!, $event)"
                             />
 

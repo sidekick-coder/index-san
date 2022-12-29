@@ -17,6 +17,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    size: {
+        type: String,
+        default: null,
+    },
     color: {
         type: String,
         default: 'accent',
@@ -133,6 +137,7 @@ function onShowMenu(value: boolean) {
                 :label="label"
                 :color="color"
                 :flat="flat"
+                :size="size"
                 class="cursor-pointer"
                 input:class="cursor-pointer"
                 readonly
