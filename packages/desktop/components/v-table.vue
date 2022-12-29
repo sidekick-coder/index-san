@@ -43,6 +43,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    itemKey: {
+        type: String,
+        default: null,
+    },
 })
 
 // Pagination
@@ -75,6 +79,12 @@ const parsedColumns = computed(() =>
 // Parse items
 
 const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
+
+function getKey(item: any, index: number) {
+    if (!props.itemKey) return index
+
+    return item[props.itemKey]
+}
 </script>
 <template>
     <table
@@ -106,7 +116,7 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
             :item="item"
             :index="index"
         >
-            <v-tr>
+            <v-tr :key="getKey(item, index)">
                 <slot
                     v-for="column in parsedColumns"
                     :name="`item-${column.name}`"

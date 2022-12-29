@@ -4,10 +4,10 @@ import LLayout from '@/modules/layout/LLayout.vue'
 
 <template>
     <LLayout>
-        <w-layout use-percentage>
-            <w-content>
-                <w-layout use-percentage>
-                    <w-toolbar class="w-full py-2 flex border-b border-lines px-7">
+        <v-layout use-percentage>
+            <v-layout-content>
+                <v-layout use-percentage>
+                    <v-layout-toolbar class="w-full py-2 flex border-b border-lines px-7">
                         <v-btn text size="sm" to="/options/general" class="mr-2">
                             {{ $t('general') }}
                         </v-btn>
@@ -15,15 +15,15 @@ import LLayout from '@/modules/layout/LLayout.vue'
                             {{ $t('menu') }}
                         </v-btn>
                         <v-btn text size="sm" to="/options/theme">{{ $t('theme') }}</v-btn>
-                    </w-toolbar>
+                    </v-layout-toolbar>
 
-                    <w-content>
+                    <v-layout-content>
                         <div class="h-full w-full overflow-auto">
                             <router-view />
                         </div>
-                    </w-content>
-                </w-layout>
-            </w-content>
-        </w-layout>
+                    </v-layout-content>
+                </v-layout>
+            </v-layout-content>
+        </v-layout>
     </LLayout>
 </template>

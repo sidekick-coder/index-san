@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// main layout
-import LDrawer from './components/LDrawer.vue'
-import LToolbar from './components/LToolbar.vue'
+import { defineAsyncComponent } from 'vue'
+
+const LDrawer = defineAsyncComponent(() => import('./components/LDrawer.vue'))
+const LToolbar = defineAsyncComponent(() => import('./components/LToolbar.vue'))
 
 defineProps({
     hideToolbar: {

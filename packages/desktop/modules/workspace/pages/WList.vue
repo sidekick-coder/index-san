@@ -83,84 +83,78 @@ async function deleteItem(id: string) {
 }
 </script>
 <template>
-    <div>
-        <v-dialog v-model="dialog">
-            <v-card color="b-secondary" width="500">
-                <v-card-head class="px-4">
-                    <v-card-title>
-                        {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
-                    </v-card-title>
-                </v-card-head>
-                <v-card-content>
-                    <w-form class="mb-4 w-full" @submit="submit">
-                        <div class="mb-4">
-                            <v-input v-model="payload.id" label="Id" />
-                        </div>
+    <v-dialog v-model="dialog">
+        <v-card color="b-secondary" width="500">
+            <v-card-head class="px-4">
+                <v-card-title>
+                    {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
+                </v-card-title>
+            </v-card-head>
+            <v-card-content>
+                <w-form class="mb-4 w-full" @submit="submit">
+                    <div class="mb-4">
+                        <v-input v-model="payload.id" label="Id" />
+                    </div>
 
-                        <div class="mb-4">
-                            <v-input v-model="payload.name" label="Name" />
-                        </div>
+                    <div class="mb-4">
+                        <v-input v-model="payload.name" label="Name" />
+                    </div>
 
-                        <div class="mb-4">
-                            <v-input v-model="payload.path" label="Path" />
-                        </div>
+                    <div class="mb-4">
+                        <v-input v-model="payload.path" label="Path" />
+                    </div>
 
-                        <v-btn
-                            :disabled="!payload.name || !payload.path"
-                            class="w-full"
-                            type="submit"
-                        >
-                            {{ $t('create') }}
-                        </v-btn>
-                    </w-form>
-                </v-card-content>
-            </v-card>
-        </v-dialog>
-
-        <v-container class="w-full py-4 border-b border-lines flex items-center">
-            <div class="text-2xl font-bold">
-                {{ meta.title }}
-            </div>
-            <v-btn class="ml-auto" @click="dialog = true">
-                {{ $t('addEntity', [$t('workspace')]) }}
-            </v-btn>
-        </v-container>
-
-        <v-table :columns="columns" :items="store.workspaces" :fixed="false">
-            <template #item-active="{ item }">
-                <v-td class="pl-10">
-                    <v-checkbox
-                        :model-value="item.id === store.currentId"
-                        @click="store.currentId = item.id"
-                    />
-                </v-td>
-            </template>
-
-            <template #item-path="{ item }">
-                <v-td>
-                    {{ item.config.path }}
-                </v-td>
-            </template>
-
-            <template #item-actions="{ item }">
-                <v-td class="flex gap-x-2 p-2">
-                    <v-btn size="sm" text class="mr-2" to="/scripts">
-                        <v-icon name="code" />
+                    <v-btn :disabled="!payload.name || !payload.path" class="w-full" type="submit">
+                        {{ $t('create') }}
                     </v-btn>
+                </w-form>
+            </v-card-content>
+        </v-card>
+    </v-dialog>
 
-                    <v-btn size="sm" text class="mr-2" to="/collections">
-                        <v-icon name="database" />
-                    </v-btn>
+    <v-container class="w-full py-4 border-b border-lines flex items-center">
+        <div class="text-2xl font-bold">
+            {{ meta.title }}
+        </div>
+        <v-btn class="ml-auto" @click="dialog = true">
+            {{ $t('addEntity', [$t('workspace')]) }}
+        </v-btn>
+    </v-container>
 
-                    <v-btn size="sm" text class="mr-2" to="/entries">
-                        <v-icon name="folder" />
-                    </v-btn>
+    <v-table :columns="columns" :items="store.workspaces" :fixed="false">
+        <template #item-active="{ item }">
+            <v-td class="pl-10">
+                <v-checkbox
+                    :model-value="item.id === store.currentId"
+                    @click="store.currentId = item.id"
+                />
+            </v-td>
+        </template>
 
-                    <v-btn size="sm" text color="danger" @click="deleteItem(item.id)">
-                        <fa-icon icon="trash" />
-                    </v-btn>
-                </v-td>
-            </template>
-        </v-table>
-    </div>
+        <template #item-path="{ item }">
+            <v-td>
+                {{ item.config.path }}
+            </v-td>
+        </template>
+
+        <template #item-actions="{ item }">
+            <v-td class="flex gap-x-2 p-2">
+                <v-btn size="sm" text class="mr-2" to="/scripts">
+                    <v-icon name="code" />
+                </v-btn>
+
+                <v-btn size="sm" text class="mr-2" to="/collections">
+                    <v-icon name="database" />
+                </v-btn>
+
+                <v-btn size="sm" text class="mr-2" to="/entries">
+                    <v-icon name="folder" />
+                </v-btn>
+
+                <v-btn size="sm" text color="danger" @click="deleteItem(item.id)">
+                    <fa-icon icon="trash" />
+                </v-btn>
+            </v-td>
+        </template>
+    </v-table>
 </template>

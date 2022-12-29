@@ -2,28 +2,29 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
-import { ref, watch, computed, useAttrs } from 'vue'
+import { ref, watch, computed, useAttrs, defineAsyncComponent } from 'vue'
 
 import debounce from 'lodash/debounce'
+import Draggable from 'vuedraggable'
 
 import Column from '@core/entities/column'
+import ViewTable from '@core/entities/view-table'
+import Item from '@core/entities/item'
 
 import { createBindings } from '@/composables/binding'
 import { useStore } from '@/store/global'
-
-import Draggable from 'vuedraggable'
-import CcColumn from '@/modules/collection-column/components/CcColumn.vue'
-import CActions from './CActions.vue'
-
-import IValue from '@/modules/item/components/IValue.vue'
-import ViewTable from '@/../core/entities/view-table'
-import Item from '@/../core/entities/item'
 
 import { createPayload } from '../composables/filter'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 import { useNonReactive } from '@/composables/utils'
 
 import { withViewIterations } from '@/modules/view/composables'
+
+const IValue = defineAsyncComponent(() => import('@/modules/item/components/IValue.vue'))
+const CActions = defineAsyncComponent(() => import('./CActions.vue'))
+const CcColumn = defineAsyncComponent(
+    () => import('@/modules/collection-column/components/CcColumn.vue')
+)
 
 const props = defineProps({
     width: {

@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue'
 
 import Column, { ColumnType } from '@core/entities/column'
 
 import { useStore as useCollectionStore } from '@/modules/collection/store'
 import { useStore } from '@/modules/collection-column/store'
 
-import MEditor from '@/modules/monaco/components/MEditor.vue'
 import { useNonReactive } from '@/composables/utils'
 import { useI18n } from 'vue-i18n'
 
 import { lib as libScriptColumn } from '@/modules/monaco/libs/column-script'
+
+const MEditor = defineAsyncComponent(() => import('@/modules/monaco/components/MEditor.vue'))
 
 // Props & emits
 const props = defineProps({

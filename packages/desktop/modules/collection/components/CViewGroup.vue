@@ -2,17 +2,18 @@
 import ViewGroup from '@core/entities/view-group'
 
 import { createBindings } from '@/composables/binding'
-import { computed, useAttrs, watch, ref } from 'vue'
+import { computed, useAttrs, watch, ref, defineAsyncComponent } from 'vue'
 import { useStore } from '@/store/global'
 
-import CActions from './CActions.vue'
-import CGallery from './CGallery.vue'
-import CTable from './CTable.vue'
 import ViewTable from '@/../core/entities/view-table'
 import ViewGallery from '@/../core/entities/view-gallery'
 
 import VDraggable from 'vuedraggable'
 import { useNonReactive } from '@/composables/utils'
+
+const CActions = defineAsyncComponent(() => import('./CActions.vue'))
+const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))
+const CTable = defineAsyncComponent(() => import('./CTable.vue'))
 
 // Props & emit
 
@@ -249,8 +250,8 @@ async function duplicate(view: ViewTable | ViewGallery) {
         </c-actions>
 
         <div class="overflow-auto w-full h-[calc(100%_-_45px)]">
-            <transition-group name="c-view-group">
-                <template v-for="v in all" :key="v.id">
+            <transition-group name="fade">
+                <template v-for="v in group" :key="v.id">
                     <c-gallery
                         v-if="v.component === 'gallery' && v.id === view.selected"
                         :collection-id="collectionId"
@@ -282,20 +283,3 @@ async function duplicate(view: ViewTable | ViewGallery) {
         </div>
     </v-card>
 </template>
-
-<style>
-.c-view-group-move,
-.c-view-group-enter-active,
-.c-view-group-leave-active {
-    transition: all 0.3s ease;
-}
-
-.c-view-group-enter-from,
-.c-view-group-leave-to {
-    transform: translateX(10%);
-    opacity: 0;
-}
-.c-view-group-leave-active {
-    position: absolute;
-}
-</style>

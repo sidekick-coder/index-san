@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
-import { useStore as useMenu } from '@/modules/menu/store'
-import { useStore as useWorkspace } from '@/modules/workspace/store'
-
-import LDrawerItem from './LDrawerItem.vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import Menu from '@core/entities/menu'
+
+import { useStore } from '@/store/global'
+
 import { useToggleDrawer } from '../composables/drawer'
+
+const LDrawerItem = defineAsyncComponent(() => import('./LDrawerItem.vue'))
 
 const drawer = useToggleDrawer()
 
 // menu
 const tm = useI18n()
-const menuStore = useMenu()
+const store = useStore()
 
 const items = computed(() => {
     const result: Menu[] = [
@@ -40,16 +41,14 @@ const items = computed(() => {
         },
     ]
 
-    return result.concat(menuStore.menu)
+    return result.concat(store.menu.menu)
 })
 
 // title
 
-const workspaceStore = useWorkspace()
-
 const title = computed(() => {
-    if (workspaceStore.current) {
-        return workspaceStore.current.name
+    if (store.workspace.current) {
+        return store.workspace.current.name
     }
 
     return 'Index-san'
@@ -75,6 +74,6 @@ const title = computed(() => {
             </v-btn>
         </v-list-item>
 
-        <l-drawer-item v-for="(item, index) in items" :key="index" :item="item" />
+        <l-drawer-item v-for="item in items" :key="item.id" :item="item" />
     </v-layout-drawer>
 </template>

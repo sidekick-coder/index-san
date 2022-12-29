@@ -17,6 +17,7 @@ export async function useCase<
     silent = false
 ): Promise<Awaited<T>> {
     const notify = useStore()
+    const start = Date.now()
 
     args = args ? JSON.parse(JSON.stringify(args)) : {}
 
@@ -38,6 +39,7 @@ export async function useCase<
         payload: args,
         error,
         result,
+        time: Date.now() - start,
     })
 
     if (!error) return Promise.resolve(result as T)

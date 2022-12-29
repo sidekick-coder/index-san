@@ -45,8 +45,8 @@ async function save() {
 }
 </script>
 <template>
-    <w-layout use-percentage>
-        <w-toolbar class="border-b border-b-lines">
+    <v-layout use-percentage>
+        <v-layout-toolbar class="border-b border-b-lines">
             <v-container class="-mr-3 flex justify-end w-full">
                 <v-btn size="sm" class="mr-2" text @click="setContent">
                     <v-icon name="arrows-rotate" class="mr-2" />
@@ -57,9 +57,9 @@ async function save() {
                     {{ $t('save') }}
                 </v-btn>
             </v-container>
-        </w-toolbar>
+        </v-layout-toolbar>
 
-        <w-content>
+        <v-layout-content>
             <div class="h-full flex">
                 <m-editor
                     v-model="content"
@@ -70,6 +70,6 @@ async function save() {
                     @keydown.ctrl.s="save"
                 />
             </div>
-        </w-content>
-    </w-layout>
+        </v-layout-content>
+    </v-layout>
 </template>

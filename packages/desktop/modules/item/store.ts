@@ -2,9 +2,6 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useStore as useCollection } from '@/modules/collection/store'
-import { useStore as useColumn } from '@/modules/collection-column/store'
-import { useStore as useEntry } from '@/modules/entry/store'
 
 import ListItemsDTO from '@core/use-cases/list-items/list-items.dto'
 import Item from '@core/entities/item'
@@ -17,12 +14,7 @@ interface StoreItems {
 }
 
 export const useStore = defineStore('item', () => {
-    const stores = {
-        workspace: useWorkspace(),
-        column: useColumn(),
-        entry: useEntry(),
-        collection: useCollection(),
-    }
+    const workspace = useWorkspace()
 
     const items = ref<StoreItems[]>([])
 
@@ -45,7 +37,7 @@ export const useStore = defineStore('item', () => {
 
         const raw: Item[] = await useCase('list-items', {
             collectionId,
-            workspaceId: stores.workspace.currentId!,
+            workspaceId: workspace.currentId!,
         })
             .then((r) => r.data)
             .catch(() => [])
@@ -58,13 +50,6 @@ export const useStore = defineStore('item', () => {
             storeItem!.loading = false
             items.value = items.value.slice()
         }, 800)
-    }
-
-    /** @deprecated */
-    function getItems(collectionId: string): Item[] {
-        const storeItem = items.value.find((i) => i.collectionId === collectionId)
-
-        return storeItem?.items || []
     }
 
     function all(collectionId: string): Item[] {
@@ -90,7 +75,7 @@ export const useStore = defineStore('item', () => {
     }
 
     async function list(payload: Partial<ListItemsDTO>) {
-        payload.workspaceId = stores.workspace.currentId!
+        payload.workspaceId = workspace.currentId!
 
         return useCase('list-items', payload as any)
     }
@@ -104,7 +89,7 @@ export const useStore = defineStore('item', () => {
 
         await useCase('create-item', {
             collectionId,
-            workspaceId: stores.workspace.currentId!,
+            workspaceId: workspace.currentId!,
             data: payload,
         }).catch(() => {
             if (storeItem) {
@@ -116,7 +101,7 @@ export const useStore = defineStore('item', () => {
     async function update(collectionId: string, id: string, payload: Partial<Item>) {
         await useCase('update-item', {
             collectionId,
-            workspaceId: stores.workspace.currentId!,
+            workspaceId: workspace.currentId!,
             itemId: id,
             data: payload,
         })
@@ -136,20 +121,19 @@ export const useStore = defineStore('item', () => {
 
         await useCase('delete-item', {
             collectionId,
-            workspaceId: stores.workspace.currentId!,
+            workspaceId: workspace.currentId!,
             itemId,
         }).catch(() => storeItem.items.push(item))
     }
 
     return {
+        // items,
         get,
         all,
-        getItems,
         getStoreItem,
         setItems,
 
         list,
-
         create,
         update,
         destroy,
