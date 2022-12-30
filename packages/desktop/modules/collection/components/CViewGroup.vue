@@ -250,26 +250,24 @@ async function duplicate(view: ViewTable | ViewGallery) {
         </c-actions>
 
         <div class="overflow-auto w-full h-[calc(100%_-_45px)]">
-            <transition-group name="fade">
-                <template v-for="v in group" :key="v.id">
-                    <c-gallery
-                        v-if="v.component === 'gallery' && v.id === view.selected"
-                        :collection-id="collectionId"
-                        :view-id="v.id"
-                        v-bind="bindings.gallery"
-                        hide-actions
-                    />
+            <template v-for="v in group" :key="v.id">
+                <c-gallery
+                    v-if="v.component === 'gallery' && v.id === view.selected"
+                    :collection-id="collectionId"
+                    :view-id="v.id"
+                    v-bind="bindings.gallery"
+                    hide-actions
+                />
 
-                    <c-table
-                        v-if="v.component === 'table' && v.id === view.selected"
-                        :collection-id="collectionId"
-                        :view-id="v.id"
-                        v-bind="bindings.table"
-                        height="100%"
-                        hide-actions
-                    />
-                </template>
-            </transition-group>
+                <c-table
+                    v-if="v.component === 'table' && v.id === view.selected"
+                    :collection-id="collectionId"
+                    :view-id="v.id"
+                    v-bind="bindings.table"
+                    height="100%"
+                    hide-actions
+                />
+            </template>
 
             <div v-if="!group.length" class="h-full w-full flex items-center justify-center">
                 <div class="text-center mb-2 text-t-secondary">

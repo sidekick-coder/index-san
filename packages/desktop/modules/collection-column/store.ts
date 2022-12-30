@@ -18,10 +18,8 @@ interface StoreItem {
 export const useStore = defineStore('column', () => {
     const items = ref<StoreItem[]>([])
 
-    const stores = {
-        workspace: useWorkspace(),
-        collection: useCollection(),
-    }
+    const workspace = useWorkspace()
+    const collection = useCollection()
 
     async function set(collectionId: string, forceUpdate = false) {
         let item = items.value.find((i) => i.collectionId === collectionId)
@@ -44,13 +42,13 @@ export const useStore = defineStore('column', () => {
 
         item.loading = true
 
-        await stores.collection.setCollections()
+        await collection.setCollections()
 
-        const collection = stores.collection.collections.find((c) => c.id === collectionId)
+        const data = collection.collections.find((c) => c.id === collectionId)
 
-        if (!collection) return
+        if (!data) return
 
-        item.columns = useNonReactive(collection.columns)
+        item.columns = useNonReactive(data.columns)
 
         setTimeout(() => {
             const index = items.value.findIndex((i) => i.collectionId === collectionId)
@@ -87,6 +85,20 @@ export const useStore = defineStore('column', () => {
         return null
     }
 
+    async function show(collectionId: string, columnId: string): Promise<Column | null> {
+        if (!collection.collections.length) {
+            await collection.setCollections()
+        }
+
+        const search = collection.collections.find((c) => c.id === collectionId)
+
+        if (!search) return null
+
+        const column = search.columns.find((c) => c.id === columnId)
+
+        return column ? useNonReactive(column) : null
+    }
+
     function isLoading(collectionId: string) {
         const item = items.value.find((i) => i.collectionId === collectionId)
 
@@ -98,7 +110,7 @@ export const useStore = defineStore('column', () => {
     async function create(collectionId: string) {
         const item = items.value.find((i) => i.collectionId === collectionId)
 
-        await stores.collection.setCollections()
+        await collection.setCollections()
 
         if (!item) return
 
@@ -108,14 +120,14 @@ export const useStore = defineStore('column', () => {
     async function save(collectionId: string) {
         const item = items.value.find((i) => i.collectionId === collectionId)
 
-        await stores.collection.setCollections()
+        await collection.setCollections()
 
-        const collection = stores.collection.collections.find((c) => c.id === collectionId)
+        const data = collection.collections.find((c) => c.id === collectionId)
 
-        if (!item || !collection) return
+        if (!item || !data) return
 
-        await stores.collection.update({
-            workspaceId: stores.workspace.currentId!,
+        await collection.update({
+            workspaceId: workspace.currentId!,
             collectionId,
             data: {
                 columns: item.columns,
@@ -138,6 +150,7 @@ export const useStore = defineStore('column', () => {
     return {
         all,
         get,
+        show,
         set,
         isLoading,
         create,

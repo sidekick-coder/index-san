@@ -1,3 +1,5 @@
+import { open } from '@tauri-apps/api/shell'
+
 export function openURL(url: string) {
-    return (window as any).openURL(url)
+    return open(url)
 }

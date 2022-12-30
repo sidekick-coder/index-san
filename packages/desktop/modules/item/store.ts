@@ -15,6 +15,7 @@ interface StoreItems {
 
 export const useStore = defineStore('item', () => {
     const workspace = useWorkspace()
+    const cache = new Map<string, Item[]>()
 
     const items = ref<StoreItems[]>([])
 
@@ -74,10 +75,26 @@ export const useStore = defineStore('item', () => {
         return items.value.find((i) => i.collectionId === collectionId)
     }
 
-    async function list(payload: Partial<ListItemsDTO>) {
-        payload.workspaceId = workspace.currentId!
+    async function list(collectionId: string): Promise<Item[]> {
+        let items = cache.get(collectionId)
 
-        return useCase('list-items', payload as any)
+        if (items) return items
+
+        items = await useCase('list-items', { workspaceId: workspace.currentId!, collectionId })
+            .then((r) => r.data)
+            .catch(() => [])
+
+        cache.set(collectionId, items)
+
+        return items
+    }
+
+    async function show(collectionId: string, itemId: string) {
+        const all = await list(collectionId)
+
+        const item = all.find((i) => i.id === itemId)
+
+        return item || null
     }
 
     async function create(collectionId: string, payload: Item) {
@@ -134,6 +151,7 @@ export const useStore = defineStore('item', () => {
         setItems,
 
         list,
+        show,
         create,
         update,
         destroy,

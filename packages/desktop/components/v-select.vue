@@ -3,31 +3,15 @@ export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
 import { createBindings } from '@/composables/binding'
-import { computed, ref, useAttrs } from 'vue'
+import { computed, ref, useAttrs, PropType } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 // Props & Emits
 
 const props = defineProps({
     modelValue: {
-        type: [String, Number, Object, Boolean],
+        type: [String, Number, Object, Boolean] as PropType<any>,
         default: '',
-    },
-    label: {
-        type: String,
-        default: '',
-    },
-    size: {
-        type: String,
-        default: 'md',
-    },
-    color: {
-        type: String,
-        default: 'accent',
-    },
-    flat: {
-        type: Boolean,
-        default: false,
     },
     readonly: {
         type: Boolean,
@@ -52,6 +36,10 @@ const props = defineProps({
     noChevron: {
         type: Boolean,
         default: false,
+    },
+    clearValue: {
+        type: [Function] as PropType<() => any>,
+        default: () => () => undefined,
     },
 })
 
@@ -96,7 +84,7 @@ function getLabel(option: any) {
 
 // display label
 
-const displayLabel = computed(() => {
+const displayValue = computed(() => {
     let label: any = model.value
 
     if (!label) {
@@ -131,26 +119,32 @@ function onShowMenu(value: boolean) {
         @update:model-value="onShowMenu"
     >
         <template #activator="{ attrs, toggle }">
-            <v-input
-                v-bind="{ ...attrs, ...bindings.root }"
-                :model-value="displayLabel"
-                :label="label"
-                :color="color"
-                :flat="flat"
-                :size="size"
-                class="cursor-pointer"
-                input:class="cursor-pointer"
-                readonly
-                @keydown.enter="toggle"
-                @keydown.esc="menu = false"
+            <slot
+                name="selection"
+                :attrs="{ ...attrs, ...bindings.root }"
+                :display-value="displayValue"
             >
-                <template v-if="!noChevron" #append>
-                    <v-icon name="chevron-down" class="ml-auto text-t-secondary" />
-                </template>
-            </v-input>
+                <v-input
+                    v-bind="{ ...attrs, ...bindings.root }"
+                    :model-value="displayValue"
+                    class="cursor-pointer"
+                    input:class="cursor-pointer"
+                    readonly
+                    @keydown.enter="toggle"
+                    @keydown.esc="menu = false"
+                >
+                    <template v-if="!noChevron" #append>
+                        <v-icon name="chevron-down" class="ml-auto text-t-secondary" />
+                    </template>
+                </v-input>
+            </slot>
         </template>
 
         <v-card color="b-secondary" v-bind="bindings.card">
+            <v-list-item class="border-b border-lines" @click="model = clearValue()">
+                {{ $t('clear') }}
+            </v-list-item>
+
             <template v-for="option in options" :key="option">
                 <slot name="option" :option="option">
                     <v-list-item dark @click="onSelect(option)">

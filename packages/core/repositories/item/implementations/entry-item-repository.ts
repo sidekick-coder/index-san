@@ -40,7 +40,11 @@ export default class EntryItemRepository implements IItemRepository {
             .map((id) => {
                 const meta = metas.find((i) => i.id === id)
 
-                return new Item(meta, id)
+                const item = new Item(meta, id)
+
+                item._path = DirectoryEntry.normalize(this.collection.path, id)
+
+                return item
             })
     }
 

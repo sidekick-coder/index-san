@@ -21,6 +21,7 @@ export interface ViewOrder {
 
 export default class ViewCommon extends View {
     public search = ''
+    public limit?: number
     public filters: ViewFilter[] = []
     public columns: ViewColumn[] = []
     public orderBy: ViewOrder[] = []
@@ -28,6 +29,7 @@ export default class ViewCommon extends View {
     constructor(props?: Partial<ViewCommon>, id?: string) {
         super(props, id)
 
+        this.limit = props?.limit
         this.search = props?.search || ''
         this.filters = props?.filters || []
         this.columns = props?.columns || []

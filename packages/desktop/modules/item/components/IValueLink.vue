@@ -1,24 +1,33 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { openURL } from '@/composables/externals'
-
-import { useVModel } from '@vueuse/core'
+import { createValue } from '../composables/value'
 
 const props = defineProps({
-    modelValue: {
+    collectionId: {
         type: String,
-        default: null,
+        required: true,
+    },
+    columnId: {
+        type: String,
+        required: true,
+    },
+    itemId: {
+        type: String,
+        required: true,
     },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const { payload, load, loading } = createValue()
 
-// model
-const model = useVModel(props, 'modelValue', emit)
+watch(props, load, {
+    deep: true,
+    immediate: true,
+})
 
 const edit = ref(false)
 
-function isValid(url: string) {
+function isValid(url: any) {
     try {
         new URL(url)
         return true
@@ -29,20 +38,27 @@ function isValid(url: string) {
 
 // display
 const display = computed(() => {
-    if (!model.value) return
+    if (!payload.value) return
 
-    if (!isValid(model.value)) {
-        return model.value
+    if (!isValid(payload.value)) {
+        return payload.value
     }
 
-    const url = new URL(props.modelValue)
+    const url = new URL(payload.value)
 
     return url.hostname || url.href
 })
 </script>
 
 <template>
-    <v-input v-if="edit" v-model="model">
+    <v-input
+        v-if="loading.all"
+        :model-value="`${$t('loading')}...`"
+        class="text-t-secondary text-sm"
+        readonly
+    />
+
+    <v-input v-else-if="edit" v-model="payload">
         <template #append>
             <v-btn size="text-xs px-2 " text @click="edit = false">
                 <v-icon name="check" />
@@ -54,14 +70,15 @@ const display = computed(() => {
         v-else
         :model-value="display"
         class="cursor-pointer group/input"
-        :input:class="!isValid(model) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
+        :input:class="!isValid(payload) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
         readonly
-        @click="openURL(model)"
+        @click="openURL(payload as string)"
     >
         <template #append>
             <v-btn
-                size="text-xs px-2  group-hover/input:opacity-100 opacity-0"
-                text
+                size="sm"
+                class="group-hover/input:opacity-100 opacity-0"
+                color="b-secondary"
                 @click.stop="edit = true"
             >
                 <v-icon name="pen" />

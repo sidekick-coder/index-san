@@ -9,6 +9,7 @@ import { useStore } from '@/store/global'
 import CDrawerFilter from './CDrawerFilter.vue'
 import CDrawerHideColumns from './CDrawerHideColumns.vue'
 import CActionsOrder from './CActionsOrder.vue'
+import View from '@/../core/entities/view'
 
 // Props & emit
 const props = defineProps({
@@ -58,6 +59,14 @@ async function refresh() {
 
     await store.column.set(props.collectionId, true)
 }
+
+function isCommon(v: View): v is ViewCommon {
+    return ['table', 'gallery'].includes(v.component)
+}
+
+function isGallery(v: View): v is ViewGallery {
+    return v.component === 'gallery'
+}
 </script>
 <template>
     <v-card-head :class="register?.loading ? 'border-b-accent' : ''">
@@ -66,7 +75,7 @@ async function refresh() {
         <div class="grow"></div>
 
         <template v-if="view">
-            <template v-if="view instanceof ViewCommon">
+            <template v-if="isCommon(view)">
                 <div class="flex items-center transition-all">
                     <transition name="slide-left">
                         <v-input
@@ -118,8 +127,9 @@ async function refresh() {
                 <v-card color="b-secondary" width="300">
                     <v-card-content class="flex flex-wrap gap-y-4">
                         <v-input v-model="view.label" :label="$t('label')" />
+                        <v-input v-model="view.limit" type="number" :label="$t('limit')" />
 
-                        <template v-if="view instanceof ViewGallery">
+                        <template v-if="isGallery(view)">
                             <v-select
                                 v-model="view.thumbnail.key"
                                 :options="columns"

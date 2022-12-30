@@ -4,156 +4,39 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, ref, watch, useAttrs, PropType, defineAsyncComponent } from 'vue'
-import moment from 'moment'
+import { computed, useAttrs, defineAsyncComponent } from 'vue'
 
-import template from 'lodash/template'
-
-import uuid from 'uuid-random'
-
-import Column, { ColumnType } from '@core/entities/column'
-import Item from '@core/entities/item'
-import DirectoryEntry from '@core/entities/directory-entry'
-import EvaluationOutput from '@core/entities/evaluation-output'
-
-import { useVModel } from 'vue-wind/composables/v-model'
-import { useStore } from '@/store/global'
+import { ColumnType } from '@core/entities/column'
 import { createBindings } from '@/composables/binding'
 
+const IValueText = defineAsyncComponent(() => import('./IValueText.vue'))
+const IValueNumber = defineAsyncComponent(() => import('./IValueNumber.vue'))
+const IValueSelect = defineAsyncComponent(() => import('./IValueSelect.vue'))
 const IValueRelation = defineAsyncComponent(() => import('./IValueRelation.vue'))
 const IValueLink = defineAsyncComponent(() => import('./IValueLink.vue'))
 const IValueDate = defineAsyncComponent(() => import('./IValueDate.vue'))
 const IValueScript = defineAsyncComponent(() => import('./IValueScript.vue'))
+const IValueEntry = defineAsyncComponent(() => import('./IValueEntry.vue'))
+const IValueTimestamp = defineAsyncComponent(() => import('./IValueTimestamp.vue'))
 
-const props = defineProps({
-    modelValue: {
-        type: [String, Number, Object] as PropType<any>,
-        default: null,
-    },
-    column: {
-        type: Object as () => Column,
+defineProps({
+    collectionId: {
+        type: String,
         required: true,
     },
-    item: {
-        type: Object as () => Item,
+    columnId: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String as () => ColumnType,
+        required: true,
+    },
+    itemId: {
+        type: String,
         required: true,
     },
 })
-
-const emit = defineEmits(['update:modelValue'])
-
-// set value
-const model = useVModel(props, 'modelValue', emit)
-
-// Select options
-
-const select = ref({
-    options: computed(() => {
-        if (props.column.type !== 'select') return []
-
-        return props.column.options.split(',').map((o: string) => o.trim())
-    }),
-})
-
-// Script options
-
-const scriptLabel = computed(() => {
-    if (props.column.type !== 'script') return null
-
-    if (!model.value) return 'No result'
-
-    if (typeof model.value !== 'object') return null
-
-    if (model.value.result) return model.value.result
-
-    if (model.value.error) return model.value.error.message
-
-    return null
-})
-
-const scriptOutput = computed(() => {
-    if (props.column.type !== 'script') return null
-
-    if (!model.value) return null
-
-    if (typeof model.value !== 'object') return null
-
-    return model.value as EvaluationOutput
-})
-
-// relation options
-
-const store = useStore()
-
-const relation = ref({
-    items: [] as Item[],
-})
-
-async function setRelation() {
-    if (props.column.type !== 'relation') {
-        relation.value.items = []
-        return
-    }
-
-    await store.item
-        .list({
-            collectionId: props.column.collectionId,
-        })
-        .then((r) => (relation.value.items = r.data))
-        .catch(() => (relation.value.items = []))
-}
-
-watch(() => props.column, setRelation, {
-    immediate: true,
-})
-
-// entry
-
-async function deleteEntry() {
-    if (!model.value) return
-
-    await store.entry.destroy({ path: model.value })
-
-    model.value = null
-}
-
-function upload() {
-    const input = document.createElement('input')
-
-    input.type = 'file'
-
-    input.onchange = async () => {
-        if (!input.files || !input.files[0]) return
-
-        const file = input.files[0]
-
-        const compiled = template(props.column.filename || `${uuid()}.{ext}`, {
-            interpolate: /{([\s\S]+?)}/g,
-        })
-
-        const filename = compiled({
-            ext: DirectoryEntry.extname((file as any).path),
-            itemPath: props.item._filename || '',
-        })
-
-        const path = DirectoryEntry.normalize(filename)
-
-        const buffer = await file.arrayBuffer()
-
-        await store.entry.write({
-            path,
-            data: new Uint8Array(buffer),
-        })
-
-        if (filename !== model.value) {
-            await deleteEntry().catch(Boolean)
-        }
-
-        model.value = path
-    }
-
-    input.click()
-}
 
 // bindings
 
@@ -161,90 +44,83 @@ const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
 </script>
 
 <template>
-    <v-input
-        v-if="column.type === 'text'"
-        v-model="model"
+    <i-value-text
+        v-if="type === ColumnType.text"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
+
+    <i-value-number
+        v-else-if="type === ColumnType.number"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
+
+    <i-value-select
+        v-else-if="type === ColumnType.select"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
+        v-bind="bindings.multiple(['root', 'select'])"
+    />
+
+    <i-value-script
+        v-else-if="type === ColumnType.script"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
+
+    <i-value-link
+        v-else-if="type === ColumnType.link"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
         v-bind="bindings.multiple(['root', 'input'])"
     />
 
     <i-value-relation
-        v-else-if="column.type === ColumnType.relation"
-        v-model="model"
-        :column="column"
-        v-bind="$attrs"
-    />
-
-    <i-value-script
-        v-else-if="column.type === ColumnType.script"
-        :column="column"
-        :item="item"
-        v-bind="$attrs"
-    />
-
-    <i-value-link
-        v-else-if="column.type === ColumnType.link"
-        v-model="model"
-        v-bind="bindings.root"
-    />
-
-    <i-value-date
-        v-else-if="column.type === ColumnType.date"
-        v-model="model"
-        :column="column"
-        v-bind="bindings.root"
-    />
-
-    <v-input
-        v-else-if="column.type === 'number'"
-        v-model="model"
-        type="number"
-        class="w-full"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
-
-    <v-select
-        v-else-if="column.type === 'select'"
-        v-model="model"
-        :options="select.options"
+        v-else-if="type === ColumnType.relation"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
         v-bind="bindings.multiple(['root', 'select'])"
     />
 
-    <v-menu v-else-if="column.type === 'entry'" offset-y close-on-content-click>
-        <template #activator="{ attrs }">
-            <v-input
-                :model-value="!model ? '' : DirectoryEntry.basename(model)"
-                v-bind="{ ...attrs, ...bindings.multiple(['root', 'input']) }"
-                readonly
-                class="cursor-pointer"
-                input:class="cursor-pointer"
-            >
-            </v-input>
-        </template>
-        <v-card color="b-secondary">
-            <v-list-item @click="upload">
-                {{ $t('upload') }}
-            </v-list-item>
-            <v-list-item @click="deleteEntry">
-                {{ $t('deleteEntity', [$t('entry')]) }}
-            </v-list-item>
-        </v-card>
-    </v-menu>
+    <i-value-date
+        v-else-if="type === ColumnType.date"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
 
-    <v-input
-        v-else-if="column.type === 'createdAt'"
-        :model-value="moment(item._createdAt).format('L LT')"
-        readonly
+    <i-value-entry
+        v-else-if="type === ColumnType.entry"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
+        v-bind="bindings.multiple(['root', 'input'])"
+    />
+
+    <i-value-timestamp
+        v-else-if="type === ColumnType.createdAt || type === ColumnType.updatedAt"
+        :collection-id="collectionId"
+        :item-id="itemId"
+        :column-id="columnId"
         v-bind="bindings.multiple(['root', 'input'])"
     />
 
     <v-input
-        v-else-if="column.type === 'updatedAt'"
-        :model-value="moment(item._updatedAt).format('L LT')"
+        v-else
+        :model-value="$t('errors.unknown')"
+        class="text-danger"
         readonly
         v-bind="bindings.multiple(['root', 'input'])"
     />
-
-    <div v-else class="text-danger px-4 py-2">
-        {{ $t('errors.unknown') }}
-    </div>
 </template>

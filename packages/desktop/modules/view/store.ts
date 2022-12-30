@@ -148,6 +148,17 @@ export const useStore = defineStore('view', () => {
         return views.value[index].view as T
     }
 
+    async function show<T = View>(collectionId: string, viewId: string) {
+        const response = await useCase('show-views', {
+            workspaceId: workspace.currentId!,
+            collectionId,
+        })
+
+        const view = response.data.find((v) => v.id === viewId)
+
+        return (view as T) || null
+    }
+
     function set<T = ViewCommon>(collectionId: string, viewId: string, payload: T) {
         const index = views.value.findIndex(
             (v) => v.collectionId === collectionId && v.viewId === viewId
@@ -187,6 +198,7 @@ export const useStore = defineStore('view', () => {
         views,
         setViews,
         all,
+        show,
         get,
         set,
         getViews,

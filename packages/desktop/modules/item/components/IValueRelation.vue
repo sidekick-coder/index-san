@@ -1,45 +1,70 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { watch, ref } from 'vue'
 
-import { useVModel } from '@vueuse/core'
-import { useStore } from '../store'
+import Item from '@core/entities/item'
 
-import Column from '@core/entities/column'
+import { createValue } from '@/modules/item/composables/value'
+import { useStore } from '@/store/global'
 
 const props = defineProps({
-    modelValue: {
+    collectionId: {
         type: String,
-        default: null,
+        required: true,
     },
-    column: {
-        type: Object as () => Column,
+    columnId: {
+        type: String,
+        required: true,
+    },
+    itemId: {
+        type: String,
         required: true,
     },
 })
 
-const emit = defineEmits(['update:modelValue'])
+// value
 
-// model
-const model = useVModel(props, 'modelValue', emit)
+const { payload, load, column, loading } = createValue()
 
-// related item
+watch(props, load, {
+    deep: true,
+    immediate: true,
+})
 
+// options
 const store = useStore()
 
-const relatedItems = computed(() => store.all(props.column.collectionId))
+const options = ref<Item[]>([])
 
-watch(
-    () => props.column.collectionId,
-    (id) => store.setItems(id),
-    { immediate: true }
-)
+async function setOptions() {
+    if (!column.value) return
+
+    options.value = await store.item.list(column.value.collectionId)
+}
+
+watch(column, setOptions)
 </script>
 
 <template>
+    <v-input
+        v-if="loading.all"
+        :model-value="`${$t('loading')}...`"
+        class="text-t-secondary text-sm"
+        readonly
+    />
+
+    <v-input
+        v-else-if="!column"
+        :model-value="$t('errors.unknown')"
+        class="text-t-secondary text-sm"
+        readonly
+    />
+
     <v-select
-        v-model="model"
-        :options="relatedItems"
-        :label-key="column.displayField"
+        v-else
+        v-model="payload"
+        :options="options"
         value-key="id"
+        :label-key="column.displayField"
+        :clear-value="() => null"
     />
 </template>

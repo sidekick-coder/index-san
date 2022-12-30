@@ -86,6 +86,7 @@ export default {
     date: 'Date',
     displayFormat: 'Display format',
     saveFormat: 'Save format',
+    limit: 'Limit',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

@@ -19,6 +19,7 @@ import { withOnlyView, withView } from '@/modules/collection-column/composables/
 import { useNonReactive } from '@/composables/utils'
 
 import { withViewIterations } from '@/modules/view/composables'
+import Collection from '@/../core/entities/collection'
 
 const IValue = defineAsyncComponent(() => import('@/modules/item/components/IValue.vue'))
 const CActions = defineAsyncComponent(() => import('./CActions.vue'))
@@ -60,73 +61,103 @@ const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
 
 const store = useStore()
 
-const collection = computed(() => store.collection.get(props.collectionId))
+const collection = ref<Collection | null>(null)
+
+watch(
+    () => props.collectionId,
+    () => {
+        collection.value = store.collection.get(props.collectionId)
+    },
+    { immediate: true }
+)
 
 // view
-const innerViewId = ref('')
+const view = ref<ViewTable | null>(null)
 
-const view = computed({
-    get: () => store.view.get<ViewTable>(props.collectionId, innerViewId.value),
-    set: (value) => {
-        if (!value) return
+// const view = computed({
+//     get: () => store.view.get<ViewTable>(props.collectionId, innerViewId.value),
+//     set: (value) => {
+//         if (!value) return
 
-        store.view.set<ViewTable>(props.collectionId, innerViewId.value, value)
-    },
-})
+//         store.view.set<ViewTable>(props.collectionId, innerViewId.value, value)
+//     },
+// })
 
 async function setViews() {
-    innerViewId.value = props.viewId || ''
-
-    await store.view.setViews(props.collectionId)
-
-    if (!view.value) {
-        const view = new ViewTable({}, props.viewId)
-
-        innerViewId.value = view.id
-
-        await store.view.create(props.collectionId, view, !!props.viewId)
+    if (!props.viewId) {
+        view.value = new ViewTable({})
+        return
     }
+
+    const response = await store.view.show<ViewTable>(props.collectionId, props.viewId)
+
+    view.value = response || new ViewTable({}, props.viewId)
 }
 
-watch(props, setViews, {
+watch([() => props.viewId, () => props.collectionId], setViews, {
     immediate: true,
-    deep: true,
 })
 
 // columns
+const columns = ref<any[]>([])
 
-const columns = computed({
-    get() {
-        const columns: any[] = withView(store.column.all(props.collectionId), view.value?.columns)
+// const columns = computed({
+//     get() {
+//         const columns: any[] = withView(store.column.all(props.collectionId), view.value?.columns)
 
-        if (!columns.length) {
-            columns.push({
-                id: '_actions_no_columns',
-                width: 200,
-            })
-        }
+//         if (!columns.length) {
+//             columns.push({
+//                 id: '_actions_no_columns',
+//                 width: 200,
+//             })
+//         }
 
-        columns.unshift({
-            id: '_actions_left',
-            label: '#',
-            width: 43,
+//         columns.unshift({
+//             id: '_actions_left',
+//             label: '#',
+//             width: 43,
+//         })
+
+//         columns.push({
+//             id: '_actions_right',
+//             width: '100%',
+//         })
+
+//         return columns
+//     },
+//     set(value) {
+//         if (!view.value) return
+
+//         view.value = {
+//             ...view.value,
+//             columns: withOnlyView(value).filter((c) => !c.id.startsWith('_')),
+//         }
+//     },
+// })
+function setColumns() {
+    columns.value = withView(store.column.all(props.collectionId), view.value?.columns)
+
+    if (!columns.value.length) {
+        columns.value.push({
+            id: '_actions_no_columns',
+            width: 200,
         })
+    }
 
-        columns.push({
-            id: '_actions_right',
-            width: '100%',
-        })
+    columns.value.unshift({
+        id: '_actions_left',
+        label: '#',
+        width: 43,
+    })
 
-        return columns
-    },
-    set(value) {
-        if (!view.value) return
+    columns.value.push({
+        id: '_actions_right',
+        width: '100%',
+    })
+}
 
-        view.value = {
-            ...view.value,
-            columns: withOnlyView(value).filter((c) => !c.id.startsWith('_')),
-        }
-    },
+watch(view, setColumns, {
+    immediate: true,
 })
 
 function resizeColumn(id: string, width: number) {
@@ -147,15 +178,17 @@ watch(
 
 // items
 
-const items = computed(() => withViewIterations(store.item.all(props.collectionId), view.value))
+const raw = ref<Item[]>([])
 
-const register = computed(() => store.item.getStoreItem(props.collectionId))
+const items = computed(() => withViewIterations(raw.value, view.value))
 
-async function load() {
-    await store.item.setItems(props.collectionId)
+async function setItems() {
+    raw.value = await store.item.list(props.collectionId)
+
+    // await store.item.setItems(props.collectionId)
 }
 
-watch(() => view.value?.filters, debounce(load, 500), { deep: true, immediate: true })
+watch(() => view.value?.filters, debounce(setItems, 500), { deep: true, immediate: true })
 
 // update item with debounce
 
@@ -191,12 +224,7 @@ async function create() {
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
-            <v-table
-                :items="items"
-                :columns="columns"
-                v-bind="bindings.table"
-                :loading="register?.loading"
-            >
+            <v-table :items="items" :columns="columns" :limit="view.limit" v-bind="bindings.table">
                 <template #column>
                     <Draggable v-model="columns" handle=".drag" item-key="id" tag="v-tr">
                         <template #item="{ element: c, index }">
@@ -232,17 +260,17 @@ async function create() {
                                 </div>
 
                                 <template v-else-if="!c.id.startsWith('_')">
-                                    <cc-column
+                                    <!-- <cc-column
                                         class="drag"
                                         :collection-id="collectionId"
                                         :column-id="c.id"
-                                    />
+                                    /> -->
 
-                                    <v-resize-line
+                                    <!-- <v-resize-line
                                         :model-value="c.width || 200"
                                         :min-width="100"
                                         @update:model-value="(v: number) => resizeColumn(c.id, v)"
-                                    />
+                                    /> -->
                                 </template>
                             </v-th>
                         </template>
@@ -250,7 +278,7 @@ async function create() {
                 </template>
 
                 <template #item="data">
-                    <v-tr class="relative group/item">
+                    <v-tr class="relative group/item" height="41">
                         <v-td
                             v-for="(c, cIndex) in columns"
                             v-show="!c.hide"
@@ -263,7 +291,7 @@ async function create() {
                                 v-if="c.id === '_actions_left'"
                                 class="flex justify-center opacity-0 group-hover/item:opacity-100"
                             >
-                                <v-menu offset-y close-on-content-click>
+                                <!-- <v-menu offset-y close-on-content-click>
                                     <template #activator="{ attrs }">
                                         <v-btn
                                             size="h-8 w-8 text-xs"
@@ -297,30 +325,29 @@ async function create() {
                                             {{ $t('deleteEntity', [$t('item')]) }}
                                         </v-list-item>
                                     </v-card>
-                                </v-menu>
+                                </v-menu> -->
                             </div>
 
                             <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>
 
                             <i-value
                                 v-else-if="!c.id.startsWith('_')"
-                                :model-value="data.item[c.field as string]"
-                                :column="(c as Column)"
-                                :item="data.item"
+                                :collection-id="collectionId"
+                                :column-id="c.id"
+                                :item-id="data.item.id"
+                                :type="c.type"
                                 :size="cIndex === 1 ? 'py-2' : 'md'"
                                 select:no-chevron
                                 menu:offset-y
                                 color="none"
                                 flat
-                                @update:model-value="updateItem(data.item, c.field!, $event)"
                             />
 
                             <v-btn
                                 v-if="cIndex === 1"
-                                size="h-8 w-8 text-xs"
-                                rounded
-                                text
-                                class="absolute right-2 top-1 text-t-secondary opacity-0 group-hover/item:opacity-100"
+                                size="sm"
+                                color="b-secondary"
+                                class="absolute right-2 top-2 opacity-0 group-hover/item:opacity-100"
                                 :to="`/collections/${collectionId}/items/${data.item.id}`"
                             >
                                 <v-icon name="eye" />
