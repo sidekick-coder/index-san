@@ -98,6 +98,8 @@ export const useStore = defineStore('item', () => {
     }
 
     async function create(collectionId: string, payload: Item) {
+        cache.delete(collectionId)
+
         const storeItem = items.value.find((i) => i.collectionId === collectionId)
 
         if (storeItem) {
@@ -116,6 +118,8 @@ export const useStore = defineStore('item', () => {
     }
 
     async function update(collectionId: string, id: string, payload: Partial<Item>) {
+        cache.delete(collectionId)
+
         await useCase('update-item', {
             collectionId,
             workspaceId: workspace.currentId!,

@@ -40,5 +40,5 @@ const options = computed(() => {
         readonly
     />
 
-    <v-select v-else v-model="payload" :options="options" />
+    <v-select v-else v-model="payload" :options="options" :clear-value="() => null" />
 </template>

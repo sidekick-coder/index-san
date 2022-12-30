@@ -50,6 +50,9 @@
 *::-webkit-scrollbar-track {
     background: rgb(var(--b-primary));
 }
+::-webkit-scrollbar-corner {
+    background: rgb(var(--b-primary));
+  }
 
 ::-webkit-scrollbar-thumb {
     @apply bg-lines/60;

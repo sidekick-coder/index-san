@@ -4,7 +4,7 @@ import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue'
 import Column, { ColumnType } from '@core/entities/column'
 
 import { useStore as useCollectionStore } from '@/modules/collection/store'
-import { useStore } from '@/modules/collection-column/store'
+import { useStore } from '@/store/global'
 
 import { useNonReactive } from '@/composables/utils'
 import { useI18n } from 'vue-i18n'
@@ -28,14 +28,20 @@ const props = defineProps({
 // column
 const store = useStore()
 
-const column = computed(() => store.get(props.collectionId, props.columnId))
-const loading = computed(() => store.isLoading(props.collectionId))
+const column = ref<Column | null>(null)
 
-onMounted(async () => {
-    if (!column.value) {
-        await store.set(props.collectionId)
-    }
-})
+const loading = ref(false)
+
+async function setColumn() {
+    loading.value = true
+
+    await store.column
+        .show(props.collectionId, props.columnId)
+        .then((r) => (column.value = r))
+        .finally(() => setTimeout(() => (loading.value = false), 500))
+}
+
+watch(props, setColumn, { deep: true, immediate: true })
 
 // form
 const tm = useI18n()
@@ -100,7 +106,7 @@ watch(dialog, (value) => {
 })
 
 async function deleteColumn() {
-    await store.destroy(props.collectionId, props.columnId)
+    await store.column.destroy(props.collectionId, props.columnId)
 
     dialog.value = false
 }
@@ -234,7 +240,7 @@ const relation = computed(() => {
                         <v-card color="b-secondary" class="h-full">
                             <m-editor
                                 v-model="payload.content"
-                                :libs="libScriptColumn.mount(store.all(collectionId))"
+                                :libs="libScriptColumn.mount(store.column.all(collectionId))"
                             />
                         </v-card>
                     </v-drawer>

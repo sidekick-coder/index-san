@@ -2,6 +2,7 @@
 import { computed, watch } from 'vue'
 import { createValue } from '../composables/value'
 import moment from 'moment'
+import { ColumnType } from '@/../core/entities/column'
 
 const props = defineProps({
     collectionId: {
@@ -18,7 +19,7 @@ const props = defineProps({
     },
 })
 
-const { payload, load, column, loading } = createValue()
+const { load, column, item, loading } = createValue()
 
 watch(props, load, {
     deep: true,
@@ -27,9 +28,13 @@ watch(props, load, {
 
 // display
 const display = computed(() => {
-    if (!payload.value || !column.value) return ''
+    if (!item.value || !column.value) return ''
 
-    return moment(payload.value).format('L LT')
+    if (column.value.type === ColumnType.createdAt) {
+        return moment(new Date(item.value._createdAt)).format('L LT')
+    }
+
+    return moment(new Date(item.value._updatedAt)).format('L LT')
 })
 </script>
 

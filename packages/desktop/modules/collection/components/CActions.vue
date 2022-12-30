@@ -69,7 +69,7 @@ function isGallery(v: View): v is ViewGallery {
 }
 </script>
 <template>
-    <v-card-head :class="register?.loading ? 'border-b-accent' : ''">
+    <v-card-head :class="register?.loading ? 'border-b-accent' : ''" class="overflow-x-auto">
         <slot name="left" />
 
         <div class="grow"></div>

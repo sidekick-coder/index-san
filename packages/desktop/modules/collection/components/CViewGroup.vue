@@ -165,12 +165,12 @@ async function duplicate(view: ViewTable | ViewGallery) {
     <v-card v-if="view" v-bind="bindings.root">
         <c-actions v-bind="bindings.head" :collection-id="collectionId" :view-id="view.selected">
             <template #left>
-                <div class="flex -mb-[1px]">
+                <div class="flex">
                     <v-draggable
                         v-model="group"
                         item-key="id"
                         handle=".drag"
-                        :component-data="{ class: 'flex -mb-[1px]' }"
+                        :component-data="{ class: 'flex w-full' }"
                     >
                         <template #item="{ element: v, index }">
                             <div>
@@ -182,7 +182,7 @@ async function duplicate(view: ViewTable | ViewGallery) {
                                             size="text-sm h-[45px]"
                                             tile
                                             color="hover:text-t-primary"
-                                            class="drag"
+                                            class="drag overflow-hidden whitespace-pre"
                                             :class="[
                                                 isActive(v.id)
                                                     ? 'text-t-primary'

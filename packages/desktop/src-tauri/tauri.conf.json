@@ -73,7 +73,9 @@
         "height": 600,
         "resizable": true,
         "title": "index-san",
-        "width": 800
+        "width": 800,
+        "fileDropEnabled": false,
+        "center": true
       }
     ]
   }

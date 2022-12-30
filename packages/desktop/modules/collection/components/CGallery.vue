@@ -255,7 +255,7 @@ function onClick(item: Item) {
                             v-if="thumbnail.key"
                             :ref="(el: any) => thumbnails.set(data.item.id, el)"
                             :src="data.item[thumbnail.key]"
-                            :height="`calc(100% - ${visibleColumns * 44}px)`"
+                            :height="`calc(100% - ${visibleColumns * 48}px)`"
                             :fit="thumbnail.fit"
                             :position="thumbnail.position"
                             width="100%"
@@ -266,16 +266,16 @@ function onClick(item: Item) {
                         <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">
                             <v-list-item
                                 v-if="!c.hide"
-                                :id="`${c.id}-${data.item.id}`"
-                                size="none"
+                                size="h-[48px]"
                                 color="none"
                                 class="hover:bg-b-primary/25"
                                 @click.stop
                             >
                                 <i-value
-                                    :model-value="data.item[c.field]"
-                                    :column="c"
-                                    :item="data.item"
+                                    :collection-id="collectionId"
+                                    :column-id="c.id"
+                                    :item-id="data.item.id"
+                                    :type="c.type"
                                     :placeholder="c.label"
                                     card:color="b-primary"
                                     select:no-chevron
@@ -283,7 +283,6 @@ function onClick(item: Item) {
                                     color="none"
                                     size="px-4 py-3 text-sm"
                                     flat
-                                    @update:model-value="updateItem(data.item, c.field, $event)"
                                 />
                             </v-list-item>
                         </template>

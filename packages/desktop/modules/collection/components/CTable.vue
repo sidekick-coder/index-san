@@ -226,7 +226,13 @@ async function create() {
         >
             <v-table :items="items" :columns="columns" :limit="view.limit" v-bind="bindings.table">
                 <template #column>
-                    <Draggable v-model="columns" handle=".drag" item-key="id" tag="v-tr">
+                    <Draggable
+                        v-model="columns"
+                        handle=".drag"
+                        item-key="id"
+                        tag="v-tr"
+                        :component-data="{ height: 41 }"
+                    >
                         <template #item="{ element: c, index }">
                             <v-th
                                 v-show="!c.hide"
@@ -260,17 +266,17 @@ async function create() {
                                 </div>
 
                                 <template v-else-if="!c.id.startsWith('_')">
-                                    <!-- <cc-column
+                                    <cc-column
                                         class="drag"
                                         :collection-id="collectionId"
                                         :column-id="c.id"
-                                    /> -->
+                                    />
 
-                                    <!-- <v-resize-line
+                                    <v-resize-line
                                         :model-value="c.width || 200"
                                         :min-width="100"
                                         @update:model-value="(v: number) => resizeColumn(c.id, v)"
-                                    /> -->
+                                    />
                                 </template>
                             </v-th>
                         </template>
