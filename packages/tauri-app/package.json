@@ -1,5 +1,5 @@
 {
-  "name": "tauri",
+  "name": "tauri-app",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -11,8 +11,8 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.2.0",
     "@tauri-apps/cli": "^1.2.2",
-    "tauri": "^0.0.0",
     "vue": "^3.2.45"
   },
   "devDependencies": {

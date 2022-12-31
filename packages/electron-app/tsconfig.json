@@ -1,10 +1,9 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*", "src-electron/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
       "@core/*": ["../core/*"],
       "@client/*": ["../desktop/*"],
     }
@@ -12,6 +11,5 @@
 
   "references": [
     { "path": "./tsconfig.config.json" },
-    { "path": "../desktop/tsconfig.json" },
   ]
 }
