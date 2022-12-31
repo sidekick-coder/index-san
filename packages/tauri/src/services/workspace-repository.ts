@@ -1,7 +1,9 @@
-import Workspace from '@core/entities/workspace'
-import WorkspaceNotFound from '@core/exceptions/workspace-not-found'
-import IWorkspaceRepository from '@core/repositories/workspace/workspace-repository'
 import uniqBy from 'lodash/uniqBy'
+
+import WorkspaceNotFound from '@core/exceptions/workspace-not-found'
+
+import type Workspace from '@core/entities/workspace'
+import type IWorkspaceRepository from '@core/repositories/workspace/workspace-repository'
 
 import { writeTextFile, readTextFile } from '@tauri-apps/api/fs'
 import { join, dataDir } from '@tauri-apps/api/path'

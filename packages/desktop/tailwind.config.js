@@ -1,13 +1,15 @@
 const colors = require('tailwindcss/colors')
 
+const path = require('path')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
         './index.html',
-        './components/*.vue',
-        './modules/**/**/**/*.{ts,vue,scss}',
-        '../../node_modules/vue-wind/composables/**/*.ts',
-        '../../node_modules/vue-wind/components/**/*.{ts,vue}',
+        path.resolve(__dirname, './components/*.vue'),
+        path.resolve(__dirname, './modules/**/**/**/*.{ts,vue,scss}'),
+        path.resolve(__dirname, '../../node_modules/vue-wind/composables/**/*.ts'),
+        path.resolve(__dirname, '../../node_modules/vue-wind/components/**/*.{ts,vue}'),
     ],
     safelist: [
         { pattern: /w-*/ },

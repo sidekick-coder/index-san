@@ -5,14 +5,24 @@ import 'highlight.js/scss/base16/dracula.scss'
 import { App as VueApp, createApp as baseCreateApp } from 'vue'
 
 import App from './App.vue'
+import { ClientAppConfig } from './config'
 
 interface Plugin {
     default?: (app: VueApp) => void
     order?: number
 }
 
-async function createApp() {
+window.clientConfig = {
+    useCase: () => Promise.reject('Not implemented'),
+    open: {
+        url: () => true,
+    },
+}
+
+export async function createApp(config: ClientAppConfig) {
     const app = baseCreateApp(App)
+
+    window.clientConfig = config
 
     const plugins = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
 
@@ -28,5 +38,3 @@ async function createApp() {
 
     return { app }
 }
-
-createApp().then(({ app }) => app.mount('#app'))

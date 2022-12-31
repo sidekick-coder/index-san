@@ -11,7 +11,7 @@ import {
 import { sep } from '@tauri-apps/api/path'
 
 import DirectoryEntry from '@core/entities/directory-entry'
-import Drive from '@core/gateways/drive/drive'
+import type Drive from '@core/gateways/drive/drive'
 
 export default class FSDrive implements Drive {
     public config = {

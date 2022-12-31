@@ -9,7 +9,6 @@
     "email": "henriqueoliwork@gmail.com",
     "url": "https://sidekick-coder.com"
   },
-  "main": "dist-electron/main.js",
   "scripts": {
     "test": "vitest",
     "dev": "npm run tauri dev",
@@ -17,13 +16,7 @@
     "vite:build": "vue-tsc --noEmit && vite build",
     "vite:preview": "vite preview",
     "tsc": "vue-tsc --noEmit",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "build:debug": "electron-forge start --inspect-electron",
-    "make:gc-types": "node scripts/make-gc-types.js",
-    "tauri": "tauri",
-    "devtools": "vue-devtools"
+    "make:gc-types": "node scripts/make-gc-types.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
@@ -32,7 +25,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
     "@mdit-vue/plugin-component": "^0.11.1",
-    "@tauri-apps/cli": "^1.2.2",
     "@vueuse/core": "^9.8.2",
     "chart.js": "^4.1.1",
     "highlight.js": "^11.7.0",
@@ -54,7 +46,6 @@
     "@types/lodash": "^4.14.191",
     "@types/mime": "^3.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
-    "@vue/devtools": "^6.4.5",
     "@vue/test-utils": "^2.0.0-rc.18",
     "autoprefixer": "^10.4.13",
     "install": "^0.13.0",

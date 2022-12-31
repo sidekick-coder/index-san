@@ -72,10 +72,27 @@ function createUseCases(app: AppConfig) {
     }
 }
 
+export type Cases = ReturnType<typeof createUseCases>
+
+export type CasesKeys = keyof ReturnType<typeof createUseCases>
+
+export type CasesMethod<K extends CasesKeys> = ReturnType<Cases[K]['execute']>
+
+export type CasesParams<K extends CasesKeys> = Parameters<Cases[K]['execute']>[0]
+
 export default class App {
     public cases: ReturnType<typeof createUseCases>
 
     constructor(props: AppConfig) {
         this.cases = createUseCases(props)
+    }
+
+    public useCase<K extends CasesKeys, T = CasesMethod<K>>(
+        name: K,
+        args: CasesParams<K>
+    ): Promise<Awaited<T>> {
+        const option = this.cases[name]
+
+        return option.execute(args as any) as any
     }
 }

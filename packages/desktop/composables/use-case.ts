@@ -1,19 +1,15 @@
 import { useStore } from '@/modules/notify/store'
-
-import App from '@/services/app'
-
 import { i18n } from '@/plugins/i18n'
+
+import { CasesKeys, CasesMethod, CasesParams } from '@core/app'
 
 export interface DataResponse<T> {
     data: T
 }
 
-export async function useCase<
-    K extends keyof typeof App['cases'],
-    T = ReturnType<typeof App['cases'][K]['execute']>
->(
+export async function useCase<K extends CasesKeys, T = CasesMethod<K>>(
     name: K,
-    args?: Parameters<typeof App['cases'][K]['execute']>[0],
+    args?: CasesParams<K>,
     silent = false
 ): Promise<Awaited<T>> {
     const notify = useStore()
@@ -21,17 +17,11 @@ export async function useCase<
 
     args = args ? JSON.parse(JSON.stringify(args)) : {}
 
-    const option = App.cases[name]
-
-    if (!option) {
-        throw new Error(`use-case "${name}" not found`)
-    }
-
     let result: any = undefined
     let error: any = undefined
 
-    await option
-        .execute(args as any)
+    await window.clientConfig
+        .useCase(name, args as any)
         .then((r: any) => (result = r))
         .catch((e: any) => (error = e))
 

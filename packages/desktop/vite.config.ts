@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 
 const root = path.resolve(__dirname, '..', '..')
 
-const alias = {
+export const alias = {
     // root
     '@core': path.resolve(__dirname, '..', 'core'),
     '@root': root,
