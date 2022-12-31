@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { debounce } from 'lodash'
-import { computed, ref, useAttrs, watch } from 'vue'
+import { computed, onUnmounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ViewGallery from '@core/entities/view-gallery'
@@ -20,6 +20,9 @@ import { withViewIterations } from '@/modules/view/composables'
 
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 import { useNonReactive } from '@/composables/utils'
+import { useView } from '@/modules/view/composables/use-view'
+import { useHooks, Events } from '@/plugins/hooks'
+import { useItems } from '@/modules/item/composables/items'
 
 // Props & Emits
 const props = defineProps({
@@ -41,134 +44,65 @@ const props = defineProps({
 const bindings = computed(() => createBindings(useAttrs(), ['card', 'head', 'gallery']))
 
 // set collection
+
 const store = useStore()
 
-const collection = computed(() => store.collection.get(props.collectionId))
-
 // view
-const innerViewId = ref('')
 
-const view = computed(() => store.view.get<ViewGallery>(props.collectionId, innerViewId.value))
-
-async function setViews() {
-    innerViewId.value = props.viewId || ''
-
-    await store.view.setViews(props.collectionId)
-
-    if (!view.value) {
-        const view = new ViewGallery({}, props.viewId)
-
-        innerViewId.value = view.id
-
-        await store.view.create(props.collectionId, view, !!props.viewId)
-    }
-}
-
-watch(props, setViews, {
-    immediate: true,
-    deep: true,
+const { view } = useView<ViewGallery>({
+    collectionId: props.collectionId,
+    viewId: props.viewId,
+    defaultValue: new ViewGallery({}, props.viewId),
 })
 
 // columns
 
-watch(
-    () => props.collectionId,
-    (id) => store.column.set(id),
-    { immediate: true }
-)
+const columns = ref<any[]>([])
+const collection = store.collection.get(props.collectionId)
 
-const columns = computed({
-    get() {
-        return withView(store.column.all(props.collectionId), view.value?.columns)
-    },
-    set(value) {
-        if (!view.value) return
+async function setColumns() {
+    columns.value = withView(collection?.columns || [], view.value.columns)
+}
 
-        view.value.columns = withOnlyView(value)
-    },
-})
-
-// thumbnail
-
-const thumbnail = computed(() => {
-    if (view.value?.thumbnail) return view.value.thumbnail
-
-    return {
-        key: '',
-        position: '',
-        fit: '',
-    }
-})
-
-// sizes
-
-const sizes = computed(() => {
-    if (view.value?.sizes) return view.value.sizes
-
-    return {
-        sm: {
-            width: 200,
-            height: 'auto',
-        },
-        md: {
-            width: 282,
-            height: 'auto',
-        },
-        lg: {
-            width: 200,
-            height: 'auto',
-        },
-    }
-})
+watch(view, setColumns)
 
 // count visible columns
 
-const visibleColumns = computed(() =>
-    !view.value ? columns.value.length : view.value?.columns.filter((c) => !c.hide).length
-)
+const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).length)
 
 // items
 
-const items = computed(() => withViewIterations(store.item.all(props.collectionId), view.value))
+const { items } = useItems(props.collectionId, view)
 
-const register = computed(() => store.item.getStoreItem(props.collectionId))
-
-async function load() {
-    await store.item.setItems(props.collectionId)
-}
-
-watch(() => view.value?.filters, debounce(load, 500), { deep: true, immediate: true })
+// thumbnail
+const hooks = useHooks()
 
 const thumbnails = ref(new Map<string, InstanceType<typeof EImg>>())
 
-function reloadThumbnail(itemId: string) {
+function onItemUpdated({ collectionId, itemId, payload }: Events['item:updated']) {
+    if (collectionId !== props.collectionId) return
+
+    if (!view.value.thumbnail.key) return
+
+    const src = payload[view.value.thumbnail.key]
+
+    if (!src) return
+
     const eImg = thumbnails.value.get(itemId)
 
     if (eImg) {
-        eImg.setSrc()
+        eImg.setSrc(src)
     }
 }
 
-// update item with debounce
+hooks.on('item:updated', onItemUpdated)
 
-const updateItem = debounce(async (item: Item, field: string, value: any) => {
-    const old = useNonReactive(item)
-
-    item[field] = value
-
-    if (field === thumbnail.value.key) {
-        reloadThumbnail(item.id)
-    }
-
-    await store.item.update(props.collectionId, old.id, { [field]: value }).catch(() => {
-        item[field] = old[field]
-    })
-}, 500)
+onUnmounted(() => hooks.off('item:updated', onItemUpdated))
 
 // create item
 
 async function create() {
-    const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
+    const item = new Item(createPayload(view.value?.filters, collection?.columns))
 
     await store.item.create(props.collectionId, item)
 }
@@ -197,11 +131,10 @@ function onClick(item: Item) {
             <v-gallery
                 :items="items"
                 :columns="columns"
-                v-bind="bindings.gallery"
-                :loading="register?.loading"
-                :sizes="sizes"
+                :sizes="view.sizes"
                 item-key="id"
                 class="py-4"
+                v-bind="bindings.gallery"
             >
                 <template #item="data">
                     <v-card
@@ -218,21 +151,16 @@ function onClick(item: Item) {
                             @click.stop
                         >
                             <v-btn
-                                size="h-8 w-8 text-xs mr-2"
-                                rounded
-                                color="info"
+                                size="sm"
+                                color="b-secondary"
+                                class="mr-2"
                                 :to="`/collections/${collectionId}/items/${data.item.id}`"
                             >
                                 <v-icon name="eye" />
                             </v-btn>
                             <v-menu offset-y close-on-content-click>
                                 <template #activator="{ attrs }">
-                                    <v-btn
-                                        size="h-8 w-8 text-xs"
-                                        color="info"
-                                        rounded
-                                        v-bind="attrs"
-                                    >
+                                    <v-btn size="sm" color="b-secondary" v-bind="attrs">
                                         <v-icon name="ellipsis-vertical" />
                                     </v-btn>
                                 </template>
@@ -252,12 +180,12 @@ function onClick(item: Item) {
                         </div>
 
                         <e-img
-                            v-if="thumbnail.key"
+                            v-if="view.thumbnail.key"
                             :ref="(el: any) => thumbnails.set(data.item.id, el)"
-                            :src="data.item[thumbnail.key]"
+                            :src="data.item[view.thumbnail.key]"
                             :height="`calc(100% - ${visibleColumns * 48}px)`"
-                            :fit="thumbnail.fit"
-                            :position="thumbnail.position"
+                            :fit="view.thumbnail.fit"
+                            :position="view.thumbnail.position"
                             width="100%"
                             card:color="bg-b-primary/25"
                             class="min-h-[20%]"

@@ -2,12 +2,11 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
-import { ref, watch, computed, useAttrs, defineAsyncComponent } from 'vue'
-
+import { ref, watch, computed, useAttrs, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
 import debounce from 'lodash/debounce'
+
 import Draggable from 'vuedraggable'
 
-import Column from '@core/entities/column'
 import ViewTable from '@core/entities/view-table'
 import Item from '@core/entities/item'
 
@@ -16,10 +15,12 @@ import { useStore } from '@/store/global'
 
 import { createPayload } from '../composables/filter'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
-import { useNonReactive } from '@/composables/utils'
 
 import { withViewIterations } from '@/modules/view/composables'
-import Collection from '@/../core/entities/collection'
+import { useView } from '@/modules/view/composables/use-view'
+import { Events, useHooks } from '@/plugins/hooks'
+
+import { useItems } from '@/modules/item/composables/items'
 
 const IValue = defineAsyncComponent(() => import('@/modules/item/components/IValue.vue'))
 const CActions = defineAsyncComponent(() => import('./CActions.vue'))
@@ -61,81 +62,20 @@ const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
 
 const store = useStore()
 
-const collection = ref<Collection | null>(null)
-
-watch(
-    () => props.collectionId,
-    () => {
-        collection.value = store.collection.get(props.collectionId)
-    },
-    { immediate: true }
-)
+const collection = store.collection.get(props.collectionId)
 
 // view
-const view = ref<ViewTable | null>(null)
-
-// const view = computed({
-//     get: () => store.view.get<ViewTable>(props.collectionId, innerViewId.value),
-//     set: (value) => {
-//         if (!value) return
-
-//         store.view.set<ViewTable>(props.collectionId, innerViewId.value, value)
-//     },
-// })
-
-async function setViews() {
-    if (!props.viewId) {
-        view.value = new ViewTable({})
-        return
-    }
-
-    const response = await store.view.show<ViewTable>(props.collectionId, props.viewId)
-
-    view.value = response || new ViewTable({}, props.viewId)
-}
-
-watch([() => props.viewId, () => props.collectionId], setViews, {
-    immediate: true,
+const { view, save: saveView } = useView<ViewTable>({
+    collectionId: props.collectionId,
+    viewId: props.viewId,
+    defaultValue: new ViewTable({}, props.viewId),
 })
 
 // columns
 const columns = ref<any[]>([])
 
-// const columns = computed({
-//     get() {
-//         const columns: any[] = withView(store.column.all(props.collectionId), view.value?.columns)
-
-//         if (!columns.length) {
-//             columns.push({
-//                 id: '_actions_no_columns',
-//                 width: 200,
-//             })
-//         }
-
-//         columns.unshift({
-//             id: '_actions_left',
-//             label: '#',
-//             width: 43,
-//         })
-
-//         columns.push({
-//             id: '_actions_right',
-//             width: '100%',
-//         })
-
-//         return columns
-//     },
-//     set(value) {
-//         if (!view.value) return
-
-//         view.value = {
-//             ...view.value,
-//             columns: withOnlyView(value).filter((c) => !c.id.startsWith('_')),
-//         }
-//     },
-// })
-function setColumns() {
-    columns.value = withView(store.column.all(props.collectionId), view.value?.columns)
+async function setColumns() {
+    columns.value = withView(collection?.columns || [], view.value.columns)
 
     if (!columns.value.length) {
         columns.value.push({
@@ -156,56 +96,25 @@ function setColumns() {
     })
 }
 
-watch(view, setColumns, {
-    immediate: true,
-})
-
 function resizeColumn(id: string, width: number) {
-    columns.value = columns.value.map((c) => {
-        if (c.id === id) {
-            c.width = width
-        }
+    const column = columns.value.find((c) => c.id === id)
 
-        return c
-    })
+    column.width = width
+
+    view.value.columns = withOnlyView(columns.value)
+
+    debounce(saveView, 100)()
 }
 
-watch(
-    () => props.collectionId,
-    (id) => store.column.set(id),
-    { immediate: true }
-)
+watch(view, setColumns, { immediate: true })
 
 // items
-
-const raw = ref<Item[]>([])
-
-const items = computed(() => withViewIterations(raw.value, view.value))
-
-async function setItems() {
-    raw.value = await store.item.list(props.collectionId)
-
-    // await store.item.setItems(props.collectionId)
-}
-
-watch(() => view.value?.filters, debounce(setItems, 500), { deep: true, immediate: true })
-
-// update item with debounce
-
-const updateItem = debounce((item: Item, field: string, value: any) => {
-    const old = useNonReactive(item)
-
-    item[field] = value
-
-    store.item.update(props.collectionId, old.id, { [field]: value }).catch(() => {
-        item[field] = old[field]
-    })
-}, 500)
+const { items } = useItems(props.collectionId, view)
 
 // create item
 
 async function create() {
-    const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
+    const item = new Item(createPayload(view.value?.filters, collection?.columns))
 
     await store.item.create(props.collectionId, item)
 }
@@ -224,7 +133,13 @@ async function create() {
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
-            <v-table :items="items" :columns="columns" :limit="view.limit" v-bind="bindings.table">
+            <v-table
+                :items="items"
+                :columns="columns"
+                :limit="view.limit"
+                v-bind="bindings.table"
+                item-key="id"
+            >
                 <template #column>
                     <Draggable
                         v-model="columns"
@@ -275,7 +190,7 @@ async function create() {
                                     <v-resize-line
                                         :model-value="c.width || 200"
                                         :min-width="100"
-                                        @update:model-value="(v: number) => resizeColumn(c.id, v)"
+                                        @update:model-value="(v) => resizeColumn(c.id, v)"
                                     />
                                 </template>
                             </v-th>
@@ -297,15 +212,9 @@ async function create() {
                                 v-if="c.id === '_actions_left'"
                                 class="flex justify-center opacity-0 group-hover/item:opacity-100"
                             >
-                                <!-- <v-menu offset-y close-on-content-click>
+                                <v-menu offset-y close-on-content-click>
                                     <template #activator="{ attrs }">
-                                        <v-btn
-                                            size="h-8 w-8 text-xs"
-                                            class="text-t-secondary"
-                                            rounded
-                                            text
-                                            v-bind="attrs"
-                                        >
+                                        <v-btn size="sm" color="b-secondary" v-bind="attrs">
                                             <v-icon name="ellipsis-vertical" />
                                         </v-btn>
                                     </template>
@@ -331,7 +240,7 @@ async function create() {
                                             {{ $t('deleteEntity', [$t('item')]) }}
                                         </v-list-item>
                                     </v-card>
-                                </v-menu> -->
+                                </v-menu>
                             </div>
 
                             <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>
@@ -362,11 +271,11 @@ async function create() {
                     </v-tr>
                 </template>
 
-                <template #pagination="{ pagination, limit, visibleLength }">
+                <template #pagination="{ pagination, limit, length }">
                     <v-tr
-                        v-if="items.length > pagination.limit"
+                        v-if="items.length > limit"
                         class="cursor-pointer hover:bg-b-secondary"
-                        @click="pagination.limit = pagination.limit + Number(limit)"
+                        @click="pagination.page++"
                     >
                         <v-td class="!border-x-0"></v-td>
 
@@ -376,9 +285,7 @@ async function create() {
                         >
                             <fa-icon icon="arrow-down" class="mr-2" />
 
-                            <span>{{
-                                `${$t('loadMore')} (${visibleLength}/${items.length})`
-                            }}</span>
+                            <span>{{ `${$t('loadMore')} (${length}/${items.length})` }}</span>
                         </v-td>
                     </v-tr>
                 </template>

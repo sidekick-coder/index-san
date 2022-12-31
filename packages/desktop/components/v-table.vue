@@ -50,7 +50,7 @@ const props = defineProps({
 })
 
 // Pagination
-const pagination = ref({ limit: +props.limit })
+const pagination = ref({ page: 1 })
 
 // Parse columns
 const parsedColumns = computed(() =>
@@ -78,7 +78,7 @@ const parsedColumns = computed(() =>
 
 // Parse items
 
-const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
+const visibleItems = computed(() => props.items.slice(0, pagination.value.page * +props.limit))
 
 function getKey(item: any, index: number) {
     if (!props.itemKey) return index
@@ -110,13 +110,14 @@ function getKey(item: any, index: number) {
 
         <slot
             v-for="(item, index) in visibleItems"
-            name="item"
+            :key="getKey(item, index)"
             :items="visibleItems"
             :columns="parsedColumns"
             :item="item"
             :index="index"
+            name="item"
         >
-            <v-tr :key="getKey(item, index)">
+            <v-tr>
                 <slot
                     v-for="column in parsedColumns"
                     :name="`item-${column.name}`"
@@ -141,13 +142,13 @@ function getKey(item: any, index: number) {
             name="pagination"
             :pagination="pagination"
             :limit="limit"
-            :visible-length="visibleItems.length"
+            :length="visibleItems.length"
         >
-            <v-tr v-if="items.length > pagination.limit">
+            <v-tr v-if="items.length > limit">
                 <v-td
                     :colspan="columns.length"
                     class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
-                    @click="pagination.limit = pagination.limit + Number(limit)"
+                    @click="pagination.page++"
                 >
                     <fa-icon icon="arrow-down" class="mr-2" />
 

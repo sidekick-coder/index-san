@@ -1,51 +1,52 @@
+import Item from '@core/entities/item'
 import { Plugin } from 'vue'
 
-export interface HookEventListener {
-    pattern: string | RegExp
+export interface Events {
+    'view:updated': { collectionId: string; viewId: string; payload: any }
+    'item:created': { collectionId: string; payload: Item }
+    'item:updated': { collectionId: string; itemId: string; payload: Partial<Item> }
+    'item:deleted': { collectionId: string; itemId: string }
+}
+export interface Listener {
+    name: keyof Events
     handler: (data?: any) => void
 }
 
 export interface HooksManager {
-    listeners: HookEventListener[]
-    on: (listener: HookEventListener) => void
-    off: (listener: HookEventListener) => void
+    listeners: Listener[]
+    on: (name: string, listener: Listener) => void
+    off: (listener: Listener) => void
     emit: (name: string, data?: any) => void
 }
 
-const listeners = [] as HookEventListener[]
+const listeners = [] as Listener[]
 
 export function createHookManager() {
-    const on: HooksManager['on'] = (listener) => {
-        listeners.push(listener)
+    function on<K extends keyof Events>(name: K, handler: (args: Events[K]) => any) {
+        this.listeners.push({ name, handler })
     }
 
-    const off: HooksManager['off'] = (listener) => {
-        const index = listeners.findIndex(
-            (l) => l.pattern === listener.pattern && listener.handler === listener.handler
-        )
+    function off<K extends keyof Events>(name: K, handler: (args: Events[K]) => any) {
+        const index = listeners.findIndex((l) => l.name === name && l.handler === handler)
 
         if (index !== -1) {
             listeners.splice(index, 1)
         }
     }
 
-    const emit: HooksManager['emit'] = (name, data) => {
-        console.debug('hook', name, data)
-
+    function emit<K extends keyof Events>(name: K, args: Events[K]) {
         listeners
-            .filter((l) => name.match(l.pattern) && !!l.handler)
+            .filter((l) => name === l.name)
             .filter((l) => !!l.handler)
-            .forEach((l) => l.handler(data))
+            .forEach((l) => l.handler(args))
     }
 
-    const state: HooksManager = {
+    return {
         listeners,
         on,
         off,
         emit,
     }
-
-    return state
 }
 
 const manager = createHookManager()

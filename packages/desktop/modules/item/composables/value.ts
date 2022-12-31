@@ -48,10 +48,6 @@ export function createValue<T = string | undefined>({ collectionId, columnId, it
     async function save() {
         if (!column.value || !item.value) return
 
-        const original = item.value[column.value.field]
-
-        if (original === payload.value) return
-
         const data = {
             [column.value.field]: payload.value,
         }

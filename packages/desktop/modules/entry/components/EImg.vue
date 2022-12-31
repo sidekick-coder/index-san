@@ -44,24 +44,24 @@ const store = useStore()
 const innerSrc = ref<string>()
 const loading = ref(false)
 
-async function setSrc() {
+async function setSrc(src = props.src) {
     innerSrc.value = undefined
 
-    if (!props.src) return
+    if (!src) return
 
-    if (props.src.includes('http')) {
+    if (src.includes('http')) {
         innerSrc.value = props.src
         return
     }
 
-    let path = props.src
+    let path = src
 
-    if (props.src.startsWith('./')) {
-        path = props.src.replace('./', '')
+    if (src.startsWith('./')) {
+        path = src.replace('./', '')
     }
 
-    if (props.src.startsWith('/')) {
-        path = props.src.replace('/', '')
+    if (src.startsWith('/')) {
+        path = src.replace('/', '')
     }
 
     if (props.src.startsWith('./')) {

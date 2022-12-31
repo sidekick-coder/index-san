@@ -3,13 +3,14 @@ import ViewCommon from '@/../core/entities/view-common'
 import ViewGallery from '@/../core/entities/view-gallery'
 
 import { debounce } from 'lodash'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useStore } from '@/store/global'
 
 import CDrawerFilter from './CDrawerFilter.vue'
-import CDrawerHideColumns from './CDrawerHideColumns.vue'
+import CDrawerColumns from './CDrawerColumns.vue'
 import CActionsOrder from './CActionsOrder.vue'
 import View from '@/../core/entities/view'
+import { useView } from '@/modules/view/composables/use-view'
 
 // Props & emit
 const props = defineProps({
@@ -30,11 +31,23 @@ const columns = computed(() => store.column.all(props.collectionId))
 
 // view
 
-const view = computed(() => store.view.get<ViewCommon>(props.collectionId, props.viewId))
+const {
+    view,
+    save: saveView,
+    load,
+    state,
+} = useView<ViewCommon>({
+    collectionId: props.collectionId,
+    viewId: props.viewId,
+    defaultValue: new ViewCommon({}, props.viewId),
+})
 
-// items
-
-const register = computed(() => store.item.getStoreItem(props.collectionId))
+watch([() => props.collectionId, () => props.viewId], () =>
+    load({
+        collectionId: props.collectionId,
+        viewId: props.viewId,
+    })
+)
 
 // search
 const showInput = ref(false)
@@ -69,12 +82,12 @@ function isGallery(v: View): v is ViewGallery {
 }
 </script>
 <template>
-    <v-card-head :class="register?.loading ? 'border-b-accent' : ''" class="overflow-x-auto">
+    <v-card-head class="overflow-x-auto">
         <slot name="left" />
 
         <div class="grow"></div>
 
-        <template v-if="view">
+        <template v-if="view && !state.loading">
             <template v-if="isCommon(view)">
                 <div class="flex items-center transition-all">
                     <transition name="slide-left">
@@ -111,7 +124,7 @@ function isGallery(v: View): v is ViewGallery {
 
                     <c-drawer-filter v-model="view.filters" :columns="columns" />
 
-                    <c-drawer-hide-columns :collection-id="collectionId" :view-id="viewId" />
+                    <c-drawer-columns :collection-id="collectionId" :view-id="viewId" />
                 </div>
             </template>
 
@@ -126,8 +139,13 @@ function isGallery(v: View): v is ViewGallery {
 
                 <v-card color="b-secondary" width="300">
                     <v-card-content class="flex flex-wrap gap-y-4">
-                        <v-input v-model="view.label" :label="$t('label')" />
-                        <v-input v-model="view.limit" type="number" :label="$t('limit')" />
+                        <v-input v-model="view.label" :label="$t('label')" @change="saveView" />
+                        <v-input
+                            v-model="view.limit"
+                            type="number"
+                            :label="$t('limit')"
+                            @change="saveView"
+                        />
 
                         <template v-if="isGallery(view)">
                             <v-select

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, onMounted, ref, watch } from 'vue'
 
 import VDraggable from 'vuedraggable'
 import { useStore } from '@/store/global'
 import { withView, withOnlyView } from '@/modules/collection-column/composables/with-view'
+import { waitFor } from '@/composables/utils'
+import ViewCommon from '@/../core/entities/view-common'
+import { useView } from '@/modules/view/composables/use-view'
 
 const props = defineProps({
     collectionId: {
@@ -21,43 +24,38 @@ const drawer = ref(false)
 // columns
 const store = useStore()
 
-const view = computed({
-    get: () => store.view.get(props.collectionId, props.viewId),
-    set: (value) => {
-        if (!value) return
+const collection = store.collection.get(props.collectionId)
 
-        store.view.set(props.collectionId, props.viewId, value)
-    },
+// view
+
+const { view, save: saveView } = useView<ViewCommon>({
+    collectionId: props.collectionId,
+    viewId: props.viewId,
+    defaultValue: new ViewCommon({}, props.viewId),
 })
 
-const columns = computed({
-    get() {
-        const viewColumns = view.value?.columns
+const columns = ref<any[]>([])
 
-        return withView(store.column.all(props.collectionId), viewColumns)
-    },
-    set(value) {
-        if (!view.value) return
+async function setColumns() {
+    columns.value = withView(collection?.columns || [], view.value?.columns)
+}
 
-        view.value = {
-            ...view.value,
-            columns: withOnlyView(value),
-        }
-    },
-})
+watch(view, setColumns)
 
 // actions
 
 function toggle(id: string) {
     if (!view.value) return
 
-    columns.value = columns.value.map((c) => {
-        if (c.id === id) {
-            c.hide = !c.hide
-        }
+    const column = columns.value.find((c) => c.id === id)
 
-        return c
-    })
+    if (column) {
+        column.hide = !column.hide
+    }
+
+    view.value.columns = withOnlyView(columns.value)
+
+    saveView()
 }
 
 function showAll() {
@@ -66,6 +64,8 @@ function showAll() {
 
         return c
     })
+
+    saveView()
 }
 
 function hideAll() {
@@ -74,6 +74,8 @@ function hideAll() {
 
         return c
     })
+
+    saveView()
 }
 </script>
 

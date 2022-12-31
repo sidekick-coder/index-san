@@ -121,7 +121,7 @@ export default class FSDrive implements Drive {
         const isFolder = await this.isFolder(systemPath)
 
         if (isFolder) {
-            return await removeDir(systemPath)
+            return await removeDir(systemPath, { recursive: true })
         }
 
         return await removeFile(systemPath)

@@ -7,6 +7,7 @@ import ListItemsDTO from '@core/use-cases/list-items/list-items.dto'
 import Item from '@core/entities/item'
 
 import { useCase } from '@/composables/use-case'
+import { useHooks } from '../../plugins/hooks'
 interface StoreItems {
     collectionId: string
     loading: boolean
@@ -15,6 +16,7 @@ interface StoreItems {
 
 export const useStore = defineStore('item', () => {
     const workspace = useWorkspace()
+    const hooks = useHooks()
     const cache = new Map<string, Item[]>()
 
     const items = ref<StoreItems[]>([])
@@ -100,55 +102,44 @@ export const useStore = defineStore('item', () => {
     async function create(collectionId: string, payload: Item) {
         cache.delete(collectionId)
 
-        const storeItem = items.value.find((i) => i.collectionId === collectionId)
-
-        if (storeItem) {
-            storeItem.items.push(payload)
-        }
-
-        await useCase('create-item', {
+        const { data } = await useCase('create-item', {
             collectionId,
             workspaceId: workspace.currentId!,
             data: payload,
-        }).catch(() => {
-            if (storeItem) {
-                storeItem.items.pop()
-            }
+        })
+
+        hooks.emit('item:created', {
+            collectionId,
+            payload: data,
         })
     }
 
-    async function update(collectionId: string, id: string, payload: Partial<Item>) {
+    async function update(collectionId: string, itemId: string, payload: Partial<Item>) {
         cache.delete(collectionId)
 
         await useCase('update-item', {
-            collectionId,
             workspaceId: workspace.currentId!,
-            itemId: id,
+            collectionId,
+            itemId,
             data: payload,
         })
+
+        hooks.emit('item:updated', { collectionId, itemId, payload })
     }
 
     async function destroy(collectionId: string, itemId: string) {
-        const storeItem = items.value.find((i) => i.collectionId === collectionId)
-
-        if (!storeItem) return
-
-        const index = storeItem.items.findIndex((i) => i.id === itemId)
-        const item = storeItem.items.find((i) => i.id === itemId)
-
-        if (index === -1 || !item) return
-
-        storeItem.items.splice(index, 1)
-
         await useCase('delete-item', {
-            collectionId,
             workspaceId: workspace.currentId!,
+            collectionId,
             itemId,
-        }).catch(() => storeItem.items.push(item))
+        })
+
+        cache.delete(collectionId)
+
+        hooks.emit('item:deleted', { collectionId, itemId })
     }
 
     return {
-        // items,
         get,
         all,
         getStoreItem,
