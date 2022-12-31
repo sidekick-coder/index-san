@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue'
+import { ref } from 'vue'
 
 import { createValue } from '@/modules/item/composables/value'
 import EvaluationOutput from '@/../core/entities/evaluation-output'
@@ -20,11 +20,10 @@ const props = defineProps({
     },
 })
 
-const { load, column, item, loading } = createValue()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
+const { loading, column, item, onLoaded } = createValue({
+    collectionId: props.collectionId,
+    columnId: props.columnId,
+    itemId: props.itemId,
 })
 
 // execute script
@@ -44,13 +43,12 @@ function setResult() {
         .then((r) => (output.value = r))
         .catch(() => (output.value = undefined))
 }
-
-watch([column, item], setResult)
+onLoaded(setResult)
 </script>
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly

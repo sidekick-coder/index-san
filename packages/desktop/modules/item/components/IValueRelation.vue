@@ -23,12 +23,7 @@ const props = defineProps({
 
 // value
 
-const { payload, load, column, loading } = createValue()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
-})
+const { payload, column, loading, save } = createValue(props)
 
 // options
 const store = useStore()
@@ -46,7 +41,7 @@ watch(column, setOptions)
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly
@@ -63,8 +58,9 @@ watch(column, setOptions)
         v-else
         v-model="payload"
         :options="options"
-        value-key="id"
-        :label-key="column.displayField"
         :clear-value="() => null"
+        :label-key="column.displayField"
+        value-key="id"
+        @update:model-value="save"
     />
 </template>

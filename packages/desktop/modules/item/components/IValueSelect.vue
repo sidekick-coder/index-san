@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, computed } from 'vue'
+import { computed } from 'vue'
 
 import { createValue } from '@/modules/item/composables/value'
 
@@ -18,11 +18,10 @@ const props = defineProps({
     },
 })
 
-const { payload, load, column, loading } = createValue()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
+const { payload, loading, column, save } = createValue({
+    collectionId: props.collectionId,
+    columnId: props.columnId,
+    itemId: props.itemId,
 })
 
 const options = computed(() => {
@@ -34,11 +33,17 @@ const options = computed(() => {
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly
     />
 
-    <v-select v-else v-model="payload" :options="options" :clear-value="() => null" />
+    <v-select
+        v-else
+        v-model="payload"
+        :options="options"
+        :clear-value="() => null"
+        @update:model-value="save"
+    />
 </template>

@@ -4,7 +4,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, useAttrs, defineAsyncComponent } from 'vue'
+import { useAttrs, defineAsyncComponent } from 'vue'
 
 import { ColumnType } from '@core/entities/column'
 import { createBindings } from '@/composables/binding'
@@ -40,7 +40,9 @@ defineProps({
 
 // bindings
 
-const bindings = computed(() => createBindings(useAttrs(), ['input', 'select']))
+const attrs = useAttrs()
+
+const bindings = createBindings(attrs, ['input', 'select'])
 </script>
 
 <template>

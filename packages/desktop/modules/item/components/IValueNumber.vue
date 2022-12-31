@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { watch } from 'vue'
-
 import { createValue } from '@/modules/item/composables/value'
 
 const props = defineProps({
@@ -18,21 +16,16 @@ const props = defineProps({
     },
 })
 
-const { payload, load, loading } = createValue()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
-})
+const { payload, loading, save } = createValue(props)
 </script>
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly
     />
 
-    <v-input v-else v-model="payload" type="number" />
+    <v-input v-else v-model="payload" type="number" @update:model-value="save" />
 </template>

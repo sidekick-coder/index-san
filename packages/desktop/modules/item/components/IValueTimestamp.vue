@@ -19,12 +19,7 @@ const props = defineProps({
     },
 })
 
-const { load, column, item, loading } = createValue()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
-})
+const { column, item, loading } = createValue(props)
 
 // display
 const display = computed(() => {
@@ -40,7 +35,7 @@ const display = computed(() => {
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly

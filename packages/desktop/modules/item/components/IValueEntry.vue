@@ -4,7 +4,6 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { watch } from 'vue'
 import template from 'lodash/template'
 import uuid from 'uuid-random'
 
@@ -28,12 +27,7 @@ const props = defineProps({
     },
 })
 
-const { payload, load, column, item, loading } = createValue<string | null>()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
-})
+const { payload, column, item, save, loading } = createValue<string | null>(props)
 
 // upload
 const store = useStore()
@@ -84,6 +78,8 @@ function upload() {
         }
 
         payload.value = path
+
+        await save()
     }
 
     input.click()
@@ -92,7 +88,7 @@ function upload() {
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly

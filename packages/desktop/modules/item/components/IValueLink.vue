@@ -18,12 +18,7 @@ const props = defineProps({
     },
 })
 
-const { payload, load, loading } = createValue()
-
-watch(props, load, {
-    deep: true,
-    immediate: true,
-})
+const { payload, loading, save } = createValue(props)
 
 const edit = ref(false)
 
@@ -52,13 +47,13 @@ const display = computed(() => {
 
 <template>
     <v-input
-        v-if="loading.all"
+        v-if="loading"
         :model-value="`${$t('loading')}...`"
         class="text-t-secondary text-sm"
         readonly
     />
 
-    <v-input v-else-if="edit" v-model="payload">
+    <v-input v-else-if="edit" v-model="payload" @update:model-value="save">
         <template #append>
             <v-btn size="text-xs px-2 " text @click="edit = false">
                 <v-icon name="check" />
