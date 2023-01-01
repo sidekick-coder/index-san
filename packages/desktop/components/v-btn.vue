@@ -56,6 +56,7 @@ const variations = {
         'danger': 'bg-danger hover:bg-danger/75 text-t-primary',
         'info': 'bg-info hover:bg-info/75 text-t-primary',
         'warn': 'bg-warn hover:bg-warn/75 text-t-primary',
+        'b-primary': 'bg-b-primary text-t-secondary hover:text-t-primary',
         'b-secondary': 'bg-b-secondary text-t-secondary hover:text-t-primary',
     },
     text: {

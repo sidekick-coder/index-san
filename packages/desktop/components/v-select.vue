@@ -37,6 +37,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    clearable: {
+        type: Boolean,
+        default: false,
+    },
     clearValue: {
         type: [Function] as PropType<() => any>,
         default: () => () => undefined,
@@ -141,8 +145,16 @@ function onShowMenu(value: boolean) {
         </template>
 
         <v-card color="b-secondary" v-bind="bindings.card">
-            <v-list-item class="border-b border-lines" @click="model = clearValue()">
+            <v-list-item
+                v-if="clearable"
+                class="border-b border-lines"
+                @click="model = clearValue()"
+            >
                 {{ $t('clear') }}
+            </v-list-item>
+
+            <v-list-item v-if="!options.length">
+                {{ $t('noEntity', [$t('item', 2)]) }}
             </v-list-item>
 
             <template v-for="option in options" :key="option">

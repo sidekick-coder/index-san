@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import ViewCommon from '@/../core/entities/view-common'
-import ViewGallery from '@/../core/entities/view-gallery'
 
 import { debounce } from 'lodash'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, defineAsyncComponent } from 'vue'
 import { useStore } from '@/store/global'
 
 import CDrawerFilter from './CDrawerFilter.vue'
-import CDrawerColumns from './CDrawerColumns.vue'
 import CActionsOrder from './CActionsOrder.vue'
 import View from '@/../core/entities/view'
 import { useView } from '@/modules/view/composables/use-view'
+
+import CActionsColumns from './CActionsColumns.vue'
+
+const CActionsGallery = defineAsyncComponent(() => import('./CActionsGallery.vue'))
+const CActionsTable = defineAsyncComponent(() => import('./CActionsTable.vue'))
 
 // Props & emit
 const props = defineProps({
@@ -31,22 +34,20 @@ const columns = computed(() => store.column.all(props.collectionId))
 
 // view
 
-const {
-    view,
-    save: saveView,
-    load,
-    state,
-} = useView<ViewCommon>({
+const { view, load, state } = useView<ViewCommon>({
     collectionId: props.collectionId,
     viewId: props.viewId,
     defaultValue: new ViewCommon({}, props.viewId),
 })
 
-watch([() => props.collectionId, () => props.viewId], () =>
-    load({
-        collectionId: props.collectionId,
-        viewId: props.viewId,
-    })
+watch(
+    props,
+    () =>
+        load({
+            collectionId: props.collectionId,
+            viewId: props.viewId,
+        }),
+    { deep: true }
 )
 
 // search
@@ -65,6 +66,13 @@ const input = computed({
 
 const menu = ref(false)
 
+watch(
+    () => props.viewId,
+    () => {
+        menu.value = false
+    }
+)
+
 // refresh
 
 async function refresh() {
@@ -75,10 +83,6 @@ async function refresh() {
 
 function isCommon(v: View): v is ViewCommon {
     return ['table', 'gallery'].includes(v.component)
-}
-
-function isGallery(v: View): v is ViewGallery {
-    return v.component === 'gallery'
 }
 </script>
 <template>
@@ -124,7 +128,7 @@ function isGallery(v: View): v is ViewGallery {
 
                     <c-drawer-filter v-model="view.filters" :columns="columns" />
 
-                    <c-drawer-columns :collection-id="collectionId" :view-id="viewId" />
+                    <c-actions-columns :collection-id="collectionId" :view-id="viewId" />
                 </div>
             </template>
 
@@ -137,90 +141,19 @@ function isGallery(v: View): v is ViewGallery {
                     </div>
                 </template>
 
-                <v-card color="b-secondary" width="300">
-                    <v-card-content class="flex flex-wrap gap-y-4">
-                        <v-input v-model="view.label" :label="$t('label')" @change="saveView" />
-                        <v-input
-                            v-model="view.limit"
-                            type="number"
-                            :label="$t('limit')"
-                            @change="saveView"
-                        />
+                <slot name="config-card">
+                    <c-actions-gallery
+                        v-if="view.component === 'gallery'"
+                        :collection-id="collectionId"
+                        :view-id="viewId"
+                    />
 
-                        <template v-if="isGallery(view)">
-                            <v-select
-                                v-model="view.thumbnail.key"
-                                :options="columns"
-                                label-key="label"
-                                value-key="field"
-                                :label="$t('thumbnail')"
-                            />
-
-                            <v-select
-                                v-model="view.thumbnail.fit"
-                                :options="['cover', 'contain', 'fill', 'none', 'scale-down']"
-                                :label="$t('fit')"
-                            />
-
-                            <v-select
-                                v-model="view.thumbnail.position"
-                                :options="[
-                                    'top',
-                                    'bottom',
-                                    'center',
-                                    'left',
-                                    'right',
-
-                                    'left-top',
-                                    'left-bottom',
-                                    'right-top',
-                                    'right-bottom',
-                                ]"
-                                :label="$t('position')"
-                            />
-
-                            <div class="flex gap-x-4">
-                                <v-input
-                                    v-model="view.sizes.sm.width"
-                                    :label="$t('widthEntity', ['sm'])"
-                                    class="max-w-[80px]"
-                                />
-
-                                <v-input
-                                    v-model="view.sizes.md.width"
-                                    :label="$t('widthEntity', ['md'])"
-                                    class="max-w-[80px]"
-                                />
-
-                                <v-input
-                                    v-model="view.sizes.lg.width"
-                                    :label="$t('widthEntity', ['lg'])"
-                                    class="max-w-[80px]"
-                                />
-                            </div>
-
-                            <div class="flex gap-x-4">
-                                <v-input
-                                    v-model="view.sizes.sm.height"
-                                    :label="$t('heightEntity', ['sm'])"
-                                    class="max-w-[80px]"
-                                />
-
-                                <v-input
-                                    v-model="view.sizes.md.height"
-                                    :label="$t('heightEntity', ['md'])"
-                                    class="max-w-[80px]"
-                                />
-
-                                <v-input
-                                    v-model="view.sizes.lg.height"
-                                    :label="$t('heightEntity', ['lg'])"
-                                    class="max-w-[80px]"
-                                />
-                            </div>
-                        </template>
-                    </v-card-content>
-                </v-card>
+                    <c-actions-table
+                        v-else-if="view.component === 'table'"
+                        :collection-id="collectionId"
+                        :view-id="viewId"
+                    />
+                </slot>
             </v-menu>
         </template>
     </v-card-head>

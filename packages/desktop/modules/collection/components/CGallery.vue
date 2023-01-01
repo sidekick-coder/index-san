@@ -8,18 +8,14 @@ import ViewGallery from '@core/entities/view-gallery'
 import { createBindings } from '@/composables/binding'
 import { useStore } from '@/store/global'
 
-// components
-import CActions from './CActions.vue'
-
-import IValue from '@/modules/item/components/IValue.vue'
-import EImg from '@/modules/entry/components/EImg.vue'
-import { createPayload } from '../composables/filter'
 import Item from '@/../core/entities/item'
 
-import { withViewIterations } from '@/modules/view/composables'
+import CActions from './CActions.vue'
+import IValue from '@/modules/item/components/IValue.vue'
+import EImg from '@/modules/entry/components/EImg.vue'
 
-import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
-import { useNonReactive } from '@/composables/utils'
+import { createPayload } from '../composables/filter'
+import { withView } from '@/modules/collection-column/composables/with-view'
 import { useView } from '@/modules/view/composables/use-view'
 import { useHooks, Events } from '@/plugins/hooks'
 import { useItems } from '@/modules/item/composables/items'
@@ -49,7 +45,7 @@ const store = useStore()
 
 // view
 
-const { view } = useView<ViewGallery>({
+const { view, save } = useView<ViewGallery>({
     collectionId: props.collectionId,
     viewId: props.viewId,
     defaultValue: new ViewGallery({}, props.viewId),
@@ -58,13 +54,17 @@ const { view } = useView<ViewGallery>({
 // columns
 
 const columns = ref<any[]>([])
-const collection = store.collection.get(props.collectionId)
 
 async function setColumns() {
+    console.log('set columns')
+    const collection = store.collection.get(props.collectionId)
+
     columns.value = withView(collection?.columns || [], view.value.columns)
 }
 
-watch(view, setColumns)
+watch(() => view.value.columns, setColumns, {
+    deep: true,
+})
 
 // count visible columns
 

@@ -87,6 +87,7 @@ export default {
     displayFormat: 'Display format',
     saveFormat: 'Save format',
     limit: 'Limit',
+    config: 'Config | Configs',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

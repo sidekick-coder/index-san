@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch, WatchStopHandle } from 'vue'
 
-import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
@@ -12,89 +10,61 @@ import ViewGallery from '@core/entities/view-gallery'
 import ViewGroup from '@core/entities/view-group'
 
 import { useCase } from '@/composables/use-case'
-import ViewCommon from '@/../core/entities/view-common'
 import { useHooks } from '@/plugins/hooks'
-import { useNonReactive } from '@/composables/utils'
+import { useNonReactive, waitFor } from '@/composables/utils'
 
-type AnyView = View | ViewTable | ViewGallery
-
-interface StoreView {
-    collectionId: string
-    viewId: string
-    readonly persist: boolean
-    view: AnyView
-}
-
-interface Watchers {
-    collectionId: string
-    viewId: string
-    stop: WatchStopHandle
-}
-
-interface Observer {
-    name: string
-    handler: () => any
-}
-
-interface Options {
-    immediate?: boolean
-}
+export type AnyView = View | ViewTable | ViewGallery | ViewGroup
 
 export const useStore = defineStore('view', () => {
     const workspace = useWorkspace()
     const hooks = useHooks()
 
-    const views = ref<StoreView[]>([])
-    const watchers = ref<Watchers[]>([])
+    const loading = new Map<string, boolean>()
+    const saving = new Map<string, boolean>()
 
-    function instantiate(data: AnyView) {
-        if (data.component === 'group') {
-            return new ViewGroup(data as any, data.id)
+    async function save(collectionId: string, views: AnyView[]) {
+        if (saving.get(collectionId)) {
+            await waitFor(() => !saving.get(collectionId))
         }
 
-        if (data.component === 'table') {
-            return new ViewTable(data as any, data.id)
-        }
+        saving.set(collectionId, true)
 
-        if (data.component === 'gallery') {
-            return new ViewGallery(data as any, data.id)
-        }
-
-        return new View(data as any, data.id)
-    }
-
-    async function setViews(collectionId: string, forceUpdate = false) {
-        if (!forceUpdate && all(collectionId).length) {
-            return
-        }
-
-        watchers.value.forEach((w, index) => {
-            if (w.collectionId === collectionId) {
-                w.stop()
-
-                watchers.value.splice(index, 1)
-            }
-        })
-
-        const raw: AnyView[] = await useCase('show-views', {
+        await useCase('update-views', {
             workspaceId: workspace.currentId!,
             collectionId,
-        })
-            .then((r) => r.data)
-            .catch(() => [])
-
-        raw.map(instantiate).forEach((v) => create(collectionId, v, true))
-
-        return all(collectionId)
+            data: uniqBy(views, 'id'),
+        }).finally(() => saving.delete(collectionId))
     }
 
     async function list(collectionId: string): Promise<AnyView[]> {
-        return useCase('show-views', {
+        if (saving.get(collectionId)) {
+            await waitFor(() => !saving.get(collectionId))
+        }
+
+        if (loading.get(collectionId)) {
+            await waitFor(() => !loading.get(collectionId))
+        }
+
+        loading.set(collectionId, true)
+
+        const views = await useCase('show-views', {
             workspaceId: workspace.currentId!,
             collectionId,
         })
             .then((r) => r.data)
             .catch(() => [])
+
+        loading.delete(collectionId)
+
+        return views
+    }
+
+    async function show<T = View>(collectionId: string, viewId: string) {
+        const response = await list(collectionId)
+
+        const view = response.find((v) => v.id === viewId)
+
+        return (view as T) || null
     }
 
     async function update<T = View>(collectionId: string, viewId: string, payload: Partial<T>) {
@@ -106,11 +76,7 @@ export const useStore = defineStore('view', () => {
             }
         })
 
-        await useCase('update-views', {
-            workspaceId: workspace.currentId!,
-            collectionId,
-            data: uniqBy(all, 'id'),
-        })
+        await save(collectionId, all)
 
         hooks.emit('view:updated', {
             collectionId,
@@ -119,116 +85,40 @@ export const useStore = defineStore('view', () => {
         })
     }
 
-    async function save(collectionId: string) {
-        const data = views.value
-            .filter((v) => v.collectionId === collectionId)
-            .filter((v) => v.persist)
-            .map((v) => v.view)
+    async function create(collectionId: string, payload: View) {
+        const all = await list(collectionId)
 
-        await useCase('update-views', {
-            workspaceId: workspace.currentId!,
+        all.push(payload)
+
+        await save(collectionId, all)
+
+        hooks.emit('view:created', {
             collectionId,
-            data: uniqBy(data, 'id'),
+            payload,
         })
-    }
-
-    async function create(collectionId: string, payload: View, persist = false) {
-        const exists = views.value
-            .filter((v) => v.collectionId === collectionId)
-            .some((v) => v.viewId === payload.id)
-
-        if (exists) {
-            return
-        }
-
-        const view: StoreView = {
-            collectionId,
-            viewId: payload.id,
-            persist,
-            view: payload,
-        }
-
-        views.value.push(view)
-    }
-
-    /** @deprecated */
-    function getViews(collectionId: string) {
-        return views.value.filter((v) => v.collectionId === collectionId).map((v) => v.view)
-    }
-
-    /** @deprecated */
-    function getView<T = ViewCommon>(collectionId: string, viewId: string) {
-        return get<T>(collectionId, viewId)
-    }
-
-    function all(collectionId: string) {
-        return views.value.filter((v) => v.collectionId === collectionId).map((v) => v.view)
-    }
-
-    function get<T = ViewCommon>(collectionId: string, viewId: string) {
-        const index = views.value.findIndex(
-            (v) => v.collectionId === collectionId && v.viewId === viewId
-        )
-
-        if (index === -1) return null
-
-        return views.value[index].view as T
-    }
-
-    async function show<T = View>(collectionId: string, viewId: string) {
-        const response = await list(collectionId)
-
-        const view = response.find((v) => v.id === viewId)
-
-        return (view as T) || null
-    }
-
-    function set<T = ViewCommon>(collectionId: string, viewId: string, payload: T) {
-        const index = views.value.findIndex(
-            (v) => v.collectionId === collectionId && v.viewId === viewId
-        )
-
-        if (index === -1) return
-
-        views.value[index] = {
-            ...views.value[index],
-            view: Object.assign(views.value[index].view, payload),
-        }
     }
 
     async function destroy(collectionId: string, viewId: string) {
-        const index = views.value.findIndex(
-            (i) => i.collectionId === collectionId && i.viewId === viewId
-        )
+        const all = await list(collectionId)
+
+        const index = all.findIndex((i) => i.id === viewId)
 
         if (index === -1) return
 
-        watchers.value.forEach((w, index) => {
-            if (w.collectionId !== collectionId) return
+        all.splice(index, 1)
 
-            if (w.viewId !== viewId) return
+        await save(collectionId, all)
 
-            w.stop()
-
-            watchers.value.splice(index, 1)
+        hooks.emit('view:deleted', {
+            collectionId,
+            viewId,
         })
-
-        views.value.splice(index, 1)
-
-        await save(collectionId)
     }
 
     return {
-        views,
-        setViews,
-        all,
+        list,
         show,
-        get,
-        set,
-        getViews,
-        getView,
         create,
-        save,
         update,
         destroy,
     }

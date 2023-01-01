@@ -137,8 +137,8 @@ async function create() {
                 :items="items"
                 :columns="columns"
                 :limit="view.limit"
-                v-bind="bindings.table"
                 item-key="id"
+                v-bind="bindings.table"
             >
                 <template #column>
                     <Draggable

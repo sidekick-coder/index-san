@@ -1,8 +1,11 @@
+import { AnyView } from '@/modules/view/store'
 import Item from '@core/entities/item'
 import { Plugin } from 'vue'
 
 export interface Events {
-    'view:updated': { collectionId: string; viewId: string; payload: any }
+    'view:created': { collectionId: string; payload: AnyView }
+    'view:updated': { collectionId: string; viewId: string; payload: Partial<AnyView> }
+    'view:deleted': { collectionId: string; viewId: string }
     'item:created': { collectionId: string; payload: Item }
     'item:updated': { collectionId: string; itemId: string; payload: Partial<Item> }
     'item:deleted': { collectionId: string; itemId: string }

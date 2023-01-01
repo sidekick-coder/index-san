@@ -27,10 +27,14 @@ export function withViewOrder(items: Item[], view: ViewCommon) {
     )
 }
 
+function isCommon(view: View): view is ViewCommon {
+    return ['table', 'gallery'].includes(view.component)
+}
+
 export function withViewIterations(items: Item[], view: View | null) {
     if (!view) return items
 
-    if (view instanceof ViewCommon) {
+    if (isCommon(view)) {
         return [withViewFilters, withViewOrder].reduce((r, iteration) => iteration(r, view), items)
     }
 

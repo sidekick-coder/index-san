@@ -78,19 +78,18 @@ const max = ref({
     y: window.innerHeight - 300,
 })
 
-watch(
-    () => max.value.el,
-    (el) => {
-        if (!el) return
+watch(show, () => {
+    const el = max.value.el
 
-        max.value.loading = true
+    if (!el) return
 
-        setTimeout(() => {
-            max.value.y = window.innerHeight - el.clientHeight
-            max.value.x = window.innerWidth - el.clientWidth
-        }, 50)
-    }
-)
+    max.value.loading = true
+
+    setTimeout(() => {
+        max.value.y = window.innerHeight - el.clientHeight
+        max.value.x = window.innerWidth - el.clientWidth
+    }, 100)
+})
 
 // track mouse position
 
@@ -182,7 +181,7 @@ function onContentClick() {
     <teleport to="body">
         <transition name="slide-down">
             <div
-                v-if="show"
+                v-show="show"
                 :ref="(el: any) => (max.el = el)"
                 :style="style"
                 class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"

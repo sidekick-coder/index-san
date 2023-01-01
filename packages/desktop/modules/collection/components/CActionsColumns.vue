@@ -28,7 +28,7 @@ const collection = store.collection.get(props.collectionId)
 
 // view
 
-const { view, save: saveView } = useView<ViewCommon>({
+const { view, state, save } = useView<ViewCommon>({
     collectionId: props.collectionId,
     viewId: props.viewId,
     defaultValue: new ViewCommon({}, props.viewId),
@@ -44,38 +44,40 @@ watch(view, setColumns)
 
 // actions
 
-function toggle(id: string) {
-    if (!view.value) return
+async function saveView() {
+    view.value.columns = withOnlyView(columns.value)
 
+    await save()
+}
+
+async function toggle(id: string) {
     const column = columns.value.find((c) => c.id === id)
 
     if (column) {
         column.hide = !column.hide
     }
 
-    view.value.columns = withOnlyView(columns.value)
-
-    saveView()
+    await saveView()
 }
 
-function showAll() {
+async function showAll() {
     columns.value = columns.value.map((c) => {
         c.hide = false
 
         return c
     })
 
-    saveView()
+    await saveView()
 }
 
-function hideAll() {
+async function hideAll() {
     columns.value = columns.value.map((c) => {
         c.hide = true
 
         return c
     })
 
-    saveView()
+    await saveView()
 }
 </script>
 
@@ -109,7 +111,7 @@ function hideAll() {
             </v-btn>
         </v-card-head>
 
-        <v-draggable v-model="columns" item-key="id" handle=".drag">
+        <v-draggable v-model="columns" item-key="id" handle=".drag" @update="saveView">
             <template #item="{ element: column }">
                 <v-list-item class="hover:bg-b-secondary">
                     <v-btn class="drag mr-2" size="sm" text>

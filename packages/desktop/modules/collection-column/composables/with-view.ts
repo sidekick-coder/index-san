@@ -14,14 +14,14 @@ export function withView<T = ViewColumn>(columns: Column[], viewColumns: ViewCol
         }
     }
 
-    // result.sort((a, b) => {
-    //     const aIndex = viewColumns.findIndex((s) => s.id === a.id)
-    //     const bIndex = viewColumns.findIndex((s) => s.id === b.id)
+    result.sort((a, b) => {
+        const aIndex = viewColumns.findIndex((s) => s.id === a.id)
+        const bIndex = viewColumns.findIndex((s) => s.id === b.id)
 
-    //     if (aIndex === -1 || bIndex === -1) return 0
+        if (aIndex === -1 || bIndex === -1) return 0
 
-    //     return aIndex - bIndex
-    // })
+        return aIndex - bIndex
+    })
 
     return result as (Column & T)[]
 }

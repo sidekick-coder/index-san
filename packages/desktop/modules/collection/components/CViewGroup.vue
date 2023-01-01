@@ -10,10 +10,14 @@ import ViewGallery from '@/../core/entities/view-gallery'
 
 import VDraggable from 'vuedraggable'
 import { useNonReactive } from '@/composables/utils'
+import { useView } from '@/modules/view/composables/use-view'
+import { debounce } from 'lodash'
+import { useAllViews } from '@/modules/view/composables/use-all-views'
 
-const CActions = defineAsyncComponent(() => import('./CActions.vue'))
 const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))
 const CTable = defineAsyncComponent(() => import('./CTable.vue'))
+const CActions = defineAsyncComponent(() => import('./CActions.vue'))
+const CActionsViewGroup = defineAsyncComponent(() => import('./CActionsViewGroup.vue'))
 
 // Props & emit
 
@@ -39,71 +43,60 @@ const bindings = computed(() => createBindings(useAttrs(), ['head', 'table', 'ga
 const store = useStore()
 
 // view
-const innerViewId = ref('')
 
-const view = computed(() => store.view.get<ViewGroup>(props.collectionId, innerViewId.value))
-
-async function setViews() {
-    innerViewId.value = props.viewId || ''
-
-    await store.view.setViews(props.collectionId)
-
-    if (!view.value) {
-        const view = new ViewGroup({}, props.viewId)
-
-        innerViewId.value = view.id
-
-        await store.view.create(props.collectionId, view, !!props.viewId)
-    }
-}
-
-watch(props, setViews, {
-    immediate: true,
-    deep: true,
+const { view, save } = useView<ViewGroup>({
+    collectionId: props.collectionId,
+    viewId: props.viewId,
+    defaultValue: new ViewGroup({}, props.viewId),
+    createIfNotExist: true,
 })
+
+// all views
+const { views: all } = useAllViews(props.collectionId)
 
 // selection
 
-const all = computed(() =>
-    store.view.all(props.collectionId).filter((v) => v.component !== 'group')
-)
+const group = computed(() => {
+    const viewIds = view.value.viewIds
 
-const group = computed({
-    get() {
-        if (!view.value) return []
+    const items = all.value.filter((v) => viewIds.includes(v.id))
 
-        const viewIds = view.value.viewIds
+    items.sort((a, b) => {
+        const aIndex = viewIds.findIndex((id) => id === a.id)
+        const bIndex = viewIds.findIndex((id) => id === b.id)
 
-        const items = useNonReactive(all.value).filter((v) => viewIds.includes(v.id))
+        if (aIndex === -1 || bIndex === -1) return 0
 
-        items.sort((a, b) => {
-            const aIndex = viewIds.findIndex((id) => id === a.id)
-            const bIndex = viewIds.findIndex((id) => id === b.id)
+        return aIndex - bIndex
+    })
 
-            if (aIndex === -1 || bIndex === -1) return 0
-
-            return aIndex - bIndex
-        })
-
-        return items
-    },
-    set(value) {
-        if (!view.value) return
-
-        view.value.viewIds = value.map((v) => v.id)
-    },
+    return items
 })
 
-function seleteView(id: string) {
+async function reorder(value: any) {
+    view.value.viewIds = value.map((v) => v.id)
+
+    await save()
+}
+
+async function seleteView(id: string) {
     if (!view.value) return
 
     view.value.selected = id
+
+    await save()
 }
 
 function isActive(id: string) {
     if (!view.value) return
 
-    return view.value.selected === id && !register.value?.loading
+    return view.value.selected === id
+}
+
+function getLabel(id: string) {
+    const search = all.value.find((v) => v.id === id)
+
+    return search ? search.label : id
 }
 
 // add new view
@@ -118,18 +111,14 @@ async function addView(type: keyof typeof options, payload: any = {}) {
 
     entity.label = 'New view'
 
-    await store.view.create(props.collectionId, entity, !!props.viewId)
+    await store.view.create(props.collectionId, entity)
 
-    if (view.value) {
-        view.value.selected = entity.id
+    view.value.selected = entity.id
 
-        view.value.viewIds.push(entity.id)
-    }
+    view.value.viewIds.push(entity.id)
+
+    await save()
 }
-
-// items
-
-const register = computed(() => store.item.getStoreItem(props.collectionId))
 
 // delete
 
@@ -137,6 +126,8 @@ async function deleteView(id: string) {
     await store.view.destroy(props.collectionId, id)
 
     seleteView(group.value[0].id)
+
+    await save()
 }
 
 // menu
@@ -167,10 +158,12 @@ async function duplicate(view: ViewTable | ViewGallery) {
             <template #left>
                 <div class="flex">
                     <v-draggable
-                        v-model="group"
+                        v-if="group.length"
+                        :model-value="group"
                         item-key="id"
                         handle=".drag"
                         :component-data="{ class: 'flex w-full' }"
+                        @update:model-value="reorder"
                     >
                         <template #item="{ element: v, index }">
                             <div>
@@ -196,7 +189,7 @@ async function duplicate(view: ViewTable | ViewGallery) {
                                                 class="mr-2"
                                             />
 
-                                            {{ v.label || v.id }}
+                                            {{ getLabel(v.id) }}
                                         </v-btn>
                                     </template>
 
@@ -223,7 +216,8 @@ async function duplicate(view: ViewTable | ViewGallery) {
                                 text
                                 size="text-sm px-4 h-[45px]"
                                 tile
-                                color="border-b border-transparent hover:bg-b-secondary/50 text-t-secondary"
+                                color="border-b border-transparent hover:bg-b-secondary/50 text-t-secondary overflow-hidden whitespace-pre"
+                                :class="!group.length ? 'w-[150px]' : ''"
                                 v-bind="attrs"
                             >
                                 <template v-if="!group.length">
@@ -246,6 +240,10 @@ async function duplicate(view: ViewTable | ViewGallery) {
                         </v-card>
                     </v-menu>
                 </div>
+            </template>
+
+            <template #config-card>
+                <c-actions-view-group :collection-id="collectionId" :view-id="view.id" />
             </template>
         </c-actions>
 

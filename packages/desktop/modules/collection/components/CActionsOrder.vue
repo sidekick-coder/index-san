@@ -1,8 +1,13 @@
 <script lang="ts" setup>
-import ViewCommon from '@/../core/entities/view-common'
-import { useStore } from '@/store/global'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n'
+
+import ViewCommon from '@core/entities/view-common'
+
+import { useView } from '@/modules/view/composables/use-view'
+import { useStore } from '@/store/global'
+import Column from '@/../core/entities/column'
 
 const props = defineProps({
     collectionId: {
@@ -21,11 +26,25 @@ const menu = ref(false)
 // view
 const store = useStore()
 
-const view = computed(() => store.view.get<ViewCommon>(props.collectionId, props.viewId))
+// view
+
+const { view, save } = useView<ViewCommon>({
+    collectionId: props.collectionId,
+    viewId: props.viewId,
+    defaultValue: new ViewCommon({}, props.viewId),
+})
 
 // columns
 
-const columns = computed(() => store.column.all(props.collectionId))
+const columns = ref<Column[]>()
+
+async function setColumns() {
+    const collection = store.collection.get(props.collectionId)
+
+    columns.value = collection?.columns || []
+}
+
+watch(view, setColumns)
 
 // desc options
 const tm = useI18n()
@@ -72,7 +91,7 @@ function remove(index: number) {
                 <div
                     v-for="(order, index) in view.orderBy"
                     :key="index"
-                    class="flex items-center gap-x-4"
+                    class="flex items-center gap-x-4 mb-4"
                 >
                     <v-select
                         v-model="order.field"
@@ -80,6 +99,8 @@ function remove(index: number) {
                         :options="columns"
                         label-key="label"
                         value-key="field"
+                        card:color="b-primary"
+                        menu:offset-y
                     />
 
                     <v-select
@@ -87,7 +108,10 @@ function remove(index: number) {
                         :label="$t('descendant')"
                         label-key="label"
                         value-key="value"
+                        card:color="b-primary"
+                        menu:offset-y
                         :options="orderDescOptions"
+                        @update:model-value="debounce(save, 500)"
                     />
 
                     <v-btn size="sm" text rounded class="mt-7" @click="remove(index)">
