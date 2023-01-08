@@ -1,20 +1,10 @@
 {
   "name": "desktop",
-  "productName": "index-san",
-  "description": "Notes app based in filesystem",
-  "private": true,
   "version": "0.9.1",
-  "author": {
-    "name": "Henrique",
-    "email": "henriqueoliwork@gmail.com",
-    "url": "https://sidekick-coder.com"
-  },
+  "private": true,
   "scripts": {
     "test": "vitest",
-    "dev": "npm run tauri dev",
-    "vite:dev": "vite",
-    "vite:build": "vue-tsc --noEmit && vite build",
-    "vite:preview": "vite preview",
+    "build": "vue-tsc --noEmit && vite build",
     "tsc": "vue-tsc --noEmit",
     "make:gc-types": "node scripts/make-gc-types.js"
   },

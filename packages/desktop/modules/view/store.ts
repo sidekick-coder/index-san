@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-
+import { ref, watch } from 'vue'
 import uniqBy from 'lodash/uniqBy'
+import debounce from 'lodash/debounce'
 
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 
@@ -14,6 +15,97 @@ import { useHooks } from '@/plugins/hooks'
 import { useNonReactive, waitFor } from '@/composables/utils'
 
 export type AnyView = View | ViewTable | ViewGallery | ViewGroup
+
+function createStore(collectionId: string) {
+    const workspace = useWorkspace()
+    const views = ref<AnyView[]>([])
+    const loading = ref(false)
+
+    const watcher = watch(
+        views,
+        () => {
+            if (loading.value) return
+
+            saveWithDebounce()
+        },
+        { deep: true }
+    )
+
+    const saveWithDebounce = debounce(save, 500)
+
+    async function save() {
+        if (loading.value) return
+
+        await useCase('update-views', {
+            workspaceId: workspace.currentId!,
+            collectionId,
+            data: uniqBy(views.value, 'id'),
+        })
+    }
+
+    async function load() {
+        if (loading.value) return
+
+        if (views.value.length) return
+
+        loading.value = true
+
+        await useCase('show-views', {
+            workspaceId: workspace.currentId!,
+            collectionId,
+        })
+            .then((r) => (views.value = r.data))
+            .catch(() => (views.value = []))
+            .finally(() => (loading.value = false))
+    }
+
+    function get<T extends View>(id: string) {
+        const view = views.value.find((v) => v.id === id)
+
+        return view ? (view as T) : null
+    }
+
+    function set<T extends View>(id: string, payload: Partial<T>) {
+        const index = views.value.findIndex((v) => v.id === id)
+
+        if (index !== -1) {
+            views.value[index] = {
+                ...views.value[index],
+                ...payload,
+            }
+        }
+    }
+
+    function destroy(id: string) {
+        const index = views.value.findIndex((v) => v.id === id)
+
+        if (index === -1) return
+
+        views.value.splice(index, 1)
+    }
+
+    function release() {
+        watcher()
+
+        views.value = []
+    }
+
+    return {
+        views,
+        load,
+        save,
+        get,
+        set,
+        destroy,
+        release,
+    }
+}
+
+export function createViewStore(collectionId: string) {
+    const use = defineStore(`view:${collectionId}`, () => createStore(collectionId))
+
+    return use()
+}
 
 export const useStore = defineStore('view', () => {
     const workspace = useWorkspace()

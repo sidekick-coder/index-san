@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
-import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n'
 
 import ViewCommon from '@core/entities/view-common'
 
 import { useView } from '@/modules/view/composables/use-view'
 import { useStore } from '@/store/global'
-import Column from '@/../core/entities/column'
+import { withView } from '@/modules/collection-column/composables/with-view'
 
 const props = defineProps({
     collectionId: {
@@ -24,27 +23,33 @@ const props = defineProps({
 const menu = ref(false)
 
 // view
-const store = useStore()
 
-// view
+let view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
 
-const { view, save } = useView<ViewCommon>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewCommon({}, props.viewId),
-})
-
-// columns
-
-const columns = ref<Column[]>()
-
-async function setColumns() {
-    const collection = store.collection.get(props.collectionId)
-
-    columns.value = collection?.columns || []
+function setView() {
+    view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
 }
 
-watch(view, setColumns)
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
+
+// columns
+const store = useStore()
+
+const collection = store.collection.get(props.collectionId)
+
+const columns = computed(() => withView(collection?.columns || [], view.value?.columns))
+
+const orderBy = computed({
+    get() {
+        return view.value.orderBy
+    },
+    set(value) {
+        view.value = {
+            ...view.value,
+            orderBy: value,
+        }
+    },
+})
 
 // desc options
 const tm = useI18n()
@@ -59,17 +64,21 @@ const orderDescOptions = [
 function add() {
     if (!view.value) return
 
-    view.value.orderBy.push({})
+    view.value.orderBy.push({
+        field: columns.value[0].field,
+    })
 }
 
 function remove(index: number) {
     if (!view.value) return
 
     view.value.orderBy.splice(index, 1)
+
+    view.value.orderBy = view.value.orderBy.slice()
 }
 </script>
 <template>
-    <v-menu v-if="view" v-model="menu" offset-y offset-x :open-on-click="false">
+    <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
         <template #activator="{ attrs }">
             <div class="h-[44px] flex items-center" v-bind="attrs">
                 <v-btn text size="sm" class="relative" @click="menu = !menu">
@@ -84,7 +93,7 @@ function remove(index: number) {
 
         <v-card color="b-secondary" width="400">
             <v-card-content class="flex-wrap">
-                <div v-if="!view.orderBy.length" class="text-t-secondary">
+                <div v-if="!orderBy.length" class="text-t-secondary">
                     {{ $t('noEntity', [$t('item', 2)]) }}
                 </div>
 
@@ -111,7 +120,6 @@ function remove(index: number) {
                         card:color="b-primary"
                         menu:offset-y
                         :options="orderDescOptions"
-                        @update:model-value="debounce(save, 500)"
                     />
 
                     <v-btn size="sm" text rounded class="mt-7" @click="remove(index)">

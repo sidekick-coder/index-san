@@ -1,4 +1,5 @@
 import { BrowserWindow, ipcMain, app, Menu, MenuItem } from 'electron'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 import fs from 'fs'
 import path from 'path'
@@ -107,6 +108,9 @@ app.whenReady().then(async () => {
 
     if (process.env.VITE_DEV_SERVER_URL) {
         window.loadURL(process.env.VITE_DEV_SERVER_URL)
+        installExtension(VUEJS_DEVTOOLS)
+            .then((name) => console.debug(`Added Extension:  ${name}`))
+            .catch((err) => console.debug('An error occurred: ', err))
     } else {
         window.loadFile(path.resolve(__dirname, '..', 'dist', 'index.html'))
     }

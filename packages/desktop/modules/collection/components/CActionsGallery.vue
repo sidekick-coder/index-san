@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import ViewGallery from '@core/entities/view-gallery'
 
-import { ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useStore } from '@/store/global'
 
 import { useView } from '@/modules/view/composables/use-view'
 
-import debounce from 'lodash/debounce'
-import Column from '@/../core/entities/column'
+import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 
 // Props & emit
 const props = defineProps({
@@ -21,51 +20,32 @@ const props = defineProps({
     },
 })
 
-// collection
-const store = useStore()
-
 // view
 
-const { view, save, state, load } = useView<ViewGallery>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewGallery({}, props.viewId),
-})
+let view = useView<ViewGallery>(props.collectionId, props.viewId, new ViewGallery({}, props.viewId))
 
-const saveWithDebounce = debounce(save, 500)
-
-watch(
-    props,
-    () =>
-        load({
-            collectionId: props.collectionId,
-            viewId: props.viewId,
-        }),
-    { deep: true }
-)
-
-watch(
-    view,
-    () => {
-        if (state.value.loading) return
-        if (state.value.saving) return
-
-        saveWithDebounce()
-    },
-    { deep: true }
-)
-
-// columns
-
-const columns = ref<Column[]>()
-
-async function setColumns() {
-    const collection = store.collection.get(props.collectionId)
-
-    columns.value = collection?.columns || []
+function setView() {
+    view = useView<ViewGallery>(props.collectionId, props.viewId, new ViewGallery({}, props.viewId))
 }
 
-watch(view, setColumns)
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
+
+// columns
+const store = useStore()
+
+const collection = store.collection.get(props.collectionId)
+
+const columns = computed({
+    get() {
+        return withView(collection?.columns || [], view.value?.columns)
+    },
+    set(value) {
+        view.value = {
+            ...view.value,
+            columns: withOnlyView(value),
+        }
+    },
+})
 </script>
 <template>
     <v-card v-if="view.component === 'gallery'" color="b-secondary">

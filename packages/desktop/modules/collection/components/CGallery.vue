@@ -39,32 +39,22 @@ const props = defineProps({
 // bindings
 const bindings = computed(() => createBindings(useAttrs(), ['card', 'head', 'gallery']))
 
-// set collection
-
-const store = useStore()
-
 // view
 
-const { view, save } = useView<ViewGallery>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewGallery({}, props.viewId),
-})
+let view = useView<ViewGallery>(props.collectionId, props.viewId, new ViewGallery({}, props.viewId))
 
-// columns
-
-const columns = ref<any[]>([])
-
-async function setColumns() {
-    console.log('set columns')
-    const collection = store.collection.get(props.collectionId)
-
-    columns.value = withView(collection?.columns || [], view.value.columns)
+function setView() {
+    view = useView<ViewGallery>(props.collectionId, props.viewId, new ViewGallery({}, props.viewId))
 }
 
-watch(() => view.value.columns, setColumns, {
-    deep: true,
-})
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
+
+// columns
+const store = useStore()
+
+const collection = store.collection.get(props.collectionId)
+
+const columns = computed(() => withView(collection?.columns || [], view.value?.columns))
 
 // count visible columns
 
@@ -82,9 +72,11 @@ const thumbnails = ref(new Map<string, InstanceType<typeof EImg>>())
 function onItemUpdated({ collectionId, itemId, payload }: Events['item:updated']) {
     if (collectionId !== props.collectionId) return
 
-    if (!view.value.thumbnail.key) return
+    const key = view.value.thumbnail.key
 
-    const src = payload[view.value.thumbnail.key]
+    if (!key) return
+
+    const src = payload[key]
 
     if (!src) return
 

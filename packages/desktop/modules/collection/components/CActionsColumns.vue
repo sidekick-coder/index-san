@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, onUnmounted, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import VDraggable from 'vuedraggable'
 import { useStore } from '@/store/global'
 import { withView, withOnlyView } from '@/modules/collection-column/composables/with-view'
-import { waitFor } from '@/composables/utils'
 import ViewCommon from '@/../core/entities/view-common'
 import { useView } from '@/modules/view/composables/use-view'
 
@@ -21,43 +20,42 @@ const props = defineProps({
 
 const drawer = ref(false)
 
+// view
+
+let view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
+
+function setView() {
+    view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
+}
+
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 // columns
 const store = useStore()
 
 const collection = store.collection.get(props.collectionId)
 
-// view
-
-const { view, state, save } = useView<ViewCommon>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewCommon({}, props.viewId),
+const columns = computed({
+    get() {
+        return withView(collection?.columns || [], view.value?.columns)
+    },
+    set(value) {
+        view.value = {
+            ...view.value,
+            columns: withOnlyView(value),
+        }
+    },
 })
-
-const columns = ref<any[]>([])
-
-async function setColumns() {
-    columns.value = withView(collection?.columns || [], view.value?.columns)
-}
-
-watch(view, setColumns)
 
 // actions
 
-async function saveView() {
-    view.value.columns = withOnlyView(columns.value)
-
-    await save()
-}
-
 async function toggle(id: string) {
-    const column = columns.value.find((c) => c.id === id)
+    columns.value = columns.value.map((c) => {
+        if (c.id === id) {
+            c.hide = !c.hide
+        }
 
-    if (column) {
-        column.hide = !column.hide
-    }
-
-    await saveView()
+        return c
+    })
 }
 
 async function showAll() {
@@ -66,8 +64,6 @@ async function showAll() {
 
         return c
     })
-
-    await saveView()
 }
 
 async function hideAll() {
@@ -76,8 +72,6 @@ async function hideAll() {
 
         return c
     })
-
-    await saveView()
 }
 </script>
 
@@ -111,7 +105,7 @@ async function hideAll() {
             </v-btn>
         </v-card-head>
 
-        <v-draggable v-model="columns" item-key="id" handle=".drag" @update="saveView">
+        <v-draggable v-model="columns" item-key="id" handle=".drag">
             <template #item="{ element: column }">
                 <v-list-item class="hover:bg-b-secondary">
                     <v-btn class="drag mr-2" size="sm" text>

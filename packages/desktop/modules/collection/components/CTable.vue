@@ -21,6 +21,7 @@ import { useView } from '@/modules/view/composables/use-view'
 import { Events, useHooks } from '@/plugins/hooks'
 
 import { useItems } from '@/modules/item/composables/items'
+import { createViewStore } from '@/modules/view/store'
 
 const IValue = defineAsyncComponent(() => import('@/modules/item/components/IValue.vue'))
 const CActions = defineAsyncComponent(() => import('./CActions.vue'))
@@ -62,51 +63,54 @@ const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
 
 const store = useStore()
 
-const collection = store.collection.get(props.collectionId)
+const collection = computed(() => store.collection.get(props.collectionId))
 
 // view
-const { view, save: saveView } = useView<ViewTable>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewTable({}, props.viewId),
-})
+
+let view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
+
+function setView() {
+    view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
+}
+
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 
 // columns
-const columns = ref<any[]>([])
 
-async function setColumns() {
-    columns.value = withView(collection?.columns || [], view.value.columns)
+const columns = computed({
+    get() {
+        const result: any[] = withView(collection.value?.columns || [], view.value.columns)
 
-    if (!columns.value.length) {
-        columns.value.push({
-            id: '_actions_no_columns',
-            width: 200,
+        if (!result.length) {
+            result.push({
+                id: '_actions_no_columns',
+                width: 200,
+            })
+        }
+
+        result.unshift({
+            id: '_actions_left',
+            label: '#',
+            width: 43,
         })
-    }
 
-    columns.value.unshift({
-        id: '_actions_left',
-        label: '#',
-        width: 43,
-    })
+        result.push({
+            id: '_actions_right',
+            width: '100%',
+        })
 
-    columns.value.push({
-        id: '_actions_right',
-        width: '100%',
-    })
-}
+        return result
+    },
+    set(value) {
+        view.value.columns = withOnlyView(value)
+    },
+})
 
 function resizeColumn(id: string, width: number) {
     const column = columns.value.find((c) => c.id === id)
 
     column.width = width
-
-    view.value.columns = withOnlyView(columns.value)
-
-    debounce(saveView, 100)()
 }
-
-watch(view, setColumns, { immediate: true })
 
 // items
 const { items } = useItems(props.collectionId, view)
@@ -114,7 +118,7 @@ const { items } = useItems(props.collectionId, view)
 // create item
 
 async function create() {
-    const item = new Item(createPayload(view.value?.filters, collection?.columns))
+    const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
 
     await store.item.create(props.collectionId, item)
 }
@@ -246,7 +250,7 @@ async function create() {
                             <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>
 
                             <i-value
-                                v-else-if="!c.id.startsWith('_')"
+                                v-else-if="!c.id.startsWith('_') && !c.hide"
                                 :collection-id="collectionId"
                                 :column-id="c.id"
                                 :item-id="data.item.id"

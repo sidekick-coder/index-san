@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import ViewTable from '@core/entities/view-gallery'
-
-import { watch } from 'vue'
-
 import { useView } from '@/modules/view/composables/use-view'
-
-import debounce from 'lodash/debounce'
+import { watch } from 'vue'
 
 // Props & emit
 const props = defineProps({
@@ -21,21 +17,15 @@ const props = defineProps({
 
 // view
 
-const { view, save, load } = useView<ViewTable>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewTable({}, props.viewId),
-})
+let view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
 
-watch([() => props.collectionId, () => props.viewId], () =>
-    load({
-        collectionId: props.collectionId,
-        viewId: props.viewId,
-    })
-)
+function setView() {
+    view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
+}
 
-watch(view, debounce(save, 500), { deep: true })
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 </script>
+
 <template>
     <v-card color="b-secondary" width="300">
         <v-card-content class="flex flex-wrap gap-y-4">

@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { watch, ref, computed } from 'vue'
-import debounce from 'lodash/debounce'
-
 import ViewGroup from '@core/entities/view-group'
 
-import { useAllViews } from '@/modules/view/composables/use-all-views'
 import { useView } from '@/modules/view/composables/use-view'
-import { AnyView } from '@/modules/view/store'
-import { useStore } from '@/store/global'
+import { createViewStore } from '@/modules/view/store'
 
 import CActionsGallery from './CActionsGallery.vue'
 import CActionsTable from './CActionsTable.vue'
-import { vi } from 'vitest'
 
 // Props & emit
 const props = defineProps({
@@ -26,26 +21,16 @@ const props = defineProps({
 })
 
 // view
+let store = createViewStore(props.collectionId)
+let view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
 
-const { view, save, load } = useView<ViewGroup>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewGroup({}, props.viewId),
-})
+function setView() {
+    store = createViewStore(props.collectionId)
 
-watch([() => props.collectionId, () => props.viewId], () =>
-    load({
-        collectionId: props.collectionId,
-        viewId: props.viewId,
-    })
-)
+    view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
+}
 
-// watch(view, debounce(save, 500), { deep: true })
-
-// set related views
-const store = useStore()
-
-const { views: all } = useAllViews(props.collectionId)
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 
 // toggle
 
@@ -60,13 +45,11 @@ async function toggle(id: string) {
         view.value.viewIds.splice(index, 1)
     }
 
-    view.value.viewIds = view.value.viewIds.filter((id) => all.value.some((v) => v.id == id))
-
-    await save()
+    view.value.viewIds = view.value.viewIds.filter((id) => store.views.some((v) => v.id == id))
 }
 
 async function destroy(id: string) {
-    await store.view.destroy(props.collectionId, id)
+    store.destroy(id)
 }
 
 // tabs
@@ -75,7 +58,7 @@ const tab = ref(0)
 
 // selected view
 
-const selected = computed(() => all.value.find((v) => v.id === view.value.selected))
+const selected = computed(() => store.views.find((v) => v.id === view.value.selected))
 
 function onSelect(id: string) {
     if (!view.value.viewIds.includes(id)) return
@@ -125,7 +108,7 @@ function onSelect(id: string) {
 
         <v-card-content v-if="tab == 1" class="flex-wrap">
             <v-list-item
-                v-for="v in all.filter((v) => v.component !== 'group')"
+                v-for="v in store.views.filter((v) => v.component !== 'group')"
                 :key="v.id"
                 :class="view.selected == v.id ? '' : 'text-t-secondary'"
                 @click="onSelect(v.id)"
@@ -144,7 +127,7 @@ function onSelect(id: string) {
             </v-list-item>
 
             <v-list-item
-                v-if="!all.filter((v) => v.component !== 'group').length"
+                v-if="!store.views.filter((v) => v.component !== 'group').length"
                 class="justify-center"
             >
                 {{ $t('noEntity', [$t('view', 2)]) }}

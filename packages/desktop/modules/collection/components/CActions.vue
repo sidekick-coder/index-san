@@ -32,23 +32,13 @@ const store = useStore()
 
 const columns = computed(() => store.column.all(props.collectionId))
 
-// view
+let view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
 
-const { view, load, state } = useView<ViewCommon>({
-    collectionId: props.collectionId,
-    viewId: props.viewId,
-    defaultValue: new ViewCommon({}, props.viewId),
-})
+function setView() {
+    view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
+}
 
-watch(
-    props,
-    () =>
-        load({
-            collectionId: props.collectionId,
-            viewId: props.viewId,
-        }),
-    { deep: true }
-)
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 
 // search
 const showInput = ref(false)
@@ -91,70 +81,68 @@ function isCommon(v: View): v is ViewCommon {
 
         <div class="grow"></div>
 
-        <template v-if="view && !state.loading">
-            <template v-if="isCommon(view)">
-                <div class="flex items-center transition-all">
-                    <transition name="slide-left">
-                        <v-input
-                            v-if="showInput || !!input"
-                            v-model="input"
-                            :placeholder="$t('search')"
-                            size="sm"
-                            class="w-[300px] mr-2"
-                        >
-                            <template #append>
-                                <v-btn
-                                    v-if="input"
-                                    text
-                                    size="none"
-                                    class="w-5 h-5"
-                                    @click="input = ''"
-                                >
-                                    <v-icon name="times" />
-                                </v-btn>
-                            </template>
-                        </v-input>
-                    </transition>
+        <template v-if="isCommon(view)">
+            <div class="flex items-center transition-all">
+                <transition name="slide-left">
+                    <v-input
+                        v-if="showInput || !!input"
+                        v-model="input"
+                        :placeholder="$t('search')"
+                        size="sm"
+                        class="w-[300px] mr-2"
+                    >
+                        <template #append>
+                            <v-btn
+                                v-if="input"
+                                text
+                                size="none"
+                                class="w-5 h-5"
+                                @click="input = ''"
+                            >
+                                <v-icon name="times" />
+                            </v-btn>
+                        </template>
+                    </v-input>
+                </transition>
 
-                    <v-btn text size="sm" @click="showInput = !showInput">
-                        <v-icon name="search" />
+                <v-btn text size="sm" @click="showInput = !showInput">
+                    <v-icon name="search" />
+                </v-btn>
+
+                <v-btn text size="sm" @click="refresh">
+                    <v-icon name="rotate" />
+                </v-btn>
+
+                <c-actions-order :collection-id="collectionId" :view-id="viewId" />
+
+                <c-drawer-filter v-model="view.filters" :columns="columns" />
+
+                <c-actions-columns :collection-id="collectionId" :view-id="viewId" />
+            </div>
+        </template>
+
+        <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
+            <template #activator="{ attrs }">
+                <div class="h-[44px] flex items-center" v-bind="attrs">
+                    <v-btn text size="sm" @click="menu = !menu">
+                        <v-icon name="cog" />
                     </v-btn>
-
-                    <v-btn text size="sm" @click="refresh">
-                        <v-icon name="rotate" />
-                    </v-btn>
-
-                    <c-actions-order :collection-id="collectionId" :view-id="viewId" />
-
-                    <c-drawer-filter v-model="view.filters" :columns="columns" />
-
-                    <c-actions-columns :collection-id="collectionId" :view-id="viewId" />
                 </div>
             </template>
 
-            <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
-                <template #activator="{ attrs }">
-                    <div class="h-[44px] flex items-center" v-bind="attrs">
-                        <v-btn text size="sm" @click="menu = !menu">
-                            <v-icon name="cog" />
-                        </v-btn>
-                    </div>
-                </template>
+            <slot v-if="menu" name="config-card">
+                <c-actions-gallery
+                    v-if="view.component === 'gallery'"
+                    :collection-id="collectionId"
+                    :view-id="viewId"
+                />
 
-                <slot name="config-card">
-                    <c-actions-gallery
-                        v-if="view.component === 'gallery'"
-                        :collection-id="collectionId"
-                        :view-id="viewId"
-                    />
-
-                    <c-actions-table
-                        v-else-if="view.component === 'table'"
-                        :collection-id="collectionId"
-                        :view-id="viewId"
-                    />
-                </slot>
-            </v-menu>
-        </template>
+                <c-actions-table
+                    v-else-if="view.component === 'table'"
+                    :collection-id="collectionId"
+                    :view-id="viewId"
+                />
+            </slot>
+        </v-menu>
     </v-card-head>
 </template>

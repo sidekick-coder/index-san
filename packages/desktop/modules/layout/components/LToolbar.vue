@@ -47,8 +47,8 @@ const links = computed(() =>
                 label = 'Root'
             }
 
-            if (label.length > 10) {
-                label = label.slice(0, 10) + '...'
+            if (label.length > 80) {
+                label = label.slice(0, 80) + '...'
             }
 
             return {
