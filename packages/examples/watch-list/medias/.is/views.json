@@ -46,7 +46,9 @@
         "selected": "77e4ca35-a424-4a98-aa0c-5e2c40b018ef",
         "viewIds": [
             "77e4ca35-a424-4a98-aa0c-5e2c40b018ef",
-            "6ab296a7-aa37-4d21-b9cc-c077150c8345"
+            "6ab296a7-aa37-4d21-b9cc-c077150c8345",
+            "50aa9baa-a67a-4d44-ae7d-21aa47132862",
+            "30cb5649-af80-423f-9ef4-3abd52a4990f"
         ]
     },
     {
@@ -54,7 +56,17 @@
         "id": "6ab296a7-aa37-4d21-b9cc-c077150c8345",
         "label": "Gallery",
         "search": "",
-        "filters": [],
+        "filters": [
+            {
+                "columnId": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "field": "type",
+                "type": "select",
+                "config": {
+                    "operation": "="
+                },
+                "value": ""
+            }
+        ],
         "columns": [
             {
                 "label": "Name",
@@ -71,6 +83,128 @@
                 "label": "New",
                 "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
                 "options": "Film"
+            }
+        ],
+        "orderBy": [
+            {
+                "field": "name",
+                "desc": "asc"
+            }
+        ],
+        "thumbnail": {
+            "fit": "cover",
+            "key": "image",
+            "position": "top"
+        },
+        "sizes": {
+            "sm": {
+                "width": 200,
+                "height": "300"
+            },
+            "md": {
+                "width": 200,
+                "height": "300"
+            },
+            "lg": {
+                "width": "200",
+                "height": "260"
+            }
+        }
+    },
+    {
+        "component": "gallery",
+        "id": "50aa9baa-a67a-4d44-ae7d-21aa47132862",
+        "label": "Animes",
+        "search": "",
+        "filters": [
+            {
+                "columnId": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "field": "type",
+                "type": "select",
+                "config": {
+                    "operation": "="
+                },
+                "value": "Anime"
+            }
+        ],
+        "columns": [
+            {
+                "label": "Name",
+                "id": "4c377882-6c55-4a96-bbac-86b07878774a",
+                "width": 340,
+                "hide": false
+            },
+            {
+                "label": "Image",
+                "id": "5cff1b1e-87fc-4729-a3f3-c4d1d84eaa4f",
+                "filename": "{itemPath}/thubnail.{ext}"
+            },
+            {
+                "label": "New",
+                "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "options": "Film",
+                "hide": false
+            }
+        ],
+        "orderBy": [
+            {
+                "field": "name",
+                "desc": "asc"
+            }
+        ],
+        "thumbnail": {
+            "fit": "cover",
+            "key": "image",
+            "position": "top"
+        },
+        "sizes": {
+            "sm": {
+                "width": 200,
+                "height": "300"
+            },
+            "md": {
+                "width": 200,
+                "height": "300"
+            },
+            "lg": {
+                "width": "200",
+                "height": "260"
+            }
+        }
+    },
+    {
+        "component": "gallery",
+        "id": "30cb5649-af80-423f-9ef4-3abd52a4990f",
+        "label": "Films",
+        "search": "",
+        "filters": [
+            {
+                "columnId": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "field": "type",
+                "type": "select",
+                "config": {
+                    "operation": "="
+                },
+                "value": "Film"
+            }
+        ],
+        "columns": [
+            {
+                "label": "Name",
+                "id": "4c377882-6c55-4a96-bbac-86b07878774a",
+                "width": 340,
+                "hide": false
+            },
+            {
+                "label": "Image",
+                "id": "5cff1b1e-87fc-4729-a3f3-c4d1d84eaa4f",
+                "filename": "{itemPath}/thubnail.{ext}"
+            },
+            {
+                "label": "New",
+                "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "options": "Film",
+                "hide": true
             }
         ],
         "orderBy": [

@@ -19,7 +19,15 @@
                 "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
                 "field": "type",
                 "type": "select",
-                "options": "Film, Anime"
+                "options": [
+                    {
+                        "color": "info",
+                        "name": "Film"
+                    },
+                    {
+                        "name": "Anime"
+                    }
+                ]
             }
         ],
         "id": "medias",
