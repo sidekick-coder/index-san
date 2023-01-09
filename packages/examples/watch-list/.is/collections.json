@@ -1,0 +1,30 @@
+[
+    {
+        "columns": [
+            {
+                "label": "Name",
+                "id": "4c377882-6c55-4a96-bbac-86b07878774a",
+                "field": "name",
+                "type": "text"
+            },
+            {
+                "label": "Image",
+                "id": "5cff1b1e-87fc-4729-a3f3-c4d1d84eaa4f",
+                "field": "image",
+                "type": "entry",
+                "filename": "{item._path}/image.{ext}"
+            },
+            {
+                "label": "Type",
+                "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "field": "type",
+                "type": "select",
+                "options": "Film, Anime"
+            }
+        ],
+        "id": "medias",
+        "crudName": "fsFolder",
+        "name": "Medias",
+        "path": "medias"
+    }
+]

@@ -1,0 +1,252 @@
+[
+    {
+        "id": "cc5ee41a-1798-40ad-8571-0b7336452bc7",
+        "_createdAt": "Mon Jan 09 2023 09:56:50 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 09:56:50 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/cc5ee41a-1798-40ad-8571-0b7336452bc7",
+        "name": "2001: A Space Odyssey (1968)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:15 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/cc5ee41a-1798-40ad-8571-0b7336452bc7/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "6dcb2296-2f78-49a7-8c71-605632afd9e5",
+        "_createdAt": "Mon Jan 09 2023 10:50:51 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 10:50:51 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/6dcb2296-2f78-49a7-8c71-605632afd9e5",
+        "name": "The Godfather (1972)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:06 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/6dcb2296-2f78-49a7-8c71-605632afd9e5/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "b7647c90-fab2-47e9-b754-3c2b2180569d",
+        "_createdAt": "Mon Jan 09 2023 10:51:53 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 10:51:53 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/b7647c90-fab2-47e9-b754-3c2b2180569d",
+        "name": "Raiders of the Lost Ark (1981)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:09 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/b7647c90-fab2-47e9-b754-3c2b2180569d/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "41f5b3ed-d4e8-4b22-9d92-3645efde7eb8",
+        "_createdAt": "Mon Jan 09 2023 10:53:09 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 10:53:09 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/41f5b3ed-d4e8-4b22-9d92-3645efde7eb8",
+        "name": "The Dark Knight (2008)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:59 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/41f5b3ed-d4e8-4b22-9d92-3645efde7eb8/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "c052e817-eb71-45d6-9fcd-1232faaadd4e",
+        "_createdAt": "Mon Jan 09 2023 10:54:34 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 10:54:34 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/c052e817-eb71-45d6-9fcd-1232faaadd4e",
+        "name": "Star Wars (1977)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:12 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/c052e817-eb71-45d6-9fcd-1232faaadd4e/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "6a50d52d-dadf-48a7-9c2a-fb916fe40684",
+        "_createdAt": "Mon Jan 09 2023 11:00:35 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:00:35 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/6a50d52d-dadf-48a7-9c2a-fb916fe40684",
+        "name": "Modern Times (1936)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:03 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/6a50d52d-dadf-48a7-9c2a-fb916fe40684/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "24b11fb2-da02-41a2-8d12-90b141cf866e",
+        "_createdAt": "Mon Jan 09 2023 11:01:23 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:01:23 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/24b11fb2-da02-41a2-8d12-90b141cf866e",
+        "name": "The Texas Chain Saw Massacre (1974)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:54 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/24b11fb2-da02-41a2-8d12-90b141cf866e/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "25d4e2f8-b173-4f5a-a08a-0f542f31423b",
+        "_createdAt": "Mon Jan 09 2023 11:03:08 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:03:08 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/25d4e2f8-b173-4f5a-a08a-0f542f31423b",
+        "name": "Toy Story (1995)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:55 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/25d4e2f8-b173-4f5a-a08a-0f542f31423b/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "58335555-3df5-4187-a185-fa5971384ac0",
+        "_createdAt": "Mon Jan 09 2023 11:06:00 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:06:00 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/58335555-3df5-4187-a185-fa5971384ac0",
+        "name": " CAPTAIN AMERICA: THE FIRST AVENGER (2011)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:01 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/58335555-3df5-4187-a185-fa5971384ac0/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "85ed27b8-59dc-4dea-8bf1-e655d298d418",
+        "_createdAt": "Mon Jan 09 2023 11:06:14 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:06:14 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/85ed27b8-59dc-4dea-8bf1-e655d298d418",
+        "name": "CAPTAIN MARVEL (2019)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:07 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/85ed27b8-59dc-4dea-8bf1-e655d298d418/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "0b10b468-1084-4c59-8745-0ac56490591f",
+        "_createdAt": "Mon Jan 09 2023 11:06:28 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:06:28 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/0b10b468-1084-4c59-8745-0ac56490591f",
+        "name": "IRON MAN (2008)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:52 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/0b10b468-1084-4c59-8745-0ac56490591f/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "3d0c6711-9605-44bf-943e-19529b1c112a",
+        "_createdAt": "Mon Jan 09 2023 11:06:44 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:06:44 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/3d0c6711-9605-44bf-943e-19529b1c112a",
+        "name": "IRON MAN 2 (2010)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:57 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/3d0c6711-9605-44bf-943e-19529b1c112a/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "0662f7ff-2c2f-4614-88b1-72a14192ef74",
+        "_createdAt": "Mon Jan 09 2023 11:07:01 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:07:01 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/0662f7ff-2c2f-4614-88b1-72a14192ef74",
+        "name": "THE INCREDIBLE HULK (2008)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:50 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/0662f7ff-2c2f-4614-88b1-72a14192ef74/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "724ff61d-e358-42df-930e-73a17bd765b8",
+        "_createdAt": "Mon Jan 09 2023 11:07:10 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:07:10 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/724ff61d-e358-42df-930e-73a17bd765b8",
+        "name": "THOR (2011)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:05 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/724ff61d-e358-42df-930e-73a17bd765b8/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "6170747c-47fa-4b90-80ab-095ed0422dc5",
+        "_createdAt": "Mon Jan 09 2023 11:07:28 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:07:28 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/6170747c-47fa-4b90-80ab-095ed0422dc5",
+        "name": " MARVEL'S THE AVENGERS (2012)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:02 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/6170747c-47fa-4b90-80ab-095ed0422dc5/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "17e82b19-3fb4-4ee2-9286-a5bec771fb97",
+        "_createdAt": "Mon Jan 09 2023 11:07:39 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:07:39 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/17e82b19-3fb4-4ee2-9286-a5bec771fb97",
+        "name": "THOR: THE DARK WORLD (2013)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:53 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/17e82b19-3fb4-4ee2-9286-a5bec771fb97/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "e354d69d-30a8-4394-91db-243ab69e14ea",
+        "_createdAt": "Mon Jan 09 2023 11:07:52 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:07:52 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/e354d69d-30a8-4394-91db-243ab69e14ea",
+        "name": "IRON MAN 3 (2013)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:16 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/e354d69d-30a8-4394-91db-243ab69e14ea/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "3898392a-744f-4f8e-b3f3-b0f415fa9a86",
+        "_createdAt": "Mon Jan 09 2023 11:08:13 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:08:13 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/3898392a-744f-4f8e-b3f3-b0f415fa9a86",
+        "name": "CAPTAIN AMERICA: THE WINTER SOLDIER (2014)",
+        "_updatedAt": "Mon Jan 09 2023 11:09:58 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/3898392a-744f-4f8e-b3f3-b0f415fa9a86/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "c681869c-0afa-4bda-9c2d-38af5d2357d7",
+        "_createdAt": "Mon Jan 09 2023 11:08:24 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:08:24 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/c681869c-0afa-4bda-9c2d-38af5d2357d7",
+        "name": "GUARDIANS OF THE GALAXY (2014)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:13 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/c681869c-0afa-4bda-9c2d-38af5d2357d7/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "9832f6e7-62f6-46f8-af4e-d28f3b9c0be1",
+        "_createdAt": "Mon Jan 09 2023 11:08:35 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:08:35 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/9832f6e7-62f6-46f8-af4e-d28f3b9c0be1",
+        "name": "GUARDIANS OF THE GALAXY VOL. 2 (2017)",
+        "_updatedAt": "Mon Jan 09 2023 11:10:10 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/9832f6e7-62f6-46f8-af4e-d28f3b9c0be1/image.png",
+        "type": "Film"
+    },
+    {
+        "id": "e6fde8eb-d32a-466b-a3ce-5ef30ed99973",
+        "_createdAt": "Mon Jan 09 2023 11:12:11 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:12:11 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/e6fde8eb-d32a-466b-a3ce-5ef30ed99973",
+        "name": "Naruto",
+        "_updatedAt": "Mon Jan 09 2023 11:16:06 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/e6fde8eb-d32a-466b-a3ce-5ef30ed99973/image.png",
+        "type": "Anime"
+    },
+    {
+        "id": "e4f6b997-88a9-4cb7-b8ff-12af972bc735",
+        "_createdAt": "Mon Jan 09 2023 11:12:48 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:12:48 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/e4f6b997-88a9-4cb7-b8ff-12af972bc735",
+        "image": "medias/e4f6b997-88a9-4cb7-b8ff-12af972bc735/image.png",
+        "_updatedAt": "Mon Jan 09 2023 11:16:05 GMT-0300 (Brasilia Standard Time)",
+        "name": "Bleach",
+        "type": "Anime"
+    },
+    {
+        "id": "4fc8222f-7525-480b-a9e3-7f3cf62c258d",
+        "_createdAt": "Mon Jan 09 2023 11:13:33 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:13:33 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/4fc8222f-7525-480b-a9e3-7f3cf62c258d",
+        "name": "One piece",
+        "_updatedAt": "Mon Jan 09 2023 11:16:00 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/4fc8222f-7525-480b-a9e3-7f3cf62c258d/image.png",
+        "type": "Anime"
+    },
+    {
+        "id": "34206216-b959-4498-9042-419872dfeaa9",
+        "_createdAt": "Mon Jan 09 2023 11:14:08 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:14:08 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/34206216-b959-4498-9042-419872dfeaa9",
+        "name": "Sword Art Online",
+        "_updatedAt": "Mon Jan 09 2023 11:15:58 GMT-0300 (Brasilia Standard Time)",
+        "image": "medias/34206216-b959-4498-9042-419872dfeaa9/image.png",
+        "type": "Anime"
+    },
+    {
+        "id": "f6571838-11bf-488e-befe-ff22a1055789",
+        "_createdAt": "Mon Jan 09 2023 11:14:48 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Mon Jan 09 2023 11:14:48 GMT-0300 (Brasilia Standard Time)",
+        "_path": "medias/f6571838-11bf-488e-befe-ff22a1055789",
+        "image": "medias/f6571838-11bf-488e-befe-ff22a1055789/image.png",
+        "_updatedAt": "Mon Jan 09 2023 11:16:08 GMT-0300 (Brasilia Standard Time)",
+        "name": "Kimetsu no Yaiba",
+        "type": "Anime"
+    }
+]
