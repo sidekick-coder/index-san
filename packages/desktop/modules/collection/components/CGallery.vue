@@ -83,7 +83,7 @@ function onItemUpdated({ collectionId, itemId, payload }: Events['item:updated']
     const eImg = thumbnails.value.get(itemId)
 
     if (eImg) {
-        eImg.setSrc(src)
+        eImg.setSrc(src, true)
     }
 }
 

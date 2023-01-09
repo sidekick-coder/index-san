@@ -44,7 +44,7 @@ const store = useStore()
 const innerSrc = ref<string>()
 const loading = ref(false)
 
-async function setSrc(src = props.src) {
+async function setSrc(src = props.src, ignoreCache = false) {
     innerSrc.value = undefined
 
     if (!src) return
@@ -68,6 +68,17 @@ async function setSrc(src = props.src) {
         path = DirectoryEntry.normalize(props.basePath, path)
     }
 
+    if (ignoreCache) {
+        localStorage.removeItem(`images:cache:${path}`)
+    }
+
+    const cache = localStorage.getItem(`images:cache:${path}`)
+
+    if (cache) {
+        innerSrc.value = cache
+        return
+    }
+
     loading.value = true
 
     await store
@@ -81,13 +92,19 @@ async function setSrc(src = props.src) {
 
             const type = mime.getType(props.src)
 
-            innerSrc.value = `data:${type};base64, ${base64}`
+            innerSrc.value = `data:${type};base64,${base64}`
+
+            localStorage.setItem(`images:cache:${path}`, innerSrc.value)
         })
         .catch(Boolean)
         .finally(() => (loading.value = false))
 }
 
-watch(() => props.src, setSrc, { immediate: true })
+watch(
+    () => props.src,
+    () => setSrc(props.src),
+    { immediate: true }
+)
 
 // style
 
