@@ -88,6 +88,8 @@ export default {
     saveFormat: 'Save format',
     limit: 'Limit',
     config: 'Config | Configs',
+    pasteEntity: 'Paste {0}',
+    image: 'Image | Images',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+import { useStore as useNotify } from '@/modules/notify/store'
 import { useStore as useWorkspace } from '@/modules/workspace/store'
 import { useStore as useCollection } from '@/modules/collection/store'
 import { useStore as useItem } from '@/modules/item/store'
@@ -18,8 +19,10 @@ export const useStore = defineStore('global', () => {
     const column = useColumn()
     const menu = useMenu()
     const script = useScript()
+    const notify = useNotify()
 
     return {
+        notify,
         workspace,
         collection,
         item,

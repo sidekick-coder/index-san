@@ -89,6 +89,7 @@ const menu = ref({
             to: route.path,
             children: [],
             id: uuid(),
+            icon: 'bookmark',
         })
     },
 })

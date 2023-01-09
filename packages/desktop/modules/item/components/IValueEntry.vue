@@ -40,49 +40,71 @@ async function deleteEntry() {
     payload.value = null
 }
 
-function upload() {
-    if (!column.value || !item.value) return
-
+function pickFile() {
     const input = document.createElement('input')
-
-    const filePattern = column.value.filename || `${uuid()}.{ext}`
-    const itemPath = item.value._path
 
     input.type = 'file'
 
-    input.onchange = async () => {
+    input.click()
+
+    input.onchange = () => {
         if (!input.files || !input.files[0]) return
 
         const file = input.files[0]
 
-        const compiled = template(filePattern, {
-            interpolate: /{([\s\S]+?)}/g,
-        })
+        upload(file)
+    }
+}
 
-        const filename = compiled({
-            ext: DirectoryEntry.extname(file.name),
-            itemPath: itemPath,
-        })
+async function upload(file: File) {
+    if (!column.value || !item.value) return
 
-        const path = DirectoryEntry.normalize(filename)
+    const filePattern = column.value.filename || `${uuid()}.{ext}`
+    const itemPath = item.value._path
 
-        const buffer = await file.arrayBuffer()
+    const compiled = template(filePattern, {
+        interpolate: /{([\s\S]+?)}/g,
+    })
 
-        await store.entry.write({
-            path,
-            data: new Uint8Array(buffer),
-        })
+    const filename = compiled({
+        ext: DirectoryEntry.extname(file.name),
+        item: item.value,
+    })
 
-        if (filename !== payload.value) {
-            await deleteEntry().catch(Boolean)
-        }
+    const path = DirectoryEntry.normalize(filename)
 
-        payload.value = path
+    const buffer = await file.arrayBuffer()
 
-        await save()
+    await store.entry.write({
+        path,
+        data: new Uint8Array(buffer),
+    })
+
+    if (filename !== payload.value) {
+        await deleteEntry().catch(Boolean)
     }
 
-    input.click()
+    payload.value = path
+
+    await save()
+}
+
+// clipboard upload
+
+async function uploadByClipboard() {
+    const [item] = await navigator.clipboard.read()
+
+    const type = item.types.find((i) => i.includes('image'))
+
+    if (!type) return
+
+    const [, ext] = type.split('/')
+
+    const blob = await item.getType(type)
+
+    const file = new File([blob], `image.${ext}`)
+
+    await upload(file).catch((err) => store.notify.error(err.message))
 }
 </script>
 
@@ -106,11 +128,22 @@ function upload() {
             >
             </v-input>
         </template>
-        <v-card color="b-secondary">
-            <v-list-item @click="upload">
+        <v-card color="b-secondary" class="drop-shadow-xl">
+            <v-list-item @click="pickFile">
+                <v-icon name="upload" class="mr-4" />
+
                 {{ $t('upload') }}
             </v-list-item>
+
+            <v-list-item @click="uploadByClipboard">
+                <v-icon name="paste" class="mr-4" />
+
+                {{ $t('pasteEntity', [$t('image')]) }}
+            </v-list-item>
+
             <v-list-item @click="deleteEntry">
+                <v-icon name="trash" class="mr-4" />
+
                 {{ $t('deleteEntity', [$t('entry')]) }}
             </v-list-item>
         </v-card>

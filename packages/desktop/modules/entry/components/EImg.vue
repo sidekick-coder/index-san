@@ -64,7 +64,7 @@ async function setSrc(src = props.src) {
         path = src.replace('/', '')
     }
 
-    if (props.src.startsWith('./')) {
+    if (src.startsWith('./')) {
         path = DirectoryEntry.normalize(props.basePath, path)
     }
 

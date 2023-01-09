@@ -28,7 +28,7 @@ const props = defineProps({
 // column
 const store = useStore()
 
-const column = ref<Column | null>(null)
+const column = computed(() => store.column.get(props.collectionId, props.columnId))
 
 const loading = ref(false)
 
@@ -36,8 +36,7 @@ async function setColumn() {
     loading.value = true
 
     await store.column
-        .show(props.collectionId, props.columnId)
-        .then((r) => (column.value = r))
+        .set(props.collectionId)
         .finally(() => setTimeout(() => (loading.value = false), 500))
 }
 

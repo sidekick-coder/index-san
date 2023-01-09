@@ -77,9 +77,15 @@ watch([() => props.viewId, () => props.collectionId], setView, { immediate: true
 
 // columns
 
+const collectionColumns = computed(() => store.column.all(props.collectionId))
+
+if (!collectionColumns.value.length) {
+    store.column.set(props.collectionId)
+}
+
 const columns = computed({
     get() {
-        const result: any[] = withView(collection.value?.columns || [], view.value.columns)
+        const result: any[] = withView(collectionColumns.value, view.value.columns)
 
         if (!result.length) {
             result.push({
@@ -107,9 +113,13 @@ const columns = computed({
 })
 
 function resizeColumn(id: string, width: number) {
-    const column = columns.value.find((c) => c.id === id)
+    columns.value = columns.value.map((c) => {
+        if (c.id === id) {
+            c.width = width
+        }
 
-    column.width = width
+        return c
+    })
 }
 
 // items
@@ -166,7 +176,6 @@ async function create() {
                                     v-if="c.id === '_actions_right'"
                                     size="h-8 w-8 text-xs"
                                     class="text-t-secondary"
-                                    rounded
                                     text
                                     @click="store.column.create(collectionId)"
                                 >

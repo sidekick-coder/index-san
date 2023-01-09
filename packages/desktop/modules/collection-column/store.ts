@@ -108,9 +108,9 @@ export const useStore = defineStore('column', () => {
     }
 
     async function create(collectionId: string) {
-        const item = items.value.find((i) => i.collectionId === collectionId)
-
         await collection.setCollections()
+
+        const item = items.value.find((i) => i.collectionId === collectionId)
 
         if (!item) return
 

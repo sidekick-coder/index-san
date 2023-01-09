@@ -50,6 +50,10 @@ async function setView() {
         await store.load()
     }
 
+    if (props.viewId && !store.views.some((v) => v.id === props.viewId)) {
+        store.views.push(new ViewGroup({}, props.viewId))
+    }
+
     view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
 
     loading.value = false
@@ -204,7 +208,7 @@ function isTable(id: string) {
                                 size="text-sm px-4 h-[45px]"
                                 tile
                                 color="border-b border-transparent hover:bg-b-secondary/50 text-t-secondary overflow-hidden whitespace-pre"
-                                :class="!view.viewIds.length ? 'w-[150px]' : ''"
+                                :class="!view.viewIds.length ? 'min-w-[150px]' : ''"
                                 v-bind="attrs"
                             >
                                 <template v-if="!view.viewIds.length">
