@@ -88,7 +88,7 @@ watch(show, () => {
     setTimeout(() => {
         max.value.y = window.innerHeight - el.clientHeight
         max.value.x = window.innerWidth - el.clientWidth
-    }, 100)
+    }, 200)
 })
 
 // track mouse position

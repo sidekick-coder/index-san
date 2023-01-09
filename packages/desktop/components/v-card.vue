@@ -32,8 +32,8 @@ const defaultColors = {
     'b-secondary': 'bg-b-secondary',
 
     'accent': 'bg-accent hover:bg-accent/75',
-    'error': 'bg-red-500 hover:bg-red-500/75',
-    'info': 'bg-blue-500 hover:bg-blue-500/75',
+    'error': 'bg-danger hover:bg-danger/75',
+    'info': 'bg-info hover:bg-info/75',
 }
 
 const colors = computed(() => {

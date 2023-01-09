@@ -56,7 +56,7 @@ const classes = computed(() => {
     result.push(alignments[props.align])
 
     if (attrs.onClick || props.to || props.clickable) {
-        result.push('cursor-pointer', defaultColors[props.color])
+        result.push('cursor-pointer', defaultColors[props.color] || props.color)
     }
 
     if (props.dark) {

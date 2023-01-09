@@ -51,7 +51,7 @@ const payload = ref<Column>({
     field: '',
     type: ColumnType.text,
     content: '',
-    options: undefined,
+    options: [],
     collectionId: undefined,
     displayField: undefined,
 })
@@ -188,13 +188,57 @@ const relation = computed(() => {
                         <v-input v-model="payload.field" label="Field" />
                     </div>
 
-                    <div v-if="payload.type === 'select'" class="mb-4">
-                        <v-input
-                            v-model="payload.options"
-                            label="Options (separate by comma)"
-                            placeholder="item-01,item-02"
-                        />
-                    </div>
+                    <template v-if="payload.type === 'select'">
+                        <div class="text-t-secondary font-bold mb-2">{{ $t('option', 2) }}</div>
+
+                        <div
+                            v-for="(option, index) in payload.options"
+                            :key="option"
+                            class="flex items-center mb-4 last:mb-0"
+                        >
+                            <v-menu offset-y>
+                                <template #activator="{ attrs }">
+                                    <v-btn
+                                        v-bind="attrs"
+                                        :color="option.color || 'accent'"
+                                        size="w-4 h-4"
+                                    />
+
+                                    <v-input v-model="option.name" class="mx-2" />
+
+                                    <v-btn text @click="payload.options.splice(index, 1)">
+                                        <v-icon name="trash" />
+                                    </v-btn>
+                                </template>
+
+                                <v-card class="p-4" color="b-primary">
+                                    <v-btn
+                                        color="accent"
+                                        size="w-4 h-4"
+                                        class="mb-4"
+                                        @click="option.color = 'accent'"
+                                    />
+                                    <v-btn
+                                        color="info"
+                                        size="w-4 h-4"
+                                        class="mb-4"
+                                        @click="option.color = 'info'"
+                                    />
+                                    <v-btn
+                                        color="danger"
+                                        size="w-4 h-4"
+                                        class="mb-4"
+                                        @click="option.color = 'danger'"
+                                    />
+                                </v-card>
+                            </v-menu>
+                        </div>
+                        <v-list-item class="-mx-4">
+                            <v-btn color="accent" @click="payload.options.push({})">
+                                {{ $t('addEntity', [$t('option')]) }}
+                            </v-btn>
+                        </v-list-item>
+                    </template>
 
                     <template v-if="payload.type === ColumnType.relation">
                         <div class="mb-4">

@@ -158,7 +158,13 @@ function onShowMenu(value: boolean) {
             </v-list-item>
 
             <template v-for="option in options" :key="option">
-                <slot name="option" :option="option">
+                <slot
+                    name="option"
+                    :option="option"
+                    :attrs="{
+                        onClick: () => onSelect(option),
+                    }"
+                >
                     <v-list-item dark @click="onSelect(option)">
                         {{ getLabel(option) }}
                     </v-list-item>
