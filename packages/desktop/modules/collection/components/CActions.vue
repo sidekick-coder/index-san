@@ -5,12 +5,12 @@ import { debounce } from 'lodash'
 import { ref, computed, watch, defineAsyncComponent } from 'vue'
 import { useStore } from '@/store/global'
 
-import CDrawerFilter from './CDrawerFilter.vue'
-import CActionsOrder from './CActionsOrder.vue'
 import View from '@/../core/entities/view'
 import { useView } from '@/modules/view/composables/use-view'
 
 import CActionsColumns from './CActionsColumns.vue'
+import CActionsOrder from './CActionsOrder.vue'
+import CActionsFilters from './CActionsFilters.vue'
 
 const CActionsGallery = defineAsyncComponent(() => import('./CActionsGallery.vue'))
 const CActionsTable = defineAsyncComponent(() => import('./CActionsTable.vue'))
@@ -29,8 +29,6 @@ const props = defineProps({
 
 // collection
 const store = useStore()
-
-const columns = computed(() => store.column.all(props.collectionId))
 
 let view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
 
@@ -115,7 +113,7 @@ function isCommon(v: View): v is ViewCommon {
 
                 <c-actions-order :collection-id="collectionId" :view-id="viewId" />
 
-                <c-drawer-filter v-model="view.filters" :columns="columns" />
+                <c-actions-filters :collection-id="collectionId" :view-id="viewId" />
 
                 <c-actions-columns :collection-id="collectionId" :view-id="viewId" />
             </div>

@@ -1,41 +1,67 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 import Column from '@core/entities/column'
 import { useVModel } from 'vue-wind/composables/v-model'
-import { ViewFilter } from '@core/entities/view-common'
+import ViewCommon, { ViewFilter } from '@core/entities/view-common'
 
 import CFilter from './CFilter.vue'
+import { useView } from '@/modules/view/composables/use-view'
+import { useStore } from '@/store/global'
 
 const props = defineProps({
-    modelValue: {
-        type: Array as () => ViewFilter[],
-        default: () => [],
+    collectionId: {
+        type: String,
+        required: true,
     },
-    columns: {
-        type: Array as () => Column[],
-        default: () => [],
+    viewId: {
+        type: String,
+        required: true,
     },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const store = useStore()
 
-const filters = useVModel(props, 'modelValue', emit)
+const columns = computed(() => store.column.all(props.collectionId))
+
+if (!columns.value.length) {
+    store.column.set(props.collectionId)
+}
+
+// view
+
+let view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
+
+function setView() {
+    view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
+}
+
+watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 
 const drawer = ref(false)
 
 function clear() {
-    filters.value = []
+    view.value = {
+        ...view.value,
+        filters: [],
+    }
 }
 
 function add(column: Column) {
-    filters.value.push({
+    const filters = view.value.filters.slice()
+
+    filters.push({
         columnId: column.id,
         field: column.field,
         type: column.type,
         config: {},
         value: '',
     })
+
+    view.value = {
+        ...view.value,
+        filters,
+    }
 }
 </script>
 
@@ -45,7 +71,7 @@ function add(column: Column) {
             <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
                 <v-icon name="filter" />
                 <div
-                    v-if="filters.length"
+                    v-if="view.filters.length"
                     class="bg-accent h-2 w-2 rounded-full absolute top-0 right-0 group-hover/btn:text-t-primary"
                 />
             </v-btn>
@@ -66,16 +92,16 @@ function add(column: Column) {
         </v-card-head>
 
         <c-filter
-            v-for="(f, index) in filters"
+            v-for="(f, index) in view.filters"
             :key="index"
             :model-value="f"
             :columns="columns"
-            @update:model-value="(v) => (filters[index] = v)"
-            @destroy="filters.splice(index, 1)"
+            @update:model-value="(v) => (view.filters[index] = v)"
+            @destroy="view.filters.splice(index, 1)"
         />
 
         <v-card-content class="flex-wrap">
-            <div v-if="!filters.length" class="w-full mb-3 text-t-secondary">
+            <div v-if="!view.filters.length" class="w-full mb-3 text-t-secondary">
                 {{ $t('noEntity', [$t('filter', 2)]) }}
             </div>
 

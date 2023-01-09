@@ -40,14 +40,6 @@ const options = Object.keys(operations.text).map((key) => ({
     label: key,
     value: key,
 }))
-// Options
-const select = ref({
-    options: [] as string[],
-})
-
-if (props.column.options) {
-    select.value.options = props.column.options.split(',').map((i: string) => i.trim())
-}
 </script>
 <template>
     <div class="flex w-full">
@@ -63,7 +55,9 @@ if (props.column.options) {
         <v-select
             v-model="model.value"
             :placeholder="$t('value')"
-            :options="select.options"
+            :options="column.options"
+            label-key="name"
+            value-key="name"
             class="w-full"
             menu:offset-y
         />
