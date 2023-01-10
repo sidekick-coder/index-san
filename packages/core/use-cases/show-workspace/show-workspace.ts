@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import ShowWorkspaceDTO from './show-workspace.dto'
+import type AppConfig from '../../config/app'
+import type ShowWorkspaceDTO from './show-workspace.dto'
 
 export default class ShowWorkspace {
     constructor(private readonly app: AppConfig) {}

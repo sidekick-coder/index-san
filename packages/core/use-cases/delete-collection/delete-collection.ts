@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import DeleteCollectionsDTO from './delete-collection.dto'
+import type AppConfig from '../../config/app'
+import type DeleteCollectionsDTO from './delete-collection.dto'
 
 export default class DeleteCollection {
     constructor(private readonly app: AppConfig) {}

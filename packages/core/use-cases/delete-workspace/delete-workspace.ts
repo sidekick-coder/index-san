@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import DeleteWorkspaceDto from './delete-workspace.dto'
+import type AppConfig from '../../config/app'
+import type DeleteWorkspaceDto from './delete-workspace.dto'
 
 export default class DeleteWorkspace {
     constructor(private readonly app: AppConfig) {}

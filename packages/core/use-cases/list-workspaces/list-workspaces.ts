@@ -1,4 +1,4 @@
-import AppConfig from '../../config/app'
+import type AppConfig from '../../config/app'
 
 export default class ListWorkspaces {
     constructor(private readonly app: AppConfig) {}

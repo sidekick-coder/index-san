@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import ReadDirectoryEntryDTO from './read-directory-entry.dto'
+import type AppConfig from '../../config/app'
+import type ReadDirectoryEntryDTO from './read-directory-entry.dto'
 
 export default class ReadDirectoryEntry {
     constructor(private readonly app: AppConfig) {}

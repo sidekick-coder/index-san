@@ -1,6 +1,7 @@
-import AppConfig from '../../config/app'
 import DriveHelper from '../../gateways/drive/helper'
-import UpdateWorkspaceOptionsDTO from './update-workspace-options.dto'
+
+import type AppConfig from '../../config/app'
+import type UpdateWorkspaceOptionsDTO from './update-workspace-options.dto'
 
 export default class UpdateWorkspaceOptions {
     constructor(private readonly app: AppConfig) {}

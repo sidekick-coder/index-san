@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import ListCollectionsDTO from './list-collections.dto'
+import type AppConfig from '../../config/app'
+import type ListCollectionsDTO from './list-collections.dto'
 
 export default class ListCollections {
     constructor(private readonly app: AppConfig) {}

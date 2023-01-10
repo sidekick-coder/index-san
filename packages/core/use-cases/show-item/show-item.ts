@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import ShowItemDTO from './show-item.dto'
+import type AppConfig from '../../config/app'
+import type ShowItemDTO from './show-item.dto'
 
 export default class ShowItem {
     constructor(private readonly app: AppConfig) {}

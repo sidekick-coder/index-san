@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import DeleteItemDTO from './delete-item.dto'
+import type AppConfig from '../../config/app'
+import type DeleteItemDTO from './delete-item.dto'
 
 export default class UpdateItem {
     constructor(private readonly app: AppConfig) {}

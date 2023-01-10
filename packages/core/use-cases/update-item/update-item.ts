@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import UpdateItemDTO from './update-item.dto'
+import type AppConfig from '../../config/app'
+import type UpdateItemDTO from './update-item.dto'
 
 export default class UpdateItem {
     constructor(private readonly app: AppConfig) {}

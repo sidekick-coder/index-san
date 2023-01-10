@@ -1,6 +1,7 @@
-import AppConfig from '../../config/app'
 import DirectoryEntryNotFound from '../../exceptions/directory-entry-not-found'
-import DeleteDirectoryEntryDTO from './delete-directory-entry.dto'
+
+import type AppConfig from '../../config/app'
+import type DeleteDirectoryEntryDTO from './delete-directory-entry.dto'
 
 export default class DeleteDirectoryEntry {
     constructor(private readonly app: AppConfig) {}

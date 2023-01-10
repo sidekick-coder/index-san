@@ -1,6 +1,7 @@
-import AppConfig from '../../config/app'
 import Collection from '../../entities/collection'
-import CreateCollectionDTO from './create-collection.dto'
+
+import type AppConfig from '../../config/app'
+import type CreateCollectionDTO from './create-collection.dto'
 
 export default class CreateCollection {
     constructor(private readonly app: AppConfig) {}

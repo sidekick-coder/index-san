@@ -1,7 +1,8 @@
-import UpdateViewsDTO from './update-views.dto'
 import DirectoryEntry from '../../entities/directory-entry'
-import AppConfig from '../../config/app'
 import DriveHelper from '../../gateways/drive/helper'
+
+import type UpdateViewsDTO from './update-views.dto'
+import type AppConfig from '../../config/app'
 
 export default class UpdateViews {
     constructor(private readonly app: AppConfig) {}

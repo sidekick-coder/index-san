@@ -1,6 +1,7 @@
-import ShowMenuDTO from './show-menu.dto'
 import DriveHelper from '../../gateways/drive/helper'
-import AppConfig from '../../config/app'
+
+import type ShowMenuDTO from './show-menu.dto'
+import type AppConfig from '../../config/app'
 
 export default class ShowMenu {
     constructor(private readonly app: AppConfig) {}

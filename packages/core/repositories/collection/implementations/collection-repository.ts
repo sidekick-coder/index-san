@@ -1,8 +1,8 @@
 import Collection from '../../../entities/collection'
 import CollectionNotFound from '../../../exceptions/collection-not-found'
-import Drive from '../../../gateways/drive/drive'
 import DriveHelper from '../../../gateways/drive/helper'
-import ICollectionRepository from '../collection-repository'
+import type Drive from '../../../gateways/drive/drive'
+import type ICollectionRepository from '../collection-repository'
 
 export default class CollectionRepository implements ICollectionRepository {
     constructor(public readonly drive: Drive) {}

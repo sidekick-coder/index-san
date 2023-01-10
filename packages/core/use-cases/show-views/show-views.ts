@@ -1,8 +1,9 @@
-import ShowViewsDTO from './show-views.dto'
-import DirectoryEntry from '../../entities/directory-entry'
 import View from '../../entities/view'
 import DriveHelper from '../../gateways/drive/helper'
-import AppConfig from '../../config/app'
+import DirectoryEntry from '../../entities/directory-entry'
+
+import type ShowViewsDTO from './show-views.dto'
+import type AppConfig from '../../config/app'
 
 export default class ShowViews {
     constructor(private readonly app: AppConfig) {}

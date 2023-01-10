@@ -1,7 +1,7 @@
-import AppConfig from '../../config/app'
 import DirectoryEntryNotFound from '../../exceptions/directory-entry-not-found'
 
-import ShowDirectoryEntryDTO from './show-directory-entry.dto'
+import type AppConfig from '../../config/app'
+import type ShowDirectoryEntryDTO from './show-directory-entry.dto'
 
 export default class ShowDirectoryEntry {
     constructor(private readonly app: AppConfig) {}

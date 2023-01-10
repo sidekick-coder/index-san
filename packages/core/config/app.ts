@@ -1,9 +1,9 @@
 import CollectionFacade from '../facades/collection'
 import DriveFacade from '../facades/drive'
 import ItemFacade from '../facades/item'
-import Drive from '../gateways/drive/drive'
-import IEvaluationService from '../gateways/evaluation/evaluation'
-import IWorkspaceRepository from '../repositories/workspace/workspace-repository'
+import type Drive from '../gateways/drive/drive'
+import type IEvaluationService from '../gateways/evaluation/evaluation'
+import type IWorkspaceRepository from '../repositories/workspace/workspace-repository'
 
 interface Repositories {
     workspace: IWorkspaceRepository

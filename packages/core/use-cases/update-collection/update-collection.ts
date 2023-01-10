@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import UpdateCollectionsDTO from './update-collection.dto'
+import type AppConfig from '../../config/app'
+import type UpdateCollectionsDTO from './update-collection.dto'
 
 export default class UpdateCollection {
     constructor(private readonly app: AppConfig) {}

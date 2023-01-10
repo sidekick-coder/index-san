@@ -1,4 +1,4 @@
-import Collection from '../../entities/collection'
+import type Collection from '../../entities/collection'
 
 export default interface UpdateCollectionsDTO {
     workspaceId: string

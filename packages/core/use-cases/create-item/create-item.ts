@@ -1,6 +1,7 @@
-import AppConfig from '../../config/app'
 import Item from '../../entities/item'
-import CreateItemDTO from './create-item.dto'
+
+import type AppConfig from '../../config/app'
+import type CreateItemDTO from './create-item.dto'
 
 export default class CreateItem {
     constructor(private readonly app: AppConfig) {}

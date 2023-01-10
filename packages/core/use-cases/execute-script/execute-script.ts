@@ -1,6 +1,7 @@
-import ExecuteScriptDTO from './execute-script.dto'
-import AppConfig from '../../config/app'
 import DirectoryEntry from '../../entities/directory-entry'
+
+import type ExecuteScriptDTO from './execute-script.dto'
+import type AppConfig from '../../config/app'
 export default class ExecuteScript {
     constructor(private readonly app: AppConfig) {}
 

@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import UpdateWorkspaceDTO from './update-workspace.dto'
+import type AppConfig from '../../config/app'
+import type UpdateWorkspaceDTO from './update-workspace.dto'
 
 export default class UpdateWorkspace {
     constructor(private readonly app: AppConfig) {}

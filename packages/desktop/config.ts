@@ -1,4 +1,4 @@
-import CoreApp from '../core/app'
+import type CoreApp from '../core/app'
 
 export interface ClientAppConfig {
     useCase: CoreApp['useCase']

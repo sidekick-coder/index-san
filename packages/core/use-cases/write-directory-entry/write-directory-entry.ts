@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import WriteDirectoryEntryDTO from './write-directory-entry.dto'
+import type AppConfig from '../../config/app'
+import type WriteDirectoryEntryDTO from './write-directory-entry.dto'
 
 export default class WriteDirectoryEntry {
     constructor(private readonly app: AppConfig) {}

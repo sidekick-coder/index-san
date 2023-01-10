@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import ListDirectoryEntryDTO from './list-directory.dto'
+import type AppConfig from '../../config/app'
+import type ListDirectoryEntryDTO from './list-directory.dto'
 
 export default class ListDirectoryEntry {
     constructor(private readonly app: AppConfig) {}

@@ -2,10 +2,11 @@ import './assets/tailwind.scss'
 import './assets/main.scss'
 import 'highlight.js/scss/base16/dracula.scss'
 
-import { App as VueApp, createApp as baseCreateApp } from 'vue'
-
+import { createApp as baseCreateApp } from 'vue'
 import App from './App.vue'
-import { ClientAppConfig } from './config'
+
+import type { App as VueApp } from 'vue'
+import type { ClientAppConfig } from './config'
 
 interface Plugin {
     default?: (app: VueApp) => void

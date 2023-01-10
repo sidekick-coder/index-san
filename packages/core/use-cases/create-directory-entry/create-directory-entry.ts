@@ -1,8 +1,9 @@
-import AppConfig from '../../config/app'
 import DirectoryEntry from '../../entities/directory-entry'
 import DirectoryEntryAlreadyExists from '../../exceptions/directory-entry-already-exists'
 import DriveHelper from '../../gateways/drive/helper'
-import CreateDirectoryEntryDTO from './create-directory-entry.dto'
+
+import type AppConfig from '../../config/app'
+import type CreateDirectoryEntryDTO from './create-directory-entry.dto'
 
 export default class CreateDirectoryEntry {
     constructor(private readonly app: AppConfig) {}

@@ -1,6 +1,7 @@
-import UpdateMenuDTO from './update-menu.dto'
-import AppConfig from '../../config/app'
 import DriveHelper from '../../gateways/drive/helper'
+
+import type UpdateMenuDTO from './update-menu.dto'
+import type AppConfig from '../../config/app'
 
 export default class UpdateMenu {
     constructor(private readonly app: AppConfig) {}

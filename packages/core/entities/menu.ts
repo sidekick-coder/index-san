@@ -3,7 +3,7 @@ import uuid from 'uuid-random'
 export default class Menu {
     id: string
     label: string
-    children: []
+    children: Menu[]
 
     isSection?: boolean
     to?: string

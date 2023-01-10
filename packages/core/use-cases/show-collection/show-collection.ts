@@ -1,5 +1,5 @@
-import AppConfig from '../../config/app'
-import ShowCollectionsDTO from './show-collection.dto'
+import type AppConfig from '../../config/app'
+import type ShowCollectionsDTO from './show-collection.dto'
 
 export default class ShowCollection {
     constructor(private readonly app: AppConfig) {}

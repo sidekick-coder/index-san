@@ -4,8 +4,8 @@ import Collection from '../../../entities/collection'
 import Item from '../../../entities/item'
 import DirectoryEntry from '../../../entities/directory-entry'
 import ItemNotFound from '../../../exceptions/item-not-found'
-import Drive from '../../../gateways/drive/drive'
-import IItemRepository from '../item-repository'
+import type Drive from '../../../gateways/drive/drive'
+import type IItemRepository from '../item-repository'
 
 interface ItemMeta {
     id: string
