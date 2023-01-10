@@ -3,17 +3,32 @@
   "version": "0.0.0",
   "private": true,
   "main": "dist-electron/main.js",
+  "description": "Productivity app",
+  "author": {
+    "name": "Henrique",
+    "email": "henriqueoliwork@gmail.com",
+    "url": "https://sidekick-coder.com"
+  },
   "scripts": {
+    "start": "electron-forge start",
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "vue": "^3.2.45"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.4",
+    "@electron-forge/maker-deb": "^6.0.4",
+    "@electron-forge/maker-squirrel": "^6.0.4",
+    "@electron-forge/maker-zip": "^6.0.4",
+    "@manypkg/find-root": "^1.1.0",
+    "@npmcli/arborist": "^6.1.5",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/tsconfig": "^0.1.3",

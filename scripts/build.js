@@ -8,7 +8,7 @@ const { command } = require('./utils')
 const BASE_PATH = path.resolve(__dirname, '..')
 
 async function main() {
-    const desktopPath = path.resolve(BASE_PATH, 'packages', 'desktop')
+    const appPath = path.resolve(BASE_PATH, 'packages', 'electron-app')
     const outputFolder = path.resolve(BASE_PATH, 'artifacts')
 
     if (fs.existsSync(outputFolder)) {
@@ -17,17 +17,17 @@ async function main() {
 
     fs.mkdirSync(outputFolder, { recursive: true })
 
-    // build desktop app
+    // build app
 
-    await command('npm -w desktop run build')
+    await command('npm -w electron-app run build')
 
-    // making desktop app
+    // make app artifacts
 
-    await command('npm -w desktop run make')
+    await command('npm -w electron-app run make')
 
     // moving artifacts
 
-    const pattern = path.resolve(desktopPath, 'out', 'make', '**/*').split(path.sep).join('/')
+    const pattern = path.resolve(appPath, 'out', 'make', '**/*').split(path.sep).join('/')
 
     const files = await fg(pattern)
 
