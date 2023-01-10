@@ -123,19 +123,7 @@ watch(() => props.itemId, setContentPath, {
     <l-layout hide-toolbar>
         <l-toolbar>
             <template #append-links>
-                <v-btn size="sm" class="ml-auto" text @click="toggleMode">
-                    <v-icon :name="!editorRef?.edit ? 'pen' : 'eye'" />
-                </v-btn>
-
-                <v-btn size="sm" text @click="reload">
-                    <v-icon name="arrows-rotate" />
-                </v-btn>
-
-                <v-btn size="sm" text @click="save">
-                    <v-icon name="save" />
-                </v-btn>
-
-                <v-btn text size="sm" @click="drawer = !drawer">
+                <v-btn text size="sm" class="ml-auto" @click="drawer = !drawer">
                     <v-icon name="cog" />
                 </v-btn>
             </template>
@@ -146,22 +134,17 @@ watch(() => props.itemId, setContentPath, {
                 <i-value
                     v-for="c in columns"
                     :key="c.id"
-                    :model-value="item[c.field as string]"
-                    :column="c"
-                    :item="item"
-                    class="mb-4 last:mb-0"
+                    :column-id="c.id"
+                    :collection-id="collectionId"
+                    :item-id="item.id"
                     :label="c.label"
-                    @update:model-value="updateItem(item!, c.field!, $event)"
+                    :type="c.type"
+                    class="mb-4 last:mb-0"
                 />
             </v-layout-drawer>
 
             <v-layout-content v-if="contentPath">
-                <e-markdown
-                    ref="editorRef"
-                    hide-actions
-                    :path="contentPath"
-                    :doc:scope="{ item }"
-                />
+                <e-markdown ref="editorRef" :path="contentPath" :doc:scope="{ item }" />
             </v-layout-content>
         </v-layout>
     </l-layout>

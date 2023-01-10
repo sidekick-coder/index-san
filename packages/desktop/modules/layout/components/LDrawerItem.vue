@@ -14,25 +14,25 @@ const props = defineProps({
     },
 })
 
-const visibleSections = useState<string[]>('app:menu:visible', [], {
+const hideSections = useState<string[]>('app:menu:hide', [], {
     localStorage: true,
 })
 
 function toggle() {
-    const index = visibleSections.value.findIndex((i) => i === props.item.id)
+    const index = hideSections.value.findIndex((i) => i === props.item.id)
 
     if (index !== -1) {
-        visibleSections.value.splice(index, 1)
-        visibleSections.value = visibleSections.value.slice()
+        hideSections.value.splice(index, 1)
+        hideSections.value = hideSections.value.slice()
         return
     }
 
-    visibleSections.value.push(props.item.id)
+    hideSections.value.push(props.item.id)
 
-    visibleSections.value = visibleSections.value.slice()
+    hideSections.value = hideSections.value.slice()
 }
 
-const show = computed(() => visibleSections.value.includes(props.item.id))
+const show = computed(() => !hideSections.value.includes(props.item.id))
 </script>
 <template>
     <v-list-item :to="item.to" size="none" class="py-3 px-1 text-sm">

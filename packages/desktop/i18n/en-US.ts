@@ -90,6 +90,7 @@ export default {
     config: 'Config | Configs',
     pasteEntity: 'Paste {0}',
     image: 'Image | Images',
+    sideBySide: 'Side by side',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

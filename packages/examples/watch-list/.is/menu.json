@@ -1,9 +1,47 @@
 [
     {
-        "label": "Medias",
-        "to": "/collections/medias/items",
-        "children": [],
-        "id": "0a276887-e4f6-4e71-96fd-c03bd7d9d7d9",
-        "icon": "fas fa-tv"
+        "id": "2003.8913951353902",
+        "label": "Files",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "Dashboard",
+                "to": "/entries///Dashboard.md",
+                "children": [],
+                "id": "563a722a-11bd-4070-bc0b-a9cb9dd8d361",
+                "icon": "fab fa-markdown"
+            }
+        ]
+    },
+    {
+        "id": "6444.355057023067",
+        "label": "Favorites",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "Captain America",
+                "to": "/collections/medias/items/58335555-3df5-4187-a185-fa5971384ac0",
+                "children": [],
+                "id": "e394064e-d72c-478f-b5ac-a8d4242ef0cd",
+                "icon": "fas fa-shield-halved"
+            }
+        ]
+    },
+    {
+        "id": "6027.402816614498",
+        "label": "Databases",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "Medias",
+                "to": "/collections/medias/items",
+                "children": [],
+                "id": "0a276887-e4f6-4e71-96fd-c03bd7d9d7d9",
+                "icon": "fas fa-database"
+            }
+        ]
     }
 ]

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { computed, ref } from 'vue'
 
@@ -40,6 +41,13 @@ Object.values(fas)
         options.push(name)
     })
 
+Object.values(fab)
+    .filter((i) => !!i.prefix && !!i.iconName)
+    .map((i) => `${i.prefix} fa-${i.iconName}`)
+    .filter((i, index, array) => array.indexOf(i) === index)
+    .forEach((name) => {
+        options.push(name)
+    })
 // selection
 function onSelect(option: string) {
     menu.value = false
