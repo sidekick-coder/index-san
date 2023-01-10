@@ -11,6 +11,7 @@ import { useView } from '@/modules/view/composables/use-view'
 import CActionsColumns from './CActionsColumns.vue'
 import CActionsOrder from './CActionsOrder.vue'
 import CActionsFilters from './CActionsFilters.vue'
+import { useItemStore } from '@/modules/item/store'
 
 const CActionsGallery = defineAsyncComponent(() => import('./CActionsGallery.vue'))
 const CActionsTable = defineAsyncComponent(() => import('./CActionsTable.vue'))
@@ -63,8 +64,22 @@ watch(
 
 // refresh
 
+// items
+
+let itemsStore = useItemStore(props.collectionId)
+
+watch(
+    () => props.collectionId,
+    async (id) => {
+        itemsStore = useItemStore(id)
+
+        await itemsStore.load()
+    },
+    { immediate: true }
+)
+
 async function refresh() {
-    await store.item.setItems(props.collectionId, true)
+    await itemsStore.load(true)
 
     await store.column.set(props.collectionId, true)
 }
@@ -107,7 +122,7 @@ function isCommon(v: View): v is ViewCommon {
                     <v-icon name="search" />
                 </v-btn>
 
-                <v-btn text size="sm" @click="refresh">
+                <v-btn text size="sm" :loading="itemsStore.loading" @click="refresh">
                     <v-icon name="rotate" />
                 </v-btn>
 

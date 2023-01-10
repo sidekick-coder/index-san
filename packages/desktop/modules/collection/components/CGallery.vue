@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { debounce } from 'lodash'
 import { computed, onUnmounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -18,7 +17,8 @@ import { createPayload } from '../composables/filter'
 import { withView } from '@/modules/collection-column/composables/with-view'
 import { useView } from '@/modules/view/composables/use-view'
 import { useHooks, Events } from '@/plugins/hooks'
-import { useItems } from '@/modules/item/composables/items'
+import { useItemStore } from '@/modules/item/store'
+import { withViewIterations } from '@/modules/view/composables'
 
 // Props & Emits
 const props = defineProps({
@@ -62,7 +62,21 @@ const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).
 
 // items
 
-const { items } = useItems(props.collectionId, view)
+let itemsStore = useItemStore(props.collectionId)
+
+const items = computed(() => withViewIterations(itemsStore.items, view.value))
+
+watch(
+    () => props.collectionId,
+    async (id) => {
+        itemsStore = useItemStore(id)
+
+        if (!itemsStore.items.length) {
+            await itemsStore.load()
+        }
+    },
+    { immediate: true }
+)
 
 // thumbnail
 const hooks = useHooks()
@@ -96,7 +110,7 @@ onUnmounted(() => hooks.off('item:updated', onItemUpdated))
 async function create() {
     const item = new Item(createPayload(view.value?.filters, collection?.columns))
 
-    await store.item.create(props.collectionId, item)
+    await itemsStore.create(item)
 }
 
 // on item click
@@ -124,6 +138,7 @@ function onClick(item: Item) {
                 :items="items"
                 :columns="columns"
                 :sizes="view.sizes"
+                :limit="view.limit"
                 item-key="id"
                 class="py-4"
                 v-bind="bindings.gallery"
@@ -162,7 +177,7 @@ function onClick(item: Item) {
                                         size="xs"
                                         color="danger"
                                         dark
-                                        @click="store.item.destroy(collectionId, data.item.id)"
+                                        @click="itemsStore.destroy(data.item.id)"
                                     >
                                         <v-icon name="trash" class="mr-2" />
                                         {{ $t('deleteEntity', [$t('item')]) }}

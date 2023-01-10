@@ -1,10 +1,7 @@
 import { computed, ref, watch } from 'vue'
-import debounce from 'lodash/debounce'
-
-import Column from '@core/entities/column'
-import Item from '@core/entities/item'
 
 import { useStore } from '@/store/global'
+import { useItemStore } from '../store'
 
 interface Params {
     collectionId: string
@@ -13,26 +10,24 @@ interface Params {
 }
 
 export function createValue<T = string | undefined>({ collectionId, columnId, itemId }: Params) {
-    // column
+    const store = useStore()
 
-    const column = ref<Column | null>(null)
+    const column = computed(() => store.column.get(collectionId, columnId))
 
     async function setColumn() {
-        await store.column
-            .show(collectionId, columnId)
-            .then((r) => (column.value = r))
-            .catch(() => (column.value = null))
+        await store.column.set(collectionId)
     }
 
     // item
 
-    const item = ref<Item | null>(null)
+    const itemStore = useItemStore(collectionId)
+
+    const item = computed(() => itemStore.get(itemId))
 
     async function setItem() {
-        await store.item
-            .show(collectionId, itemId)
-            .then((r) => (item.value = r))
-            .catch(() => (item.value = null))
+        if (!itemStore.items.length) {
+            await itemStore.load()
+        }
     }
 
     // payload
@@ -45,6 +40,12 @@ export function createValue<T = string | undefined>({ collectionId, columnId, it
         payload.value = item.value[column.value.field]
     }
 
+    watch(() => {
+        if (!column.value || !item.value) return
+
+        return item.value[column.value.field]
+    }, setPayload)
+
     async function save() {
         if (!column.value || !item.value) return
 
@@ -52,12 +53,10 @@ export function createValue<T = string | undefined>({ collectionId, columnId, it
             [column.value.field]: payload.value,
         }
 
-        await store.item.update(collectionId, itemId, data)
+        await itemStore.update(itemId, data)
     }
 
     // load
-
-    const store = useStore()
 
     const loading = ref(false)
 

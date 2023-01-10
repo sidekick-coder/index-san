@@ -65,26 +65,32 @@ async function setView() {
 
     const { path, type } = entry.value
 
+    store.layout.toolbar = true
+
+    if (type === 'directory') {
+        store.layout.toolbar = false
+        current.value = 'folder'
+        return
+    }
+
     if (/.(md)/.test(path)) {
         current.value = 'markdown'
+        return
     }
 
     if (/.(jpg|jpeg)/.test(path)) {
         current.value = 'image'
+        return
     }
 
     if (/.(json|txt|csv|html)/.test(path)) {
         current.value = 'editor'
+        return
     }
     if (/.(js|ts)/.test(path)) {
         current.value = 'code'
+        return
     }
-
-    if (type === 'directory') {
-        current.value = 'folder'
-    }
-
-    store.layout.toolbar = current.value !== 'folder'
 }
 
 watch(() => entry.value?.path, setView, { deep: true })

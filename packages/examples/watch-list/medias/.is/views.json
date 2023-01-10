@@ -71,18 +71,43 @@
             {
                 "label": "Name",
                 "id": "4c377882-6c55-4a96-bbac-86b07878774a",
-                "width": 340,
-                "hide": false
+                "width": 596,
+                "hide": true
+            },
+            {
+                "label": "Type",
+                "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
+                "options": "Film, Anime",
+                "width": 120,
+                "hide": true
             },
             {
                 "label": "Image",
                 "id": "5cff1b1e-87fc-4729-a3f3-c4d1d84eaa4f",
-                "filename": "{itemPath}/thubnail.{ext}"
+                "filename": "{itemPath}/thubnail.{ext}",
+                "hide": true
             },
             {
-                "label": "New",
-                "id": "b26cae53-7799-48a7-aade-79afd93f44e5",
-                "options": "Film"
+                "label": "Status",
+                "id": "fc954f9b-dcb8-41b2-93a6-bd7e25e8e8fc",
+                "options": [
+                    {
+                        "color": "info",
+                        "name": "in-progress"
+                    },
+                    {
+                        "name": "done"
+                    },
+                    {
+                        "name": "stopped",
+                        "color": "warn"
+                    },
+                    {
+                        "name": "dropped",
+                        "color": "danger"
+                    }
+                ],
+                "hide": true
             }
         ],
         "orderBy": [
@@ -109,7 +134,8 @@
                 "width": "200",
                 "height": "260"
             }
-        }
+        },
+        "limit": 100
     },
     {
         "component": "gallery",

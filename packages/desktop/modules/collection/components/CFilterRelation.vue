@@ -3,13 +3,12 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 
 import Column from '@core/entities/column'
-import Item from '@core/entities/item'
 import { ViewFilter } from '@core/entities/view-common'
 
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { operations } from '../composables/filter'
-import { useStore } from '@/store/global'
+import { useItemStore } from '@/modules/item/store'
 
 const props = defineProps({
     modelValue: {
@@ -44,18 +43,7 @@ const options = Object.keys(operations.relation).map((key) => ({
 }))
 
 // Relation
-const store = useStore()
-
-const relation = ref({
-    items: [] as Item[],
-})
-
-store.item
-    .list({
-        collectionId: props.column.collectionId,
-    })
-    .then((r) => (relation.value.items = r.data))
-    .catch(() => (relation.value.items = []))
+const store = useItemStore(props.column.collectionId)
 </script>
 <template>
     <div class="flex w-full">
@@ -71,7 +59,7 @@ store.item
         <v-select
             v-model="model.value"
             :placeholder="$t('value')"
-            :options="relation.items"
+            :options="store.items"
             :label-key="column.displayField || 'id'"
             class="w-full"
             value-key="id"

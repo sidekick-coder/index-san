@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue'
-
-import Item from '@core/entities/item'
+import { watch } from 'vue'
 
 import { createValue } from '@/modules/item/composables/value'
-import { useStore } from '@/store/global'
+import { useItemStore } from '../store'
 
 const props = defineProps({
     collectionId: {
@@ -25,26 +23,28 @@ const props = defineProps({
 
 const { payload, column, onLoaded, save } = createValue(props)
 
-// options
-const store = useStore()
-
-const options = ref<Item[]>([])
-
-async function setOptions() {
-    if (!column.value) return
-
-    options.value = await store.item.list(column.value.collectionId)
-}
-
-watch(column, setOptions)
-
 await new Promise<void>((resolve) => onLoaded(resolve))
+
+// options
+let store = useItemStore(column.value!.collectionId)
+
+watch(
+    column,
+    async () => {
+        if (!column.value) return
+
+        store = useItemStore(column.value.collectionId)
+
+        await store.load()
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
     <v-select
         v-model="payload"
-        :options="options"
+        :options="store.items"
         :clear-value="() => null"
         :label-key="column?.displayField"
         value-key="id"

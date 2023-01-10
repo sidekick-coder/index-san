@@ -35,16 +35,13 @@ const collection = computed(() => store.collection.get(props.collectionId))
 // item
 const router = useRouter()
 
-const item = computed(() => store.item.get(props.collectionId, props.itemId))
+const item = ref<Item>()
 
 async function setItem() {
-    if (!item.value) {
-        await store.item.setItems(props.collectionId)
-    }
-
-    if (!item.value) {
-        router.push('404')
-    }
+    await store.item
+        .show(props.collectionId, props.itemId)
+        .then((r) => (item.value = r ?? undefined))
+        .catch(() => router.push('404'))
 }
 
 watch(props, setItem, {
@@ -63,18 +60,6 @@ watch(
         immediate: true,
     }
 )
-
-// update item columns
-
-const updateItem = debounce((item: Item, field: string, value: any) => {
-    const old = item[field]
-
-    item[field] = value
-
-    store.item.update(props.collectionId, item.id, { [field]: value }).catch(() => {
-        item[field] = old
-    })
-}, 500)
 
 // drawer
 const drawer = useState('app:item-drawer', true, {

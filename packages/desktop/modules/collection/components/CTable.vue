@@ -18,10 +18,8 @@ import { withOnlyView, withView } from '@/modules/collection-column/composables/
 
 import { withViewIterations } from '@/modules/view/composables'
 import { useView } from '@/modules/view/composables/use-view'
-import { Events, useHooks } from '@/plugins/hooks'
 
-import { useItems } from '@/modules/item/composables/items'
-import { createViewStore } from '@/modules/view/store'
+import { useItemStore } from '@/modules/item/store'
 
 const IValue = defineAsyncComponent(() => import('@/modules/item/components/IValue.vue'))
 const CActions = defineAsyncComponent(() => import('./CActions.vue'))
@@ -123,14 +121,29 @@ function resizeColumn(id: string, width: number) {
 }
 
 // items
-const { items } = useItems(props.collectionId, view)
+
+let itemsStore = useItemStore(props.collectionId)
+
+const items = computed(() => withViewIterations(itemsStore.items, view.value))
+
+watch(
+    () => props.collectionId,
+    async (id) => {
+        itemsStore = useItemStore(id)
+
+        if (!itemsStore.items.length) {
+            await itemsStore.load()
+        }
+    },
+    { immediate: true }
+)
 
 // create item
 
 async function create() {
     const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
 
-    await store.item.create(props.collectionId, item)
+    await itemsStore.create(item)
 }
 </script>
 
@@ -247,7 +260,7 @@ async function create() {
                                             size="xs"
                                             color="danger"
                                             dark
-                                            @click="store.item.destroy(collectionId, data.item.id)"
+                                            @click="itemsStore.destroy(data.item.id)"
                                         >
                                             <v-icon name="trash" class="mr-2" />
                                             {{ $t('deleteEntity', [$t('item')]) }}
