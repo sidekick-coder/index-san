@@ -26,6 +26,13 @@
                 "children": [],
                 "id": "e394064e-d72c-478f-b5ac-a8d4242ef0cd",
                 "icon": "fas fa-shield-halved"
+            },
+            {
+                "label": "Iron man",
+                "to": "/collections/medias/items/0b10b468-1084-4c59-8745-0ac56490591f",
+                "children": [],
+                "id": "11242749-992d-40ac-8332-086a7adeebd3",
+                "icon": "fas fa-robot"
             }
         ]
     },
@@ -41,6 +48,28 @@
                 "children": [],
                 "id": "0a276887-e4f6-4e71-96fd-c03bd7d9d7d9",
                 "icon": "fas fa-database"
+            }
+        ]
+    },
+    {
+        "id": "5162.609535341898",
+        "label": "Scripts",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "content.ts",
+                "to": "/entries/scripts/content.ts",
+                "children": [],
+                "id": "189df81b-8cde-42ea-bf44-367ffb382e93",
+                "icon": "fas fa-code"
+            },
+            {
+                "label": "update-medias.ts",
+                "to": "/entries/scripts/update-medias.ts",
+                "children": [],
+                "id": "428d94df-ea69-4725-9ba5-b52bda14770f",
+                "icon": "fas fa-code"
             }
         ]
     }

@@ -28,6 +28,29 @@
                         "name": "Anime"
                     }
                 ]
+            },
+            {
+                "label": "Status",
+                "id": "fc954f9b-dcb8-41b2-93a6-bd7e25e8e8fc",
+                "field": "status",
+                "type": "select",
+                "options": [
+                    {
+                        "color": "info",
+                        "name": "in-progress"
+                    },
+                    {
+                        "name": "done"
+                    },
+                    {
+                        "name": "stopped",
+                        "color": "warn"
+                    },
+                    {
+                        "name": "dropped",
+                        "color": "danger"
+                    }
+                ]
             }
         ],
         "id": "medias",
