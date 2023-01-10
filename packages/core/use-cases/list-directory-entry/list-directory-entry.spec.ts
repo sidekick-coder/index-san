@@ -1,5 +1,4 @@
 import { test } from '@japa/runner'
-import InMemoryApp from '../../__tests__/app'
 import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ListDirectoryEntry from './list-directory-entry'

@@ -1,9 +1,8 @@
 import { test } from '@japa/runner'
 import DirectoryEntry from '../../entities/directory-entry'
 import Item from '../../entities/item'
-import InMemoryApp from '../../__tests__/app'
+
 import CollectionFactory from '../../__tests__/factories/collections'
-import WorkspaceFactory from '../../__tests__/factories/workspace-factory'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowItem from './show-item'
 

@@ -2,8 +2,7 @@
 import { ref, computed, watch } from 'vue'
 
 import Column from '@core/entities/column'
-import { useVModel } from 'vue-wind/composables/v-model'
-import ViewCommon, { ViewFilter } from '@core/entities/view-common'
+import ViewCommon from '@core/entities/view-common'
 
 import CFilter from './CFilter.vue'
 import { useView } from '@/modules/view/composables/use-view'

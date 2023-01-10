@@ -9,13 +9,11 @@ const repository = await Facades.item.createRepositoryFromWorkspace(Workspace, '
 const items = await repository.list()
 
 for await (const item of items) {
-
     // execute update
 
     await repository.update(item.id, {
-        status: 'done'
-    })   
-    
+        status: 'done',
+    })
+
     console.log(`updated: ${item.name}`)
 }
-

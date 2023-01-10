@@ -1,9 +1,7 @@
-import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
 import Item from '@core/entities/item'
 
-import ViewCommon, { ViewFilter } from '@core/entities/view-common'
+import type { ViewFilter } from '@core/entities/view-common'
 import Column, { ColumnType } from '@core/entities/column'
-import View from '@/../core/entities/view'
 import moment, { Moment } from 'moment'
 import EvaluationOutput from '@/../core/entities/evaluation-output'
 

@@ -1,6 +1,6 @@
 /**
  * This script update all content.md of items to have same template
- * 
+ *
  */
 
 const entries = await Drive.list('medias')
@@ -16,11 +16,9 @@ const template = `
 `
 
 for await (const item of items) {
-    
     const path = Entry.normalize(item._path, 'content.md')
 
     await Drive.write(path, Entry.encode(template))
 
     console.log(`updated: ${item.name}`)
 }
-

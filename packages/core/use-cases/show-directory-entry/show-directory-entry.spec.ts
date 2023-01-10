@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 
 import DirectoryEntry from '../../entities/directory-entry'
 import DriveHelper from '../../gateways/drive/helper'
-import InMemoryApp from '../../__tests__/app'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowDirectoryEntry from './show-directory-entry'
 

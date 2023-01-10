@@ -2,8 +2,6 @@
 import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-import debounce from 'lodash/debounce'
-
 import { useStore } from '@/store/global'
 
 import LLayout from '@/modules/layout/LLayout.vue'

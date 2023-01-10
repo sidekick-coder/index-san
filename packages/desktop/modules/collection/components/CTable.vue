@@ -2,8 +2,7 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
-import { ref, watch, computed, useAttrs, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
-import debounce from 'lodash/debounce'
+import { watch, computed, useAttrs, defineAsyncComponent } from 'vue'
 
 import Draggable from 'vuedraggable'
 

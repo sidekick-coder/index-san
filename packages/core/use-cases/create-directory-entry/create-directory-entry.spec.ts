@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 
 import DirectoryEntry from '../../entities/directory-entry'
 import DirectoryEntryAlreadyExists from '../../exceptions/directory-entry-already-exists'
-import InMemoryApp from '../../__tests__/app'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 
 import CreateDirectoryEntry from './create-directory-entry'

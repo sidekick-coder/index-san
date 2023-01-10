@@ -5,7 +5,7 @@ import set from 'lodash/set'
 import Column from '@core/entities/column'
 import { ViewFilter } from '@core/entities/view-common'
 
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { operations } from '../composables/filter'
 

@@ -1,6 +1,5 @@
 import { test } from '@japa/runner'
 
-import InMemoryApp from '../../__tests__/app'
 import CollectionFactory from '../../__tests__/factories/collections'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import ShowCollection from './show-collection'

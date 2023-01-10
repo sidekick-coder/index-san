@@ -22,7 +22,7 @@ function getValue() {
 
     return props.modelValue
 }
-console.log(getValue()[0])
+
 function setHTML() {
     try {
         content.value = hljs.highlight(getValue(), { language: props.language }).value

@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import Menu from '../../entities/menu'
 
-import InMemoryApp from '../../__tests__/app'
 import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import UpdateMenu from './update-menu'
 

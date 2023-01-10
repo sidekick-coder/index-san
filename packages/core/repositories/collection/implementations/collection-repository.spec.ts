@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import Collection from '../../../entities/collection'
 import CollectionNotFound from '../../../exceptions/collection-not-found'
-import Drive from '../../../gateways/drive/drive'
 import CollectionFactory from '../../../__tests__/factories/collections'
 import InMemoryDrive from '../../../__tests__/gateways/in-memory-drive'
 import CollectionRepository from './collection-repository'
