@@ -22,6 +22,6 @@ export default class EvaluationOutput {
             return arg
         }
 
-        return JSON.stringify(arg)
+        return JSON.stringify(arg, null, 4)
     }
 }

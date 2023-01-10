@@ -11,6 +11,8 @@
     "gateways/**/*.ts",
     "repositories/**/*.ts",
     "services/*.ts",
+    "config/*.ts",
+    "facades/*.ts",
   ],
   "exclude": [
     "**/*.spec.ts"

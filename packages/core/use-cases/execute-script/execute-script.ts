@@ -11,6 +11,7 @@ export default class ExecuteScript {
 
         const sandbox = {
             ...scope,
+            Workspace: workspace,
             Drive: drive,
             Facades: this.app.facades,
             Entry: DirectoryEntry,
