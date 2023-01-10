@@ -30,12 +30,14 @@ test.group('entry-item-repository (repository)', (group) => {
             .map((_, i) => String(i))
             .map((i) => drive.createDir(collection.path, i))
             .map(({ name }) => {
-                const data = {
-                    gender: faker.name.gender(),
-                    age: faker.datatype.number({ min: 1, max: 99 }),
-                }
+                const item = new Item({}, name)
 
-                return new Item(data, name)
+                item.gender = faker.name.gender()
+                item.age = faker.datatype.number({ min: 1, max: 99 })
+
+                item._path = DirectoryEntry.normalize(collection.path, name)
+
+                return item
             })
 
         saveMetas(items)
@@ -50,7 +52,11 @@ test.group('entry-item-repository (repository)', (group) => {
 
         const result = await repository.show(entry.name)
 
-        expect(result).toEqual(new Item({}, entry.name))
+        const item = new Item({}, entry.name)
+
+        item._path = DirectoryEntry.normalize(collection.path, item.id)
+
+        expect(result).toEqual(item)
     })
 
     test('should show method throw an error if item not exists', async ({ expect }) => {

@@ -69,7 +69,11 @@ test.group('evaluation (unit)', () => {
             console.log([ { key: 'abc' } ])            
         `)
 
-            expect(result.logs).toEqual(['Hello', '{"key":123}', '[{"key":"abc"}]'])
+            expect(result.logs).toEqual([
+                'Hello',
+                JSON.stringify({ key: 123 }, null, 4),
+                JSON.stringify([{ key: 'abc' }], null, 4),
+            ])
         })
 
     test('should "{name}" not be able to use import')
