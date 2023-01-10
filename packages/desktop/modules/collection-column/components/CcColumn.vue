@@ -101,6 +101,8 @@ watch(dialog, (value) => {
 
     if (column.value) {
         payload.value = useNonReactive(column.value)
+
+        payload.value.options = useNonReactive(column.value).options || []
     }
 })
 
@@ -196,7 +198,7 @@ const relation = computed(() => {
                             :key="option"
                             class="flex items-center mb-4 last:mb-0"
                         >
-                            <v-menu offset-y>
+                            <v-menu offset-x :close-on-content-click="true">
                                 <template #activator="{ attrs }">
                                     <v-btn
                                         v-bind="attrs"
@@ -204,14 +206,20 @@ const relation = computed(() => {
                                         size="w-4 h-4"
                                     />
 
-                                    <v-input v-model="option.name" class="mx-2" />
-
-                                    <v-btn text @click="payload.options.splice(index, 1)">
-                                        <v-icon name="trash" />
-                                    </v-btn>
+                                    <v-input v-model="option.name" class="ml-4">
+                                        <template #append>
+                                            <v-btn
+                                                color="b-primary"
+                                                size="sm"
+                                                @click="payload.options.splice(index, 1)"
+                                            >
+                                                <v-icon name="times" />
+                                            </v-btn>
+                                        </template>
+                                    </v-input>
                                 </template>
 
-                                <v-card class="p-4" color="b-primary">
+                                <v-card class="py-4 px-2" color="b-primary">
                                     <v-btn
                                         color="accent"
                                         size="w-4 h-4"
@@ -230,12 +238,18 @@ const relation = computed(() => {
                                         class="mb-4"
                                         @click="option.color = 'danger'"
                                     />
+                                    <v-btn
+                                        color="warn"
+                                        size="w-4 h-4"
+                                        class="mb-4"
+                                        @click="option.color = 'warn'"
+                                    />
                                 </v-card>
                             </v-menu>
                         </div>
                         <v-list-item class="-mx-4">
-                            <v-btn color="accent" @click="payload.options.push({})">
-                                {{ $t('addEntity', [$t('option')]) }}
+                            <v-btn color="b-primary" size="sm" @click="payload.options.push({})">
+                                <v-icon name="plus" />
                             </v-btn>
                         </v-list-item>
                     </template>

@@ -18,6 +18,14 @@ const icon = computed(() => {
         entry = DirectoryEntry.file(entry)
     }
 
+    if (entry.name === '.is') {
+        return 'cog'
+    }
+
+    if (entry.type === 'directory') {
+        return 'folder'
+    }
+
     if (/.(jpeg)/.test(entry.path)) {
         return 'image'
     }
@@ -30,12 +38,8 @@ const icon = computed(() => {
         return 'fa-brands fa-html5'
     }
 
-    if (entry.name === '.is') {
-        return 'cog'
-    }
-
-    if (entry.type === 'directory') {
-        return 'folder'
+    if (/.(js|ts)/.test(entry.path)) {
+        return 'fa-brands fa-js'
     }
 
     return 'file'
@@ -52,6 +56,10 @@ const color = computed(() => {
 
     if (/.(html)/.test(entry.path)) {
         return 'text-danger'
+    }
+
+    if (/.(ts)/.test(entry.path)) {
+        return 'text-info'
     }
 
     if (entry.type === 'directory') {

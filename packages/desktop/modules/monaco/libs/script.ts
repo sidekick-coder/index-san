@@ -6,7 +6,13 @@ export function mount() {
     const libs = core.mount()
 
     const source = `
-        declare const workspace: import("core/services/workspace-service").default
+        declare const Workspace: import("core/entities/workspace").default
+
+        declare const Entry: typeof import("core/entities/directory-entry").default
+
+        declare const Drive: import("core/gateways/drive/drive").default
+        
+        declare const Facades: import("core/config/app").default['facades']
 
         declare function setResult(data: any): void
     `

@@ -20,6 +20,7 @@ export function mount() {
         source = source
             .replaceAll('./app-service', 'core/services/app-service')
             .replaceAll('../entities', 'core/entities')
+            .replaceAll('../facades', 'core/facades')
             .replaceAll('../services', 'core/services')
             .replaceAll('../gateways', 'core/gateways')
             .replaceAll('../repositories', 'core/repositories')

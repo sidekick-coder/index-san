@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, defineAsyncComponent } from 'vue'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
@@ -8,11 +8,12 @@ import { useMeta } from '@/composables/metas'
 import { useStore } from '../store'
 import { useRouter } from 'vue-router'
 
-import EFolder from './EFolder.vue'
-import EInfo from './EInfo.vue'
-import EMarkdown from './EMarkdown.vue'
-import ESimpleEditor from './ESimpleEditor.vue'
-import EImage from './EImage.vue'
+const EFolder = defineAsyncComponent(() => import('./EFolder.vue'))
+const EInfo = defineAsyncComponent(() => import('./EInfo.vue'))
+const EMarkdown = defineAsyncComponent(() => import('./EMarkdown.vue'))
+const EImage = defineAsyncComponent(() => import('./EImage.vue'))
+const ECodeEditor = defineAsyncComponent(() => import('./ECodeEditor.vue'))
+const ESimpleEditor = defineAsyncComponent(() => import('./ESimpleEditor.vue'))
 
 const props = defineProps({
     entryId: {
@@ -50,6 +51,7 @@ const views = {
     editor: ESimpleEditor,
     markdown: EMarkdown,
     image: EImage,
+    code: ECodeEditor,
 }
 
 const current = ref<keyof typeof views>('default')
@@ -71,8 +73,11 @@ async function setView() {
         current.value = 'image'
     }
 
-    if (/.(js|json|txt|csv|html)/.test(path)) {
+    if (/.(json|txt|csv|html)/.test(path)) {
         current.value = 'editor'
+    }
+    if (/.(js|ts)/.test(path)) {
+        current.value = 'code'
     }
 
     if (type === 'directory') {

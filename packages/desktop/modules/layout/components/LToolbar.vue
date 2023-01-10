@@ -6,10 +6,9 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { onKeyStroke } from '@vueuse/core'
 
-import { useMeta } from '@/composables/metas'
-
 import { useStore } from '@/modules/menu/store'
 import { useToggleDrawer } from '../composables/drawer'
+import DirectoryEntry from '@/../core/entities/directory-entry'
 
 const route = useRoute()
 const router = useRouter()
@@ -79,13 +78,12 @@ watch(
 // add page to menu
 
 const store = useStore()
-const meta = useMeta()
 
 const menu = ref({
     item: computed(() => store.menu.find((i) => i.to === route.path)),
     async create() {
         await store.create({
-            label: meta.value.title,
+            label: DirectoryEntry.basename(route.path),
             to: route.path,
             children: [],
             id: uuid(),

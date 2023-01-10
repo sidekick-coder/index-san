@@ -81,28 +81,6 @@ const drawer = useState('app:item-drawer', true, {
     localStorage: true,
 })
 
-// markdown actions
-
-const editorRef = ref<InstanceType<typeof EMarkdown>>()
-
-function toggleMode() {
-    if (!editorRef.value) return
-
-    editorRef.value.edit = !editorRef.value?.edit
-}
-
-function reload() {
-    if (!editorRef.value) return
-
-    editorRef.value.setPreview()
-}
-
-function save() {
-    if (!editorRef.value) return
-
-    editorRef.value.save()
-}
-
 // content path
 
 const contentPath = ref<string | null>(null)

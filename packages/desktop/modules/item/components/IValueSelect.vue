@@ -59,8 +59,13 @@ const color = computed(() => {
         @update:model-value="save"
     >
         <template #selection="{ attrs, displayValue }">
-            <div class="px-4 flex" v-bind="attrs">
-                <v-card class="px-2 py-1 text-xs rounded" width="auto" :color="color || 'accent'">
+            <div class="px-4 min-h-[40px] flex items-center" v-bind="attrs">
+                <v-card
+                    class="px-2 py-1 text-xs rounded"
+                    width="auto"
+                    :color="color || 'accent'"
+                    :class="!payload ? 'opacity-0' : ''"
+                >
                     {{ displayValue }}
                 </v-card>
             </div>

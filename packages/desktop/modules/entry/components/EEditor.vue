@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useStore } from '@/modules/entry/store'
 
 import MEditor from '@/modules/monaco/components/MEditor.vue'
 import DirectoryEntry from '@/../core/entities/directory-entry'
+import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({
+    modelValue: {
+        type: String,
+        default: null,
+    },
     path: {
         type: String,
         required: true,
@@ -16,10 +21,32 @@ const props = defineProps({
     },
 })
 
+const emit = defineEmits(['update:modelValue'])
+
 // set content
 const store = useStore()
 
-const content = ref('')
+const model = useVModel(props, 'modelValue', emit)
+
+const innerContent = ref('')
+
+const content = computed({
+    get() {
+        if (model.value !== null) {
+            return model.value
+        }
+
+        return innerContent.value
+    },
+    set(value) {
+        if (model.value !== null) {
+            model.value = value
+            return
+        }
+
+        innerContent.value = value
+    },
+})
 
 async function setContent() {
     const bytes = await store.read({
@@ -43,33 +70,38 @@ async function save() {
         path: props.path,
     })
 }
+
+defineExpose({ save })
 </script>
 <template>
     <v-layout use-percentage>
         <v-layout-toolbar class="border-b border-b-lines">
-            <v-container class="-mr-3 flex justify-end w-full">
-                <v-btn size="sm" class="mr-2" text @click="setContent">
-                    <v-icon name="arrows-rotate" class="mr-2" />
-                    {{ $t('reload') }}
+            <div class="px-7 flex justify-end w-full">
+                <slot name="prepend-actions" />
+
+                <v-btn size="sm" text @click="setContent">
+                    <v-icon name="arrows-rotate" />
                 </v-btn>
-                <v-btn size="sm" class="mr-2" text @click="save">
-                    <v-icon name="save" class="mr-2" />
-                    {{ $t('save') }}
+
+                <v-btn size="sm" text @click="save">
+                    <v-icon name="save" />
                 </v-btn>
-            </v-container>
+            </div>
         </v-layout-toolbar>
 
         <v-layout-content>
-            <div class="h-full flex">
-                <m-editor
-                    v-model="content"
-                    :language="language"
-                    :minimap="false"
-                    :padding="{ top: 20 }"
-                    line-numbers="off"
-                    @keydown.ctrl.s="save"
-                />
-            </div>
+            <slot name="editor" s>
+                <div class="h-full flex">
+                    <m-editor
+                        v-model="content"
+                        :language="language"
+                        :minimap="false"
+                        :padding="{ top: 20 }"
+                        line-numbers="off"
+                        @keydown.ctrl.s="save"
+                    />
+                </div>
+            </slot>
         </v-layout-content>
     </v-layout>
 </template>
