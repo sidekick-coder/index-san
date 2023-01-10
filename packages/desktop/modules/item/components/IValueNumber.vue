@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { createValue } from '@/modules/item/composables/value'
+import { ref } from 'vue'
 
 const props = defineProps({
     collectionId: {
@@ -16,16 +17,28 @@ const props = defineProps({
     },
 })
 
-const { payload, loading, save } = createValue(props)
+const { payload, save, onLoaded } = createValue({
+    collectionId: props.collectionId,
+    columnId: props.columnId,
+    itemId: props.itemId,
+})
+
+await new Promise<void>((resolve) => onLoaded(resolve))
+
+const edit = ref(false)
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-    />
+    <div v-if="!edit" class="cursor-pointer" @click="edit = true">
+        {{ payload }}
+    </div>
 
-    <v-input v-else v-model="payload" type="number" @update:model-value="save" />
+    <v-input
+        v-else
+        v-model="payload"
+        type="number"
+        autofocus
+        @update:model-value="save"
+        @blur="edit = false"
+    />
 </template>

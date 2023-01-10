@@ -20,7 +20,7 @@ const props = defineProps({
     },
 })
 
-const { loading, column, item, onLoaded } = createValue({
+const { column, item, onLoaded } = createValue({
     collectionId: props.collectionId,
     columnId: props.columnId,
     itemId: props.itemId,
@@ -32,10 +32,10 @@ const store = useStore()
 
 const output = ref<EvaluationOutput>()
 
-function setResult() {
+async function setResult() {
     if (!column.value || !item.value) return
 
-    store.script
+    await store.script
         .execute({
             content: column.value.content,
             scope: { item: item.value },
@@ -43,16 +43,14 @@ function setResult() {
         .then((r) => (output.value = r))
         .catch(() => (output.value = undefined))
 }
-onLoaded(setResult)
+
+await new Promise<void>((resolve) => onLoaded(resolve))
+
+await setResult()
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-    />
-
-    <v-input v-else :model-value="output?.result" readonly />
+    <div>
+        {{ output?.result }}
+    </div>
 </template>

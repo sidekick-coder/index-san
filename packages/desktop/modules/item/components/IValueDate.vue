@@ -18,7 +18,9 @@ const props = defineProps({
     },
 })
 
-const { payload, column, loading, save } = createValue(props)
+const { payload, column, onLoaded, save } = createValue(props)
+
+await new Promise<void>((resolve) => onLoaded(resolve))
 
 const edit = ref(false)
 
@@ -39,14 +41,7 @@ const display = computed(() => {
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-    />
-
-    <v-input v-else-if="edit" v-model="payload" @update:model-value="save">
+    <v-input v-if="edit" v-model="payload" @update:model-value="save">
         <template #append>
             <v-btn size="sm" color="b-secondary" @click="edit = false">
                 <v-icon name="check" />
@@ -54,22 +49,21 @@ const display = computed(() => {
         </template>
     </v-input>
 
-    <v-input
+    <div
         v-else
         :model-value="display"
-        class="cursor-pointer group/input"
-        :input:class="!isValid(payload) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
-        readonly
+        :class="!isValid(payload) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
+        class="cursor-pointer group/input flex"
     >
-        <template #append>
-            <v-btn
-                size="sm"
-                color="b-secondary"
-                class="group-hover/input:opacity-100 opacity-0"
-                @click.stop="edit = true"
-            >
-                <v-icon name="pen" />
-            </v-btn>
-        </template>
-    </v-input>
+        {{ display }}
+
+        <v-btn
+            size="sm"
+            class="group-hover/input:opacity-100 opacity-0 ml-auto"
+            color="b-secondary"
+            @click.stop="edit = true"
+        >
+            <v-icon name="pen" />
+        </v-btn>
+    </div>
 </template>

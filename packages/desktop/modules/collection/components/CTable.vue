@@ -264,7 +264,8 @@ async function create() {
                                 :column-id="c.id"
                                 :item-id="data.item.id"
                                 :type="c.type"
-                                :size="cIndex === 1 ? 'py-2' : 'md'"
+                                size="none"
+                                :class="cIndex === 1 ? 'py-2' : 'px-4 py-2'"
                                 select:no-chevron
                                 menu:offset-y
                                 color="none"

@@ -46,83 +46,91 @@ const bindings = createBindings(attrs, ['input', 'select'])
 </script>
 
 <template>
-    <i-value-text
-        v-if="type === ColumnType.text"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+    <suspense>
+        <template #fallback>
+            <div class="text-t-secondary text-sm py-2" v-bind="bindings.root">
+                {{ $t('loading') }}
+            </div>
+        </template>
 
-    <i-value-number
-        v-else-if="type === ColumnType.number"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-text
+            v-if="type === ColumnType.text"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
 
-    <i-value-select
-        v-else-if="type === ColumnType.select"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'select'])"
-    />
+        <i-value-number
+            v-else-if="type === ColumnType.number"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
 
-    <i-value-script
-        v-else-if="type === ColumnType.script"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-select
+            v-else-if="type === ColumnType.select"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'select'])"
+        />
 
-    <i-value-link
-        v-else-if="type === ColumnType.link"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-script
+            v-else-if="type === ColumnType.script"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
 
-    <i-value-relation
-        v-else-if="type === ColumnType.relation"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'select'])"
-    />
+        <i-value-link
+            v-else-if="type === ColumnType.link"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
 
-    <i-value-date
-        v-else-if="type === ColumnType.date"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-relation
+            v-else-if="type === ColumnType.relation"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'select'])"
+        />
 
-    <i-value-entry
-        v-else-if="type === ColumnType.entry"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-date
+            v-else-if="type === ColumnType.date"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
 
-    <i-value-timestamp
-        v-else-if="type === ColumnType.createdAt || type === ColumnType.updatedAt"
-        :collection-id="collectionId"
-        :item-id="itemId"
-        :column-id="columnId"
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-entry
+            v-else-if="type === ColumnType.entry"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
 
-    <v-input
-        v-else
-        :model-value="$t('errors.unknown')"
-        class="text-danger"
-        readonly
-        v-bind="bindings.multiple(['root', 'input'])"
-    />
+        <i-value-timestamp
+            v-else-if="type === ColumnType.createdAt || type === ColumnType.updatedAt"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
+
+        <div
+            v-else
+            :model-value="$t('errors.unknown')"
+            class="text-danger px-4 py-2"
+            readonly
+            v-bind="bindings.multiple(['root', 'input'])"
+        />
+    </suspense>
 </template>

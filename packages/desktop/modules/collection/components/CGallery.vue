@@ -201,7 +201,8 @@ function onClick(item: Item) {
                                     select:no-chevron
                                     menu:offset-y
                                     color="none"
-                                    size="px-4 py-3 text-sm"
+                                    size="none"
+                                    class="px-4 py-3 text-sm"
                                     flat
                                 />
                             </v-list-item>

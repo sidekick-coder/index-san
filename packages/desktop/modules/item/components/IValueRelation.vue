@@ -23,7 +23,7 @@ const props = defineProps({
 
 // value
 
-const { payload, column, loading, save } = createValue(props)
+const { payload, column, onLoaded, save } = createValue(props)
 
 // options
 const store = useStore()
@@ -37,30 +37,23 @@ async function setOptions() {
 }
 
 watch(column, setOptions)
+
+await new Promise<void>((resolve) => onLoaded(resolve))
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-    />
-
-    <v-input
-        v-else-if="!column"
-        :model-value="$t('errors.unknown')"
-        class="text-t-secondary text-sm"
-        readonly
-    />
-
     <v-select
-        v-else
         v-model="payload"
         :options="options"
         :clear-value="() => null"
-        :label-key="column.displayField"
+        :label-key="column?.displayField"
         value-key="id"
         @update:model-value="save"
-    />
+    >
+        <template #selection="{ attrs, displayValue }">
+            <div class="min-h-[40px] flex items-center cursor-pointer" v-bind="attrs">
+                {{ displayValue || payload }}
+            </div>
+        </template>
+    </v-select>
 </template>

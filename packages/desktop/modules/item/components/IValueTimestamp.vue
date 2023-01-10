@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { createValue } from '../composables/value'
 import moment from 'moment'
 import { ColumnType } from '@/../core/entities/column'
@@ -19,8 +19,9 @@ const props = defineProps({
     },
 })
 
-const { column, item, loading } = createValue(props)
+const { column, item, onLoaded } = createValue(props)
 
+await new Promise<void>((resolve) => onLoaded(resolve))
 // display
 const display = computed(() => {
     if (!item.value || !column.value) return ''
@@ -34,12 +35,5 @@ const display = computed(() => {
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-    />
-
-    <v-input v-else :model-value="display" readonly> </v-input>
+    <div>{{ display }}</div>
 </template>

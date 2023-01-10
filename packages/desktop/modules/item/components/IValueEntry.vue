@@ -27,7 +27,9 @@ const props = defineProps({
     },
 })
 
-const { payload, column, item, save, loading } = createValue<string | null>(props)
+const { payload, column, item, save, onLoaded } = createValue<string | null>(props)
+
+await new Promise<void>((resolve) => onLoaded(resolve))
 
 // upload
 const store = useStore()
@@ -109,25 +111,13 @@ async function uploadByClipboard() {
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-        v-bind="$attrs"
-    />
-
-    <v-menu v-else offset-y close-on-content-click>
+    <v-menu offset-y close-on-content-click>
         <template #activator="{ attrs }">
-            <v-input
-                :model-value="!payload ? '' : DirectoryEntry.basename(payload)"
-                readonly
-                class="cursor-pointer"
-                input:class="cursor-pointer"
-                v-bind="{ ...$attrs, ...attrs }"
-            >
-            </v-input>
+            <div class="cursor-pointer" v-bind="{ ...$attrs, ...attrs }">
+                {{ !payload ? '' : DirectoryEntry.basename(payload) }}
+            </div>
         </template>
+
         <v-card color="b-secondary" class="drop-shadow-xl">
             <v-list-item @click="pickFile">
                 <v-icon name="upload" class="mr-4" />

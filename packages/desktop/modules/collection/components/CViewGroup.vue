@@ -239,24 +239,26 @@ function isTable(id: string) {
         </c-actions>
 
         <div class="overflow-auto w-full h-[calc(100%_-_45px)]">
-            <template v-for="id in view.viewIds" :key="id">
-                <c-table
-                    v-if="isTable(id) && id === view.selected"
-                    :collection-id="collectionId"
-                    :view-id="id"
-                    v-bind="bindings.table"
-                    height="100%"
-                    hide-actions
-                />
+            <transition-group name="fade">
+                <template v-for="id in view.viewIds" :key="id">
+                    <c-table
+                        v-if="isTable(id) && id === view.selected"
+                        :collection-id="collectionId"
+                        :view-id="id"
+                        v-bind="bindings.table"
+                        height="100%"
+                        hide-actions
+                    />
 
-                <c-gallery
-                    v-else-if="id === view.selected"
-                    :collection-id="collectionId"
-                    :view-id="id"
-                    v-bind="bindings.gallery"
-                    hide-actions
-                />
-            </template>
+                    <c-gallery
+                        v-else-if="id === view.selected"
+                        :collection-id="collectionId"
+                        :view-id="id"
+                        v-bind="bindings.gallery"
+                        hide-actions
+                    />
+                </template>
+            </transition-group>
 
             <div v-if="!view.viewIds.length" class="h-full w-full flex items-center justify-center">
                 <div class="text-center mb-2 text-t-secondary">

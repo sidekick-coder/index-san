@@ -18,11 +18,13 @@ const props = defineProps({
     },
 })
 
-const { payload, loading, column, save } = createValue({
+const { payload, onLoaded, column, save } = createValue({
     collectionId: props.collectionId,
     columnId: props.columnId,
     itemId: props.itemId,
 })
+
+await new Promise<void>((resolve) => onLoaded(resolve))
 
 const options = computed(() => {
     if (!column.value) return []
@@ -42,15 +44,7 @@ const color = computed(() => {
 </script>
 
 <template>
-    <v-input
-        v-if="loading"
-        :model-value="`${$t('loading')}...`"
-        class="text-t-secondary text-sm"
-        readonly
-    />
-
     <v-select
-        v-else
         v-model="payload"
         :options="options"
         label-key="name"
@@ -66,10 +60,11 @@ const color = computed(() => {
                     :color="color || 'accent'"
                     :class="!payload ? 'opacity-0' : ''"
                 >
-                    {{ displayValue }}
+                    {{ displayValue || payload }}
                 </v-card>
             </div>
         </template>
+
         <template #option="{ option, attrs }">
             <v-list-item v-bind="attrs" color="opacity-75 hover:opacity-100">
                 <v-card
