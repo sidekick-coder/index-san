@@ -129,5 +129,9 @@ onErrorCaptured((err) => {
             @apply list-disc;
         }
     }
+
+    a {
+        @apply text-accent;
+    }
 }
 </style>
