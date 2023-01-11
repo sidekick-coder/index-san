@@ -102,7 +102,7 @@ function refresh() {
                 {{ title }}
             </v-card-title>
 
-            <v-btn text size="sm" class="ml-auto text-t-secondary" @click="refresh">
+            <v-btn text size="sm" class="ml-auto text-t-secondary" @click="current = 'chart'">
                 <v-icon name="chart-pie" />
             </v-btn>
 

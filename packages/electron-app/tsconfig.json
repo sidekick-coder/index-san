@@ -3,7 +3,7 @@
   "include": ["env.d.ts", "src/**/*", "src-electron/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
-    "importsNotUsedAsValues": "remove",
+    "importsNotUsedAsValues": "preserve",
     "strictPropertyInitialization": false,
     "paths": {
       "@client/*": ["../desktop/*"],
