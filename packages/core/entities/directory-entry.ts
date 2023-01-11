@@ -33,9 +33,9 @@ export default class DirectoryEntry {
     public static extname(...paths: string[]) {
         const basename = this.basename(...paths)
 
-        const [, extname] = basename.split('.')
+        const extname = basename.split('.').pop()
 
-        return extname
+        return extname ?? ''
     }
 
     public static directory(...paths: string[]) {

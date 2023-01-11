@@ -26,19 +26,25 @@ const icon = computed(() => {
         return 'folder'
     }
 
-    if (/.(jpeg)/.test(entry.path)) {
+    const ext = DirectoryEntry.extname(entry.path)
+
+    if (['jpeg'].includes(ext)) {
         return 'image'
     }
 
-    if (/.(md)/.test(entry.path)) {
+    if (['md'].includes(ext)) {
         return 'fa-brands fa-markdown'
     }
 
-    if (/.(html)/.test(entry.path)) {
+    if (['html'].includes(ext)) {
         return 'fa-brands fa-html5'
     }
 
-    if (/.(js|ts)/.test(entry.path)) {
+    if (['csv'].includes(ext)) {
+        return 'fa-file-csv'
+    }
+
+    if (['js', 'ts'].includes(ext)) {
         return 'fa-brands fa-js'
     }
 
@@ -54,15 +60,21 @@ const color = computed(() => {
         entry = DirectoryEntry.file(entry)
     }
 
-    if (/.(html)/.test(entry.path)) {
-        return 'text-danger'
-    }
-
-    if (/.(ts)/.test(entry.path)) {
+    if (entry.name === '.is') {
         return 'text-info'
     }
 
     if (entry.type === 'directory') {
+        return 'text-info'
+    }
+
+    const ext = DirectoryEntry.extname(entry.path)
+
+    if (['html'].includes(ext)) {
+        return 'text-danger'
+    }
+
+    if (['ts'].includes(ext)) {
         return 'text-info'
     }
 
