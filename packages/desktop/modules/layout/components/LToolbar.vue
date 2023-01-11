@@ -83,7 +83,7 @@ const menu = ref({
     item: computed(() => store.menu.find((i) => i.to === route.path)),
     async create() {
         await store.create({
-            label: DirectoryEntry.basename(route.path),
+            label: document.title,
             to: route.path,
             children: [],
             id: uuid(),

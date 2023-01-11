@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import { createValue } from '@/modules/item/composables/value'
 import EvaluationOutput from '@/../core/entities/evaluation-output'
@@ -26,6 +26,8 @@ const { column, item, onLoaded } = createValue({
     itemId: props.itemId,
 })
 
+await new Promise<void>((resolve) => onLoaded(resolve))
+
 // execute script
 
 const store = useStore()
@@ -44,9 +46,11 @@ async function setResult() {
         .catch(() => (output.value = undefined))
 }
 
-await new Promise<void>((resolve) => onLoaded(resolve))
-
 await setResult()
+
+watch([column, item], setResult, {
+    deep: true,
+})
 </script>
 
 <template>

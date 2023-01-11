@@ -41,29 +41,21 @@ const display = computed(() => {
 </script>
 
 <template>
-    <v-input v-if="edit" v-model="payload" @update:model-value="save">
-        <template #append>
-            <v-btn size="sm" color="b-secondary" @click="edit = false">
-                <v-icon name="check" />
-            </v-btn>
-        </template>
-    </v-input>
+    <v-input
+        v-if="edit"
+        v-model="payload"
+        autofocus
+        @update:model-value="save"
+        @blur="edit = false"
+    />
 
     <div
         v-else
         :model-value="display"
         :class="!isValid(payload) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
-        class="cursor-pointer group/input flex"
+        class="cursor-pointer"
+        @click="edit = true"
     >
         {{ display }}
-
-        <v-btn
-            size="sm"
-            class="group-hover/input:opacity-100 opacity-0 ml-auto"
-            color="b-secondary"
-            @click.stop="edit = true"
-        >
-            <v-icon name="pen" />
-        </v-btn>
     </div>
 </template>
