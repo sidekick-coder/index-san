@@ -10,6 +10,34 @@ export default class FSDrive implements Drive {
         path: '',
     }
 
+    private lockFiles: string[] = []
+
+    public isUnlocked(path: string, timeout = 10000) {
+        if (!this.lockFiles.includes(path)) return Promise.resolve()
+
+        const now = Date.now()
+
+        return new Promise<void>((resolve, reject) => {
+            const interval = setInterval(() => {
+                if (Date.now() > now + timeout) {
+                    reject(new Error('timeout'))
+
+                    clearInterval(interval)
+
+                    return
+                }
+
+                if (!this.lockFiles.includes(path)) {
+                    resolve()
+
+                    clearInterval(interval)
+
+                    return
+                }
+            })
+        })
+    }
+
     public resolve(args: string | string[], separator = path.sep) {
         args = Array.isArray(args) ? args : [args]
 
@@ -93,11 +121,17 @@ export default class FSDrive implements Drive {
     }
 
     public async write(entryPath: string, content: Uint8Array) {
+        await this.isUnlocked(entryPath)
+
+        this.lockFiles.push(entryPath)
+
         const systemPath = this.resolve([this.config.path, entryPath])
 
         await fs.promises.mkdir(path.dirname(systemPath), { recursive: true })
 
         await fs.promises.writeFile(systemPath, content)
+
+        this.lockFiles.splice(this.lockFiles.indexOf(entryPath), 1)
     }
 
     public async read(entryPath: string): Promise<Uint8Array | null> {
