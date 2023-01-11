@@ -1,3 +1,4 @@
+import ArrayFacade from '../facades/array'
 import CollectionFacade from '../facades/collection'
 import DriveFacade from '../facades/drive'
 import ItemFacade from '../facades/item'
@@ -13,6 +14,7 @@ interface Facades {
     drive: DriveFacade
     collection: CollectionFacade
     item: ItemFacade
+    array: typeof ArrayFacade
 }
 
 interface Services {
@@ -38,6 +40,7 @@ export default class AppConfig {
             drive: driveFacade,
             collection: collectionFacade,
             item: itemFacade,
+            array: ArrayFacade,
         }
     }
 }

@@ -1,14 +1,14 @@
 import { test } from '@japa/runner'
-import ArrayService from './array-service'
+import ArrayFacade from './array'
 
-test.group('array-service (service)', () => {
+test.group('array-facade (facades)', () => {
     test('should return items filtered', ({ expect }) => {
         const items = [
             { id: 1, name: 'item 01' },
             { id: 2, name: 'item 02' },
         ]
 
-        const result = ArrayService.from(items).filter((i) => i.id == 2)
+        const result = ArrayFacade.from(items).filter((i) => i.id == 2)
 
         expect(result.length).toBe(1)
 
@@ -25,7 +25,7 @@ test.group('array-service (service)', () => {
             { id: 6, amount: 5 },
         ]
 
-        const result = ArrayService.from(items).sumBy('amount')
+        const result = ArrayFacade.from(items).sumBy('amount')
 
         expect(result).toBe(items.length * 5)
     })
@@ -40,7 +40,7 @@ test.group('array-service (service)', () => {
             { id: 6, tag: 'group-4' },
         ]
 
-        const result = ArrayService.from(items).groupBy('tag')
+        const result = ArrayFacade.from(items).groupBy('tag')
 
         expect(result.length).toBe(4)
 
@@ -59,7 +59,7 @@ test.group('array-service (service)', () => {
             { id: 6, tag: 'group-4', amount: 5 },
         ]
 
-        const result = ArrayService.from(items).groupBy('tag').sumItemsBy('amount')
+        const result = ArrayFacade.from(items).groupBy('tag').sumItemsBy('amount')
 
         expect(result.map((i) => i.amount)).toEqual([10, 10, 5, 5])
     })

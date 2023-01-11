@@ -9,26 +9,26 @@ type GetKey<Type, K extends keyof Type, R> = {
     [Property in keyof Pick<Type, K>]: R
 }
 
-class ArrayService<T = Record<string, any>> extends Array<T> {
+class ArrayFacade<T = Record<string, any>> extends Array<T> {
     public static from<T>(items: T[]) {
-        const array = new ArrayService<T>()
+        const array = new ArrayFacade<T>()
 
         array.push(...items)
 
         return array
     }
 
-    public filter(predicate: (value: T, index: number, array: T[]) => any): ArrayService<T> {
+    public filter(predicate: (value: T, index: number, array: T[]) => any): ArrayFacade<T> {
         const items = Array.from(this).filter(predicate)
 
-        return ArrayService.from<T>(items)
+        return ArrayFacade.from<T>(items)
     }
 
     public groupBy<K extends keyof T>(key: K) {
         const array = new ArrayGroupService<GroupArray<T> & GetKey<T, K, string>>()
 
         Object.entries(groupBy(this, key)).map(([group, items]) =>
-            array.push({ [key]: group, _items: ArrayService.from(items) } as any)
+            array.push({ [key]: group, _items: ArrayFacade.from(items) } as any)
         )
 
         return array
@@ -39,7 +39,7 @@ class ArrayService<T = Record<string, any>> extends Array<T> {
     }
 }
 
-class ArrayGroupService<T extends GroupArray> extends ArrayService<T> {
+class ArrayGroupService<T extends GroupArray> extends ArrayFacade<T> {
     public sumItemsBy<K extends keyof T['_items'][number]>(key: K) {
         const array = new ArrayGroupService<T & GetKey<T, K, number>>()
 
@@ -54,4 +54,4 @@ class ArrayGroupService<T extends GroupArray> extends ArrayService<T> {
     }
 }
 
-export default ArrayService
+export default ArrayFacade
