@@ -58,7 +58,7 @@ const columns = computed(() => withView(collection?.columns || [], view.value?.c
 
 // count visible columns
 
-const visibleColumns = computed(() => view.value.columns.filter((c) => !c.hide).length)
+const visibleColumns = computed(() => columns.value.filter((c) => !c.hide).length)
 
 // items
 

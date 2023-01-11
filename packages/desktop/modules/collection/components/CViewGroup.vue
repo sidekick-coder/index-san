@@ -9,6 +9,7 @@ import ViewGallery from '@core/entities/view-gallery'
 import { createViewStore } from '@/modules/view/store'
 import { useView } from '@/modules/view/composables/use-view'
 import { createBindings } from '@/composables/binding'
+import { useState } from '@/composables/state'
 
 const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))
 const CTable = defineAsyncComponent(() => import('./CTable.vue'))
@@ -41,10 +42,18 @@ let store = createViewStore(props.collectionId)
 
 let view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
 
+let selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
+    localStorage: true,
+})
+
 async function setView() {
     loading.value = true
 
     store = createViewStore(props.collectionId)
+
+    selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
+        localStorage: true,
+    })
 
     if (!store.views.length) {
         await store.load()
@@ -64,13 +73,13 @@ watch([() => props.viewId, () => props.collectionId], setView, { immediate: true
 async function seleteView(id: string) {
     if (!view.value) return
 
-    view.value.selected = id
+    selectedView.value = id
 }
 
 function isActive(id: string) {
     if (!view.value) return
 
-    return view.value.selected === id
+    return selectedView.value === id
 }
 
 function getLabel(id: string) {
@@ -95,7 +104,7 @@ function addView(type: keyof typeof options, payload: any = {}) {
 
     view.value.viewIds.push(entity.id)
 
-    view.value.selected = entity.id
+    selectedView.value = entity.id
 }
 
 // delete
@@ -150,7 +159,7 @@ function isTable(id: string) {
 </script>
 <template>
     <v-card v-if="!loading" v-bind="bindings.root">
-        <c-actions v-bind="bindings.head" :collection-id="collectionId" :view-id="view.selected">
+        <c-actions v-bind="bindings.head" :collection-id="collectionId" :view-id="selectedView">
             <template #left>
                 <div class="flex">
                     <v-draggable
@@ -242,7 +251,7 @@ function isTable(id: string) {
             <transition-group name="fade">
                 <template v-for="id in view.viewIds" :key="id">
                     <c-table
-                        v-if="isTable(id) && id === view.selected"
+                        v-if="isTable(id) && id === selectedView"
                         :collection-id="collectionId"
                         :view-id="id"
                         v-bind="bindings.table"
@@ -251,7 +260,7 @@ function isTable(id: string) {
                     />
 
                     <c-gallery
-                        v-else-if="id === view.selected"
+                        v-else-if="id === selectedView"
                         :collection-id="collectionId"
                         :view-id="id"
                         v-bind="bindings.gallery"
