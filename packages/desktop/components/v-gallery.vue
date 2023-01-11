@@ -89,9 +89,9 @@ const size = computed(() => {
 
 // pagination
 
-const pagination = ref({ limit: +props.limit })
+const pagination = ref({ page: 1 })
 
-const visibleItems = computed(() => props.items.slice(0, pagination.value.limit))
+const visibleItems = computed(() => props.items.slice(0, pagination.value.page * +props.limit))
 </script>
 
 <template>
@@ -147,15 +147,14 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.limit)
         />
 
         <v-card
-            v-if="items.length > pagination.limit"
+            v-if="visibleItems.length < items.length"
             width="100%"
-            class="cursor-pointer"
+            class="cursor-pointer hover:bg-b-secondary"
             v-bind="bindings.card"
-            :color="color"
-            @click="pagination.limit = pagination.limit + Number(limit)"
+            @click="pagination.page++"
         >
-            <v-card-content class="items-center text-sm">
-                <fa-icon icon="arrow-down" class="mr-4" />
+            <v-card-content class="items-center justify-center text-sm text-t-secondary">
+                <v-icon name="arrow-down" class="mr-4" />
 
                 <span>{{ `${$t('loadMore')} (${visibleItems.length}/${items.length})` }}</span>
             </v-card-content>

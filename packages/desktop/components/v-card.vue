@@ -45,7 +45,7 @@ const colors = computed(() => {
 
 // classes
 const classes = computed(() => {
-    const result: string[] = []
+    const result: string[] = ['transition-all']
 
     if (props.color) {
         result.push(colors.value[props.color] || props.color)
