@@ -13,8 +13,6 @@ export function parse(source: string, options?: Options) {
         html: true,
         xhtmlOut: true,
         breaks: true,
-        linkify: true,
-        typographer: true,
         highlight: (str: string, lang: string) => {
             if (lang && hljs.getLanguage(lang)) {
                 try {

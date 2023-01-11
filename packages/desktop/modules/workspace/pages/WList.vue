@@ -33,6 +33,7 @@ const columns = [
     {
         name: 'actions',
         field: 'actions',
+        width: 100,
     },
 ]
 
@@ -138,20 +139,8 @@ async function deleteItem(id: string) {
         </template>
 
         <template #item-actions="{ item }">
-            <v-td class="flex gap-x-2 p-2">
-                <v-btn size="sm" text class="mr-2" to="/scripts">
-                    <v-icon name="code" />
-                </v-btn>
-
-                <v-btn size="sm" text class="mr-2" to="/collections">
-                    <v-icon name="database" />
-                </v-btn>
-
-                <v-btn size="sm" text class="mr-2" to="/entries">
-                    <v-icon name="folder" />
-                </v-btn>
-
-                <v-btn size="sm" text color="danger" @click="deleteItem(item.id)">
+            <v-td class="flex gap-x-2 pr-10 justify-end">
+                <v-btn size="sm" color="b-secondary" @click="deleteItem(item.id)">
                     <fa-icon icon="trash" />
                 </v-btn>
             </v-td>

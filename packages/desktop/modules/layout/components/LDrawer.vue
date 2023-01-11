@@ -26,6 +26,13 @@ const items = computed(() => {
             icon: 'cubes',
         },
         {
+            label: tm.t('collection', 2),
+            to: '/collections',
+            children: [],
+            id: 'collections',
+            icon: 'database',
+        },
+        {
             label: tm.t('entry', 2),
             to: '/entries',
             children: [],
