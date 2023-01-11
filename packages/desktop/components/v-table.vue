@@ -144,10 +144,10 @@ function getKey(item: any, index: number) {
             :limit="limit"
             :length="visibleItems.length"
         >
-            <v-tr v-if="items.length > limit">
+            <v-tr v-if="visibleItems.length < items.length">
                 <v-td
                     :colspan="columns.length"
-                    class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0"
+                    class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0 text-center"
                     @click="pagination.page++"
                 >
                     <fa-icon icon="arrow-down" class="mr-2" />

@@ -297,25 +297,6 @@ async function create() {
                     </v-tr>
                 </template>
 
-                <template #pagination="{ pagination, limit, length }">
-                    <v-tr
-                        v-if="items.length > limit"
-                        class="cursor-pointer hover:bg-b-secondary"
-                        @click="pagination.page++"
-                    >
-                        <v-td class="!border-x-0"></v-td>
-
-                        <v-td
-                            :colspan="collection?.columns.length"
-                            class="!border-x-0 !px-0 text-t-secondary text-sm"
-                        >
-                            <fa-icon icon="arrow-down" class="mr-2" />
-
-                            <span>{{ `${$t('loadMore')} (${length}/${items.length})` }}</span>
-                        </v-td>
-                    </v-tr>
-                </template>
-
                 <template #append>
                     <v-tr class="cursor-pointer hover:bg-b-secondary" @click="create">
                         <v-td class="!border-x-0"></v-td>
