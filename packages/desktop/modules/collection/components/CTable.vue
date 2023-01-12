@@ -2,7 +2,7 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
-import { watch, computed, useAttrs, defineAsyncComponent } from 'vue'
+import { ref, watch, computed, useAttrs, defineAsyncComponent } from 'vue'
 
 import Draggable from 'vuedraggable'
 
@@ -144,6 +144,25 @@ async function create() {
 
     await itemsStore.create(item)
 }
+
+// actions
+
+const actions = ref({
+    menu: false,
+    id: null as string | null,
+    x: 0,
+    y: 0,
+})
+
+function showActions(event: MouseEvent, id: string) {
+    const reacts = (event.target as HTMLElement).getBoundingClientRect()
+
+    actions.value.x = reacts.x
+    actions.value.y = reacts.y + 32
+
+    actions.value.id = id
+    actions.value.menu = true
+}
 </script>
 
 <template>
@@ -159,6 +178,30 @@ async function create() {
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
+            <v-menu v-model="actions.menu" :x="actions.x" :y="actions.y" close-on-content-click>
+                <v-card color="b-secondary">
+                    <v-list-item
+                        size="xs"
+                        color="info"
+                        dark
+                        :to="`/collections/${collectionId}/items/${actions.id}`"
+                    >
+                        <v-icon name="eye" class="mr-2" />
+                        {{ $t('viewEntity', [$t('item')]) }}
+                    </v-list-item>
+
+                    <v-list-item
+                        size="xs"
+                        color="danger"
+                        dark
+                        @click="itemsStore.destroy(actions.id!)"
+                    >
+                        <v-icon name="trash" class="mr-2" />
+                        {{ $t('deleteEntity', [$t('item')]) }}
+                    </v-list-item>
+                </v-card>
+            </v-menu>
+
             <v-table
                 :items="items"
                 :columns="columns"
@@ -237,35 +280,14 @@ async function create() {
                                 v-if="c.id === '_actions_left'"
                                 class="flex justify-center opacity-0 group-hover/item:opacity-100"
                             >
-                                <v-menu offset-y close-on-content-click>
-                                    <template #activator="{ attrs }">
-                                        <v-btn size="sm" color="b-secondary" v-bind="attrs">
-                                            <v-icon name="ellipsis-vertical" />
-                                        </v-btn>
-                                    </template>
-
-                                    <v-card color="b-secondary">
-                                        <v-list-item
-                                            size="xs"
-                                            color="info"
-                                            dark
-                                            :to="`/collections/${collectionId}/items/${data.item.id}`"
-                                        >
-                                            <v-icon name="eye" class="mr-2" />
-                                            {{ $t('viewEntity', [$t('item')]) }}
-                                        </v-list-item>
-
-                                        <v-list-item
-                                            size="xs"
-                                            color="danger"
-                                            dark
-                                            @click="itemsStore.destroy(data.item.id)"
-                                        >
-                                            <v-icon name="trash" class="mr-2" />
-                                            {{ $t('deleteEntity', [$t('item')]) }}
-                                        </v-list-item>
-                                    </v-card>
-                                </v-menu>
+                                <v-btn
+                                    size="py-1 px-2 text-xs"
+                                    color="b-secondary"
+                                    :to="`/collections/${collectionId}/items/${data.item.id}`"
+                                    @contextmenu.prevent="showActions($event, data.item.id)"
+                                >
+                                    <v-icon name="grip-vertical" />
+                                </v-btn>
                             </div>
 
                             <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>

@@ -7,6 +7,7 @@ import { createViewStore } from '@/modules/view/store'
 
 import CActionsGallery from './CActionsGallery.vue'
 import CActionsTable from './CActionsTable.vue'
+import { useState } from '@/composables/state'
 
 // Props & emit
 const props = defineProps({
@@ -23,9 +24,16 @@ const props = defineProps({
 // view
 let store = createViewStore(props.collectionId)
 let view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
+let selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
+    localStorage: true,
+})
 
 function setView() {
     store = createViewStore(props.collectionId)
+
+    selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
+        localStorage: true,
+    })
 
     view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
 }
@@ -58,12 +66,12 @@ const tab = ref(0)
 
 // selected view
 
-const selected = computed(() => store.views.find((v) => v.id === view.value.selected))
+const selected = computed(() => store.views.find((v) => v.id === selectedView.value))
 
 function onSelect(id: string) {
     if (!view.value.viewIds.includes(id)) return
 
-    view.value.selected = id
+    selectedView.value = id
 }
 </script>
 <template>
@@ -91,13 +99,13 @@ function onSelect(id: string) {
                 <c-actions-table
                     v-if="selected.component === 'table'"
                     :collection-id="collectionId"
-                    :view-id="view.selected"
+                    :view-id="selectedView"
                 />
 
                 <c-actions-gallery
                     v-else-if="selected.component === 'gallery'"
                     :collection-id="collectionId"
-                    :view-id="view.selected"
+                    :view-id="selectedView"
                 />
             </template>
 
@@ -110,7 +118,7 @@ function onSelect(id: string) {
             <v-list-item
                 v-for="v in store.views.filter((v) => v.component !== 'group')"
                 :key="v.id"
-                :class="view.selected == v.id ? '' : 'text-t-secondary'"
+                :class="selectedView == v.id ? '' : 'text-t-secondary'"
                 @click="onSelect(v.id)"
             >
                 <div class="mr-auto">

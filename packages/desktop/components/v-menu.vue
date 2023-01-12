@@ -4,7 +4,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref, watch, onMounted, VNode } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 // Props & Emits
@@ -32,6 +32,14 @@ const props = defineProps({
     openOnClick: {
         type: Boolean,
         default: true,
+    },
+    x: {
+        type: Number,
+        default: null,
+    },
+    y: {
+        type: Number,
+        default: null,
     },
 })
 
@@ -88,7 +96,9 @@ watch(show, () => {
     setTimeout(() => {
         max.value.y = window.innerHeight - el.clientHeight
         max.value.x = window.innerWidth - el.clientWidth
-    }, 200)
+    }, 100)
+
+    setTimeout(() => (max.value.loading = false), 200)
 })
 
 // track mouse position
@@ -101,34 +111,39 @@ const mouse = ref({
     elHeight: 0,
 })
 
-function onMouseenter(event: MouseEvent) {
-    const el = event.target as HTMLElement | null
+function setPosition() {
+    let { el } = mouse.value
 
-    if (show.value || !el) return
+    if (!el || !el.getBoundingClientRect) return
 
     const rect = el.getBoundingClientRect()
 
-    let y = rect.y
-    let x = rect.x
-
-    mouse.value.y = y
-    mouse.value.x = x
+    mouse.value.y = rect.y
+    mouse.value.x = rect.x
     mouse.value.elWidth = el.clientWidth
     mouse.value.elHeight = el.clientHeight
-    mouse.value.el = el
 }
 
-function onClickDom(event: MouseEvent) {
-    if (!mouse.value.el) return
+onMounted(() => setTimeout(setPosition, 500))
 
-    if (!mouse.value.el.contains(event.target as any)) {
+function onClickDom(event: MouseEvent) {
+    if (!show.value) return
+
+    const isClickOnContent = max.value.el?.contains(event.target as any)
+
+    if (!isClickOnContent) {
+        show.value = false
+    }
+
+    if (props.closeOnContentClick) {
         show.value = false
     }
 }
 
 watch(show, (value) => {
     if (value) {
-        return document.addEventListener('click', onClickDom)
+        setTimeout(() => document.addEventListener('click', onClickDom), 200)
+        return
     }
 
     document.removeEventListener('click', onClickDom)
@@ -138,8 +153,8 @@ onUnmounted(() => document.removeEventListener('click', onClickDom))
 
 // style
 const style = computed(() => {
-    let y = Math.min(mouse.value.y, max.value.y)
-    let x = Math.min(mouse.value.x, max.value.x)
+    let y = Math.min(props.y ?? mouse.value.y, max.value.y)
+    let x = Math.min(props.x ?? mouse.value.x, max.value.x)
 
     if (props.offsetY) {
         y += mouse.value.elHeight
@@ -166,30 +181,25 @@ const style = computed(() => {
 
     return result
 })
-
-// click on content
-function onContentClick() {
-    if (props.closeOnContentClick) {
-        show.value = false
-    }
-}
 </script>
 
 <template>
-    <slot name="activator" :attrs="{ onClick, onMouseenter }" :toggle="toggle" />
+    <slot
+        name="activator"
+        :attrs="{ onClick, ref: (el) => (mouse.el = el ? el.$el || el : el) }"
+        :toggle="toggle"
+    />
 
     <teleport to="body">
-        <transition name="slide-down">
-            <div
-                v-show="show"
-                :ref="(el: any) => (max.el = el)"
-                :style="style"
-                class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
-                v-bind="$attrs"
-                @click.stop="onContentClick"
-            >
-                <slot />
-            </div>
-        </transition>
+        <div
+            v-show="show"
+            :ref="(el: any) => (max.el = el)"
+            :style="style"
+            class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
+            :class="max.loading ? 'opacity-0' : 'opacity-100'"
+            v-bind="$attrs"
+        >
+            <slot />
+        </div>
     </teleport>
 </template>

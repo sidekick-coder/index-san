@@ -119,6 +119,25 @@ const router = useRouter()
 function onClick(item: Item) {
     router.push(`/collections/${props.collectionId}/items/${item.id}`)
 }
+
+// actions
+
+const actions = ref({
+    menu: false,
+    id: null as string | null,
+    x: 0,
+    y: 0,
+})
+
+function showActions(event: MouseEvent, id: string) {
+    const reacts = (event.target as HTMLElement).getBoundingClientRect()
+
+    actions.value.x = reacts.x
+    actions.value.y = reacts.y + 32
+
+    actions.value.id = id
+    actions.value.menu = true
+}
 </script>
 
 <template>
@@ -129,6 +148,25 @@ function onClick(item: Item) {
             :collection-id="props.collectionId"
             :view-id="viewId"
         />
+
+        <v-menu v-model="actions.menu" :x="actions.x" :y="actions.y" close-on-content-click>
+            <v-card color="b-secondary">
+                <v-list-item
+                    size="xs"
+                    color="info"
+                    dark
+                    :to="`/collections/${collectionId}/items/${actions.id}`"
+                >
+                    <v-icon name="eye" class="mr-2" />
+                    {{ $t('viewEntity', [$t('item')]) }}
+                </v-list-item>
+
+                <v-list-item size="xs" color="danger" dark @click="itemsStore.destroy(actions.id!)">
+                    <v-icon name="trash" class="mr-2" />
+                    {{ $t('deleteEntity', [$t('item')]) }}
+                </v-list-item>
+            </v-card>
+        </v-menu>
 
         <div
             class="overflow-auto w-full"
@@ -158,32 +196,13 @@ function onClick(item: Item) {
                             @click.stop
                         >
                             <v-btn
-                                size="sm"
+                                size="py-1 px-2 text-xs"
                                 color="b-secondary"
-                                class="mr-2"
                                 :to="`/collections/${collectionId}/items/${data.item.id}`"
+                                @contextmenu.prevent="showActions($event, data.item.id)"
                             >
-                                <v-icon name="eye" />
+                                <v-icon name="grip-vertical" />
                             </v-btn>
-                            <v-menu offset-y close-on-content-click>
-                                <template #activator="{ attrs }">
-                                    <v-btn size="sm" color="b-secondary" v-bind="attrs">
-                                        <v-icon name="ellipsis-vertical" />
-                                    </v-btn>
-                                </template>
-
-                                <v-card color="b-secondary">
-                                    <v-list-item
-                                        size="xs"
-                                        color="danger"
-                                        dark
-                                        @click="itemsStore.destroy(data.item.id)"
-                                    >
-                                        <v-icon name="trash" class="mr-2" />
-                                        {{ $t('deleteEntity', [$t('item')]) }}
-                                    </v-list-item>
-                                </v-card>
-                            </v-menu>
                         </div>
 
                         <e-img
