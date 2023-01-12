@@ -214,7 +214,7 @@ async function create() {
 
                                     <v-resize-line
                                         :model-value="c.width || 200"
-                                        :min-width="100"
+                                        :min-width="50"
                                         @update:model-value="(v) => resizeColumn(c.id, v)"
                                     />
                                 </template>
@@ -283,16 +283,6 @@ async function create() {
                                 color="none"
                                 flat
                             />
-
-                            <v-btn
-                                v-if="cIndex === 1"
-                                size="sm"
-                                color="b-secondary"
-                                class="absolute right-2 top-2 opacity-0 group-hover/item:opacity-100"
-                                :to="`/collections/${collectionId}/items/${data.item.id}`"
-                            >
-                                <v-icon name="eye" />
-                            </v-btn>
                         </v-td>
                     </v-tr>
                 </template>

@@ -30,7 +30,7 @@ watch(
 )
 
 // set meta
-const meta = useMeta({ title: collection.value?.name ?? 'collection' })
+const meta = useMeta()
 
 function load() {
     meta.value.title = collection.value?.name ?? props.collectionId

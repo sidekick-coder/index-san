@@ -91,6 +91,7 @@ export default {
     pasteEntity: 'Paste {0}',
     image: 'Image | Images',
     sideBySide: 'Side by side',
+    checkbox: 'Checkbox',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

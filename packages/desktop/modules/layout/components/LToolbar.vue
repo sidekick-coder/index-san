@@ -9,6 +9,7 @@ import { onKeyStroke } from '@vueuse/core'
 import { useStore } from '@/modules/menu/store'
 import { useToggleDrawer } from '../composables/drawer'
 import DirectoryEntry from '@/../core/entities/directory-entry'
+import { useMeta } from '@/composables/metas'
 
 const route = useRoute()
 const router = useRouter()
@@ -78,12 +79,13 @@ watch(
 // add page to menu
 
 const store = useStore()
+const meta = useMeta()
 
 const menu = ref({
     item: computed(() => store.menu.find((i) => i.to === route.path)),
     async create() {
         await store.create({
-            label: document.title,
+            label: meta.value.title ?? document.title,
             to: route.path,
             children: [],
             id: uuid(),

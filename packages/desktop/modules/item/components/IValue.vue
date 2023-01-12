@@ -12,9 +12,11 @@ import { createBindings } from '@/composables/binding'
 const IValueText = defineAsyncComponent(() => import('./IValueText.vue'))
 const IValueNumber = defineAsyncComponent(() => import('./IValueNumber.vue'))
 const IValueSelect = defineAsyncComponent(() => import('./IValueSelect.vue'))
+const IValueDate = defineAsyncComponent(() => import('./IValueDate.vue'))
+const IValueCheckbox = defineAsyncComponent(() => import('./IValueCheckbox.vue'))
+
 const IValueRelation = defineAsyncComponent(() => import('./IValueRelation.vue'))
 const IValueLink = defineAsyncComponent(() => import('./IValueLink.vue'))
-const IValueDate = defineAsyncComponent(() => import('./IValueDate.vue'))
 const IValueScript = defineAsyncComponent(() => import('./IValueScript.vue'))
 const IValueEntry = defineAsyncComponent(() => import('./IValueEntry.vue'))
 const IValueTimestamp = defineAsyncComponent(() => import('./IValueTimestamp.vue'))
@@ -115,6 +117,14 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :item-id="itemId"
             :column-id="columnId"
             v-bind="bindings.multiple(['root', 'input'])"
+        />
+
+        <i-value-checkbox
+            v-else-if="type === ColumnType.checkbox"
+            :collection-id="collectionId"
+            :item-id="itemId"
+            :column-id="columnId"
+            v-bind="bindings.multiple(['root'])"
         />
 
         <i-value-timestamp

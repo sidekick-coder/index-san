@@ -4,13 +4,14 @@ export enum ColumnType {
     text = 'text',
     number = 'number',
     select = 'select',
-    relation = 'relation',
+    link = 'link',
+    date = 'date',
+    checkbox = 'checkbox',
     script = 'script',
+    relation = 'relation',
     entry = 'entry',
     createdAt = 'createdAt',
     updatedAt = 'updatedAt',
-    link = 'link',
-    date = 'date',
 }
 
 export default class Column {

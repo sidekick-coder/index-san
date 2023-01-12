@@ -91,6 +91,7 @@ const icons: Record<Column['type'], any> = {
     updatedAt: 'fa-regular fa-calendar',
     link: 'link',
     date: 'fa-regular fa-calendar',
+    checkbox: 'fa-regular fa-square-check',
 }
 
 // dialog
@@ -146,12 +147,14 @@ const relation = computed(() => {
     <v-dialog v-else v-model="dialog">
         <template #activator="{ attrs }">
             <div
-                class="cursor-pointer text-t-secondary text-sm flex items-center overflow-hidden"
+                class="cursor-pointer text-t-secondary flex items-center overflow-hidden"
                 v-bind="{ ...attrs, ...$attrs }"
             >
-                <fa-icon :icon="icons[column.type] || 'font'" class="mr-2 text-xs" />
+                <v-icon :name="icons[column.type] || 'font'" class="mr-3" />
 
-                {{ column.label }}
+                <div class="text-sm">
+                    {{ column.label }}
+                </div>
             </div>
         </template>
 
