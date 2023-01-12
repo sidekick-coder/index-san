@@ -1,0 +1,135 @@
+[
+    {
+        "component": "group",
+        "id": "default",
+        "label": "",
+        "viewIds": [
+            "594cb7b1-96a6-4830-9229-e1b273eef66f",
+            "f14e3e06-3cb7-431c-a519-4d15c9dfd018"
+        ]
+    },
+    {
+        "component": "table",
+        "id": "594cb7b1-96a6-4830-9229-e1b273eef66f",
+        "label": "Table",
+        "search": "",
+        "filters": [],
+        "columns": [
+            {
+                "id": "_actions_left",
+                "label": "#",
+                "width": 43
+            },
+            {
+                "label": "Done",
+                "id": "df5f7f10-1c74-4352-a5f8-242e0d92cdbb",
+                "options": [],
+                "width": 52
+            },
+            {
+                "label": "Project",
+                "id": "21cdca27-cd8c-4b01-a657-1bf13167cce6",
+                "options": [],
+                "collectionId": "projects",
+                "displayField": "name",
+                "width": 112
+            },
+            {
+                "label": "Name",
+                "id": "111b25dd-1903-4afe-a072-1f4aac21852d",
+                "options": [],
+                "width": 116
+            },
+            {
+                "label": "Due date",
+                "id": "a7f636dc-51d4-41a8-91cc-695c1646fe49",
+                "options": [],
+                "displayFormat": "YYYY-MM-DD",
+                "saveFormat": "YYYY-MM-DD"
+            },
+            {
+                "label": "Start date",
+                "id": "2bc84731-cbee-4245-83e3-5d84640bb14e",
+                "options": []
+            },
+            {
+                "label": "End date",
+                "id": "ca44e49b-e4a7-4702-9b62-e5e4b43f5caa",
+                "options": []
+            },
+            {
+                "id": "_actions_right",
+                "width": "100%"
+            }
+        ],
+        "orderBy": [],
+        "limit": 100
+    },
+    {
+        "component": "gallery",
+        "id": "f14e3e06-3cb7-431c-a519-4d15c9dfd018",
+        "label": "Gallery",
+        "search": "",
+        "filters": [],
+        "columns": [
+            {
+                "label": "",
+                "id": "df5f7f10-1c74-4352-a5f8-242e0d92cdbb",
+                "options": [],
+                "hide": true
+            },
+            {
+                "label": "Name",
+                "id": "111b25dd-1903-4afe-a072-1f4aac21852d",
+                "options": []
+            },
+            {
+                "label": "Due date",
+                "id": "a7f636dc-51d4-41a8-91cc-695c1646fe49",
+                "options": [],
+                "displayFormat": "YYYY-MM-DD",
+                "saveFormat": "YYYY-MM-DD",
+                "hide": false
+            },
+            {
+                "label": "Start date",
+                "id": "2bc84731-cbee-4245-83e3-5d84640bb14e",
+                "options": [],
+                "hide": true
+            },
+            {
+                "label": "End date",
+                "id": "ca44e49b-e4a7-4702-9b62-e5e4b43f5caa",
+                "options": [],
+                "hide": true
+            },
+            {
+                "label": "Project",
+                "id": "21cdca27-cd8c-4b01-a657-1bf13167cce6",
+                "options": [],
+                "collectionId": "projects"
+            }
+        ],
+        "orderBy": [],
+        "thumbnail": {
+            "fit": "",
+            "key": "",
+            "position": ""
+        },
+        "sizes": {
+            "sm": {
+                "width": 200,
+                "height": "auto"
+            },
+            "md": {
+                "width": 200,
+                "height": "auto"
+            },
+            "lg": {
+                "width": 200,
+                "height": "auto"
+            }
+        },
+        "limit": 100
+    }
+]

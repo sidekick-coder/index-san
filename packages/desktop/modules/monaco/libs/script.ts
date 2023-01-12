@@ -14,6 +14,8 @@ export function mount() {
         
         declare const Facades: import("core/config/app").default['facades']
 
+        declare const Moment: any
+
         declare function setResult(data: any): void
     `
 

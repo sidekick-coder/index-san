@@ -1,0 +1,19 @@
+[
+    {
+        "component": "group",
+        "id": "default",
+        "label": "",
+        "viewIds": [
+            "dea3ea34-48c3-44b1-971f-8a999d8a7070"
+        ]
+    },
+    {
+        "component": "table",
+        "id": "dea3ea34-48c3-44b1-971f-8a999d8a7070",
+        "label": "New view",
+        "search": "",
+        "filters": [],
+        "columns": [],
+        "orderBy": []
+    }
+]

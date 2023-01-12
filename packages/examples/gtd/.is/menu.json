@@ -1,0 +1,31 @@
+[
+    {
+        "id": "5740.2316737107385",
+        "label": "Databases",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "Tasks",
+                "to": "/collections/tasks/items",
+                "children": [],
+                "id": "a6b676e1-1b6d-4fac-aff0-b1936b0b5662",
+                "icon": "fas fa-flask"
+            },
+            {
+                "label": "Projects",
+                "to": "/collections/projects/items",
+                "children": [],
+                "id": "b41beefb-c87e-40df-80e8-009af4d3a945",
+                "icon": "fas fa-database"
+            }
+        ]
+    },
+    {
+        "label": "tasks.generator.ts",
+        "to": "/entries/tasks.generator.ts",
+        "children": [],
+        "id": "f6fafd39-01b5-402c-9034-02f855c85a7d",
+        "icon": "bookmark"
+    }
+]

@@ -2,6 +2,8 @@ import DirectoryEntry from '../../entities/directory-entry'
 
 import type ExecuteScriptDTO from './execute-script.dto'
 import type AppConfig from '../../config/app'
+
+import moment from 'moment'
 export default class ExecuteScript {
     constructor(private readonly app: AppConfig) {}
 
@@ -16,6 +18,7 @@ export default class ExecuteScript {
             Drive: drive,
             Facades: this.app.facades,
             Entry: DirectoryEntry,
+            Moment: moment,
         }
 
         return this.app.services.evaluation.evaluate(content, sandbox)

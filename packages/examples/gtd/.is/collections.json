@@ -1,0 +1,71 @@
+[
+    {
+        "columns": [
+            {
+                "label": "",
+                "id": "df5f7f10-1c74-4352-a5f8-242e0d92cdbb",
+                "field": "done",
+                "type": "checkbox",
+                "options": []
+            },
+            {
+                "label": "Due date",
+                "id": "a7f636dc-51d4-41a8-91cc-695c1646fe49",
+                "field": "dueDate",
+                "type": "date",
+                "options": [],
+                "displayFormat": "YYYY-MM-DD",
+                "saveFormat": "YYYY-MM-DD"
+            },
+            {
+                "label": "Start date",
+                "id": "2bc84731-cbee-4245-83e3-5d84640bb14e",
+                "field": "startDate",
+                "type": "text",
+                "options": []
+            },
+            {
+                "label": "End date",
+                "id": "ca44e49b-e4a7-4702-9b62-e5e4b43f5caa",
+                "field": "endDate",
+                "type": "text",
+                "options": []
+            },
+            {
+                "label": "Project",
+                "id": "21cdca27-cd8c-4b01-a657-1bf13167cce6",
+                "field": "project",
+                "type": "relation",
+                "options": [],
+                "collectionId": "projects",
+                "displayField": "name"
+            },
+            {
+                "label": "Name",
+                "id": "111b25dd-1903-4afe-a072-1f4aac21852d",
+                "field": "name",
+                "type": "text",
+                "options": []
+            }
+        ],
+        "id": "tasks",
+        "crudName": "fsFolder",
+        "name": "Tasks",
+        "path": "tasks"
+    },
+    {
+        "columns": [
+            {
+                "label": "Name",
+                "id": "5c6a1d78-c3e2-406a-87cc-50a1dd999359",
+                "field": "name",
+                "type": "text",
+                "options": []
+            }
+        ],
+        "id": "projects",
+        "crudName": "fsFolder",
+        "name": "Projects",
+        "path": "projects"
+    }
+]
