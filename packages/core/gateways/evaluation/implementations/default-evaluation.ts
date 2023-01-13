@@ -36,11 +36,11 @@ export default class DefaultEvaluation implements IEvaluationService {
 
         await fn.bind(sandbox)()
 
-        return {
+        return new EvaluationOutput({
             result,
             error,
             logs,
-        }
+        })
     }
 
     public async evaluate(code: string, scope?: Record<string, any>) {

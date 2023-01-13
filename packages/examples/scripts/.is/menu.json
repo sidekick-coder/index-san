@@ -1,0 +1,38 @@
+[
+    {
+        "label": "execute.ts",
+        "to": "/entries/execute.ts",
+        "children": [],
+        "id": "0c4b4eb8-c14f-4272-bd9a-9cce18dd9f79",
+        "icon": "fas fa-code"
+    },
+    {
+        "id": "5930.060426198447",
+        "label": "Operations",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "subtraction.ts",
+                "to": "/entries/subtraction.ts",
+                "children": [],
+                "id": "1d3cb4d7-f861-4f2c-8766-530f7621f811",
+                "icon": "fas fa-code"
+            },
+            {
+                "label": "list-operations.ts",
+                "to": "/entries///list-operations.ts",
+                "children": [],
+                "id": "48fd5d64-cff1-40f8-ba90-6f5db40452e3",
+                "icon": "fas fa-code"
+            },
+            {
+                "label": "sum.ts",
+                "to": "/entries/sum.ts",
+                "children": [],
+                "id": "0a92dd20-140f-4f28-98e1-e49f4ff6c312",
+                "icon": "fas fa-code"
+            }
+        ]
+    }
+]

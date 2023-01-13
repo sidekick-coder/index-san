@@ -14,6 +14,10 @@ export function mount() {
         
         declare const Facades: import("core/config/app").default['facades']
 
+        declare const Evaluation: import("core/facades/script").default
+
+        declare const scope: Record<string, any>
+
         declare const Moment: any
 
         declare function setResult(data: any): void

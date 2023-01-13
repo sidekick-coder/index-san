@@ -3,10 +3,10 @@ export default class EvaluationOutput {
     public result: any | null
     public logs: string[]
 
-    constructor(props: EvaluationOutput) {
-        this.error = props.error
-        this.result = props.result
-        this.logs = props.logs
+    constructor(props?: Partial<EvaluationOutput>) {
+        this.error = props?.error ?? null
+        this.result = props?.result ?? null
+        this.logs = props?.logs ?? []
     }
 
     public static error(error: any, logs: EvaluationOutput['logs'] = []) {
@@ -23,5 +23,15 @@ export default class EvaluationOutput {
         }
 
         return JSON.stringify(arg, null, 4)
+    }
+
+    public toObject() {
+        return {
+            result: this.result,
+            logs: this.logs,
+            error: this.error
+                ? JSON.stringify(this.error, Object.getOwnPropertyNames(this.error))
+                : null,
+        }
     }
 }
