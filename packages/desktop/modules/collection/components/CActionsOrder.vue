@@ -30,7 +30,7 @@ function setView() {
     view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
 }
 
-watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
+watch([() => props.viewId, () => props.collectionId], setView)
 
 // columns
 const store = useStore()
@@ -41,7 +41,7 @@ const columns = computed(() => withView(collection?.columns || [], view.value?.c
 
 const orderBy = computed({
     get() {
-        return view.value.orderBy
+        return view.value.orderBy || []
     },
     set(value) {
         view.value = {

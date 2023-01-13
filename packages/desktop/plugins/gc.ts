@@ -7,9 +7,9 @@ interface ComponentItem {
     value: Component
 }
 
-export default (app: App) => {
+export function createComponentObject() {
     const modules = import.meta.glob('@/components/**/*.vue', { eager: true })
-    const components: ComponentItem[] = []
+    const components: Record<string, ComponentItem> = {}
 
     Object.entries<any>(modules).forEach(([key, value]) => {
         const basename = key.split('/').pop() as string
@@ -18,11 +18,14 @@ export default (app: App) => {
 
         value.default.name = name
 
-        components.push({
-            name,
-            value: value.default ?? value,
-        })
+        components[name] = value.default ?? value
     })
 
-    components.forEach((c) => app.component(c.name, c.value))
+    return components
+}
+
+export default (app: App) => {
+    const components = createComponentObject()
+
+    Object.entries(components).map(([key, value]) => app.component(key, value))
 }

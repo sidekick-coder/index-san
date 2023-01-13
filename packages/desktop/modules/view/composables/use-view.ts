@@ -2,10 +2,10 @@ import { computed, ref } from 'vue'
 
 import View from '@core/entities/view'
 
-import { createViewStore } from '../store'
+import { useViewStore } from '../store'
 
 export function useView<T extends View>(collectionId: string, viewId: string, payload: T) {
-    const store = createViewStore(collectionId)
+    const store = useViewStore(collectionId)
 
     const innerView = ref(payload)
     const storeView = computed(() => store.get(viewId))

@@ -101,12 +101,18 @@ function createStore(collectionId: string) {
     }
 }
 
-export function createViewStore(collectionId: string) {
+export function useViewStore(collectionId: string) {
     const use = defineStore(`view:${collectionId}`, () => createStore(collectionId))
 
     return use()
 }
 
+/** @deprecated */
+export function createViewStore(collectionId: string) {
+    return useViewStore(collectionId)
+}
+
+/** @deprecated */
 export const useStore = defineStore('view', () => {
     const workspace = useWorkspace()
     const hooks = useHooks()

@@ -12,9 +12,6 @@ describe('v-btn.vue', () => {
         wrapper = mount(VBtn, {
             ...options,
             global: {
-                stubs: {
-                    'fa-icon': true,
-                },
                 components: {
                     VIcon,
                 },
@@ -37,7 +34,7 @@ describe('v-btn.vue', () => {
             },
         })
 
-        expect(wrapper.find('router-link').exists()).toBe(true)
+        expect(wrapper.find('router-link-stub').exists()).toBe(true)
     })
 
     test('should show a <a> element when href props is defined', () => {

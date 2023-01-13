@@ -22,10 +22,18 @@
         ]
     },
     {
-        "label": "tasks.generator.ts",
-        "to": "/entries/tasks.generator.ts",
-        "children": [],
-        "id": "f6fafd39-01b5-402c-9034-02f855c85a7d",
-        "icon": "bookmark"
+        "id": "5599.384357007097",
+        "label": "Scripts",
+        "icon": "code",
+        "isSection": true,
+        "children": [
+            {
+                "label": "tasks.generator.ts",
+                "to": "/entries/tasks.generator.ts",
+                "children": [],
+                "id": "f6fafd39-01b5-402c-9034-02f855c85a7d",
+                "icon": "fas fa-code"
+            }
+        ]
     }
 ]

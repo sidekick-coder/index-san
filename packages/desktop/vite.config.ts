@@ -21,6 +21,7 @@ export default defineConfig({
         watch: false,
         environment: 'jsdom',
         exclude: [...configDefaults.exclude, 'packages/core/*', 'out'],
+        setupFiles: ['__tests__/setup.ts'],
     },
     resolve: { alias },
     plugins: [vue()],

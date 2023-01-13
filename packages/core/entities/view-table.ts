@@ -11,8 +11,6 @@ export default class ViewTable extends ViewCommon {
     constructor(props?: Partial<ViewTable>, id?: string) {
         super(props, id)
 
-        if (props?.columns) {
-            this.columns = props.columns
-        }
+        this.columns = props?.columns ?? []
     }
 }

@@ -2,7 +2,7 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
-import { ref, watch, computed, useAttrs, defineAsyncComponent } from 'vue'
+import { ref, watch, computed, useAttrs } from 'vue'
 
 import Draggable from 'vuedraggable'
 
@@ -20,11 +20,9 @@ import { useView } from '@/modules/view/composables/use-view'
 
 import { useItemStore } from '@/modules/item/store'
 
-const IValue = defineAsyncComponent(() => import('@/modules/item/components/IValue.vue'))
-const CActions = defineAsyncComponent(() => import('./CActions.vue'))
-const CcColumn = defineAsyncComponent(
-    () => import('@/modules/collection-column/components/CcColumn.vue')
-)
+import CActions from './CActions.vue'
+import CcColumn from '@/modules/collection-column/components/CcColumn.vue'
+import IValue from '@/modules/item/components/IValue.vue'
 
 const props = defineProps({
     width: {
@@ -60,8 +58,6 @@ const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
 
 const store = useStore()
 
-const collection = computed(() => store.collection.get(props.collectionId))
-
 // view
 
 let view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
@@ -70,19 +66,21 @@ function setView() {
     view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
 }
 
-watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
+// console.log(view.value)
+
+watch([() => props.viewId, () => props.collectionId], setView)
 
 // columns
 
-const collectionColumns = computed(() => store.column.all(props.collectionId))
+const rawColumns = computed(() => store.column.all(props.collectionId))
 
-if (!collectionColumns.value.length) {
+if (!rawColumns.value.length) {
     store.column.set(props.collectionId)
 }
 
 const columns = computed({
     get() {
-        const result: any[] = withView(collectionColumns.value, view.value.columns)
+        const result: any[] = withView(rawColumns.value, view.value.columns)
 
         if (!result.length) {
             result.push({
@@ -140,7 +138,7 @@ watch(
 // create item
 
 async function create() {
-    const item = new Item(createPayload(view.value?.filters, collection.value?.columns))
+    const item = new Item(createPayload(view.value?.filters, rawColumns.value))
 
     await itemsStore.create(item)
 }
@@ -175,6 +173,7 @@ function showActions(event: MouseEvent, id: string) {
         />
 
         <div
+            data-test-id="table-wrapper"
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
@@ -240,6 +239,7 @@ function showActions(event: MouseEvent, id: string) {
                                 <div
                                     v-else-if="c.id === '_actions_no_columns'"
                                     class="text-t-secondary text-sm"
+                                    data-test-id="no-columns"
                                 >
                                     {{
                                         store.column.isLoading(collectionId)
@@ -284,6 +284,7 @@ function showActions(event: MouseEvent, id: string) {
                                     size="py-1 px-2 text-xs"
                                     color="b-secondary"
                                     :to="`/collections/${collectionId}/items/${data.item.id}`"
+                                    data-test-id="actions-btn"
                                     @contextmenu.prevent="showActions($event, data.item.id)"
                                 >
                                     <v-icon name="grip-vertical" />
@@ -314,7 +315,7 @@ function showActions(event: MouseEvent, id: string) {
                         <v-td class="!border-x-0"></v-td>
 
                         <v-td
-                            :colspan="collection?.columns.length"
+                            :colspan="rawColumns.length"
                             class="!border-x-0 !px-0 text-t-secondary text-sm"
                         >
                             <fa-icon icon="plus" class="mr-2" />

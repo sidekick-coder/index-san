@@ -63,7 +63,7 @@
             }
         ],
         "orderBy": [],
-        "limit": 100
+        "limit": 15
     },
     {
         "component": "gallery",
@@ -130,6 +130,6 @@
                 "height": "auto"
             }
         },
-        "limit": 100
+        "limit": 20
     }
 ]

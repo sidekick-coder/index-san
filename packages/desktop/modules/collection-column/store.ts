@@ -42,7 +42,9 @@ export const useStore = defineStore('column', () => {
 
         item.loading = true
 
-        await collection.setCollections()
+        if (!collection.collections.length) {
+            await collection.setCollections()
+        }
 
         const data = collection.collections.find((c) => c.id === collectionId)
 
