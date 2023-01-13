@@ -8,7 +8,7 @@ if (!versionName) {
 }
 
 async function main() {
-    const packages = ['core', 'desktop']
+    const packages = ['core', 'desktop', 'docs', 'electron-app', 'tauri-app']
 
     for await (const name of packages) {
         await command(`npm -w ${name} version ${versionName}`)
