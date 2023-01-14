@@ -7,7 +7,7 @@ const items = await repository.list()
 for await (const item of items) {
 
     await repository.update(item.id, {
-        done: !item.done
+        done: Math.random() < 0.5
     })
 
     console.log('updated: ', item.name)
