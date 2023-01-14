@@ -54,12 +54,18 @@ jobs:
       
       - name: build
         run: npm run build
-      
-      - name: notes
-        run: npm run make:changelog
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
         with:
-          files: artifacts/*
-          body_path: CHANGELOG.md
+          name: build-files
+          path: artifacts/*
+      
+      # - name: notes
+      #   run: npm run make:changelog
+
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: artifacts/*
+      #     body_path: CHANGELOG.md
