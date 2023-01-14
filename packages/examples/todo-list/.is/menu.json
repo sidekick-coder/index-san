@@ -1,0 +1,16 @@
+[
+    {
+        "label": "Todo list",
+        "to": "/collections/todo-list/items",
+        "children": [],
+        "id": "687eb836-45c4-472e-8bba-59448b05cdd6",
+        "icon": "bookmark"
+    },
+    {
+        "label": "dashboard.md",
+        "to": "/entries///dashboard.md",
+        "children": [],
+        "id": "88fd5588-60a6-4053-8013-3dd0b9a058e7",
+        "icon": "bookmark"
+    }
+]

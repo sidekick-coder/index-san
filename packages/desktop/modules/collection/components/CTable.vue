@@ -16,7 +16,7 @@ import { createPayload } from '../composables/filter'
 import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
 
 import { withViewIterations } from '@/modules/view/composables'
-import { useView } from '@/modules/view/composables/use-view'
+import { createViewIfNotExists, useView } from '@/modules/view/composables/use-view'
 
 import { useItemStore } from '@/modules/item/store'
 
@@ -65,6 +65,21 @@ let view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}
 function setView() {
     view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
 }
+watch(
+    () => props.viewId,
+    async () => {
+        if (props.viewId) {
+            await createViewIfNotExists(
+                props.collectionId,
+                props.viewId,
+                new ViewTable({}, props.viewId)
+            )
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 
 // console.log(view.value)
 

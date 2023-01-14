@@ -16,7 +16,7 @@
                 "options": []
             },
             {
-                "label": "Done",
+                "label": "",
                 "id": "bc616ad5-46ce-4010-92b2-db0722358b12",
                 "field": "done",
                 "type": "checkbox",

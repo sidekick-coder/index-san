@@ -29,3 +29,19 @@ export function useView<T extends View>(collectionId: string, viewId: string, pa
 
     return view
 }
+
+export async function createViewIfNotExists<T extends View>(
+    collectionId: string,
+    viewId: string,
+    payload: T
+) {
+    const store = useViewStore(collectionId)
+
+    await store.load()
+
+    const storeView = store.get(viewId)
+
+    if (!storeView) {
+        store.views.push(payload)
+    }
+}
