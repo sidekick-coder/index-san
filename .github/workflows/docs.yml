@@ -1,0 +1,35 @@
+name: Docs
+
+on: 
+  push:
+    tags:
+    - '*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: install dependence 
+        run: |
+          npm install
+          npm -w docs install
+
+      - name: build
+        run: npm -w docs run generate
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./packages/docs/.output/public
+          commit_message: ${{ github.event.head_commit.message }}
+          cname: index-san.sidekick-coder.com
