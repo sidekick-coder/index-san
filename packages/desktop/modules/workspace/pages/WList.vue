@@ -16,11 +16,6 @@ const columns = [
         },
     },
     {
-        label: 'Id',
-        name: 'id',
-        field: 'id',
-    },
-    {
         label: tm.t('name'),
         name: 'name',
         field: 'name',
@@ -51,7 +46,6 @@ store.setWorkspaces()
 const dialog = ref(false)
 
 const payload = ref<any>({
-    id: '',
     name: '',
     path: '',
 })
@@ -93,10 +87,6 @@ async function deleteItem(id: string) {
             </v-card-head>
             <v-card-content>
                 <w-form class="mb-4 w-full" @submit="submit">
-                    <div class="mb-4">
-                        <v-input v-model="payload.id" label="Id" />
-                    </div>
-
                     <div class="mb-4">
                         <v-input v-model="payload.name" label="Name" />
                     </div>

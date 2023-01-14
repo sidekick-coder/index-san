@@ -35,7 +35,13 @@ function toggle() {
 const show = computed(() => !hideSections.value.includes(props.item.id))
 </script>
 <template>
-    <v-list-item :to="item.to" size="none" class="py-3 px-1 text-sm">
+    <v-list-item
+        :to="item.to"
+        active-class="bg-t-secondary/10"
+        size="none"
+        color="hover:bg-t-secondary/5 "
+        class="py-3 px-1 text-sm"
+    >
         <v-btn
             class="w-[20px] h-[20px] mr-1 text-xs"
             text
