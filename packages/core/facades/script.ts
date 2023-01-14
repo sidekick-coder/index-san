@@ -1,8 +1,8 @@
 import DirectoryEntry from '../entities/directory-entry'
 import EvaluationOutput from '../entities/evaluation-output'
 import DirectoryEntryNotFound from '../exceptions/directory-entry-not-found'
-import Drive from '../gateways/drive/drive'
-import IEvaluationService from '../gateways/evaluation/evaluation'
+import type Drive from '../gateways/drive/drive'
+import type IEvaluationService from '../gateways/evaluation/evaluation'
 
 export default class EvaluationFacade {
     constructor(

@@ -4,7 +4,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch, onMounted, VNode } from 'vue'
+import { computed, onUnmounted, ref, watch, onMounted } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 // Props & Emits

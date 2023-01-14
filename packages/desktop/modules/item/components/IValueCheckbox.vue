@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { createValue } from '@/modules/item/composables/value'
-import { ref } from 'vue'
 
 const props = defineProps({
     collectionId: {

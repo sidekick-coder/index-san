@@ -8,7 +8,6 @@ import { onKeyStroke } from '@vueuse/core'
 
 import { useStore } from '@/modules/menu/store'
 import { useToggleDrawer } from '../composables/drawer'
-import DirectoryEntry from '@/../core/entities/directory-entry'
 import { useMeta } from '@/composables/metas'
 
 const route = useRoute()
