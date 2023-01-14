@@ -1,0 +1,30 @@
+[
+    {
+        "id": "8cd66a74-e193-4ed4-9f93-cdecdfc31b11",
+        "_createdAt": "Sat Jan 14 2023 10:12:02 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Sat Jan 14 2023 10:12:02 GMT-0300 (Brasilia Standard Time)",
+        "_path": "/todo-list/8cd66a74-e193-4ed4-9f93-cdecdfc31b11",
+        "name": "Clean room",
+        "_updatedAt": "Sat Jan 14 2023 10:12:25 GMT-0300 (Brasilia Standard Time)",
+        "progress": 0
+    },
+    {
+        "id": "a7dc1d4f-2d17-4f01-8212-c30c1de45296",
+        "_createdAt": "Sat Jan 14 2023 10:12:27 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Sat Jan 14 2023 10:12:27 GMT-0300 (Brasilia Standard Time)",
+        "_path": "/todo-list/a7dc1d4f-2d17-4f01-8212-c30c1de45296",
+        "name": "Clean car",
+        "_updatedAt": "Sat Jan 14 2023 10:13:18 GMT-0300 (Brasilia Standard Time)",
+        "progress": 100,
+        "done": true
+    },
+    {
+        "id": "96cc469c-6612-4a96-a92e-5ccce5c65a1a",
+        "_createdAt": "Sat Jan 14 2023 10:13:03 GMT-0300 (Brasilia Standard Time)",
+        "_updateAt": "Sat Jan 14 2023 10:13:03 GMT-0300 (Brasilia Standard Time)",
+        "_path": "/todo-list/96cc469c-6612-4a96-a92e-5ccce5c65a1a",
+        "name": "Homework",
+        "_updatedAt": "Sat Jan 14 2023 10:13:13 GMT-0300 (Brasilia Standard Time)",
+        "progress": 25
+    }
+]

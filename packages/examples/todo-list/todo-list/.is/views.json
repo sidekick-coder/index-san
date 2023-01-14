@@ -1,0 +1,45 @@
+[
+    {
+        "component": "group",
+        "id": "default",
+        "label": "",
+        "viewIds": [
+            "c75ecbde-6fc7-41ec-ac52-df43d1fba42a"
+        ]
+    },
+    {
+        "component": "table",
+        "id": "c75ecbde-6fc7-41ec-ac52-df43d1fba42a",
+        "label": "New view",
+        "search": "",
+        "filters": [],
+        "columns": [
+            {
+                "id": "_actions_left",
+                "label": "#",
+                "width": 43
+            },
+            {
+                "label": "Done",
+                "id": "bc616ad5-46ce-4010-92b2-db0722358b12",
+                "options": [],
+                "width": 96
+            },
+            {
+                "label": "Name",
+                "id": "63fefd4f-d313-49c9-92b0-82b4f655eb33",
+                "options": []
+            },
+            {
+                "label": "Progress (%)",
+                "id": "6d9d3fab-bce5-4182-b7f6-d7a9af661bf2",
+                "options": []
+            },
+            {
+                "id": "_actions_right",
+                "width": "100%"
+            }
+        ],
+        "orderBy": []
+    }
+]
