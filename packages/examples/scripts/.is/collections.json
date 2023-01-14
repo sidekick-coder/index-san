@@ -1,0 +1,24 @@
+[
+    {
+        "columns": [
+            {
+                "label": "Done",
+                "id": "47dcb1b3-4895-4642-a9f9-c23b0d9b3331",
+                "field": "done",
+                "type": "checkbox",
+                "options": []
+            },
+            {
+                "label": "Name",
+                "id": "11ce8ee8-52b6-4dcb-9c49-d5c56a9dbe92",
+                "field": "name",
+                "type": "text",
+                "options": []
+            }
+        ],
+        "id": "todos",
+        "crudName": "fsFolder",
+        "name": "Todos",
+        "path": "/collections/todos"
+    }
+]

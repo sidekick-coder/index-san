@@ -1,0 +1,40 @@
+[
+    {
+        "component": "group",
+        "id": "default",
+        "label": "",
+        "viewIds": [
+            "9753fc8e-fac2-4995-92a9-b47d77bb7e4e"
+        ]
+    },
+    {
+        "component": "table",
+        "id": "9753fc8e-fac2-4995-92a9-b47d77bb7e4e",
+        "label": "Table",
+        "search": "",
+        "filters": [],
+        "columns": [
+            {
+                "id": "_actions_left",
+                "label": "#",
+                "width": 43
+            },
+            {
+                "label": "Done",
+                "id": "47dcb1b3-4895-4642-a9f9-c23b0d9b3331",
+                "options": [],
+                "width": 92
+            },
+            {
+                "label": "Name",
+                "id": "11ce8ee8-52b6-4dcb-9c49-d5c56a9dbe92",
+                "options": []
+            },
+            {
+                "id": "_actions_right",
+                "width": "100%"
+            }
+        ],
+        "orderBy": []
+    }
+]
