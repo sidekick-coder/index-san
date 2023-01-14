@@ -15,7 +15,7 @@ import EImg from '@/modules/entry/components/EImg.vue'
 
 import { createPayload } from '../composables/filter'
 import { withView } from '@/modules/collection-column/composables/with-view'
-import { useView } from '@/modules/view/composables/use-view'
+import { createViewIfNotExists, useView } from '@/modules/view/composables/use-view'
 import { useHooks, Events } from '@/plugins/hooks'
 import { useItemStore } from '@/modules/item/store'
 import { withViewIterations } from '@/modules/view/composables'
@@ -46,6 +46,22 @@ let view = useView<ViewGallery>(props.collectionId, props.viewId, new ViewGaller
 function setView() {
     view = useView<ViewGallery>(props.collectionId, props.viewId, new ViewGallery({}, props.viewId))
 }
+
+watch(
+    () => props.viewId,
+    async () => {
+        if (props.viewId) {
+            await createViewIfNotExists(
+                props.collectionId,
+                props.viewId,
+                new ViewGallery({}, props.viewId)
+            )
+        }
+    },
+    {
+        immediate: true,
+    }
+)
 
 watch([() => props.viewId, () => props.collectionId], setView, { immediate: true })
 

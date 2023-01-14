@@ -65,6 +65,7 @@ let view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}
 function setView() {
     view = useView<ViewTable>(props.collectionId, props.viewId, new ViewTable({}, props.viewId))
 }
+
 watch(
     () => props.viewId,
     async () => {
