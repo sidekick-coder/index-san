@@ -10,6 +10,9 @@ if (!versionName) {
 async function main() {
     const packages = ['core', 'desktop', 'docs', 'electron-app', 'tauri-app']
 
+    // build before create version to a prevent errors
+    await command('npm run build')
+
     for await (const name of packages) {
         await command(`npm -w ${name} version ${versionName}`)
     }
