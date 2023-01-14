@@ -79,5 +79,84 @@
                 "height": "auto"
             }
         }
+    },
+    {
+        "component": "group",
+        "id": "default",
+        "label": "",
+        "viewIds": [
+            "3dd72a60-cf7a-42d2-bd26-c61d87ec03d8",
+            "885ebf22-a668-41df-ad9a-26808fe29a11"
+        ]
+    },
+    {
+        "component": "gallery",
+        "id": "885ebf22-a668-41df-ad9a-26808fe29a11",
+        "label": "Gallery",
+        "search": "",
+        "filters": [],
+        "columns": [],
+        "orderBy": [],
+        "thumbnail": {
+            "fit": "cover",
+            "key": "image",
+            "position": ""
+        },
+        "sizes": {
+            "sm": {
+                "width": 200,
+                "height": "auto"
+            },
+            "md": {
+                "width": 200,
+                "height": "auto"
+            },
+            "lg": {
+                "width": 200,
+                "height": "300"
+            }
+        }
+    },
+    {
+        "component": "table",
+        "id": "3dd72a60-cf7a-42d2-bd26-c61d87ec03d8",
+        "label": "Table",
+        "search": "",
+        "filters": [],
+        "columns": [
+            {
+                "id": "_actions_left",
+                "label": "#",
+                "width": 43
+            },
+            {
+                "label": "",
+                "id": "bc616ad5-46ce-4010-92b2-db0722358b12",
+                "options": [],
+                "width": 52
+            },
+            {
+                "label": "Image",
+                "id": "f877905a-cb5f-4ca4-8a53-1ebbb077dcc7",
+                "options": [],
+                "filename": "{item.path}/image.{ext}",
+                "width": 184
+            },
+            {
+                "label": "Name",
+                "id": "63fefd4f-d313-49c9-92b0-82b4f655eb33",
+                "options": []
+            },
+            {
+                "label": "Progress (%)",
+                "id": "6d9d3fab-bce5-4182-b7f6-d7a9af661bf2",
+                "options": []
+            },
+            {
+                "id": "_actions_right",
+                "width": "100%"
+            }
+        ],
+        "orderBy": []
     }
 ]

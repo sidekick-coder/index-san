@@ -62,10 +62,9 @@ async function upload(file: File) {
     if (!column.value || !item.value) return
 
     const filePattern = column.value.filename || `${uuid()}.{ext}`
-    const itemPath = item.value._path
 
     const compiled = template(filePattern, {
-        interpolate: /{([\s\S]+?)}/g,
+        interpolate: /{{([\s\S]+?)}}/g,
     })
 
     const filename = compiled({

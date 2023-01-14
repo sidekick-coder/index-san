@@ -16,11 +16,19 @@
                 "options": []
             },
             {
-                "label": "",
+                "label": "Done",
                 "id": "bc616ad5-46ce-4010-92b2-db0722358b12",
                 "field": "done",
                 "type": "checkbox",
                 "options": []
+            },
+            {
+                "label": "Image",
+                "id": "f877905a-cb5f-4ca4-8a53-1ebbb077dcc7",
+                "field": "image",
+                "type": "entry",
+                "options": [],
+                "filename": "{{item._path}}/image.{{ext}}"
             }
         ],
         "id": "todo-list",
