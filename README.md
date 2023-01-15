@@ -6,7 +6,9 @@
 
 Notes app & files management app (under development)
 
-[Downloads](https://github.com/sidekick-coder/index-san/releases)
+[Buy me a coffee](https://github.com/sponsors/zzhenryquezz) -
+[Downloads](https://github.com/sidekick-coder/index-san/releases) -
+[Docs](https://index-san.sidekick-coder.com/)
 
 </div>
 
@@ -28,18 +30,19 @@ npm install -ws // install packages dependencies
 npm run dev // Run electron app
 ```
 
+## FAQ
+
+### What is the state of project?
+
+Right now we are in a state of alpha, the app have all basic features implemented, but have with some bugs here and there, and also some parts need improvements!
 
 
-## Table view
+### Why browsers, windows, macOS or antivirus complains about the app download/installation?
+
+Both Windows and macOS apps need a payed certificate to avoid this warnings, but buy one is a very expensive investments that I can't do right now!
+
+### Why app do not auto-update?
+
+Same reason as before, to add self-update to the app it is required to have a payed certificate.
 
 
-![](./screenshots/collecton-table.png)
-
-## Charts view
-
-![](./screenshots/collecton-chart.png)
-
-
-## Data saved locally
-
-![](./screenshots/folder-as-collection-table.png)
