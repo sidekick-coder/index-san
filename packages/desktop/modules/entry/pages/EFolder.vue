@@ -294,7 +294,13 @@ async function onEnter(item: DirectoryEntry) {
             </div>
 
             <div class="h-full overflow-auto">
-                <v-table :columns="columns" :items="filteredEntries" :fixed="false" header-stick>
+                <v-table
+                    :columns="columns"
+                    :items="filteredEntries"
+                    :fixed="false"
+                    header-stick
+                    limit="100"
+                >
                     <template #item="{ item, index }">
                         <v-tr
                             :ref="(el: any) => trRef[index] = el"
