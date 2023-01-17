@@ -1,9 +1,18 @@
 import { lib as core } from './core'
 
+import momentTypes from 'moment/moment.d.ts?raw'
+
 export function mount() {
     const uri = 'ts:runtime/script.d.ts'
 
     const libs = core.mount()
+
+    libs.push({
+        uri: 'ts:moment.d.ts',
+        source: `
+            declare module 'moment' { ${momentTypes} }
+        `,
+    })
 
     const source = `
         declare const Workspace: import("core/entities/workspace").default
@@ -18,7 +27,7 @@ export function mount() {
 
         declare const scope: Record<string, any>
 
-        declare const Moment: any
+        declare const Moment: typeof import("moment")
 
         declare function setResult(data: any): void
     `
