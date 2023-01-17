@@ -17,6 +17,9 @@
       "@/*": [
         "./*"
       ],
+      "@composables/*": [
+        "./composables/*"
+      ],
       "@core/*": [
         "../core/*"
       ]

@@ -279,11 +279,9 @@ async function onEnter(item: DirectoryEntry) {
             <template #append-links>
                 <v-input
                     v-model="search"
-                    placeholder="search"
-                    size="sm"
-                    class="ml-auto w-full max-w-[300px]"
-                    rounded
-                    wrapper:class="h-full"
+                    :placeholder="$t('search') + '...'"
+                    flat
+                    class="ml-auto w-full max-w-[300px] mr-4"
                 />
             </template>
         </l-toolbar>

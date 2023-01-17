@@ -100,6 +100,7 @@ watch(() => props.itemId, setContentPath, {
                     :item-id="item.id"
                     :label="c.label"
                     :type="c.type"
+                    edit
                     class="mb-4 last:mb-0"
                 />
             </v-layout-drawer>

@@ -13,6 +13,10 @@ const props = defineProps({
         type: [String, Number, Boolean] as any,
         default: null,
     },
+    label: {
+        type: String,
+        default: null,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -21,7 +25,9 @@ const emit = defineEmits(['update:modelValue'])
 const model = useVModel(props, 'modelValue', emit)
 </script>
 <template>
-    <div class="flex items-center">
+    <label class="flex items-center py-3">
         <input v-model="model" type="checkbox" class="w-4 h-4 text-white accent-accent" />
-    </div>
+
+        <span v-if="label" class="text-t-secondary block font-bold ml-2">{{ label }}</span>
+    </label>
 </template>

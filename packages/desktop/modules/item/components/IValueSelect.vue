@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import { createValue } from '@/modules/item/composables/value'
+import { useModelOrInnerValue } from '@/composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -16,7 +17,13 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:edit'])
 
 const { payload, onLoaded, column, save } = createValue({
     collectionId: props.collectionId,
@@ -41,6 +48,10 @@ const color = computed(() => {
 
     return selected.color
 })
+
+// edit model
+
+const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
@@ -53,7 +64,20 @@ const color = computed(() => {
         @update:model-value="save"
     >
         <template #selection="{ attrs, displayValue }">
-            <div class="px-4 min-h-[40px] flex items-center" v-bind="attrs">
+            <v-input v-if="editModel" readonly v-bind="attrs">
+                <template #prepend>
+                    <v-card
+                        class="px-2 py-1 text-xs rounded"
+                        width="auto"
+                        :color="color || 'accent'"
+                        :class="!payload ? 'opacity-0' : ''"
+                    >
+                        {{ displayValue || payload }}
+                    </v-card>
+                </template>
+            </v-input>
+
+            <div v-else class="px-4 min-h-[40px] flex items-center" v-bind="attrs">
                 <v-card
                     class="px-2 py-1 text-xs rounded"
                     width="auto"

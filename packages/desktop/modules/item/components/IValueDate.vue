@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { createValue } from '../composables/value'
 import moment from 'moment'
+import { useModelOrInnerValue } from '@/composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -16,13 +17,17 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:edit'])
 
 const { payload, column, onLoaded, save } = createValue(props)
 
 await new Promise<void>((resolve) => onLoaded(resolve))
-
-const edit = ref(false)
 
 function isValid(value: any) {
     if (!column.value) return true
@@ -38,15 +43,19 @@ const display = computed(() => {
 
     return moment(payload.value, saveFormat).format(displayFormat)
 })
+
+// edit model
+
+const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
     <v-input
-        v-if="edit"
+        v-if="editModel"
         v-model="payload"
         autofocus
         @update:model-value="save"
-        @blur="edit = false"
+        @blur="editModel = false"
     />
 
     <div
@@ -54,7 +63,7 @@ const display = computed(() => {
         :model-value="display"
         :class="!isValid(payload) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
         class="cursor-pointer"
-        @click="edit = true"
+        @click="editModel = true"
     >
         {{ display }}
     </div>

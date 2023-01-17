@@ -7,7 +7,7 @@ export default {
 import { useAttrs, defineAsyncComponent } from 'vue'
 
 import { ColumnType } from '@core/entities/column'
-import { createBindings } from '@/composables/binding'
+import { createBindings } from '@composables/binding'
 
 const IValueText = defineAsyncComponent(() => import('./IValueText.vue'))
 const IValueNumber = defineAsyncComponent(() => import('./IValueNumber.vue'))
@@ -38,6 +38,10 @@ defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
 
 // bindings
@@ -60,6 +64,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 
@@ -68,6 +73,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 
@@ -76,6 +82,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'select'])"
         />
 
@@ -84,6 +91,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 
@@ -92,6 +100,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 
@@ -100,6 +109,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'select'])"
         />
 
@@ -108,6 +118,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 
@@ -116,6 +127,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 
@@ -124,6 +136,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root'])"
         />
 
@@ -132,6 +145,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :collection-id="collectionId"
             :item-id="itemId"
             :column-id="columnId"
+            :edit="edit"
             v-bind="bindings.multiple(['root', 'input'])"
         />
 

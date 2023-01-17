@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useModelOrInnerValue } from '@/composables/model'
 import { createValue } from '@/modules/item/composables/value'
 import { ref } from 'vue'
 
@@ -15,7 +16,12 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+const emit = defineEmits(['update:edit'])
 
 const { payload, save, onLoaded } = createValue({
     collectionId: props.collectionId,
@@ -25,11 +31,13 @@ const { payload, save, onLoaded } = createValue({
 
 await new Promise<void>((resolve) => onLoaded(resolve))
 
-const edit = ref(false)
+// edit mode
+
+const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
-    <div v-if="!edit" class="cursor-pointer" @click="edit = true">
+    <div v-if="!edit" class="cursor-pointer" @click="editModel = true">
         {{ payload }}
     </div>
 
@@ -39,6 +47,6 @@ const edit = ref(false)
         type="number"
         autofocus
         @update:model-value="save"
-        @blur="edit = false"
+        @blur="editModel = false"
     />
 </template>

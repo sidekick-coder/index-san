@@ -183,6 +183,8 @@ onMounted(() => {
         </label>
 
         <div :class="classes" v-bind="bindings.wrapper">
+            <slot name="prepend" />
+
             <input
                 :id="label"
                 ref="inputRef"

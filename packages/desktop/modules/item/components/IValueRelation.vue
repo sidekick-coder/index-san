@@ -3,6 +3,7 @@ import { watch } from 'vue'
 
 import { createValue } from '@/modules/item/composables/value'
 import { useItemStore } from '../store'
+import { useModelOrInnerValue } from '@/composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -17,7 +18,13 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:edit'])
 
 // value
 
@@ -39,6 +46,10 @@ watch(
     },
     { immediate: true }
 )
+
+// edit model
+
+const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
@@ -51,7 +62,15 @@ watch(
         @update:model-value="save"
     >
         <template #selection="{ attrs, displayValue }">
-            <div class="min-h-[40px] flex items-center cursor-pointer" v-bind="attrs">
+            <v-input
+                v-if="editModel"
+                readonly
+                v-bind="attrs"
+                :model-value="displayValue || payload"
+            >
+            </v-input>
+
+            <div v-else class="min-h-[40px] flex items-center cursor-pointer" v-bind="attrs">
                 {{ displayValue || payload }}
             </div>
         </template>

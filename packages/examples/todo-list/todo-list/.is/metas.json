@@ -5,9 +5,10 @@
         "_updateAt": "Sat Jan 14 2023 10:12:02 GMT-0300 (Brasilia Standard Time)",
         "_path": "/todo-list/8cd66a74-e193-4ed4-9f93-cdecdfc31b11",
         "name": "Clean room",
-        "_updatedAt": "Sat Jan 14 2023 13:58:32 GMT-0300 (Brasilia Standard Time)",
+        "_updatedAt": "Tue Jan 17 2023 14:33:22 GMT-0300 (Brasilia Standard Time)",
         "progress": 0,
-        "image": "/image.png"
+        "image": "/image.png",
+        "done": false
     },
     {
         "id": "a7dc1d4f-2d17-4f01-8212-c30c1de45296",

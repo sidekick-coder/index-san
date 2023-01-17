@@ -11,6 +11,7 @@ import DirectoryEntry from '@core/entities/directory-entry'
 
 import { createValue } from '@/modules/item/composables/value'
 import { useStore } from '@/store/global'
+import { useModelOrInnerValue } from '@/composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -25,7 +26,13 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:edit'])
 
 const { payload, column, item, save, onLoaded } = createValue<string | null>(props)
 
@@ -107,12 +114,24 @@ async function uploadByClipboard() {
 
     await upload(file).catch((err) => store.notify.error(err.message))
 }
+
+// edit mode
+
+const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
     <v-menu offset-y close-on-content-click>
         <template #activator="{ attrs }">
-            <div class="cursor-pointer" v-bind="{ ...$attrs, ...attrs }">
+            <v-input
+                v-if="editModel"
+                :model-value="DirectoryEntry.basename(payload ?? '')"
+                readonly
+                class="cursor-pointer"
+                v-bind="{ ...$attrs, ...attrs }"
+            />
+
+            <div v-else class="cursor-pointer" v-bind="{ ...$attrs, ...attrs }">
                 {{ !payload ? '' : DirectoryEntry.basename(payload) }}
             </div>
         </template>

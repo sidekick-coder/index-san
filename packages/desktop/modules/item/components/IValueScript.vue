@@ -4,6 +4,7 @@ import { ref, watch } from 'vue'
 import { createValue } from '@/modules/item/composables/value'
 import EvaluationOutput from '@/../core/entities/evaluation-output'
 import { useStore } from '@/store/global'
+import { useModelOrInnerValue } from '@/composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -18,7 +19,13 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:edit'])
 
 const { column, item, onLoaded } = createValue({
     collectionId: props.collectionId,
@@ -42,7 +49,7 @@ async function setResult() {
             content: column.value.content,
             scope: { item: item.value },
         })
-        .then((r) => (output.value = r))
+        .then((r) => (output.value = new EvaluationOutput(r)))
         .catch(() => (output.value = undefined))
 }
 
@@ -51,10 +58,15 @@ await setResult()
 watch([column, item], setResult, {
     deep: true,
 })
+
+// edit mode
+
+const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
-    <div>
+    <v-input v-if="edit" :model-value="output?.result" readonly />
+    <div v-else>
         {{ output?.result }}
     </div>
 </template>

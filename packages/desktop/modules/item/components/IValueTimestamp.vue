@@ -17,6 +17,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
 
 const { column, item, onLoaded } = createValue(props)
@@ -35,5 +39,7 @@ const display = computed(() => {
 </script>
 
 <template>
-    <div>{{ display }}</div>
+    <v-input v-if="edit" :model-value="display" readonly />
+
+    <div v-else>{{ display }}</div>
 </template>

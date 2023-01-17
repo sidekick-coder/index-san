@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { openURL } from '@/composables/externals'
 import { createValue } from '../composables/value'
+import { useModelOrInnerValue } from '@/composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -16,7 +17,13 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    edit: {
+        type: Boolean,
+        default: null,
+    },
 })
+
+const emit = defineEmits(['update:edit'])
 
 const { payload, onLoaded, save } = createValue(props)
 
@@ -45,20 +52,45 @@ const display = computed(() => {
 
     return url.hostname || url.href
 })
+
+// edit model
+
+const showInput = useModelOrInnerValue(props, 'edit', emit)
+
+const editValue = ref(false)
 </script>
 
 <template>
-    <v-input v-if="edit" v-model="payload" @update:model-value="save">
+    <v-input v-if="editValue" v-model="payload" @update:model-value="save">
         <template #append>
-            <v-btn size="text-xs px-2 " text @click="edit = false">
+            <v-btn size="text-xs px-2 " text @click="editValue = false">
                 <v-icon name="check" />
+            </v-btn>
+        </template>
+    </v-input>
+
+    <v-input
+        v-else-if="showInput"
+        :model-value="display"
+        class="cursor-pointer group/input"
+        input:class="cursor-pointer"
+        readonly
+        @click="openURL(payload as string)"
+    >
+        <template #append>
+            <v-btn
+                size="sm"
+                class="group-hover/input:opacity-100 opacity-0 ml-auto"
+                color="b-secondary"
+                @click.stop="editValue = true"
+            >
+                <v-icon name="pen" />
             </v-btn>
         </template>
     </v-input>
 
     <div
         v-else
-        :model-value="display"
         :class="!isValid(payload) ? 'text-danger cursor-pointer' : 'cursor-pointer'"
         class="cursor-pointer group/input flex"
         @click="openURL(payload as string)"

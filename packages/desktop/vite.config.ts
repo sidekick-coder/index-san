@@ -11,6 +11,7 @@ export const alias = {
 
     // app
     '@': path.resolve(__dirname, '.'),
+    '@composables': path.resolve(__dirname, 'composables'),
 
     // vue bundler
     'vue': path.resolve(root, 'node_modules', 'vue/dist/vue.esm-bundler.js'),
