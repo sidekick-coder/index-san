@@ -3,7 +3,7 @@ import DirectoryEntry from '../../entities/directory-entry'
 import type ExecuteScriptDTO from './execute-script.dto'
 import type AppConfig from '../../config/app'
 
-import moment from 'moment'
+import Moment from 'moment'
 
 import EvaluationFacade from '../../facades/script'
 export default class ExecuteScript {
@@ -23,10 +23,13 @@ export default class ExecuteScript {
             scope,
             Workspace: workspace,
             Drive: drive,
-            Facades: this.app.facades,
-            Entry: DirectoryEntry,
-            Moment: moment,
+            Moment,
+            DirectoryEntry,
             createRepository,
+            Facades: this.app.facades,
+
+            // libs
+            fetch: this.app.services.fetch.provide(),
         }
 
         const evaluation = new EvaluationFacade(drive, this.app.services.evaluation, sandbox)
