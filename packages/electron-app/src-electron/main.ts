@@ -18,11 +18,12 @@ import NodeVMEvaluation from '@core/gateways/evaluation/implementations/node-vm-
 import WorkspaceRepository from './workspace-repository'
 
 import Drive from './drive'
+import FetchService from './fetch'
 
 const config = new AppConfig({
     drives: { fs: new Drive() },
     repositories: { workspace: new WorkspaceRepository() },
-    services: { evaluation: new NodeVMEvaluation() },
+    services: { evaluation: new NodeVMEvaluation(), fetch: new FetchService() },
 })
 
 const indexSan = new IndexSan(config)

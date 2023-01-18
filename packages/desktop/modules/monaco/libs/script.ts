@@ -17,17 +17,17 @@ export function mount() {
     const source = `
         declare const Workspace: import("core/entities/workspace").default
 
-        declare const Entry: typeof import("core/entities/directory-entry").default
+        declare const DirectoryEntry: typeof import("core/entities/directory-entry").default
 
         declare const Drive: import("core/gateways/drive/drive").default
-        
-        declare const Facades: import("core/config/app").default['facades']
 
         declare const Evaluation: import("core/facades/script").default
 
-        declare const scope: Record<string, any>
-
+        declare const Facades: import("core/config/app").default['facades']
+        
         declare const Moment: typeof import("moment")
+
+        declare const scope: Record<string, any>
 
         declare function setResult(data: any): void
     `
