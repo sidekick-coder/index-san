@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "vitest",
+    "coverage": "vitest run --coverage",
     "build": "vue-tsc --noEmit && vite build",
     "tsc": "vue-tsc --noEmit",
     "make:gc-types": "node scripts/make-gc-types.js"
@@ -36,6 +37,7 @@
     "@types/lodash": "^4.14.191",
     "@types/mime": "^3.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vitest/coverage-c8": "^0.27.2",
     "@vue/test-utils": "^2.2.7",
     "autoprefixer": "^10.4.13",
     "install": "^0.13.0",

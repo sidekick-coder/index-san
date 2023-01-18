@@ -26,3 +26,4 @@ tmp
 
 out/
 components/components.d.ts
+coverage
