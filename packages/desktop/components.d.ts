@@ -9,7 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VBtn: typeof import('./components/v-btn.vue')['default']
+    VBtn: typeof import('./components/VBtn.vue')['default']
     VCard: typeof import('./components/v-card.vue')['default']
     VCardContent: typeof import('./components/v-card-content.vue')['default']
     VCardHead: typeof import('./components/v-card-head.vue')['default']

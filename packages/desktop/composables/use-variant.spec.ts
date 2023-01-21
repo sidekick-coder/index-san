@@ -115,4 +115,15 @@ describe('use-variant (unit)', () => {
 
         expect(variant.classes).toBe('font-bold text-info')
     })
+
+    test('should use _shared & empty at same type options', () => {
+        const props = reactive({ color: 'text-unknown' })
+
+        const variant = useVariant(props, 'color', {
+            _shared: 'border',
+            _empty: (v) => ({ classes: v }),
+        })
+
+        expect(variant.classes).toBe('border text-unknown')
+    })
 })

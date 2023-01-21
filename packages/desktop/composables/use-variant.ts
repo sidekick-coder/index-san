@@ -14,7 +14,7 @@ interface Options {
 export function useVariant<P extends object, K extends keyof P>(
     props: P,
     key: K,
-    variationOptions: Options & OptionSpecialMethods
+    variationOptions: Options & OptionSpecialMethods = {}
 ) {
     const options = ref(variationOptions)
 
@@ -22,8 +22,8 @@ export function useVariant<P extends object, K extends keyof P>(
         options.value = variationOptions
     }
 
-    function getVariant(value: string) {
-        const option = options.value[value]
+    function getVariant(name: string) {
+        const option = options.value[name]
 
         const result = {
             classes: '',
@@ -37,7 +37,7 @@ export function useVariant<P extends object, K extends keyof P>(
         }
 
         if (typeof option === 'function') {
-            Object.assign(result, option(value))
+            Object.assign(result, option(props[key]))
         }
 
         return result
