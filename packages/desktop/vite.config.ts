@@ -1,10 +1,11 @@
 import path from 'path'
-import vue from '@vitejs/plugin-vue'
 import tailwindcss from 'tailwindcss'
 
 import { defineConfig } from 'vite'
 
+import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 
 const root = path.resolve(__dirname, '..', '..')
 
@@ -28,8 +29,12 @@ export default defineConfig({
     },
     plugins: [
         vue(),
+        AutoImport({
+            dts: path.resolve(__dirname, 'auto-import.d.ts'),
+            imports: ['vue'],
+        }),
         Components({
-            dts: true,
+            dts: path.resolve(__dirname, 'components.d.ts'),
             dirs: ['./components'],
         }),
     ],

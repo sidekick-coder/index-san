@@ -4,3 +4,6 @@ out
 artifacts
 packages/core/dist-types
 packages/examples
+
+components.d.ts
+auto-import.d.ts
