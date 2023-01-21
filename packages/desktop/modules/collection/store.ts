@@ -3,8 +3,8 @@ import { ref, watch } from 'vue'
 
 import Collection from '@core/entities/collection'
 
-import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useCase } from '@/composables/use-case'
+import { useStore as useWorkspace } from '@modules/workspace/store'
+import { useCase } from '@composables/use-case'
 
 import UpdateCollectionsDTO from '@core/use-cases/update-collection/update-collection.dto'
 import CreateCollectionDTO from '@core/use-cases/create-collection/create-collection.dto'

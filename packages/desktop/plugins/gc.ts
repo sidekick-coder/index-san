@@ -8,7 +8,7 @@ interface ComponentItem {
 }
 
 export function createComponentObject() {
-    const modules = import.meta.glob('@/components/**/*.vue', { eager: true })
+    const modules = import.meta.glob('@components/**/*.vue', { eager: true })
     const components: Record<string, ComponentItem> = {}
 
     Object.entries<any>(modules).forEach(([key, value]) => {

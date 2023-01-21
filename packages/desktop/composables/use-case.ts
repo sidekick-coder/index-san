@@ -1,5 +1,5 @@
-import { useStore } from '@/modules/notify/store'
-import { i18n } from '@/plugins/i18n'
+import { useStore } from '@modules/notify/store'
+import { i18n } from '@plugins/i18n'
 
 import { CasesKeys, CasesMethod, CasesParams } from '@core/app'
 

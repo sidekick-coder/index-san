@@ -3,16 +3,16 @@ import { ref, watch } from 'vue'
 import uniqBy from 'lodash/uniqBy'
 import debounce from 'lodash/debounce'
 
-import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useStore as useWorkspace } from '@modules/workspace/store'
 
 import View from '@core/entities/view'
 import ViewTable from '@core/entities/view-table'
 import ViewGallery from '@core/entities/view-gallery'
 import ViewGroup from '@core/entities/view-group'
 
-import { useCase } from '@/composables/use-case'
-import { useHooks } from '@/plugins/hooks'
-import { useNonReactive, waitFor } from '@/composables/utils'
+import { useCase } from '@composables/use-case'
+import { useHooks } from '@plugins/hooks'
+import { useNonReactive, waitFor } from '@composables/utils'
 
 export type AnyView = View | ViewTable | ViewGallery | ViewGroup
 

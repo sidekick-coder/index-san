@@ -1,4 +1,4 @@
-import { useNonReactive } from '@/composables/utils'
+import { useNonReactive } from '@composables/utils'
 
 import { ViewColumn } from '@core/entities/view-common'
 import Column from '@core/entities/column'

@@ -4,7 +4,7 @@ export default { inheritAttrs: false }
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useLayout, LayoutItem } from '@/composables/layout'
+import { useLayout, LayoutItem } from '@composables/layout'
 
 // register & unregister layout item
 const root = ref<HTMLElement>()

@@ -9,20 +9,20 @@ import Draggable from 'vuedraggable'
 import ViewTable from '@core/entities/view-table'
 import Item from '@core/entities/item'
 
-import { createBindings } from '@/composables/binding'
-import { useStore } from '@/store/global'
+import { createBindings } from '@composables/binding'
+import { useStore } from '@store/global'
 
 import { createPayload } from '../composables/filter'
-import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
+import { withOnlyView, withView } from '@modules/collection-column/composables/with-view'
 
-import { withViewIterations } from '@/modules/view/composables'
-import { createViewIfNotExists, useView } from '@/modules/view/composables/use-view'
+import { withViewIterations } from '@modules/view/composables'
+import { createViewIfNotExists, useView } from '@modules/view/composables/use-view'
 
-import { useItemStore } from '@/modules/item/store'
+import { useItemStore } from '@modules/item/store'
 
 import CActions from './CActions.vue'
-import CcColumn from '@/modules/collection-column/components/CcColumn.vue'
-import IValue from '@/modules/item/components/IValue.vue'
+import CcColumn from '@modules/collection-column/components/CcColumn.vue'
+import IValue from '@modules/item/components/IValue.vue'
 
 const props = defineProps({
     width: {

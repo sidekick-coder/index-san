@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { useStore } from '@/modules/script/store'
+import { useStore } from '@modules/script/store'
 
 import SOutput from './SOutput.vue'
-import MEditor from '@/modules/monaco/components/MEditor.vue'
+import MEditor from '@modules/monaco/components/MEditor.vue'
 import VChart from '@/components/v-chart.vue'
-import EvaluationOutput from '@/../core/entities/evaluation-output'
+import EvaluationOutput from '@core/entities/evaluation-output'
 
 // Props & Emits
 

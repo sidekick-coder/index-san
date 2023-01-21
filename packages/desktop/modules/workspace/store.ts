@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 
-import { useCase } from '@/composables/use-case'
+import { useCase } from '@composables/use-case'
 
 import Workspace from '@core/entities/workspace'
 import { computed, ref } from 'vue'
-import { useState } from '@/composables/state'
+import { useState } from '@composables/state'
 
 export const useStore = defineStore('workspace', () => {
     const workspaces = ref<Workspace[]>([])

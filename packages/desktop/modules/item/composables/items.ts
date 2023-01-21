@@ -1,7 +1,7 @@
-import Item from '@/../core/entities/item'
-import { withViewIterations } from '@/modules/view/composables'
+import Item from '@core/entities/item'
+import { withViewIterations } from '@modules/view/composables'
 
-import { Events, useHooks } from '@/plugins/hooks'
+import { Events, useHooks } from '@plugins/hooks'
 import { computed, onMounted, onUnmounted, Ref, ref } from 'vue'
 import { useStore } from '../store'
 

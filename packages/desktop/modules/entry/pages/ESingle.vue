@@ -3,7 +3,7 @@ import { ref, watch, defineAsyncComponent } from 'vue'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
-import { useMeta } from '@/composables/metas'
+import { useMeta } from '@composables/metas'
 
 import { useStore } from '../store'
 import { useRouter } from 'vue-router'

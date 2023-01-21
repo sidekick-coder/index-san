@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { createValue } from '@/modules/item/composables/value'
-import { useModelOrInnerValue } from '@/composables/model'
+import { createValue } from '@modules/item/composables/value'
+import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {

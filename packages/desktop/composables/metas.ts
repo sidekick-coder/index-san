@@ -2,7 +2,7 @@
  * Page meta
  */
 
-import { useState } from '@/composables/state'
+import { useState } from '@composables/state'
 import { watch } from 'vue'
 
 interface Meta {

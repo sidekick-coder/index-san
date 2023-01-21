@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { watch } from 'vue'
 
-import { createValue } from '@/modules/item/composables/value'
+import { createValue } from '@modules/item/composables/value'
 import { useItemStore } from '../store'
-import { useModelOrInnerValue } from '@/composables/model'
+import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {

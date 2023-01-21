@@ -3,7 +3,7 @@ import { watch, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useState } from './composables/state'
 
-import NNotify from '@/modules/notify/components/NNotify.vue'
+import NNotify from '@modules/notify/components/NNotify.vue'
 
 // save last navigation
 const router = useRouter()

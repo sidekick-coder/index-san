@@ -6,10 +6,10 @@ import ViewGroup from '@core/entities/view-group'
 import ViewTable from '@core/entities/view-table'
 import ViewGallery from '@core/entities/view-gallery'
 
-import { createViewStore } from '@/modules/view/store'
-import { useView } from '@/modules/view/composables/use-view'
-import { createBindings } from '@/composables/binding'
-import { useState } from '@/composables/state'
+import { createViewStore } from '@modules/view/store'
+import { useView } from '@modules/view/composables/use-view'
+import { createBindings } from '@composables/binding'
+import { useState } from '@composables/state'
 
 const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))
 const CTable = defineAsyncComponent(() => import('./CTable.vue'))

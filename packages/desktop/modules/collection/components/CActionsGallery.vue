@@ -2,11 +2,11 @@
 import ViewGallery from '@core/entities/view-gallery'
 
 import { computed, watch } from 'vue'
-import { useStore } from '@/store/global'
+import { useStore } from '@store/global'
 
-import { useView } from '@/modules/view/composables/use-view'
+import { useView } from '@modules/view/composables/use-view'
 
-import { withOnlyView, withView } from '@/modules/collection-column/composables/with-view'
+import { withOnlyView, withView } from '@modules/collection-column/composables/with-view'
 
 // Props & emit
 const props = defineProps({

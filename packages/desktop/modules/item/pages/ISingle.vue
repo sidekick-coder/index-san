@@ -2,16 +2,16 @@
 import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useStore } from '@/store/global'
+import { useStore } from '@store/global'
 
-import LLayout from '@/modules/layout/LLayout.vue'
-import LToolbar from '@/modules/layout/components/LToolbar.vue'
-import EMarkdown from '@/modules/entry/pages/EMarkdown.vue'
+import LLayout from '@modules/layout/LLayout.vue'
+import LToolbar from '@modules/layout/components/LToolbar.vue'
+import EMarkdown from '@modules/entry/pages/EMarkdown.vue'
 
 import IValue from '../components/IValue.vue'
-import Item from '@/../core/entities/item'
-import { useState } from '@/composables/state'
-import DirectoryEntry from '@/../core/entities/directory-entry'
+import Item from '@core/entities/item'
+import { useState } from '@composables/state'
+import DirectoryEntry from '@core/entities/directory-entry'
 
 // Props & Emit
 const props = defineProps({

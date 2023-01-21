@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Menu from '@core/entities/menu'
-import { useMeta } from '@/composables/metas'
-import { useStore } from '@/modules/menu/store'
+import { useMeta } from '@composables/metas'
+import { useStore } from '@modules/menu/store'
 
-import OMenuItem from '@/modules/option/components/OMenuItem.vue'
+import OMenuItem from '@modules/option/components/OMenuItem.vue'
 import Draggable from 'vuedraggable'
 
 // metas

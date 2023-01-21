@@ -4,21 +4,21 @@ import { useRouter } from 'vue-router'
 
 import ViewGallery from '@core/entities/view-gallery'
 
-import { createBindings } from '@/composables/binding'
-import { useStore } from '@/store/global'
+import { createBindings } from '@composables/binding'
+import { useStore } from '@store/global'
 
-import Item from '@/../core/entities/item'
+import Item from '@core/entities/item'
 
 import CActions from './CActions.vue'
-import IValue from '@/modules/item/components/IValue.vue'
-import EImg from '@/modules/entry/components/EImg.vue'
+import IValue from '@modules/item/components/IValue.vue'
+import EImg from '@modules/entry/components/EImg.vue'
 
 import { createPayload } from '../composables/filter'
-import { withView } from '@/modules/collection-column/composables/with-view'
-import { createViewIfNotExists, useView } from '@/modules/view/composables/use-view'
-import { useHooks, Events } from '@/plugins/hooks'
-import { useItemStore } from '@/modules/item/store'
-import { withViewIterations } from '@/modules/view/composables'
+import { withView } from '@modules/collection-column/composables/with-view'
+import { createViewIfNotExists, useView } from '@modules/view/composables/use-view'
+import { useHooks, Events } from '@plugins/hooks'
+import { useItemStore } from '@modules/item/store'
+import { withViewIterations } from '@modules/view/composables'
 
 // Props & Emits
 const props = defineProps({

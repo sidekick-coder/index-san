@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ViewTable from '@core/entities/view-gallery'
-import { useView } from '@/modules/view/composables/use-view'
+import { useView } from '@modules/view/composables/use-view'
 import { watch } from 'vue'
 
 // Props & emit

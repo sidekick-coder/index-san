@@ -4,7 +4,7 @@ export default (router: Router) => {
     router.addRoute({
         path: '/:pathMatch(.*)*',
         name: 'error',
-        component: () => import('@/modules/workspace/WLayout.vue'),
+        component: () => import('@modules/workspace/WLayout.vue'),
         children: [
             {
                 path: '',

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import { createValue } from '@/modules/item/composables/value'
-import EvaluationOutput from '@/../core/entities/evaluation-output'
-import { useStore } from '@/store/global'
-import { useModelOrInnerValue } from '@/composables/model'
+import { createValue } from '@modules/item/composables/value'
+import EvaluationOutput from '@core/entities/evaluation-output'
+import { useStore } from '@store/global'
+import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {

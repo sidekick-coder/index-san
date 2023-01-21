@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provideLayout } from '@/composables/layout'
+import { provideLayout } from '@composables/layout'
 
 defineProps({
     usePercentage: {

@@ -1,4 +1,4 @@
-import { useLocale } from '@/plugins/i18n'
+import { useLocale } from '@plugins/i18n'
 import { watch } from 'vue'
 import { useTheme } from './composables/theme'
 import { useStore } from './store'

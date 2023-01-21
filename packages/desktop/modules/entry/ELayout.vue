@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DirectoryEntry from '@/../core/entities/directory-entry'
-import LLayout from '@/modules/layout/LLayout.vue'
+import DirectoryEntry from '@core/entities/directory-entry'
+import LLayout from '@modules/layout/LLayout.vue'
 import { watch } from 'vue'
 import { useRouter } from 'vue-router'
 

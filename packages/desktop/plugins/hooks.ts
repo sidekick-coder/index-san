@@ -1,4 +1,4 @@
-import { AnyView } from '@/modules/view/store'
+import { AnyView } from '@modules/view/store'
 import Item from '@core/entities/item'
 import { Plugin } from 'vue'
 

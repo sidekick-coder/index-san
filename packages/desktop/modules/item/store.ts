@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useStore as useWorkspace } from '@modules/workspace/store'
 
 import Item from '@core/entities/item'
 
-import { useCase } from '@/composables/use-case'
-import { useHooks } from '@/plugins/hooks'
+import { useCase } from '@composables/use-case'
+import { useHooks } from '@plugins/hooks'
 
 function createStore(collectionId: string) {
     const workspace = useWorkspace()

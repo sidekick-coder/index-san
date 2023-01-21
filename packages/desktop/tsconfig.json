@@ -14,14 +14,23 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
+      "@core/*": [
+        "../core/*"
+      ],
+      "@components/*": [
+        "./components/*"
       ],
       "@composables/*": [
         "./composables/*"
       ],
-      "@core/*": [
-        "../core/*"
+      "@plugins/*": [
+        "./plugins/*"
+      ],
+      "@modules/*": [
+        "./modules/*"
+      ],
+      "@store/*": [
+        "./store/*"
       ]
     }
   },

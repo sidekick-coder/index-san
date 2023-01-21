@@ -8,9 +8,9 @@ import mime from 'mime'
 import { ref, computed, watch, useAttrs } from 'vue'
 
 import { useStore } from '../store'
-import { toCssMeasurement } from '@/composables/utils'
-import DirectoryEntry from '@/../core/entities/directory-entry'
-import { createBindings } from '@/composables/binding'
+import { toCssMeasurement } from '@composables/utils'
+import DirectoryEntry from '@core/entities/directory-entry'
+import { createBindings } from '@composables/binding'
 
 const props = defineProps({
     basePath: {

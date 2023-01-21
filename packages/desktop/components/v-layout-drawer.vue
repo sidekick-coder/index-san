@@ -4,7 +4,7 @@ export default defineComponent({ inheritAttrs: false })
 
 <script setup lang="ts">
 import { ref, computed, defineComponent, onMounted, onUnmounted } from 'vue'
-import { useLayout, LayoutItem } from '@/composables/layout'
+import { useLayout, LayoutItem } from '@composables/layout'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 // Props & Emits

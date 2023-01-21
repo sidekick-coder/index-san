@@ -6,7 +6,7 @@ export default { name: 'IsChartBar' }
 import set from 'lodash/set'
 import get from 'lodash/get'
 
-import { isJSON } from '@/composables/utils'
+import { isJSON } from '@composables/utils'
 
 import { Chart, registerables } from 'chart.js'
 import { onMounted, onUnmounted, ref, useSlots } from 'vue'

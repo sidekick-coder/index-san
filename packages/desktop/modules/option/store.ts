@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
-import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useCase } from '@/composables/use-case'
+import { useStore as useWorkspace } from '@modules/workspace/store'
+import { useCase } from '@composables/use-case'
 
 interface SaveArgs {
     workspaceId?: string

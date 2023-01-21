@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 import Menu from '@core/entities/menu'
 
-import { useStore } from '@/store/global'
+import { useStore } from '@store/global'
 
 import { useToggleDrawer } from '../composables/drawer'
 

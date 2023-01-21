@@ -3,8 +3,8 @@ import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '../store'
 
-import LLayout from '@/modules/layout/LLayout.vue'
-import EFolder from '@/modules/entry/pages/EFolder.vue'
+import LLayout from '@modules/layout/LLayout.vue'
+import EFolder from '@modules/entry/pages/EFolder.vue'
 
 const props = defineProps({
     collectionId: {

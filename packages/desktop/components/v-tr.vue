@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toCssMeasurement } from '@/composables/utils'
+import { toCssMeasurement } from '@composables/utils'
 import { computed } from 'vue'
 
 const props = defineProps({

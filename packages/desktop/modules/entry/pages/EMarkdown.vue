@@ -10,13 +10,13 @@ import { useI18n } from 'vue-i18n'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
-import { useState } from '@/composables/state'
-import { useStore } from '@/modules/entry/store'
-import { createBindings } from '@/composables/binding'
+import { useState } from '@composables/state'
+import { useStore } from '@modules/entry/store'
+import { createBindings } from '@composables/binding'
 
 import EMarkdownDoc from '../components/EMarkdownDoc.vue'
 
-const MEditor = defineAsyncComponent(() => import('@/modules/monaco/components/MEditor.vue'))
+const MEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
 
 const props = defineProps({
     path: {

@@ -1,4 +1,4 @@
-import { useHooks, Events } from '@/plugins/hooks'
+import { useHooks, Events } from '@plugins/hooks'
 import { onUnmounted, ref } from 'vue'
 import { AnyView, useStore } from '../store'
 

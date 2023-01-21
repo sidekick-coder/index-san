@@ -2,12 +2,12 @@
 import { watch, ref, computed } from 'vue'
 import ViewGroup from '@core/entities/view-group'
 
-import { useView } from '@/modules/view/composables/use-view'
-import { createViewStore } from '@/modules/view/store'
+import { useView } from '@modules/view/composables/use-view'
+import { createViewStore } from '@modules/view/store'
 
 import CActionsGallery from './CActionsGallery.vue'
 import CActionsTable from './CActionsTable.vue'
-import { useState } from '@/composables/state'
+import { useState } from '@composables/state'
 
 // Props & emit
 const props = defineProps({

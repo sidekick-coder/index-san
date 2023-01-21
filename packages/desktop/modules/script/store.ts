@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
-import { useCase } from '@/composables/use-case'
-import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useCase } from '@composables/use-case'
+import { useStore as useWorkspace } from '@modules/workspace/store'
 
-import ExecuteScriptDTO from '@/../core/use-cases/execute-script/execute-script.dto'
+import ExecuteScriptDTO from '@core/use-cases/execute-script/execute-script.dto'
 
 export const useStore = defineStore('script', () => {
     const workspace = useWorkspace()

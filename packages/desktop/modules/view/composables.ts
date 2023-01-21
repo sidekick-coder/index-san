@@ -4,7 +4,7 @@ import Item from '@core/entities/item'
 import View from '@core/entities/view'
 import ViewCommon from '@core/entities/view-common'
 
-import { filter } from '@/modules/collection/composables/filter'
+import { filter } from '@modules/collection/composables/filter'
 
 export function withViewFilters(items: Item[], view: ViewCommon) {
     return items.filter((item) =>

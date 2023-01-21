@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
-import { useStore as useWorkspace } from '@/modules/workspace/store'
+import { useStore as useWorkspace } from '@modules/workspace/store'
 
-import { useCase } from '@/composables/use-case'
+import { useCase } from '@composables/use-case'
 import Menu from '@core/entities/menu'
 
 export const useStore = defineStore('menu', () => {

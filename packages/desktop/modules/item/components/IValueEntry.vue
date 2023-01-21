@@ -9,9 +9,9 @@ import uuid from 'uuid-random'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
-import { createValue } from '@/modules/item/composables/value'
-import { useStore } from '@/store/global'
-import { useModelOrInnerValue } from '@/composables/model'
+import { createValue } from '@modules/item/composables/value'
+import { useStore } from '@store/global'
+import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {

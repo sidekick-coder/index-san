@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMeta } from '@/composables/metas'
+import { useMeta } from '@composables/metas'
 
 useMeta({
     title: 'Not found',

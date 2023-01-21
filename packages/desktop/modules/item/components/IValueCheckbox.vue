@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createValue } from '@/modules/item/composables/value'
+import { createValue } from '@modules/item/composables/value'
 
 const props = defineProps({
     collectionId: {

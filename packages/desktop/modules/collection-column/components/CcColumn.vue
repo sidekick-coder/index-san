@@ -3,15 +3,15 @@ import { computed, ref, watch, defineAsyncComponent } from 'vue'
 
 import Column, { ColumnType } from '@core/entities/column'
 
-import { useStore as useCollectionStore } from '@/modules/collection/store'
-import { useStore } from '@/store/global'
+import { useStore as useCollectionStore } from '@modules/collection/store'
+import { useStore } from '@store/global'
 
-import { useNonReactive } from '@/composables/utils'
+import { useNonReactive } from '@composables/utils'
 import { useI18n } from 'vue-i18n'
 
-import { lib as libScriptColumn } from '@/modules/monaco/libs/column-script'
+import { lib as libScriptColumn } from '@modules/monaco/libs/column-script'
 
-const MEditor = defineAsyncComponent(() => import('@/modules/monaco/components/MEditor.vue'))
+const MEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
 
 // Props & emits
 const props = defineProps({

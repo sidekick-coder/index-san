@@ -3,7 +3,7 @@ interface ModuleRouter {
 }
 
 export default () => {
-    const modulesRouter = import.meta.glob<Record<string, ModuleRouter>>('@/modules/**/start.ts', {
+    const modulesRouter = import.meta.glob<Record<string, ModuleRouter>>('@modules/**/start.ts', {
         eager: true,
     })
 

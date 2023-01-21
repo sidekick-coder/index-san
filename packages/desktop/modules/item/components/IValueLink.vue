@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { openURL } from '@/composables/externals'
+import { openURL } from '@composables/externals'
 import { createValue } from '../composables/value'
-import { useModelOrInnerValue } from '@/composables/model'
+import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {

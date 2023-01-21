@@ -6,8 +6,8 @@ import DirectoryEntry from '@core/entities/directory-entry'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '../store'
 
-import VTr from '@/components/v-tr.vue'
-import LToolbar from '@/modules/layout/components/LToolbar.vue'
+import VTr from '@components/v-tr.vue'
+import LToolbar from '@modules/layout/components/LToolbar.vue'
 import EEntryIcon from '../components/EEntryIcon.vue'
 import { onKeyStroke } from '@vueuse/core'
 

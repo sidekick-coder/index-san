@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useMeta } from '@/composables/metas'
-import { useStore } from '@/modules/collection/store'
+import { useMeta } from '@composables/metas'
+import { useStore } from '@modules/collection/store'
 
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import CViewGroup from '@/modules/collection/components/CViewGroup.vue'
+import CViewGroup from '@modules/collection/components/CViewGroup.vue'
 
 const props = defineProps({
     collectionId: {

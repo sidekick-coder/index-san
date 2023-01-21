@@ -1,45 +1,36 @@
 import path from 'path'
 
-import { defineConfig } from 'vite'
-import tailwindcss from 'tailwindcss'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig, mergeConfig } from 'vite'
 import electron from 'vite-plugin-electron'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { alias as desktopAlias } from '../desktop/vite.config'
+import viteConfig from '../desktop/vite.config'
 
 const alias = {
-    ...desktopAlias,
+    '@core': path.resolve(__dirname, '..', 'core'),
     '@client': path.resolve(__dirname, '..', 'desktop'),
 }
 
-export default defineConfig({
-    resolve: { alias },
-    plugins: [
-        vue(),
-        electron([
-            {
-                entry: 'src-electron/main.ts',
-                vite: {
-                    resolve: { alias },
+export default mergeConfig(
+    viteConfig,
+    defineConfig({
+        resolve: { alias },
+        plugins: [
+            electron([
+                {
+                    entry: 'src-electron/main.ts',
+                    vite: {
+                        resolve: { alias },
+                    },
                 },
-            },
-            {
-                entry: 'src-electron/preload.ts',
-                onstart(options) {
-                    options.reload()
+                {
+                    entry: 'src-electron/preload.ts',
+                    onstart(options) {
+                        options.reload()
+                    },
                 },
-            },
-        ]),
-    ],
-    css: {
-        postcss: {
-            plugins: [
-                tailwindcss({
-                    config: path.resolve(__dirname, '..', 'desktop', 'tailwind.config.js'),
-                }),
-            ],
-        },
-    },
-})
+            ]),
+        ],
+    })
+)

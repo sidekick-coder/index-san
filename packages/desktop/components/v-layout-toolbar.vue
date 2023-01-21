@@ -4,7 +4,7 @@ export default { inheritAttrs: false }
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-import { LayoutItem, useLayout } from '@/composables/layout'
+import { LayoutItem, useLayout } from '@composables/layout'
 
 const props = defineProps({
     height: {

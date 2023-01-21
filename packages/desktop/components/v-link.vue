@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { openURL } from '@/composables/externals'
+import { openURL } from '@composables/externals'
 
 defineProps({
     href: {

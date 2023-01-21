@@ -1,6 +1,6 @@
 import { computed, ref, watch } from 'vue'
 
-import { useStore } from '@/store/global'
+import { useStore } from '@store/global'
 import { useItemStore } from '../store'
 
 interface Params {

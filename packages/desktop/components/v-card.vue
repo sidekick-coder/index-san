@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { toCssMeasurement } from '@/composables/utils'
+import { toCssMeasurement } from '@composables/utils'
 
 const props = defineProps({
     width: {

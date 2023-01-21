@@ -8,7 +8,7 @@ import { markdown } from '../composables/markdown'
 import { onErrorCaptured, defineComponent, ref, watch, defineAsyncComponent } from 'vue'
 
 import { useVModel } from '@vueuse/core'
-import { useNonReactive } from '@/composables/utils'
+import { useNonReactive } from '@composables/utils'
 
 // Props & Emits
 
@@ -48,13 +48,11 @@ watch(
 // render
 
 const components = {
-    SChart: defineAsyncComponent(() => import('@/modules/script/components/SChart.vue')),
-    EImg: defineAsyncComponent(() => import('@/modules/entry/components/EImg.vue')),
-    CTable: defineAsyncComponent(() => import('@/modules/collection/components/CTable.vue')),
-    CGallery: defineAsyncComponent(() => import('@/modules/collection/components/CGallery.vue')),
-    CViewGroup: defineAsyncComponent(
-        () => import('@/modules/collection/components/CViewGroup.vue')
-    ),
+    SChart: defineAsyncComponent(() => import('@modules/script/components/SChart.vue')),
+    EImg: defineAsyncComponent(() => import('@modules/entry/components/EImg.vue')),
+    CTable: defineAsyncComponent(() => import('@modules/collection/components/CTable.vue')),
+    CGallery: defineAsyncComponent(() => import('@modules/collection/components/CGallery.vue')),
+    CViewGroup: defineAsyncComponent(() => import('@modules/collection/components/CViewGroup.vue')),
 }
 
 const view = defineComponent({

@@ -2,11 +2,11 @@ import { ref, watch, WatchStopHandle } from 'vue'
 import { defineStore } from 'pinia'
 import debounce from 'lodash/debounce'
 
-import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useStore as useCollection } from '@/modules/collection/store'
+import { useStore as useWorkspace } from '@modules/workspace/store'
+import { useStore as useCollection } from '@modules/collection/store'
 
 import Column from '@core/entities/column'
-import { useNonReactive } from '@/composables/utils'
+import { useNonReactive } from '@composables/utils'
 
 interface StoreItem {
     collectionId: string

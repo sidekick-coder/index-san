@@ -2,7 +2,7 @@ import '../services/worker'
 
 import * as monaco from 'monaco-editor'
 
-import defaultTheme from '@/assets/themes/default.json'
+import defaultTheme from '../themes/default.json'
 
 // define theme
 monaco.editor.defineTheme('app-theme', defaultTheme as any)

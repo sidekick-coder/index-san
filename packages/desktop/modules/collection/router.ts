@@ -9,7 +9,7 @@ export default (router: Router) => {
 
     router.addRoute({
         path: '/collections',
-        component: () => import('@/modules/entry/ELayout.vue'),
+        component: () => import('@modules/entry/ELayout.vue'),
         children: [
             {
                 path: '',

@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useMeta } from '@/composables/metas'
-import { useStore } from '@/modules/collection/store'
+import { useMeta } from '@composables/metas'
+import { useStore } from '@modules/collection/store'
 
 const tm = useI18n()
 

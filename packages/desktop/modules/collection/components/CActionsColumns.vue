@@ -2,10 +2,10 @@
 import { computed, ref, watch } from 'vue'
 
 import VDraggable from 'vuedraggable'
-import { useStore } from '@/store/global'
-import { withView, withOnlyView } from '@/modules/collection-column/composables/with-view'
-import ViewCommon from '@/../core/entities/view-common'
-import { useView } from '@/modules/view/composables/use-view'
+import { useStore } from '@store/global'
+import { withView, withOnlyView } from '@modules/collection-column/composables/with-view'
+import ViewCommon from '@core/entities/view-common'
+import { useView } from '@modules/view/composables/use-view'
 
 const props = defineProps({
     collectionId: {

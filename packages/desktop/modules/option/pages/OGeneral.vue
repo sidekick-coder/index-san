@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useStore } from '@/modules/option/store'
-import { useLocale, useLanguages } from '@/plugins/i18n'
+import { useStore } from '@modules/option/store'
+import { useLocale, useLanguages } from '@plugins/i18n'
 
 const store = useStore()
 

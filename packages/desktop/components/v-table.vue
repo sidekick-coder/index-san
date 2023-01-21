@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { toCssMeasurement } from '@/composables/utils'
+import { toCssMeasurement } from '@composables/utils'
 
 interface ColumnPadding {
     top?: number

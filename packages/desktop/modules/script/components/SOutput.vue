@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import MEditor from '@/modules/monaco/components/MEditor.vue'
-import EvaluationOutput from '@/../core/entities/evaluation-output'
+import MEditor from '@modules/monaco/components/MEditor.vue'
+import EvaluationOutput from '@core/entities/evaluation-output'
 
 const props = defineProps({
     output: {

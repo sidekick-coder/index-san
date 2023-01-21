@@ -3,7 +3,7 @@ import Item from '@core/entities/item'
 import type { ViewFilter } from '@core/entities/view-common'
 import Column, { ColumnType } from '@core/entities/column'
 import moment, { Moment } from 'moment'
-import EvaluationOutput from '@/../core/entities/evaluation-output'
+import EvaluationOutput from '@core/entities/evaluation-output'
 
 export const operations = {
     text: {

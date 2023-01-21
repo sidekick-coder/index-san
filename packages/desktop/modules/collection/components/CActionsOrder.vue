@@ -4,9 +4,9 @@ import { useI18n } from 'vue-i18n'
 
 import ViewCommon from '@core/entities/view-common'
 
-import { useView } from '@/modules/view/composables/use-view'
-import { useStore } from '@/store/global'
-import { withView } from '@/modules/collection-column/composables/with-view'
+import { useView } from '@modules/view/composables/use-view'
+import { useStore } from '@store/global'
+import { withView } from '@modules/collection-column/composables/with-view'
 
 const props = defineProps({
     collectionId: {

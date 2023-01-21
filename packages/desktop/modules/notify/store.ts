@@ -2,7 +2,7 @@ import uuid from 'uuid-random'
 
 import { defineStore } from 'pinia'
 
-import { defaultTheme } from '@/modules/option/composables/theme'
+import { defaultTheme } from '@modules/option/composables/theme'
 import { ref } from 'vue'
 
 interface Message {

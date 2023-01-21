@@ -8,7 +8,7 @@ import { ViewFilter } from '@core/entities/view-common'
 import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { operations } from '../composables/filter'
-import { useItemStore } from '@/modules/item/store'
+import { useItemStore } from '@modules/item/store'
 
 const props = defineProps({
     modelValue: {

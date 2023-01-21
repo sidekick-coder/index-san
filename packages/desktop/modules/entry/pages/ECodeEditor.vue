@@ -4,11 +4,11 @@ import { ref } from 'vue'
 import EvaluationOutput from '@core/entities/evaluation-output'
 
 import EEditor from '../components/EEditor.vue'
-import MEditor from '@/modules/monaco/components/MEditor.vue'
-import SOutput from '@/modules/script/components/SOutput.vue'
-import { mount as lib } from '@/modules/monaco/libs/script'
+import MEditor from '@modules/monaco/components/MEditor.vue'
+import SOutput from '@modules/script/components/SOutput.vue'
+import { mount as lib } from '@modules/monaco/libs/script'
 
-import { useStore } from '@/store/global'
+import { useStore } from '@store/global'
 
 defineProps({
     path: {

@@ -6,9 +6,9 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { onKeyStroke } from '@vueuse/core'
 
-import { useStore } from '@/modules/menu/store'
+import { useStore } from '@modules/menu/store'
 import { useToggleDrawer } from '../composables/drawer'
-import { useMeta } from '@/composables/metas'
+import { useMeta } from '@composables/metas'
 
 const route = useRoute()
 const router = useRouter()

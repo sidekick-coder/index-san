@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { createValue } from '../composables/value'
 import moment from 'moment'
-import { ColumnType } from '@/../core/entities/column'
+import { ColumnType } from '@core/entities/column'
 
 const props = defineProps({
     collectionId: {

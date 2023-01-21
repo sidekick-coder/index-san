@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import ViewCommon from '@/../core/entities/view-common'
+import ViewCommon from '@core/entities/view-common'
 
 import { debounce } from 'lodash'
 import { ref, computed, watch, defineAsyncComponent } from 'vue'
-import { useStore } from '@/store/global'
+import { useStore } from '@store/global'
 
-import View from '@/../core/entities/view'
-import { useView } from '@/modules/view/composables/use-view'
+import View from '@core/entities/view'
+import { useView } from '@modules/view/composables/use-view'
 
 import CActionsColumns from './CActionsColumns.vue'
 import CActionsOrder from './CActionsOrder.vue'
 import CActionsFilters from './CActionsFilters.vue'
-import { useItemStore } from '@/modules/item/store'
+import { useItemStore } from '@modules/item/store'
 
 const CActionsGallery = defineAsyncComponent(() => import('./CActionsGallery.vue'))
 const CActionsTable = defineAsyncComponent(() => import('./CActionsTable.vue'))

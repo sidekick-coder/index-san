@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { useCase } from '@/composables/use-case'
-import { useStore as useWorkspace } from '@/modules/workspace/store'
-import { useStore as useCollection } from '@/modules/collection/store'
+import { useCase } from '@composables/use-case'
+import { useStore as useWorkspace } from '@modules/workspace/store'
+import { useStore as useCollection } from '@modules/collection/store'
 
 import ListDirectoryEntryDTO from '@core/use-cases/list-directory-entry/list-directory.dto'
 import ShowDirectoryEntryDTO from '@core/use-cases/show-directory-entry/show-directory-entry.dto'

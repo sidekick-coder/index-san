@@ -6,8 +6,7 @@
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "build": "vue-tsc --noEmit && vite build",
-    "tsc": "vue-tsc --noEmit",
-    "make:gc-types": "node scripts/make-gc-types.js"
+    "tsc": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
@@ -45,6 +44,7 @@
     "postcss": "^8.4.21",
     "sass": "^1.57.1",
     "tailwindcss": "^3.2.4",
+    "unplugin-vue-components": "^0.22.12",
     "vite": "^4.0.4",
     "vitest": "^0.27.0"
   }

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { createValue } from '../composables/value'
 import moment from 'moment'
-import { useModelOrInnerValue } from '@/composables/model'
+import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {

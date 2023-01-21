@@ -5,8 +5,8 @@ import Column from '@core/entities/column'
 import ViewCommon from '@core/entities/view-common'
 
 import CFilter from './CFilter.vue'
-import { useView } from '@/modules/view/composables/use-view'
-import { useStore } from '@/store/global'
+import { useView } from '@modules/view/composables/use-view'
+import { useStore } from '@store/global'
 
 const props = defineProps({
     collectionId: {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useState } from '@/composables/state'
+import { useState } from '@composables/state'
 import Menu from '@core/entities/menu'
 import { computed } from 'vue'
 

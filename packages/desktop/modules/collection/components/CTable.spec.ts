@@ -12,17 +12,17 @@ import CollectionFactory from '@core/__tests__/factories/collections'
 import ColumnFactory from '@core/__tests__/factories/column'
 import { ViewTableFactory } from '@core/__tests__/factories/view'
 
-import VResizeLine from '@/components/v-resize-line.vue'
-import VMenu from '@/components/v-menu.vue'
+import VResizeLine from '@components/v-resize-line.vue'
+import VMenu from '@components/v-menu.vue'
 import CTable from './CTable.vue'
 import CActions from './CActions.vue'
-import CcColumn from '@/modules/collection-column/components/CcColumn.vue'
+import CcColumn from '@modules/collection-column/components/CcColumn.vue'
 
-import { createComponentObject } from '@/plugins/gc'
-import { useItemStore } from '@/modules/item/store'
-import { useStore } from '@/store/global'
-import { useViewStore } from '@/modules/view/store'
-import IValue from '@/modules/item/components/IValue.vue'
+import { createComponentObject } from '@plugins/gc'
+import { useStore } from '@store/global'
+import { useItemStore } from '@modules/item/store'
+import { useViewStore } from '@modules/view/store'
+import IValue from '@modules/item/components/IValue.vue'
 
 describe('CTable.vue', () => {
     let wrapper: VueWrapper<InstanceType<typeof CTable>>
