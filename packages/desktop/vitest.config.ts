@@ -10,6 +10,7 @@ export default mergeConfig(
             environment: 'jsdom',
             exclude: [...configDefaults.exclude, 'packages/core/*'],
             setupFiles: ['__tests__/setup.ts'],
+            reporters: 'verbose',
         },
     })
 )
