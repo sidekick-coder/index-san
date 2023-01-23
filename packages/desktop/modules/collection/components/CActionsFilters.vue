@@ -67,7 +67,7 @@ function add(column: Column) {
 <template>
     <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
-            <v-btn text size="sm" v-bind="attrs" class="relative group/btn">
+            <v-btn mode="text" size="sm" v-bind="attrs" class="relative group/btn">
                 <v-icon name="filter" />
                 <div
                     v-if="view.filters.length"

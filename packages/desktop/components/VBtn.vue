@@ -97,7 +97,7 @@ function setColorOptions() {
     })
 }
 
-watch(() => props.color, setColorOptions, { immediate: true })
+watch(() => props.mode, setColorOptions, { immediate: true })
 
 // size
 

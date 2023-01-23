@@ -72,7 +72,7 @@ const title = computed(() => {
                 {{ title }}
             </h1>
             <v-btn
-                text
+                mode="text"
                 class="opacity-0 group-hover:opacity-100"
                 size="sm"
                 @click.prevent.stop="drawer = false"

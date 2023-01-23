@@ -77,21 +77,8 @@ function onSelect(id: string) {
 <template>
     <v-card color="b-secondary" width="350">
         <v-card-head>
-            <v-btn
-                :color="tab === 0 ? 'text-t-primary' : 'text-t-secondary'"
-                class="hover:text-t-primary"
-                size="h-[45px] text-sm w-full"
-                @click="tab = 0"
-                >{{ $t('config') }}</v-btn
-            >
-            <v-btn
-                class="w-full hover:text-t-primary"
-                size="h-[45px] text-sm w-full"
-                :color="tab === 1 ? 'text-t-primary' : 'text-t-secondary'"
-                tile
-                @click="tab = 1"
-                >{{ $t('view') }}</v-btn
-            >
+            <v-btn mode="text" @click="tab = 0">{{ $t('config') }}</v-btn>
+            <v-btn mode="text" tile @click="tab = 1">{{ $t('view') }}</v-btn>
         </v-card-head>
 
         <v-card-content v-if="tab == 0">

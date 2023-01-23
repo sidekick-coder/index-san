@@ -102,27 +102,21 @@ function isCommon(v: View): v is ViewCommon {
                         v-model="input"
                         :placeholder="$t('search')"
                         size="sm"
-                        class="w-[300px] mr-2"
+                        class="w-full max-w-[300px] mx-4"
                     >
                         <template #append>
-                            <v-btn
-                                v-if="input"
-                                text
-                                size="none"
-                                class="w-5 h-5"
-                                @click="input = ''"
-                            >
+                            <v-btn v-if="input" mode="text" size="sm" @click="input = ''">
                                 <v-icon name="times" />
                             </v-btn>
                         </template>
                     </v-input>
                 </transition>
 
-                <v-btn text size="sm" @click="showInput = !showInput">
+                <v-btn mode="text" size="sm" @click="showInput = !showInput">
                     <v-icon name="search" />
                 </v-btn>
 
-                <v-btn text size="sm" :loading="itemsStore.loading" @click="refresh">
+                <v-btn mode="text" size="sm" :loading="itemsStore.loading" @click="refresh">
                     <v-icon name="rotate" />
                 </v-btn>
 
@@ -137,7 +131,7 @@ function isCommon(v: View): v is ViewCommon {
         <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
             <template #activator="{ attrs }">
                 <div class="h-[44px] flex items-center" v-bind="attrs">
-                    <v-btn text size="sm" @click="menu = !menu">
+                    <v-btn mode="text" size="sm" @click="menu = !menu">
                         <v-icon name="cog" />
                     </v-btn>
                 </div>

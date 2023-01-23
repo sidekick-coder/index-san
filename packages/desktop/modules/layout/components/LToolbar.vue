@@ -118,18 +118,28 @@ onKeyStroke(['ArrowRight'], (e) => {
                 <v-icon name="bars" />
             </v-btn>
 
-            <v-btn :disabled="!navigation.haveBack" text size="sm" @click="navigation.goBack">
+            <v-btn
+                :disabled="!navigation.haveBack"
+                mode="text"
+                size="sm"
+                @click="navigation.goBack"
+            >
                 <v-icon name="arrow-left" />
             </v-btn>
 
-            <v-btn :disabled="!navigation.haveForward" text size="sm" @click="navigation.goForward">
+            <v-btn
+                :disabled="!navigation.haveForward"
+                mode="text"
+                size="sm"
+                @click="navigation.goForward"
+            >
                 <v-icon name="arrow-right" />
             </v-btn>
 
             <slot name="append-navigation" />
 
             <template v-for="(link, index) in links" :key="index">
-                <v-btn v-if="link.to" size="sm" text :to="link.to">
+                <v-btn v-if="link.to" size="sm" mode="text" :to="link.to">
                     {{ link.label }}
                 </v-btn>
 
@@ -144,7 +154,7 @@ onKeyStroke(['ArrowRight'], (e) => {
                 <div class="grow"></div>
             </slot>
 
-            <v-btn text size="sm" @click="menu.create">
+            <v-btn mode="text" size="sm" @click="menu.create">
                 <v-icon name="bookmark" />
             </v-btn>
         </slot>

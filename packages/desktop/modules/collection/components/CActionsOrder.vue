@@ -81,7 +81,7 @@ function remove(index: number) {
     <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
         <template #activator="{ attrs }">
             <div class="h-[44px] flex items-center" v-bind="attrs">
-                <v-btn text size="sm" class="relative" @click="menu = !menu">
+                <v-btn mode="text" size="sm" class="relative" @click="menu = !menu">
                     <v-icon name="sort" />
                     <div
                         v-if="view.orderBy.length"
