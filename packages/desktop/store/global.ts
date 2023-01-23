@@ -9,8 +9,11 @@ import { useStore as useView } from '@modules/view/store'
 import { useStore as useColumn } from '@modules/collection-column/store'
 import { useStore as useMenu } from '@modules/menu/store'
 import { useStore as useScript } from '@modules/script/store'
+import { useStore as useDrive } from '@modules/drive/store'
+import { useStore as useDialog } from '@modules/dialog/store'
 
 export const useStore = defineStore('global', () => {
+    const drive = useDrive()
     const workspace = useWorkspace()
     const collection = useCollection()
     const item = useItem()
@@ -20,9 +23,12 @@ export const useStore = defineStore('global', () => {
     const menu = useMenu()
     const script = useScript()
     const notify = useNotify()
+    const dialog = useDialog()
 
     return {
         notify,
+        dialog,
+        drive,
         workspace,
         collection,
         item,

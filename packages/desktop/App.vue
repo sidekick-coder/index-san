@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useState } from './composables/state'
 
 import NNotify from '@modules/notify/components/NNotify.vue'
+import DDialog from '@modules/dialog/components/DDialog.vue'
 
 // save last navigation
 const router = useRouter()
@@ -20,11 +21,18 @@ loading.value = false
 
 watch(
     () => route.path,
-    (v) => (lastRoute.value = v)
+    (v) => {
+        const blackList = ['/welcome']
+
+        if (blackList.includes(v)) return
+
+        lastRoute.value = v
+    }
 )
 </script>
 <template>
     <n-notify />
+    <d-dialog />
 
     <router-view v-if="!loading" />
 </template>

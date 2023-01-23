@@ -21,6 +21,7 @@ declare module '@vue/runtime-core' {
     VDialog: typeof import('./components/v-dialog.vue')['default']
     VDivider: typeof import('./components/v-divider.vue')['default']
     VDrawer: typeof import('./components/v-drawer.vue')['default']
+    VForm: typeof import('./components/VForm.vue')['default']
     VGallery: typeof import('./components/v-gallery.vue')['default']
     VIcon: typeof import('./components/v-icon.vue')['default']
     VIconPicker: typeof import('./components/v-icon-picker.vue')['default']

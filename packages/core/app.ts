@@ -2,6 +2,7 @@ import ListDrives from './use-cases/list-drives/list-drives'
 
 import ListWorkspaces from './use-cases/list-workspaces/list-workspaces'
 import CreateWorkspace from './use-cases/create-workspace/create-workspace'
+import UpdateWorkspace from './use-cases/update-workspace/update-workspace'
 import DeleteWorkspace from './use-cases/delete-workspace/delete-workspace'
 
 import ShowWorkspaceOptions from './use-cases/show-workspace-options/show-workspace-options'
@@ -41,6 +42,7 @@ function createUseCases(app: AppConfig) {
 
         'list-workspaces': new ListWorkspaces(app),
         'create-workspace': new CreateWorkspace(app),
+        'update-workspace': new UpdateWorkspace(app),
         'delete-workspace': new DeleteWorkspace(app),
 
         'show-workspace-options': new ShowWorkspaceOptions(app),

@@ -22,11 +22,30 @@ export const useStore = defineStore('workspace', () => {
     }
 
     async function create(data: Partial<Workspace>) {
-        return useCase('create-workspace', data as any)
+        const workspace = await useCase('create-workspace', data as any)
+
+        workspaces.value.push(workspace)
+
+        return workspace
+    }
+
+    async function update(id: string, data: Partial<Workspace>) {
+        await useCase('update-workspace', {
+            workspaceId: id,
+            data,
+        })
+
+        await setWorkspaces()
     }
 
     async function destroy(workspaceId: string) {
+        const index = workspaces.value.findIndex((w) => w.id === workspaceId)
+
         await useCase('delete-workspace', { workspaceId })
+
+        if (index !== -1) {
+            workspaces.value.splice(index, 1)
+        }
     }
 
     return {
@@ -36,6 +55,7 @@ export const useStore = defineStore('workspace', () => {
 
         setWorkspaces,
         create,
+        update,
         destroy,
     }
 })

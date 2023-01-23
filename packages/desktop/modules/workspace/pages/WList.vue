@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { useMeta } from '@composables/metas'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useStore } from '../store'
+
+import Workspace from '@core/entities/workspace'
+
+import { useStore } from '@store/global'
+import { useMeta } from '@composables/metas'
+import { useConfig } from '@composables/use-config'
+
+import WForm from '../components/WForm.vue'
 
 // set columns
 const tm = useI18n()
@@ -45,72 +51,52 @@ const meta = useMeta({
 // load workspaces
 const store = useStore()
 
-store.setWorkspaces()
-
-// create new workspace
+// form
 const dialog = ref(false)
+const editedItem = ref<Workspace>()
 
-const payload = ref<any>({
-    name: '',
-    path: '',
-})
-
-async function submit() {
-    await store.create({
-        id: payload.value.id,
-        name: payload.value.name,
-        driveName: 'fs',
-        config: {
-            path: payload.value.path,
-        },
-    })
-
-    await store.setWorkspaces()
-
-    Object.keys(payload.value).forEach((key) => {
-        payload.value[key] = ''
-    })
-
+function closeDialog() {
     dialog.value = false
 }
+
+function editItem(workspace: Workspace) {
+    editedItem.value = workspace
+
+    dialog.value = true
+}
+
+watch(dialog, (v) => {
+    if (!v) {
+        editedItem.value = undefined
+    }
+})
 
 // delete workspace
 
 async function deleteItem(id: string) {
-    await store.destroy(id)
+    const result = await store.dialog.confirm({
+        title: tm.t('areYouSure'),
+        message: tm.t('thisActinCanNotBeUndone'),
+    })
 
-    await store.setWorkspaces()
+    if (!result) return
 
-    if (id === store.currentId) {
-        store.currentId = null
+    await store.workspace.destroy(id)
+
+    if (id === store.workspace.currentId) {
+        store.workspace.currentId = null
     }
 }
 </script>
 <template>
     <v-dialog v-model="dialog">
-        <v-card color="b-secondary" width="500">
-            <v-card-head class="px-4">
-                <v-card-title>
-                    {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
-                </v-card-title>
-            </v-card-head>
-
-            <v-card-content>
-                <w-form class="mb-4 w-full" @submit="submit">
-                    <div class="mb-4">
-                        <v-input v-model="payload.name" label="Name" />
-                    </div>
-
-                    <div class="mb-4">
-                        <v-input v-model="payload.path" label="Path" />
-                    </div>
-
-                    <v-btn :disabled="!payload.name || !payload.path" class="w-full" type="submit">
-                        {{ $t('create') }}
-                    </v-btn>
-                </w-form>
-            </v-card-content>
-        </v-card>
+        <w-form
+            color="b-secondary"
+            width="500"
+            :edited-item="editedItem"
+            @created="closeDialog"
+            @updated="closeDialog"
+        />
     </v-dialog>
 
     <v-container class="w-full py-2 border-b border-lines flex items-center">
@@ -123,12 +109,12 @@ async function deleteItem(id: string) {
         </v-btn>
     </v-container>
 
-    <v-table :columns="columns" :items="store.workspaces" :fixed="false">
+    <v-table :columns="columns" :items="store.workspace.workspaces" :fixed="false">
         <template #item-active="{ item }">
             <v-td class="pl-10" no-padding>
                 <v-checkbox
-                    :model-value="item.id === store.currentId"
-                    @click="store.currentId = item.id"
+                    :model-value="item.id === store.workspace.currentId"
+                    @click="store.workspace.currentId = item.id"
                 />
             </v-td>
         </template>
@@ -140,15 +126,13 @@ async function deleteItem(id: string) {
         </template>
 
         <template #item-actions="{ item }">
-            <v-td>
-                <v-btn
-                    class="ml-auto mr-6"
-                    size="sm"
-                    color="danger"
-                    mode="text"
-                    @click="deleteItem(item.id)"
-                >
-                    <fa-icon icon="trash" />
+            <v-td class="flex pr-7 justify-end">
+                <v-btn size="sm" color="danger" mode="text" @click="editItem(item)">
+                    <v-icon name="pen" />
+                </v-btn>
+
+                <v-btn size="sm" color="danger" mode="text" @click="deleteItem(item.id)">
+                    <v-icon name="trash" />
                 </v-btn>
             </v-td>
         </template>

@@ -4,6 +4,7 @@ import uniqBy from 'lodash/uniqBy'
 import { app } from 'electron'
 
 import WorkspaceNotFound from '@core/exceptions/workspace-not-found'
+import { isJSON } from '@core/services/utils'
 
 import type Workspace from '@core/entities/workspace'
 import type IWorkspaceRepository from '@core/repositories/workspace/workspace-repository'
@@ -23,7 +24,11 @@ export default class WorkspaceRepository implements IWorkspaceRepository {
             .then((r) => r)
             .catch(() => '[]')
 
-        return JSON.parse(content)
+        if (isJSON(content)) {
+            return JSON.parse(content)
+        }
+
+        return []
     }
 
     public async show(id: string): Promise<Workspace> {

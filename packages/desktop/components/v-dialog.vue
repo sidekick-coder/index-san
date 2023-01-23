@@ -43,7 +43,10 @@ function onClick() {
     <teleport to="body">
         <transition name="fade">
             <div v-if="show" class="fixed inset-0 flex items-center justify-center">
-                <div class="absolute z-10 inset-0 flex bg-accent/5" @click="show = false"></div>
+                <div
+                    class="absolute z-10 inset-0 flex bg-b-primary/25 backdrop-blur-sm"
+                    @click="show = false"
+                ></div>
 
                 <div class="z-20">
                     <slot />

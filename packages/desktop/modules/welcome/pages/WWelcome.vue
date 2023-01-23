@@ -2,50 +2,28 @@
 import lowerCase from 'lodash/lowerCase'
 import packageJSON from '@root/package.json'
 
-import Workspace from '@core/entities/workspace'
-
-import { useConfig } from '@composables/use-config'
-import { useStore } from '@modules/workspace/store'
+import { useStore } from '@store/global'
 import { useRouter } from 'vue-router'
+
+import WForm from '@modules/workspace/components/WForm.vue'
+import Workspace from '@core/entities/workspace'
 
 // check if have workspaces
 const store = useStore()
 const router = useRouter()
 
 onMounted(async () => {
-    await store.setWorkspaces()
+    await store.workspace.setWorkspaces()
 
-    if (store.workspaces.length) {
+    if (store.workspace.workspaces.length) {
         return await router.push('/workspaces')
     }
 })
 
-// submit
-
-const payload = ref<Omit<Workspace, 'id'>>({
-    name: '',
-    driveName: 'local',
-    config: {
-        path: '',
-    },
-})
-
-async function submit() {
-    const { id } = await store.create(payload.value)
-
-    store.currentId = id
+async function onCreated(workspace: Workspace) {
+    store.workspace.currentId = workspace.id
 
     await router.push('/workspaces')
-}
-
-// pick file
-
-const config = useConfig()
-
-async function pickFolder() {
-    const path = await config.open.directory()
-
-    payload.value.config.path = path
 }
 </script>
 <template>
@@ -60,31 +38,17 @@ async function pickFolder() {
                     {{ `${$t('version')}: ${packageJSON.version} ` }}
                 </div>
 
-                <div class="mb-4 text-lg text-t-secondary font-bold">
-                    {{ $t('createEntity', [lowerCase($t('workspace'))]) }}
-                </div>
-
-                <form class="flex flex-wrap gap-y-4 w-full" @submit.prevent="submit">
-                    <v-input v-model="payload.name" :label="$t('name')" />
-
-                    <v-select v-model="payload.driveName" :label="$t('drive')" disabled />
-
-                    <v-input v-model="payload.config.path" :label="$t('path')">
-                        <template #append>
-                            <v-btn size="sm" color="b-secondary" @click="pickFolder">
-                                {{ $t('browse') }}
-                            </v-btn>
-                        </template>
-                    </v-input>
-
-                    <v-btn
-                        type="submit"
-                        class="w-full"
-                        :disabled="!payload.name || !payload.config.path"
-                    >
-                        {{ $t('create') }}
-                    </v-btn>
-                </form>
+                <w-form
+                    class="flex flex-wrap gap-y-4 w-full"
+                    browse-btn:color="b-secondary"
+                    @created="onCreated"
+                >
+                    <template #head>
+                        <div class="text-lg text-t-secondary font-bold px-4">
+                            {{ $t('createEntity', [lowerCase($t('workspace'))]) }}
+                        </div>
+                    </template>
+                </w-form>
             </v-card-content>
         </v-card>
     </div>

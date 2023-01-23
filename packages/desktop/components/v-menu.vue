@@ -169,8 +169,6 @@ const style = computed(() => {
         left: `${x}px`,
     }
 
-    // console.log(mouse.value.x, max.value.x)
-
     if (props.maxHeight) {
         result['max-height'] = `${props.maxHeight}px`
     }

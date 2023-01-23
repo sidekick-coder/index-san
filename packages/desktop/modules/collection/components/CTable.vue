@@ -82,8 +82,6 @@ watch(
     }
 )
 
-// console.log(view.value)
-
 watch([() => props.viewId, () => props.collectionId], setView)
 
 // columns
