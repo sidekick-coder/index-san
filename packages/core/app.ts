@@ -1,3 +1,5 @@
+import ListDrives from './use-cases/list-drives/list-drives'
+
 import ListWorkspaces from './use-cases/list-workspaces/list-workspaces'
 import CreateWorkspace from './use-cases/create-workspace/create-workspace'
 import DeleteWorkspace from './use-cases/delete-workspace/delete-workspace'
@@ -35,6 +37,8 @@ import AppConfig from './config/app'
 
 function createUseCases(app: AppConfig) {
     return {
+        'list-drives': new ListDrives(app),
+
         'list-workspaces': new ListWorkspaces(app),
         'create-workspace': new CreateWorkspace(app),
         'delete-workspace': new DeleteWorkspace(app),

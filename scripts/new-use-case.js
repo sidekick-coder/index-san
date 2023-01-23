@@ -15,46 +15,39 @@ if (!name) {
 
 const useCase = `
 import {{camelCaseName}}DTO from './{{kebabCaseName}}.dto'
-import AppService from '../../services/app-service'
+import type AppConfig from '../../config/app'
 
 export default class {{camelCaseName}} {
-    constructor(private readonly app: AppService){}
+    constructor(private readonly app: AppConfig){}
 
-    public async execute({ data }: {{camelCaseName}}DTO.Input): Promise<{{camelCaseName}}DTO.Output> {
-        return {
-            data: {}
-        }
+    public async execute({}: {{camelCaseName}}DTO) {
+        throw new Error('Not implemented')
     }
 }
+
 `
 
 const dto = `
-declare namespace {{camelCaseName}}DTO {
-    export interface Input { data: any }
-
-    export interface Output {
-        data: {}
-    }
+export default interface {{camelCaseName}}DTO {
+    //
 }
 
-export default {{camelCaseName}}DTO
 `
 
 const spec = `
 import { test } from '@japa/runner'
 
-import InMemoryApp from '../../__tests__/app'
+import InMemoryAppConfig from '../../__tests__/in-memory-config'
 import {{camelCaseName}} from './{{kebabCaseName}}'
 
 test.group('{{kebabCaseName}} (use-case)', (group) => {
-
-    const app = new InMemoryApp()
+    const app = new InMemoryAppConfig()
     const useCase = new {{camelCaseName}}(app)
 
     group.each.teardown(() => app.clear())
 
     test('should test use-case', async ({ expect }) => {
-        expect(1).toEqual(1)
+        await useCase.execute({})
     })
 
 })

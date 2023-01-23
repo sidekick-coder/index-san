@@ -2,6 +2,7 @@ import AppConfig from '../config/app'
 import InMemoryDrive from './gateways/in-memory-drive'
 import InMemoryWorkspaceRepository from './repositories/in-memory-workspace-repository'
 import NodeVmEvaluation from '../gateways/evaluation/implementations/node-vm-evaluation'
+import InMemoryFetchService from './gateways/in-memory-fetch'
 
 export default class InMemoryAppConfig extends AppConfig {
     public workspaceRepository: InMemoryWorkspaceRepository
@@ -21,6 +22,7 @@ export default class InMemoryAppConfig extends AppConfig {
 
         const services: AppConfig['services'] = {
             evaluation: new NodeVmEvaluation(),
+            fetch: new InMemoryFetchService(),
         }
 
         super({ repositories, drives, services, ...args })
