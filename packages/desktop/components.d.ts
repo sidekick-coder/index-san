@@ -31,6 +31,7 @@ declare module '@vue/runtime-core' {
     VLayoutToolbar: typeof import('./components/v-layout-toolbar.vue')['default']
     VLink: typeof import('./components/v-link.vue')['default']
     VListItem: typeof import('./components/v-list-item.vue')['default']
+    VLogo: typeof import('./components/VLogo.vue')['default']
     VMenu: typeof import('./components/v-menu.vue')['default']
     VResizeLine: typeof import('./components/v-resize-line.vue')['default']
     VSelect: typeof import('./components/v-select.vue')['default']

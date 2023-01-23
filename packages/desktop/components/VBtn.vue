@@ -80,13 +80,14 @@ function setColorOptions() {
     }
 
     colorVariation.setOptions({
-        accent: 'bg-accent hover:bg-accent/75',
-        danger: 'bg-danger hover:bg-danger/75',
-        info: 'bg-info hover:bg-info/75',
-        warn: 'bg-warn hover:bg-warn/75',
+        'accent': 'bg-accent hover:bg-accent/75',
+        'danger': 'bg-danger hover:bg-danger/75',
+        'info': 'bg-info hover:bg-info/75',
+        'warn': 'bg-warn hover:bg-warn/75',
+        'b-secondary': 'bg-b-secondary hover:bg-b-secondary/75',
 
-        _shared: 'text-t-primary',
-        _empty: (v) => {
+        '_shared': 'text-t-primary',
+        '_empty': (v) => {
             if (!css.isColor(v)) return { classes: v }
 
             return {

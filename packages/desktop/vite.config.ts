@@ -35,7 +35,7 @@ export default defineConfig({
         }),
         Components({
             dts: path.resolve(__dirname, 'components.d.ts'),
-            dirs: ['./components'],
+            dirs: [path.resolve(__dirname, 'components')],
         }),
     ],
     css: {

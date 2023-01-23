@@ -1,4 +1,12 @@
-import { BrowserWindow, ipcMain, app, Menu, MenuItem } from 'electron'
+import {
+    BrowserWindow,
+    ipcMain,
+    app,
+    Menu,
+    MenuItem,
+    type OpenDialogOptions,
+    dialog,
+} from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 import fs from 'fs'
@@ -21,7 +29,7 @@ import Drive from './drive'
 import FetchService from './fetch'
 
 const config = new AppConfig({
-    drives: { fs: new Drive() },
+    drives: { local: new Drive() },
     repositories: { workspace: new WorkspaceRepository() },
     services: { evaluation: new NodeVMEvaluation(), fetch: new FetchService() },
 })
@@ -76,6 +84,10 @@ app.whenReady().then(async () => {
 
     ipcMain.handle('use-case', async (_, name, args) => {
         return indexSan.useCase(name, args)
+    })
+
+    ipcMain.handle('dialog:show-open-dialog', (_, args: OpenDialogOptions) => {
+        return dialog.showOpenDialog(args)
     })
 
     window.webContents.on('context-menu', (event, params) => {

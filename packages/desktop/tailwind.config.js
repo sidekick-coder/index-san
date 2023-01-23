@@ -40,6 +40,9 @@ module.exports = {
                 width: 'width',
             },
         },
+        data: {
+            disabled: 'ui~="disabled"',
+        },
     },
     plugins: [],
 }

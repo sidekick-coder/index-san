@@ -17,6 +17,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
     options: {
         type: Array as () => any[],
         default: () => [],
@@ -109,7 +113,7 @@ const displayValue = computed(() => {
 })
 
 function onShowMenu(value: boolean) {
-    if (props.readonly) return
+    if (props.readonly || props.disabled) return
 
     menu.value = value
 }
@@ -134,6 +138,7 @@ function onShowMenu(value: boolean) {
                     class="cursor-pointer"
                     input:class="cursor-pointer"
                     readonly
+                    :disabled="disabled"
                     @keydown.enter="toggle"
                     @keydown.esc="menu = false"
                 >

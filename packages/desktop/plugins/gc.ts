@@ -27,5 +27,5 @@ export function createComponentObject() {
 export default (app: App) => {
     const components = createComponentObject()
 
-    Object.entries(components).map(([key, value]) => app.component(key, value))
+    // Object.entries(components).map(([key, value]) => app.component(key, value))
 }

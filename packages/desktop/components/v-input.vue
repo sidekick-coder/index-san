@@ -30,6 +30,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
     flat: {
         type: Boolean,
         default: false,
@@ -76,7 +80,7 @@ const sizes = {
 const inputColors = {
     default: {
         accent: {
-            normal: 'outline outline-2 outline-lines',
+            normal: 'outline outline-2 outline-lines data-disabled:outline-dashed data-disabled:text-t-secondary',
             focus: 'outline-accent',
         },
         danger: {
@@ -173,6 +177,8 @@ onMounted(() => {
         inputRef.value?.focus()
     }
 })
+
+const ui = computed(() => (props.disabled ? 'disabled' : ''))
 </script>
 <template>
     <div v-bind="bindings.root" class="w-full relative">
@@ -182,7 +188,7 @@ onMounted(() => {
             {{ label }}
         </label>
 
-        <div :class="classes" v-bind="bindings.wrapper">
+        <div :class="classes" v-bind="bindings.wrapper" :data-ui="ui">
             <slot name="prepend" />
 
             <input
@@ -192,6 +198,7 @@ onMounted(() => {
                 :type="type"
                 :placeholder="placeholder"
                 :readonly="readonly"
+                :disabled="disabled"
                 v-bind="bindings.input"
                 class="bg-transparent outline-none grow w-full placeholder:text-t-secondary/50"
                 @focus="onFocus"

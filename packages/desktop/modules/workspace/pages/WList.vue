@@ -21,6 +21,11 @@ const columns = [
         field: 'name',
     },
     {
+        label: tm.t('drive'),
+        name: 'driveName',
+        field: 'driveName',
+    },
+    {
         label: tm.t('path'),
         name: 'path',
         field: 'path',
@@ -28,7 +33,7 @@ const columns = [
     {
         name: 'actions',
         field: 'actions',
-        width: 100,
+        width: 50,
     },
 ]
 
@@ -75,6 +80,10 @@ async function deleteItem(id: string) {
     await store.destroy(id)
 
     await store.setWorkspaces()
+
+    if (id === store.currentId) {
+        store.currentId = null
+    }
 }
 </script>
 <template>
@@ -85,6 +94,7 @@ async function deleteItem(id: string) {
                     {{ $t('addEntity', [$t('workspace').toLocaleLowerCase()]) }}
                 </v-card-title>
             </v-card-head>
+
             <v-card-content>
                 <w-form class="mb-4 w-full" @submit="submit">
                     <div class="mb-4">
@@ -103,18 +113,19 @@ async function deleteItem(id: string) {
         </v-card>
     </v-dialog>
 
-    <v-container class="w-full py-4 border-b border-lines flex items-center">
-        <div class="text-2xl font-bold">
+    <v-container class="w-full py-2 border-b border-lines flex items-center">
+        <div class="font-bold">
             {{ meta.title }}
         </div>
-        <v-btn class="ml-auto" @click="dialog = true">
+
+        <v-btn class="ml-auto" size="sm" @click="dialog = true">
             {{ $t('addEntity', [$t('workspace')]) }}
         </v-btn>
     </v-container>
 
     <v-table :columns="columns" :items="store.workspaces" :fixed="false">
         <template #item-active="{ item }">
-            <v-td class="pl-10">
+            <v-td class="pl-10" no-padding>
                 <v-checkbox
                     :model-value="item.id === store.currentId"
                     @click="store.currentId = item.id"
@@ -129,8 +140,14 @@ async function deleteItem(id: string) {
         </template>
 
         <template #item-actions="{ item }">
-            <v-td class="flex gap-x-2 pr-10 justify-end">
-                <v-btn size="sm" color="b-secondary" @click="deleteItem(item.id)">
+            <v-td>
+                <v-btn
+                    class="ml-auto mr-6"
+                    size="sm"
+                    color="danger"
+                    mode="text"
+                    @click="deleteItem(item.id)"
+                >
                     <fa-icon icon="trash" />
                 </v-btn>
             </v-td>
