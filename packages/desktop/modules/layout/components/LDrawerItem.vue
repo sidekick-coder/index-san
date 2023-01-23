@@ -44,8 +44,8 @@ const show = computed(() => !hideSections.value.includes(props.item.id))
     >
         <v-btn
             class="w-[20px] h-[20px] mr-1 text-xs"
-            text
-            size="none"
+            mode="text"
+            size="sm"
             :class="[item.children.length && !item.isSection ? 'opacity-100' : 'opacity-0']"
             @click.prevent.stop="toggle"
         >
@@ -53,10 +53,10 @@ const show = computed(() => !hideSections.value.includes(props.item.id))
         </v-btn>
         <template v-if="item.isSection">
             <v-btn
-                text
-                size="px-2 -ml-2"
+                mode="text"
+                size="sm"
                 color="hover:bg-b-primary/40"
-                class="text-t-secondary font-bold"
+                class="text-t-secondary font-bold -ml-4"
                 @click="toggle"
             >
                 {{ item.label }}
