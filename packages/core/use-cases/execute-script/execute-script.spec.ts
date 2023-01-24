@@ -29,7 +29,7 @@ test.group('execute-script (use-case)', (group) => {
     test('should create a file in workspace', async ({ expect }) => {
         await useCase.execute({
             workspaceId: workspace.id,
-            content: `await Drive.write("hello.txt", Entry.encode("Hello word"))`,
+            content: `await Drive.write("hello.txt", DirectoryEntry.encode("Hello word"))`,
         })
 
         const content = await app.drive.read('hello.txt')

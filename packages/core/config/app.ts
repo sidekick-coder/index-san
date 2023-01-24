@@ -36,7 +36,7 @@ export default class AppConfig {
 
         const driveFacade = new DriveFacade(drives)
         const collectionFacade = new CollectionFacade(driveFacade)
-        const itemFacade = new ItemFacade(collectionFacade)
+        const itemFacade = new ItemFacade(collectionFacade, services.evaluation)
 
         this.facades = {
             drive: driveFacade,

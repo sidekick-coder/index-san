@@ -14,7 +14,7 @@ export default class ExecuteScript {
 
         const drive = this.app.facades.drive.fromWorkspace(workspace)
 
-        const createRepository = (name: string) => {
+        const createItemRepository = (name: string) => {
             return this.app.facades.item.createRepositoryFromWorkspace(workspace, name)
         }
 
@@ -25,7 +25,7 @@ export default class ExecuteScript {
             Drive: drive,
             Moment,
             DirectoryEntry,
-            createRepository,
+            createItemRepository,
             Facades: this.app.facades,
 
             // libs
