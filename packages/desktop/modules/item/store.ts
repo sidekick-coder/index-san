@@ -71,6 +71,10 @@ function createStore(collectionId: string) {
         items.value.splice(index, 1)
     }
 
+    function clear() {
+        items.value = []
+    }
+
     return {
         items,
         loading,
@@ -80,6 +84,7 @@ function createStore(collectionId: string) {
         create,
         update,
         destroy,
+        clear,
     }
 }
 

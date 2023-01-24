@@ -100,9 +100,9 @@ async function deleteItem(id: string) {
     </v-dialog>
 
     <v-container class="w-full py-2 border-b border-lines flex items-center">
-        <div class="font-bold">
+        <v-card-title>
             {{ meta.title }}
-        </div>
+        </v-card-title>
 
         <v-btn class="ml-auto" size="sm" @click="dialog = true">
             {{ $t('addEntity', [$t('workspace')]) }}

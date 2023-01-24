@@ -2,8 +2,14 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import Collection from '@core/entities/collection'
+
 import { useMeta } from '@composables/metas'
-import { useStore } from '@modules/collection/store'
+import { useStore } from '@store/global'
+
+import CForm from '@modules/collection/components/CForm.vue'
+
+import { useRouter } from 'vue-router'
 
 const tm = useI18n()
 
@@ -11,7 +17,6 @@ const meta = useMeta({
     title: tm.t('listEntity', [tm.t('collection', 2)]),
 })
 
-const dialog = ref(false)
 const columns = [
     {
         label: 'ID',
@@ -27,6 +32,11 @@ const columns = [
         field: 'name',
     },
     {
+        label: tm.t('repositoryType'),
+        name: 'repositoryType',
+        field: 'repositoryType',
+    },
+    {
         label: tm.t('path'),
         name: 'path',
         field: 'path',
@@ -34,108 +44,82 @@ const columns = [
     {
         name: 'actions',
         field: 'actions',
+        width: 150,
     },
 ]
 
-// set collections
+// collections
 const store = useStore()
 
-// create new collection
-const payload = ref({
-    id: '',
-    name: '',
-    path: '',
-})
+onMounted(store.collection.setCollections)
 
-async function submit() {
-    await store.create({
-        data: {
-            id: payload.value.id,
-            crudName: 'fsFolder',
-            name: payload.value.name,
-            path: payload.value.path,
-            columns: [],
-        },
-    })
+// form
+const router = useRouter()
 
-    Object.keys(payload.value).forEach((key) => {
-        payload.value[key] = ''
-    })
+const dialog = ref(false)
+const editedItem = ref<Collection>()
 
+async function onCreate(collection: Collection) {
+    dialog.value = false
+
+    await router.push(`/collections/${collection.id}/items`)
+}
+
+async function onUpdated() {
     dialog.value = false
 }
 
-// Delete collection
-async function deleteItem(collectionId: string) {
-    await store.destroy({ collectionId })
+function editCollection(collection: Collection) {
+    editedItem.value = collection
+    dialog.value = true
+}
+
+watch(dialog, (value) => {
+    if (!value) {
+        editedItem.value = undefined
+    }
+})
+
+// destroy
+async function deleteItem(id: string) {
+    const result = await store.dialog.confirm({
+        title: tm.t('areYouSure'),
+        message: tm.t('thisActinCanNotBeUndone'),
+    })
+
+    if (!result) return
+
+    await store.collection.destroy(id)
 }
 </script>
 <template>
     <div>
         <v-dialog v-model="dialog">
-            <v-card color="b-secondary" width="500">
-                <v-card-head class="px-4">
-                    <v-card-title>
-                        {{ $t('addEntity', [$t('collection')]) }}
-                    </v-card-title>
-                </v-card-head>
-                <v-card-content>
-                    <w-form class="w-full" @submit="submit">
-                        <div class="mb-4">
-                            <v-input v-model="payload.id" label="ID" placeholder="collection-01" />
-                        </div>
-
-                        <div class="mb-4">
-                            <v-input
-                                v-model="payload.name"
-                                label="Name"
-                                placeholder="Collection 01"
-                            />
-                        </div>
-
-                        <div class="mb-4">
-                            <v-input
-                                v-model="payload.path"
-                                label="Path"
-                                placeholder="/collections/collection-01"
-                            />
-                        </div>
-
-                        <v-btn
-                            :disabled="!payload.name || !payload.path"
-                            class="w-full"
-                            type="submit"
-                        >
-                            {{ $t('create') }}
-                        </v-btn>
-                    </w-form>
-                </v-card-content>
-            </v-card>
+            <c-form :edited-item="editedItem" @created="onCreate" @updated="onUpdated" />
         </v-dialog>
 
-        <v-container class="w-full py-4 border-b border-lines flex items-center">
-            <div class="text-2xl font-bold">
+        <v-container class="w-full border-b py-2 border-lines flex items-center">
+            <v-card-title>
                 {{ meta.title }}
-            </div>
-            <v-btn class="ml-auto" @click="dialog = true">
+            </v-card-title>
+
+            <v-btn class="ml-auto" size="sm" @click="dialog = true">
                 {{ $t('addEntity', [$t('collection')]) }}
             </v-btn>
         </v-container>
 
-        <v-table
-            :columns="columns"
-            :items="store.collections"
-            disable-add-column
-            disable-view-item
-            disable-new-item
-        >
+        <v-table :columns="columns" :items="store.collection.collections" :fixed="false">
             <template #item-actions="{ item }">
-                <v-td class="flex gap-x-4 p-2">
-                    <v-btn text size="sm" :to="`/collections/${item.id}/items`">
+                <v-td class="flex justify-end pr-7">
+                    <v-btn mode="text" size="sm" :to="`/collections/${item.id}/items`">
                         <fa-icon icon="eye" />
                     </v-btn>
 
-                    <v-btn text size="sm" color="danger" @click="deleteItem(item.id)">
+                    <v-btn mode="text" size="sm" @click="editCollection(item)">
+                        <fa-icon icon="pen" />
+                    </v-btn>
+
+                    <v-btn mode="text" size="sm" color="danger" @click="deleteItem(item.id)">
                         <fa-icon icon="trash" />
                     </v-btn>
                 </v-td>

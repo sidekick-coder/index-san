@@ -84,7 +84,7 @@ function createStore(collectionId: string) {
         views.value.splice(index, 1)
     }
 
-    function release() {
+    function clear() {
         watcher()
 
         views.value = []
@@ -97,7 +97,7 @@ function createStore(collectionId: string) {
         get,
         set,
         destroy,
-        release,
+        clear,
     }
 }
 

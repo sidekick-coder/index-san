@@ -11,6 +11,10 @@ export default class UpdateCollection {
 
         const repository = this.app.facades.collection.createRepository(workspace)
 
-        return repository.update(collectionId, data)
+        const collection = await repository.update(collectionId, data)
+
+        return {
+            data: collection,
+        }
     }
 }

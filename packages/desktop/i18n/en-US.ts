@@ -100,6 +100,7 @@ export default {
     image: 'Image | Images',
     sideBySide: 'Side by side',
     checkbox: 'Checkbox',
+    repositoryType: 'Repository type',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

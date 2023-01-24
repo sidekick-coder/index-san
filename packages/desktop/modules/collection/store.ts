@@ -10,6 +10,8 @@ import UpdateCollectionsDTO from '@core/use-cases/update-collection/update-colle
 import CreateCollectionDTO from '@core/use-cases/create-collection/create-collection.dto'
 import DeleteCollectionsDTO from '@core/use-cases/delete-collection/delete-collection.dto'
 import ShowCollectionsDTO from '@core/use-cases/show-collection/show-collection.dto'
+import { useViewStore } from '@modules/view/store'
+import { useItemStore } from '@modules/item/store'
 
 export const useStore = defineStore('collection', () => {
     const workspace = useWorkspace()
@@ -45,32 +47,57 @@ export const useStore = defineStore('collection', () => {
         return useCase('show-collection', payload as any)
     }
 
-    async function create(payload: Partial<CreateCollectionDTO>) {
-        if (!payload.workspaceId && workspace.currentId) {
-            payload.workspaceId = workspace.currentId
-        }
+    async function create(payload: Collection) {
+        const response = await useCase('create-collection', {
+            workspaceId: workspace.currentId!,
+            data: payload,
+        })
 
-        await useCase('create-collection', payload as any)
+        collections.value.push(response.data)
 
-        await setCollections()
+        return response.data
     }
 
-    async function update(payload: Partial<UpdateCollectionsDTO>) {
-        if (!payload.workspaceId && workspace.currentId) {
-            payload.workspaceId = workspace.currentId
+    async function update(id: string, payload: Partial<Collection>) {
+        const index = collections.value.findIndex((c) => c.id === id)
+
+        const response = await useCase('update-collection', {
+            workspaceId: workspace.currentId!,
+            collectionId: id,
+            data: payload,
+        })
+
+        if (index >= 0) {
+            collections.value.splice(index, 1, response.data)
         }
 
-        await useCase('update-collection', payload as any)
+        releaseCollection(id)
+
+        return response.data
     }
 
-    async function destroy(payload: Partial<DeleteCollectionsDTO>) {
-        if (!payload.workspaceId && workspace.currentId) {
-            payload.workspaceId = workspace.currentId
+    async function destroy(id: string) {
+        const index = collections.value.findIndex((c) => c.id === id)
+
+        await useCase('delete-collection', {
+            workspaceId: workspace.currentId!,
+            collectionId: id,
+        })
+
+        if (index >= 0) {
+            collections.value.splice(index, 1)
         }
 
-        await useCase('delete-collection', payload as any)
+        releaseCollection(id)
+    }
 
-        await setCollections()
+    function releaseCollection(id: string) {
+        const stores = [useViewStore(id), useItemStore(id)]
+
+        stores.forEach((store) => {
+            store.clear()
+            store.$dispose()
+        })
     }
 
     watch(() => workspace.currentId, setCollections)
@@ -84,5 +111,6 @@ export const useStore = defineStore('collection', () => {
         create,
         update,
         destroy,
+        releaseCollection,
     }
 })
