@@ -3,6 +3,7 @@ import { createRouter as baseCreateRouter, createWebHashHistory, Router } from '
 
 interface ModuleRouter {
     default?: (router: Router) => void
+    order?: number
 }
 
 export function createRouter() {
@@ -15,9 +16,17 @@ export function createRouter() {
         eager: true,
     })
 
-    Object.values<ModuleRouter>(modulesRouter)
-        .filter((m) => !!m.default)
-        .forEach((m) => m.default!(router))
+    Object.entries(modulesRouter)
+        .filter(([, r]) => !!r.default)
+        .sort(
+            ([, a]: [string, ModuleRouter], [, b]: [string, ModuleRouter]) =>
+                (a.order || 99) - (b.order || 99)
+        )
+        .forEach(([name, r]: [string, ModuleRouter]) => {
+            console.debug(`[app] router ${name} loaded`)
+
+            r.default!(router)
+        })
 
     return router
 }

@@ -89,52 +89,54 @@ async function deleteItem(id: string) {
 }
 </script>
 <template>
-    <v-dialog v-model="dialog">
-        <w-form
-            color="b-secondary"
-            width="500"
-            :edited-item="editedItem"
-            @created="closeDialog"
-            @updated="closeDialog"
-        />
-    </v-dialog>
+    <div>
+        <v-dialog v-model="dialog">
+            <w-form
+                color="b-secondary"
+                width="500"
+                :edited-item="editedItem"
+                @created="closeDialog"
+                @updated="closeDialog"
+            />
+        </v-dialog>
 
-    <v-container class="w-full py-2 border-b border-lines flex items-center">
-        <v-card-title>
-            {{ meta.title }}
-        </v-card-title>
+        <v-container class="w-full py-2 border-b border-lines flex items-center">
+            <v-card-title>
+                {{ meta.title }}
+            </v-card-title>
 
-        <v-btn class="ml-auto" size="sm" @click="dialog = true">
-            {{ $t('addEntity', [$t('workspace')]) }}
-        </v-btn>
-    </v-container>
+            <v-btn class="ml-auto" size="sm" @click="dialog = true">
+                {{ $t('addEntity', [$t('workspace')]) }}
+            </v-btn>
+        </v-container>
 
-    <v-table :columns="columns" :items="store.workspace.workspaces" :fixed="false">
-        <template #item-active="{ item }">
-            <v-td class="pl-10" no-padding>
-                <v-checkbox
-                    :model-value="item.id === store.workspace.currentId"
-                    @click="store.workspace.currentId = item.id"
-                />
-            </v-td>
-        </template>
+        <v-table :columns="columns" :items="store.workspace.workspaces" :fixed="false">
+            <template #item-active="{ item }">
+                <v-td class="pl-10" no-padding>
+                    <v-checkbox
+                        :model-value="item.id === store.workspace.currentId"
+                        @click="store.workspace.currentId = item.id"
+                    />
+                </v-td>
+            </template>
 
-        <template #item-path="{ item }">
-            <v-td>
-                {{ item.config.path }}
-            </v-td>
-        </template>
+            <template #item-path="{ item }">
+                <v-td>
+                    {{ item.config.path }}
+                </v-td>
+            </template>
 
-        <template #item-actions="{ item }">
-            <v-td class="flex pr-7 justify-end">
-                <v-btn size="sm" color="danger" mode="text" @click="editItem(item)">
-                    <v-icon name="pen" />
-                </v-btn>
+            <template #item-actions="{ item }">
+                <v-td class="flex pr-7 justify-end">
+                    <v-btn size="sm" color="danger" mode="text" @click="editItem(item)">
+                        <v-icon name="pen" />
+                    </v-btn>
 
-                <v-btn size="sm" color="danger" mode="text" @click="deleteItem(item.id)">
-                    <v-icon name="trash" />
-                </v-btn>
-            </v-td>
-        </template>
-    </v-table>
+                    <v-btn size="sm" color="danger" mode="text" @click="deleteItem(item.id)">
+                        <v-icon name="trash" />
+                    </v-btn>
+                </v-td>
+            </template>
+        </v-table>
+    </div>
 </template>

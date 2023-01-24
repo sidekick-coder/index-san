@@ -39,9 +39,9 @@ declare module '@vue/runtime-core' {
     VTab: typeof import('./components/v-tab.vue')['default']
     VTabItem: typeof import('./components/v-tab-item.vue')['default']
     VTable: typeof import('./components/v-table.vue')['default']
-    VTd: typeof import('./components/v-td.vue')['default']
+    VTd: typeof import('./components/VTd.vue')['default']
     VTextarea: typeof import('./components/v-textarea.vue')['default']
-    VTh: typeof import('./components/v-th.vue')['default']
-    VTr: typeof import('./components/v-tr.vue')['default']
+    VTh: typeof import('./components/VTh.vue')['default']
+    VTr: typeof import('./components/VTr.vue')['default']
   }
 }

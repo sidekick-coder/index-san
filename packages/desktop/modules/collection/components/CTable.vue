@@ -227,8 +227,8 @@ function showActions(event: MouseEvent, id: string) {
                         v-model="columns"
                         handle=".drag"
                         item-key="id"
-                        tag="v-tr"
-                        :component-data="{ height: 41 }"
+                        tag="tr"
+                        :component-data="{ class: 'h-[41px]' }"
                     >
                         <template #item="{ element: c, index }">
                             <v-th
@@ -242,9 +242,9 @@ function showActions(event: MouseEvent, id: string) {
                             >
                                 <v-btn
                                     v-if="c.id === '_actions_right'"
-                                    size="h-8 w-8 text-xs"
+                                    size="sm"
                                     class="text-t-secondary"
-                                    text
+                                    mode="text"
                                     @click="store.column.create(collectionId)"
                                 >
                                     <v-icon name="plus" />
@@ -295,7 +295,7 @@ function showActions(event: MouseEvent, id: string) {
                                 class="flex justify-center opacity-0 group-hover/item:opacity-100"
                             >
                                 <v-btn
-                                    size="py-1 px-2 text-xs"
+                                    size="sm"
                                     color="b-secondary"
                                     :to="`/collections/${collectionId}/items/${data.item.id}`"
                                     data-test-id="actions-btn"

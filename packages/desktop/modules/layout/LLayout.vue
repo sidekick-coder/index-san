@@ -22,10 +22,32 @@ defineProps({
 
                 <v-layout-content>
                     <slot>
-                        <router-view />
+                        <router-view v-slot="{ Component }">
+                            <transition name="layout">
+                                <component :is="Component" />
+                            </transition>
+                        </router-view>
                     </slot>
                 </v-layout-content>
             </v-layout>
         </v-layout-content>
     </v-layout>
 </template>
+
+<style>
+.layout-move,
+.layout-enter-active,
+.layout-leave-active {
+    transition: all 0.3s ease;
+}
+
+.layout-enter-from,
+.layout-leave-to {
+    transform: translateX(10%);
+    opacity: 0;
+}
+
+.layout-leave-active {
+    position: absolute;
+}
+</style>

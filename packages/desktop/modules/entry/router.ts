@@ -1,7 +1,7 @@
 import { Router } from 'vue-router'
 
 export default (router: Router) => {
-    router.addRoute({
+    router.addRoute('main', {
         path: '/entries',
         component: () => import('./ELayout.vue'),
         props: true,

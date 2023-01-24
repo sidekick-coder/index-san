@@ -38,5 +38,9 @@ watch(() => props.entryId, check, {
 </script>
 
 <template>
-    <LLayout :hide-toolbar="!store.layout.toolbar" />
+    <v-layout use-percentage>
+        <v-layout-content>
+            <router-view />
+        </v-layout-content>
+    </v-layout>
 </template>

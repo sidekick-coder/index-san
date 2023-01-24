@@ -81,33 +81,29 @@ watch(() => props.itemId, setContentPath, {
 })
 </script>
 <template>
-    <l-layout hide-toolbar>
-        <l-toolbar>
-            <template #append-links>
-                <v-btn text size="sm" class="ml-auto" @click="drawer = !drawer">
-                    <v-icon name="cog" />
-                </v-btn>
-            </template>
-        </l-toolbar>
+    <v-layout use-percentage>
+        <v-layout-drawer v-if="item" v-model="drawer" class="border-l border-lines px-4 py-4" right>
+            <i-value
+                v-for="c in columns"
+                :key="c.id"
+                :column-id="c.id"
+                :collection-id="collectionId"
+                :item-id="item.id"
+                :label="c.label"
+                :type="c.type"
+                edit
+                class="mb-4 last:mb-0"
+            />
+        </v-layout-drawer>
 
-        <v-layout v-if="item" use-percentage>
-            <v-layout-drawer v-model="drawer" class="border-l border-lines px-4 py-4" right>
-                <i-value
-                    v-for="c in columns"
-                    :key="c.id"
-                    :column-id="c.id"
-                    :collection-id="collectionId"
-                    :item-id="item.id"
-                    :label="c.label"
-                    :type="c.type"
-                    edit
-                    class="mb-4 last:mb-0"
-                />
-            </v-layout-drawer>
-
-            <v-layout-content v-if="contentPath">
-                <e-markdown ref="editorRef" :path="contentPath" :doc:scope="{ item }" />
-            </v-layout-content>
-        </v-layout>
-    </l-layout>
+        <v-layout-content v-if="contentPath">
+            <e-markdown ref="editorRef" :path="contentPath" :doc:scope="{ item }">
+                <template #append-actions>
+                    <v-btn mode="text" size="sm" @click="drawer = !drawer">
+                        <v-icon name="cog" />
+                    </v-btn>
+                </template>
+            </e-markdown>
+        </v-layout-content>
+    </v-layout>
 </template>

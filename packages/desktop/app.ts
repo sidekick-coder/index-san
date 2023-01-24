@@ -16,7 +16,8 @@ interface Plugin {
 window.clientConfig = {
     useCase: () => Promise.reject('Not implemented'),
     open: {
-        url: () => true,
+        url: () => Promise.reject('Not implemented'),
+        directory: () => Promise.reject('Not implemented'),
     },
 }
 

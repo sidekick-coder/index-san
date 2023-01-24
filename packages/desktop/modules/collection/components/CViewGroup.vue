@@ -174,16 +174,11 @@ function isTable(id: string) {
                                     <template #activator="{ attrs, toggle }">
                                         <v-btn
                                             v-bind="attrs"
-                                            text
-                                            size="text-sm h-[45px]"
-                                            tile
-                                            color="hover:text-t-primary"
+                                            mode="text"
                                             class="drag overflow-hidden whitespace-pre"
                                             :class="[
-                                                isActive(id)
-                                                    ? 'text-t-primary'
-                                                    : 'text-t-secondary',
-                                                index === 0 ? 'pl-0 pr-4' : 'px-4',
+                                                isActive(id) ? '' : 'text-t-secondary',
+                                                index === 0 ? '-ml-4' : '',
                                             ]"
                                             @click="showMenu(id, toggle)"
                                         >
@@ -213,11 +208,9 @@ function isTable(id: string) {
                     <v-menu offset-y close-on-content-click>
                         <template #activator="{ attrs }">
                             <v-btn
-                                text
-                                size="text-sm px-4 h-[45px]"
-                                tile
-                                color="border-b border-transparent hover:bg-b-secondary/50 text-t-secondary overflow-hidden whitespace-pre"
+                                mode="text"
                                 :class="!view.viewIds.length ? 'min-w-[150px]' : ''"
+                                class="text-t-secondary overflow-hidden whitespace-pre"
                                 v-bind="attrs"
                             >
                                 <template v-if="!view.viewIds.length">

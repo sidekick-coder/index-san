@@ -118,7 +118,7 @@ const modeLabels: Record<typeof mode.value, string> = {
 </script>
 <template>
     <v-layout :id="path" use-percentage v-bind="bindings.root">
-        <v-layout-toolbar v-if="!hideActions" class="border-b border-b-lines">
+        <v-layout-toolbar class="border-b border-b-lines">
             <div class="flex pl-6 pr-7 w-full">
                 <v-menu offset-y :close-on-content-click="true">
                     <template #activator="{ attrs }">
@@ -139,13 +139,15 @@ const modeLabels: Record<typeof mode.value, string> = {
                 </v-menu>
 
                 <template v-if="['edit', 'side-by-side'].includes(mode)">
-                    <v-btn size="sm" text @click="setPreview">
+                    <v-btn size="sm" mode="text" @click="setPreview">
                         <v-icon name="arrows-rotate" />
                     </v-btn>
-                    <v-btn size="sm" text @click="save">
+                    <v-btn size="sm" mode="text" @click="save">
                         <v-icon name="save" />
                     </v-btn>
                 </template>
+
+                <slot name="append-actions" />
             </div>
         </v-layout-toolbar>
 

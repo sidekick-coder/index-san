@@ -67,7 +67,7 @@ const title = computed(() => {
         v-model="drawer"
         class="bg-b-secondary text-t-primary border-r border-b-primary group"
     >
-        <v-list-item to="/" class="pl-7 border-b border-lines">
+        <v-list-item class="pl-7 border-b border-lines">
             <h1 class="text-lg font-bold mr-auto">
                 {{ title }}
             </h1>

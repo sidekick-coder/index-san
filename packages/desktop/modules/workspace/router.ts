@@ -1,19 +1,16 @@
 import { Router } from 'vue-router'
 
+export const order = 1
+
 export default (router: Router) => {
     router.addRoute({
         path: '/',
-        redirect: '/workspaces',
+        name: 'main',
+        component: () => import('./WLayout.vue'),
     })
 
-    router.addRoute({
-        path: '/workspaces',
-        component: () => import('./WLayout.vue'),
-        children: [
-            {
-                path: '',
-                component: () => import('./pages/WList.vue'),
-            },
-        ],
+    router.addRoute('main', {
+        path: 'workspaces',
+        component: () => import('./pages/WList.vue'),
     })
 }

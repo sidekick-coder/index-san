@@ -1,8 +1,8 @@
 import { Router } from 'vue-router'
 
 export default (router: Router) => {
-    router.addRoute({
-        path: '/options',
+    router.addRoute('main', {
+        path: 'options',
         component: () => import('./OLayout.vue'),
         redirect: '/options/general',
         children: [

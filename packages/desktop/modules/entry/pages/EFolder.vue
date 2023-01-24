@@ -6,7 +6,7 @@ import DirectoryEntry from '@core/entities/directory-entry'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '../store'
 
-import VTr from '@components/v-tr.vue'
+import VTr from '@components/VTr.vue'
 import LToolbar from '@modules/layout/components/LToolbar.vue'
 import EEntryIcon from '../components/EEntryIcon.vue'
 import { onKeyStroke } from '@vueuse/core'
@@ -253,38 +253,35 @@ async function onEnter(item: DirectoryEntry) {
 
 <template>
     <v-layout use-percentage>
-        <l-toolbar>
-            <template #append-navigation>
-                <v-btn text size="sm" @click="setEntries">
-                    <v-icon name="rotate" />
-                </v-btn>
-                <v-menu v-model="menu" offset-y>
-                    <template #activator="{ attrs }">
-                        <v-btn text size="sm" v-bind="attrs">
-                            <v-icon name="plus" />
-                        </v-btn>
-                    </template>
+        <v-layout-toolbar class="px-7 border-b border-lines">
+            <v-btn mode="text" size="sm" @click="setEntries">
+                <v-icon name="rotate" />
+            </v-btn>
 
-                    <v-card color="b-secondary">
-                        <v-list-item @click="addFile">
-                            {{ $t('addEntity', [$t('file')]) }}
-                        </v-list-item>
-                        <v-list-item @click="addFolder">
-                            {{ $t('addEntity', [$t('folder')]) }}
-                        </v-list-item>
-                    </v-card>
-                </v-menu>
-            </template>
+            <v-menu v-model="menu" offset-y>
+                <template #activator="{ attrs }">
+                    <v-btn mode="text" size="sm" v-bind="attrs">
+                        <v-icon name="plus" />
+                    </v-btn>
+                </template>
 
-            <template #append-links>
-                <v-input
-                    v-model="search"
-                    :placeholder="$t('search') + '...'"
-                    flat
-                    class="ml-auto w-full max-w-[300px] mr-4"
-                />
-            </template>
-        </l-toolbar>
+                <v-card color="b-secondary">
+                    <v-list-item @click="addFile">
+                        {{ $t('addEntity', [$t('file')]) }}
+                    </v-list-item>
+                    <v-list-item @click="addFolder">
+                        {{ $t('addEntity', [$t('folder')]) }}
+                    </v-list-item>
+                </v-card>
+            </v-menu>
+
+            <v-input
+                v-model="search"
+                :placeholder="$t('search') + '...'"
+                class="ml-2 w-full max-w-[300px] mr-4"
+                size="sm"
+            />
+        </v-layout-toolbar>
 
         <v-layout-content class="overflow-auto h-[calc(100vh_-_45px)]">
             <div v-if="loading" class="flex w-full h-full items-center justify-center">
@@ -333,7 +330,7 @@ async function onEnter(item: DirectoryEntry) {
                                 />
 
                                 <v-btn
-                                    text
+                                    mode="text"
                                     size="sm"
                                     color="info"
                                     class="ml-auto text-t-secondary opacity-0 group-hover:opacity-100"
@@ -343,7 +340,7 @@ async function onEnter(item: DirectoryEntry) {
                                 </v-btn>
 
                                 <v-btn
-                                    text
+                                    mode="text"
                                     size="sm"
                                     color="danger"
                                     class="text-t-secondary opacity-0 group-hover:opacity-100"
