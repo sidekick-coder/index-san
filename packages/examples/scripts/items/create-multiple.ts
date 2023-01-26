@@ -7,9 +7,9 @@ const repository = await Facades.item.createRepositoryFromWorkspace(Workspace, '
 const items = []
 
 for await (const i of Array.from(Array(10).keys())) {
-    // items.push(await repository.create({
-    //     name: 'New todo ' + i
-    // }))
+    items.push(await repository.create({
+        name: 'New todo ' + i
+    }))
 }
 
 

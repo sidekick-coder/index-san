@@ -4,7 +4,8 @@
         "id": "default",
         "label": "",
         "viewIds": [
-            "9753fc8e-fac2-4995-92a9-b47d77bb7e4e"
+            "9753fc8e-fac2-4995-92a9-b47d77bb7e4e",
+            "e28731c9-44a7-447a-b3c3-b1029ed7d66d"
         ]
     },
     {
@@ -31,5 +32,33 @@
             }
         ],
         "orderBy": []
+    },
+    {
+        "component": "gallery",
+        "id": "e28731c9-44a7-447a-b3c3-b1029ed7d66d",
+        "label": "",
+        "search": "",
+        "filters": [],
+        "columns": [],
+        "orderBy": [],
+        "thumbnail": {
+            "fit": "",
+            "key": "",
+            "position": ""
+        },
+        "sizes": {
+            "sm": {
+                "width": 200,
+                "height": "auto"
+            },
+            "md": {
+                "width": 200,
+                "height": "auto"
+            },
+            "lg": {
+                "width": 200,
+                "height": "auto"
+            }
+        }
     }
 ]

@@ -116,6 +116,7 @@ const sizeVariation = useVariant(props, 'size', {
 const classes = computed(() => {
     const result = [
         'transition-all flex items-center justify-center overflow-hidden cursor-pointer',
+        'outline-none focus:outline-none',
     ]
 
     if (props.disabled) {

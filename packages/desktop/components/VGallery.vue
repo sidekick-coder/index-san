@@ -4,11 +4,20 @@ export default {
 }
 </script>
 <script setup lang="ts">
+import uniq from 'lodash/uniq'
+import { PropType } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 
 import { createBindings } from '@composables/binding'
+import { useVModel } from 'vue-wind/composables/v-model'
+
+// Props & Emits
 
 const props = defineProps({
+    modelValue: {
+        type: Array as PropType<any[] | null>,
+        default: null,
+    },
     items: {
         type: Array as () => any[],
         default: () => [],
@@ -38,6 +47,8 @@ const props = defineProps({
         default: '',
     },
 })
+
+const emit = defineEmits(['update:modelValue'])
 
 // bindings
 const attrs = useAttrs()
@@ -92,6 +103,53 @@ const size = computed(() => {
 const pagination = ref({ page: 1 })
 
 const visibleItems = computed(() => props.items.slice(0, pagination.value.page * +props.limit))
+
+// key
+
+function getKey(item: any, index: number) {
+    if (!props.itemKey) return index
+
+    return item[props.itemKey]
+}
+
+// Selected
+
+const selected = useVModel(props, 'modelValue', emit)
+
+function onSelect(item: any, itemIndex: number, e: MouseEvent) {
+    if (!selected.value) return
+
+    e.preventDefault()
+
+    const key = getKey(item, itemIndex)
+
+    if (!e.ctrlKey && !e.shiftKey) {
+        selected.value = [key]
+        return
+    }
+
+    if (e.ctrlKey) {
+        selected.value = uniq([...selected.value, key])
+        return
+    }
+
+    if (!selected.value.length) {
+        return
+    }
+
+    const start = selected.value[0]
+
+    const firstIndex = props.items.findIndex((item) => getKey(item, itemIndex) === start)
+
+    const lastIndex = props.items.findIndex((item) => getKey(item, itemIndex) === key)
+
+    const startIndex = Math.min(firstIndex, lastIndex)
+    const endIndex = Math.max(firstIndex, lastIndex)
+
+    const all = props.items.slice(startIndex, endIndex + 1).map((item) => getKey(item, itemIndex))
+
+    selected.value = all
+}
 </script>
 
 <template>
@@ -121,6 +179,7 @@ const visibleItems = computed(() => props.items.slice(0, pagination.value.page *
             :color="color"
             :bindings="bindings"
             :item="item"
+            :on-click="(e: MouseEvent) => onSelect(item, index, e)"
         >
             <v-card
                 :width="size.width"

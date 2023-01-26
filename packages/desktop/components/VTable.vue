@@ -131,14 +131,6 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
 
     selected.value = all
 }
-
-function selectItem(item: any, itemIndex: number) {
-    if (!selected.value) return
-
-    const key = getKey(item, itemIndex)
-
-    selected.value = [key]
-}
 </script>
 <template>
     <table
@@ -169,7 +161,6 @@ function selectItem(item: any, itemIndex: number) {
             :columns="parsedColumns"
             :item="item"
             :index="index"
-            :select="() => selectItem(item, index)"
             :is-selected="() => selected?.includes(getKey(item, index))"
             :select-attrs="{
                 onClick: (e: MouseEvent) => onSelect(item, index, e),

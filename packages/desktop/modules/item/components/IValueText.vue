@@ -39,7 +39,7 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
-    <div v-if="!editModel" class="cursor-pointer" @click="editModel = true">
+    <div v-if="!editModel" class="cursor-pointer truncate" @click="editModel = true">
         {{ payload }}
     </div>
 

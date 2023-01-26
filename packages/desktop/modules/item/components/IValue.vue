@@ -48,7 +48,7 @@ defineProps({
 
 const attrs = useAttrs()
 
-const bindings = createBindings(attrs, ['input', 'select'])
+const bindings = createBindings(attrs, ['input', 'select', 'checkbox'])
 </script>
 
 <template>
@@ -137,7 +137,7 @@ const bindings = createBindings(attrs, ['input', 'select'])
             :item-id="itemId"
             :column-id="columnId"
             :edit="edit"
-            v-bind="bindings.multiple(['root'])"
+            v-bind="bindings.multiple(['root', 'checkbox'])"
         />
 
         <i-value-timestamp

@@ -19,6 +19,7 @@ import { createViewIfNotExists, useView } from '@modules/view/composables/use-vi
 import { useHooks, Events } from '@plugins/hooks'
 import { useItemStore } from '@modules/item/store'
 import { withViewIterations } from '@modules/view/composables'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
 // Props & Emits
 const props = defineProps({
@@ -146,14 +147,37 @@ const actions = ref({
 })
 
 function showActions(event: MouseEvent, id: string) {
-    const reacts = (event.target as HTMLElement).getBoundingClientRect()
-
-    actions.value.x = reacts.x
-    actions.value.y = reacts.y + 32
+    actions.value.x = event.clientX
+    actions.value.y = event.clientY
 
     actions.value.id = id
     actions.value.menu = true
 }
+
+// selected
+
+const gallery = ref(null)
+const selected = ref<string[]>([])
+
+onClickOutside(gallery, () => {
+    selected.value = []
+})
+
+onKeyStroke('Escape', () => {
+    selected.value = []
+})
+
+onKeyStroke('Delete', async () => {
+    if (!selected.value.length) {
+        return
+    }
+
+    for await (const id of selected.value) {
+        await itemsStore.destroy(id)
+    }
+
+    selected.value = []
+})
 </script>
 
 <template>
@@ -189,6 +213,8 @@ function showActions(event: MouseEvent, id: string) {
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
             <v-gallery
+                ref="gallery"
+                v-model="selected"
                 :items="items"
                 :columns="columns"
                 :sizes="view.sizes"
@@ -199,28 +225,15 @@ function showActions(event: MouseEvent, id: string) {
             >
                 <template #item="data">
                     <v-card
+                        v-bind="data.bindings.card"
                         :width="data.size.width"
                         :height="data.size.height"
-                        class="overflow-auto rounded cursor-pointer relative group/item"
                         :color="data.color"
-                        v-bind="data.bindings.card"
+                        :class="[selected.includes(data.item.id) ? 'border-accent' : '']"
+                        class="border border-transparent overflow-auto rounded cursor-pointer relative group/item outline-none focus:outline-none"
                         tabindex="0"
-                        @click="onClick(data.item)"
+                        @contextmenu.prevent="showActions($event, data.item.id)"
                     >
-                        <div
-                            class="absolute right-0 top-0 transition-opacity opacity-0 flex group-hover/item:opacity-100 px-2 py-2 rounded"
-                            @click.stop
-                        >
-                            <v-btn
-                                size="py-1 px-2 text-xs"
-                                color="b-secondary"
-                                :to="`/collections/${collectionId}/items/${data.item.id}`"
-                                @contextmenu.prevent="showActions($event, data.item.id)"
-                            >
-                                <v-icon name="grip-vertical" />
-                            </v-btn>
-                        </div>
-
                         <e-img
                             v-if="view.thumbnail.key"
                             :ref="(el: any) => thumbnails.set(data.item.id, el)"
@@ -231,11 +244,17 @@ function showActions(event: MouseEvent, id: string) {
                             width="100%"
                             card:color="bg-b-primary/25"
                             class="min-h-[20%]"
+                            @click="data.onClick"
+                            @dblclick="
+                                $router.push(`/collections/${collectionId}/items/${data.item.id}`)
+                            "
                         />
 
-                        <template v-for="c in data.columns" :key="`${c.id}-${data.item.id}`">
+                        <template
+                            v-for="(c, cIndex) in data.columns.filter((c) => !c.hide)"
+                            :key="`${c.id}-${data.item.id}`"
+                        >
                             <v-list-item
-                                v-if="!c.hide"
                                 size="h-[48px]"
                                 color="none"
                                 class="hover:bg-b-primary/25"
@@ -247,14 +266,37 @@ function showActions(event: MouseEvent, id: string) {
                                     :item-id="data.item.id"
                                     :type="c.type"
                                     :placeholder="c.label"
+                                    :checkbox:label="c.label"
+                                    :class="cIndex === 0 ? 'max-w-[calc(100%_-_30px)]' : 'px-4'"
+                                    class="px-4 py-3 text-sm"
                                     card:color="b-primary"
                                     select:no-chevron
+                                    input:color="none"
                                     menu:offset-y
-                                    color="none"
                                     size="none"
-                                    class="px-4 py-3 text-sm"
                                     flat
                                 />
+
+                                <v-btn
+                                    v-if="cIndex === 0"
+                                    size="none"
+                                    mode="text"
+                                    color="none"
+                                    :class="
+                                        selected.includes(data.item.id)
+                                            ? 'text-accent opacity-100'
+                                            : 'text-t-secondary'
+                                    "
+                                    class="ml-auto opacity-0 group-hover/item:opacity-100 text-xs pr-4"
+                                    @click="data.onClick"
+                                    @dblclick="
+                                        $router.push(
+                                            `/collections/${collectionId}/items/${data.item.id}`
+                                        )
+                                    "
+                                >
+                                    <v-icon name="diamond" />
+                                </v-btn>
                             </v-list-item>
                         </template>
                     </v-card>

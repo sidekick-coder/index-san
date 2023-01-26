@@ -47,7 +47,7 @@ function save() {
 <template>
     <e-editor ref="editorRef" v-model="content" :path="path" language="javascript">
         <template #prepend-actions>
-            <v-btn size="sm" text :loading="loading" @click="execute">
+            <v-btn size="sm" mode="text" :loading="loading" @click="execute">
                 <v-icon name="play" />
             </v-btn>
         </template>

@@ -13,15 +13,19 @@ const store = useStore()
 const route = useRoute()
 const loading = ref(false)
 
-const lastRoute = useState('app:router:last', '/', {
-    localStorage: true,
-})
+const getKey = () => `app:router:last:${store.workspace.currentId}`
+
+let lastRoute = useState(getKey(), '/collections', { localStorage: true })
 
 router.push(lastRoute.value)
 watch(
     () => store.workspace.currentId,
     () => {
-        router.push('/collections')
+        lastRoute = useState(getKey(), '/collections', { localStorage: true })
+
+        setTimeout(() => {
+            router.push(lastRoute.value)
+        }, 100)
     }
 )
 

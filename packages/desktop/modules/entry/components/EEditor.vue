@@ -79,11 +79,11 @@ defineExpose({ save })
             <div class="px-7 flex justify-end w-full">
                 <slot name="prepend-actions" />
 
-                <v-btn size="sm" text @click="setContent">
+                <v-btn size="sm" mode="text" @click="setContent">
                     <v-icon name="arrows-rotate" />
                 </v-btn>
 
-                <v-btn size="sm" text @click="save">
+                <v-btn size="sm" mode="text" @click="save">
                     <v-icon name="save" />
                 </v-btn>
             </div>

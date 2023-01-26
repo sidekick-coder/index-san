@@ -131,7 +131,7 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
                 v-bind="{ ...$attrs, ...attrs }"
             />
 
-            <div v-else class="cursor-pointer" v-bind="{ ...$attrs, ...attrs }">
+            <div v-else class="cursor-pointer truncate" v-bind="{ ...$attrs, ...attrs }">
                 {{ !payload ? '' : DirectoryEntry.basename(payload) }}
             </div>
         </template>
