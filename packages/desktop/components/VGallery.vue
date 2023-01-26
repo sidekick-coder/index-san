@@ -4,9 +4,9 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { createBindings } from '@composables/binding'
-import { computed, useAttrs, ref } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
+
+import { createBindings } from '@composables/binding'
 
 const props = defineProps({
     items: {

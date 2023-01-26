@@ -10,6 +10,8 @@ import { useViewStore } from '@modules/view/store'
 import { useView } from '@modules/view/composables/use-view'
 import { createBindings } from '@composables/binding'
 import { useState } from '@composables/state'
+import { tmpdir } from 'os'
+import { useI18n } from 'vue-i18n'
 
 const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))
 const CTable = defineAsyncComponent(() => import('./CTable.vue'))
@@ -86,10 +88,20 @@ function isActive(id: string) {
     return selectedView.value === id
 }
 
+// label
+
+const tm = useI18n()
+
 function getLabel(id: string) {
     const search = store.views.find((v) => v.id === id)
 
-    return search ? search.label : id
+    if (search?.label) return search.label
+
+    if (search?.component === 'table') return tm.t('table')
+
+    if (search?.component === 'gallery') return tm.t('gallery')
+
+    return tm.t('view')
 }
 
 // add new view
@@ -102,8 +114,6 @@ const options = {
 function addView(type: keyof typeof options, payload: any = {}) {
     const entity = new options[type](payload)
 
-    entity.label = 'New view'
-
     store.views.push(entity)
 
     view.value.viewIds.push(entity.id)
@@ -114,9 +124,11 @@ function addView(type: keyof typeof options, payload: any = {}) {
 // delete
 
 async function deleteView(id: string) {
-    store.destroy(id)
+    view.value.viewIds = view.value.viewIds.filter((v) => v !== id)
 
     seleteView(view.value.viewIds[0])
+
+    store.destroy(id)
 }
 
 // menu
@@ -168,7 +180,7 @@ function isTable(id: string) {
                 <div class="flex">
                     <v-draggable
                         v-model="view.viewIds"
-                        item-key="id"
+                        :item-key="(i: string) => i"
                         handle=".drag"
                         :component-data="{ class: 'flex w-full' }"
                     >

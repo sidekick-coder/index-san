@@ -3,11 +3,12 @@ import { watch, ref, computed } from 'vue'
 import ViewGroup from '@core/entities/view-group'
 
 import { useView } from '@modules/view/composables/use-view'
-import { createViewStore } from '@modules/view/store'
+import { useViewStore } from '@modules/view/store'
 
 import CActionsGallery from './CActionsGallery.vue'
 import CActionsTable from './CActionsTable.vue'
 import { useState } from '@composables/state'
+import { useI18n } from 'vue-i18n'
 
 // Props & emit
 const props = defineProps({
@@ -22,14 +23,14 @@ const props = defineProps({
 })
 
 // view
-let store = createViewStore(props.collectionId)
+let store = useViewStore(props.collectionId)
 let view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
 let selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
     localStorage: true,
 })
 
 function setView() {
-    store = createViewStore(props.collectionId)
+    store = useViewStore(props.collectionId)
 
     selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
         localStorage: true,
@@ -73,6 +74,22 @@ function onSelect(id: string) {
 
     selectedView.value = id
 }
+
+// label
+
+const tm = useI18n()
+
+function getLabel(id: string) {
+    const search = store.views.find((v) => v.id === id)
+
+    if (search?.label) return search.label
+
+    if (search?.component === 'table') return tm.t('table')
+
+    if (search?.component === 'gallery') return tm.t('gallery')
+
+    return tm.t('view')
+}
 </script>
 <template>
     <v-card color="b-secondary" width="350">
@@ -109,7 +126,7 @@ function onSelect(id: string) {
                 @click="onSelect(v.id)"
             >
                 <div class="mr-auto">
-                    {{ v.label || v.id }}
+                    {{ getLabel(v.id) }}
                 </div>
 
                 <v-btn size="sm" color="b-primary" class="mr-2" @click="destroy(v.id)">
