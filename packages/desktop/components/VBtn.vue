@@ -8,7 +8,7 @@ const props = defineProps({
         default: 'default',
     },
     size: {
-        type: String as () => 'sm' | 'md',
+        type: String as () => 'none' | 'xs' | 'sm' | 'md',
         default: 'md',
     },
     type: {
@@ -58,13 +58,14 @@ const colorVariation = useVariant(props, 'color')
 function setColorOptions() {
     if (props.mode === 'text') {
         return colorVariation.setOptions({
-            accent: 'hover:border-accent/5 hover:bg-accent/5 hover:text-accent',
-            danger: 'hover:border-danger/5 hover:bg-danger/5 hover:text-danger',
-            warn: 'hover:border-warn/5 hover:bg-warn/5 hover:text-warn',
-            info: 'hover:border-info/5 hover:bg-info/5 hover:text-info',
+            'accent': 'hover:border-accent/5 hover:bg-accent/5 hover:text-accent',
+            'danger': 'hover:border-danger/5 hover:bg-danger/5 hover:text-danger',
+            'warn': 'hover:border-warn/5 hover:bg-warn/5 hover:text-warn',
+            'info': 'hover:border-info/5 hover:bg-info/5 hover:text-info',
+            'b-primary': 'hover:border-b-primary/5 hover:bg-b-primary/5 hover:text-t-primary',
 
-            _shared: 'border border-transparent',
-            _empty: (v) => {
+            '_shared': 'border border-transparent',
+            '_empty': (v) => {
                 if (!css.isColor(v)) return { classes: v }
 
                 return {
@@ -104,6 +105,8 @@ watch(() => props.mode, setColorOptions, { immediate: true })
 // size
 
 const sizeVariation = useVariant(props, 'size', {
+    none: '',
+    xs: 'px-2 py-1 text-xs',
     sm: 'px-3 py-1 text-xs',
     md: 'px-4 py-2 text-sm',
 })

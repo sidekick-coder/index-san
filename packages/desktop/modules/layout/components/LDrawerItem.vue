@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useState } from '@composables/state'
 import Menu from '@core/entities/menu'
-import { computed } from 'vue'
+
+import VDraggable from 'vuedraggable'
+
+import { useState } from '@composables/state'
 
 const props = defineProps({
     item: {
@@ -12,8 +14,15 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    dragOptions: {
+        type: Object,
+        default: () => ({}),
+    },
 })
 
+const emit = defineEmits(['update'])
+
+// toggle children
 const hideSections = useState<string[]>('app:menu:hide', [], {
     localStorage: true,
 })
@@ -33,6 +42,12 @@ function toggle() {
 }
 
 const show = computed(() => !hideSections.value.includes(props.item.id))
+
+watch(
+    () => props.item,
+    () => emit('update'),
+    { deep: true }
+)
 </script>
 <template>
     <v-list-item
@@ -40,23 +55,29 @@ const show = computed(() => !hideSections.value.includes(props.item.id))
         active-class="bg-t-secondary/10"
         size="none"
         color="hover:bg-t-secondary/5 "
-        class="py-3 px-1 text-sm"
+        class="py-2 text-sm"
     >
         <v-btn
-            class="w-[20px] h-[20px] mr-1 text-xs"
             mode="text"
-            size="sm"
-            :class="[item.children.length && !item.isSection ? 'opacity-100' : 'opacity-0']"
+            size="xs"
+            class=""
+            color="text-t-secondary"
+            :class="[
+                (item.children.length && !item.isSection) || (!show && item.isSection)
+                    ? 'opacity-100'
+                    : 'opacity-0',
+            ]"
             @click.prevent.stop="toggle"
         >
-            <v-icon :name="show ? 'chevron-down' : 'chevron-right'" />
+            <v-icon :name="show ? 'caret-down' : 'caret-right'" />
         </v-btn>
+
         <template v-if="item.isSection">
             <v-btn
                 mode="text"
-                size="sm"
+                size="xs"
                 color="hover:bg-b-primary/40"
-                class="text-t-secondary font-bold -ml-4"
+                class="text-t-secondary font-bold -ml-2"
                 @click="toggle"
             >
                 {{ item.label }}
@@ -64,18 +85,32 @@ const show = computed(() => !hideSections.value.includes(props.item.id))
         </template>
 
         <template v-else>
-            <v-icon v-if="item.icon" :name="item.icon || 'circle'" class="mr-4" />
+            <v-btn class="-ml-1 mr-2" size="xs" color="hover:bg-b-primary/40" mode="text">
+                <v-icon v-if="item.icon" :name="item.icon"></v-icon>
+                <v-icon v-else name="circle"></v-icon>
+            </v-btn>
 
             <div>{{ item.label }}</div>
         </template>
     </v-list-item>
 
-    <div v-if="show && item.children.length" :style="`margin-left: ${deep * 20}px`">
-        <l-drawer-item
-            v-for="(child, index) in item.children"
-            :key="index"
-            :item="child"
-            :deep="deep + 1"
-        />
-    </div>
+    <v-draggable
+        v-if="show && item.children.length"
+        v-bind="dragOptions"
+        :list="item.children"
+        :component-data="{
+            style: `margin-left: ${deep * 20}px`,
+        }"
+    >
+        <template #item="{ index }">
+            <div>
+                <l-drawer-item
+                    :item="item.children[index]"
+                    :deep="deep + 1"
+                    :drag-options="dragOptions"
+                    @update="$t('update')"
+                />
+            </div>
+        </template>
+    </v-draggable>
 </template>

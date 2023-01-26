@@ -8,6 +8,8 @@ import { useStore } from '@store/global'
 
 import { useToggleDrawer } from '../composables/drawer'
 
+import VDraggable from 'vuedraggable'
+
 const LDrawerItem = defineAsyncComponent(() => import('./LDrawerItem.vue'))
 
 const drawer = useToggleDrawer()
@@ -16,40 +18,43 @@ const drawer = useToggleDrawer()
 const tm = useI18n()
 const store = useStore()
 
-const items = computed(() => {
-    const result: Menu[] = [
-        {
-            label: tm.t('workspace', 2),
-            to: '/workspaces',
-            children: [],
-            id: 'workspaces',
-            icon: 'cubes',
-        },
-        {
-            label: tm.t('collection', 2),
-            to: '/collections',
-            children: [],
-            id: 'collections',
-            icon: 'database',
-        },
-        {
-            label: tm.t('entry', 2),
-            to: '/entries',
-            children: [],
-            id: 'entries',
-            icon: 'folder',
-        },
-        {
-            label: tm.t('option', 2),
-            to: '/options',
-            children: [],
-            id: 'options',
-            icon: 'cog',
-        },
-    ]
+const dragOptions = {
+    emptyInsertThreshold: 22,
+    itemKey: 'id',
+    group: 'menu',
+    ghostClass: 'ghost',
+}
 
-    return result.concat(store.menu.menu)
-})
+const defaultItems: Menu[] = [
+    {
+        label: tm.t('workspace', 2),
+        to: '/workspaces',
+        children: [],
+        id: 'workspaces',
+        icon: 'cubes',
+    },
+    {
+        label: tm.t('collection', 2),
+        to: '/collections',
+        children: [],
+        id: 'collections',
+        icon: 'database',
+    },
+    {
+        label: tm.t('entry', 2),
+        to: '/entries',
+        children: [],
+        id: 'entries',
+        icon: 'folder',
+    },
+    {
+        label: tm.t('option', 2),
+        to: '/options',
+        children: [],
+        id: 'options',
+        icon: 'cog',
+    },
+]
 
 // title
 
@@ -60,6 +65,10 @@ const title = computed(() => {
 
     return 'Index-san'
 })
+
+async function onUpdate() {
+    await store.menu.save()
+}
 </script>
 
 <template>
@@ -81,6 +90,24 @@ const title = computed(() => {
             </v-btn>
         </v-list-item>
 
-        <l-drawer-item v-for="item in items" :key="item.id" :item="item" />
+        <l-drawer-item v-for="item in defaultItems" :key="item.id" :item="item" />
+
+        <v-draggable v-model="store.menu.menu" v-bind="dragOptions" @update="onUpdate">
+            <template #item="{ index }">
+                <div>
+                    <l-drawer-item
+                        :item="store.menu.menu[index]"
+                        :drag-options="dragOptions"
+                        @update="onUpdate"
+                    />
+                </div>
+            </template>
+        </v-draggable>
     </v-layout-drawer>
 </template>
+
+<style>
+.ghost {
+    @apply border-t border-accent;
+}
+</style>

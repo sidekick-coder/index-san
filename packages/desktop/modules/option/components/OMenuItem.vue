@@ -31,13 +31,13 @@ function removeChildren(index: number) {
 <template>
     <div class="my-2 border border-lines rounded">
         <v-list-item class="border-lines items-center">
-            <v-btn class="w-[38px] h-[38px] drag-handle" text>
+            <v-btn class="w-[38px] h-[38px] drag-handle" mode="text">
                 <v-icon name="grip-vertical" />
             </v-btn>
 
             <v-icon-picker v-if="!item.isSection" v-model="item.icon">
                 <template #activator="{ attrs }">
-                    <v-btn class="w-[38px] h-[38px] ml-2" v-bind="attrs" text>
+                    <v-btn class="w-[38px] h-[38px] ml-2" v-bind="attrs" mode="text">
                         <v-icon v-if="item.icon" :name="item.icon"></v-icon>
                         <v-icon v-else name="circle"></v-icon>
                     </v-btn>
