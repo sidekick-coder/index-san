@@ -15,7 +15,7 @@ declare module '@vue/runtime-core' {
     VCardHead: typeof import('./components/v-card-head.vue')['default']
     VCardTitle: typeof import('./components/v-card-title.vue')['default']
     VChart: typeof import('./components/v-chart.vue')['default']
-    VCheckbox: typeof import('./components/v-checkbox.vue')['default']
+    VCheckbox: typeof import('./components/VCheckbox.vue')['default']
     VCode: typeof import('./components/v-code.vue')['default']
     VContainer: typeof import('./components/v-container.vue')['default']
     VDialog: typeof import('./components/v-dialog.vue')['default']

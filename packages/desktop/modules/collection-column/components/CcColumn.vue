@@ -163,7 +163,7 @@ const relation = computed(() => {
                 <v-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
                 </v-card-title>
-                <v-btn text color="danger" class="ml-auto" @click="deleteColumn">
+                <v-btn mode="text" color="danger" class="ml-auto" @click="deleteColumn">
                     <v-icon name="trash" />
                 </v-btn>
             </v-card-head>
@@ -206,7 +206,7 @@ const relation = computed(() => {
                                     <v-btn
                                         v-bind="attrs"
                                         :color="option.color || 'accent'"
-                                        size="w-4 h-4"
+                                        size="xs"
                                     />
 
                                     <v-input v-model="option.name" class="ml-4">
@@ -225,25 +225,25 @@ const relation = computed(() => {
                                 <v-card class="py-4 px-2" color="b-primary">
                                     <v-btn
                                         color="accent"
-                                        size="w-4 h-4"
+                                        size="xs"
                                         class="mb-4"
                                         @click="option.color = 'accent'"
                                     />
                                     <v-btn
                                         color="info"
-                                        size="w-4 h-4"
+                                        size="xs"
                                         class="mb-4"
                                         @click="option.color = 'info'"
                                     />
                                     <v-btn
                                         color="danger"
-                                        size="w-4 h-4"
+                                        size="xs"
                                         class="mb-4"
                                         @click="option.color = 'danger'"
                                     />
                                     <v-btn
                                         color="warn"
-                                        size="w-4 h-4"
+                                        size="xs"
                                         class="mb-4"
                                         @click="option.color = 'warn'"
                                     />

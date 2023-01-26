@@ -15,15 +15,10 @@
         "filters": [],
         "columns": [
             {
-                "id": "_actions_left",
-                "label": "#",
-                "width": 43
-            },
-            {
                 "label": "Done",
                 "id": "47dcb1b3-4895-4642-a9f9-c23b0d9b3331",
                 "options": [],
-                "width": 92
+                "width": 52
             },
             {
                 "label": "Name",

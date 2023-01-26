@@ -6,9 +6,6 @@ import Collection from '@core/entities/collection'
 import { useStore as useWorkspace } from '@modules/workspace/store'
 import { useCase } from '@composables/use-case'
 
-import UpdateCollectionsDTO from '@core/use-cases/update-collection/update-collection.dto'
-import CreateCollectionDTO from '@core/use-cases/create-collection/create-collection.dto'
-import DeleteCollectionsDTO from '@core/use-cases/delete-collection/delete-collection.dto'
 import ShowCollectionsDTO from '@core/use-cases/show-collection/show-collection.dto'
 import { useViewStore } from '@modules/view/store'
 import { useItemStore } from '@modules/item/store'
@@ -58,7 +55,7 @@ export const useStore = defineStore('collection', () => {
         return response.data
     }
 
-    async function update(id: string, payload: Partial<Collection>) {
+    async function update(id: string, payload: Partial<Collection>, release = true) {
         const index = collections.value.findIndex((c) => c.id === id)
 
         const response = await useCase('update-collection', {
@@ -71,7 +68,7 @@ export const useStore = defineStore('collection', () => {
             collections.value.splice(index, 1, response.data)
         }
 
-        releaseCollection(id)
+        if (release) releaseCollection(id)
 
         return response.data
     }

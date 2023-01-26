@@ -363,7 +363,7 @@ onKeyStroke('Delete', async () => {
                                 class="px-4 py-2"
                                 select:no-chevron
                                 menu:offset-y
-                                color="none"
+                                input:color="none"
                                 flat
                             />
                         </v-td>

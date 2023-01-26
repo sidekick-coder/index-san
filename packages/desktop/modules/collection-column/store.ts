@@ -2,7 +2,6 @@ import { ref, watch, WatchStopHandle } from 'vue'
 import { defineStore } from 'pinia'
 import debounce from 'lodash/debounce'
 
-import { useStore as useWorkspace } from '@modules/workspace/store'
 import { useStore as useCollection } from '@modules/collection/store'
 
 import Column from '@core/entities/column'
@@ -18,7 +17,6 @@ interface StoreItem {
 export const useStore = defineStore('column', () => {
     const items = ref<StoreItem[]>([])
 
-    const workspace = useWorkspace()
     const collection = useCollection()
 
     async function set(collectionId: string, forceUpdate = false) {
@@ -128,13 +126,7 @@ export const useStore = defineStore('column', () => {
 
         if (!item || !data) return
 
-        await collection.update({
-            workspaceId: workspace.currentId!,
-            collectionId,
-            data: {
-                columns: item.columns,
-            },
-        })
+        await collection.update(collectionId, { columns: item.columns }, false)
     }
 
     async function destroy(collectionId: string, columnId: string) {
