@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
 import { useStore } from '@modules/script/store'
 
-import SOutput from './SOutput.vue'
-import MEditor from '@modules/monaco/components/MEditor.vue'
-import VChart from '@/components/v-chart.vue'
 import EvaluationOutput from '@core/entities/evaluation-output'
+
+import VChart from '@components/VChart.vue'
+import MEditor from '@modules/monaco/components/MEditor.vue'
+import SOutput from './SOutput.vue'
 
 // Props & Emits
 
@@ -48,16 +48,16 @@ const current = ref<'chart' | 'debug' | 'raw'>('chart')
 // execute script
 const store = useStore()
 
-const output = ref<EvaluationOutput>({
-    error: null,
-    result: null,
-    logs: [],
-})
+const output = ref(new EvaluationOutput())
 
 async function execute() {
-    output.value = await store.execute({
+    const response = await store.execute({
         content: content.value,
     })
+
+    output.value.error = response.error
+    output.value.result = response.result
+    output.value.logs = response.logs
 
     if (output.value.error || !output.value.result) {
         current.value = 'debug'
@@ -72,13 +72,16 @@ const chart = ref({
     options: null,
 })
 
-watch(output, (value) => {
-    chart.value.loading = true
+watch(
+    () => output.value.result,
+    (value) => {
+        chart.value.loading = true
 
-    chart.value.options = value.result
+        chart.value.options = value
 
-    setTimeout(() => (chart.value.loading = false), 800)
-})
+        setTimeout(() => (chart.value.loading = false), 800)
+    }
+)
 
 // refresh chart
 const chartRef = ref<InstanceType<typeof VChart> | null>()
@@ -102,19 +105,24 @@ function refresh() {
                 {{ title }}
             </v-card-title>
 
-            <v-btn text size="sm" class="ml-auto text-t-secondary" @click="current = 'chart'">
+            <v-btn
+                mode="text"
+                size="xs"
+                class="ml-auto text-t-secondary"
+                @click="current = 'chart'"
+            >
                 <v-icon name="chart-pie" />
             </v-btn>
 
-            <v-btn text size="sm" class="text-t-secondary" @click="refresh">
+            <v-btn mode="text" size="xs" class="text-t-secondary" @click="refresh">
                 <v-icon name="rotate" />
             </v-btn>
 
-            <v-btn text size="sm" class="text-t-secondary" @click="current = 'raw'">
+            <v-btn mode="text" size="xs" class="text-t-secondary" @click="current = 'raw'">
                 <v-icon name="code" />
             </v-btn>
 
-            <v-btn text size="sm" class="text-t-secondary" @click="current = 'debug'">
+            <v-btn mode="text" size="xs" class="text-t-secondary" @click="current = 'debug'">
                 <v-icon name="check-circle" />
             </v-btn>
         </v-card-head>

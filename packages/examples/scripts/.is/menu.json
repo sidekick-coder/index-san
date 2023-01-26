@@ -4,34 +4,36 @@
         "label": "Collections",
         "icon": "code",
         "isSection": true,
-        "children": []
-    },
-    {
-        "label": "Todos",
-        "to": "/collections/todos/items",
-        "children": [],
-        "id": "4ef035fd-89a1-4509-aa55-2b575b25a141",
-        "icon": "bookmark"
+        "children": [
+            {
+                "label": "Todos",
+                "to": "/collections/todos/items",
+                "children": [],
+                "id": "4ef035fd-89a1-4509-aa55-2b575b25a141",
+                "icon": "bookmark"
+            }
+        ]
     },
     {
         "id": "289.65503229275765",
         "label": "Scripts",
         "icon": "code",
         "isSection": true,
-        "children": []
-    },
-    {
-        "label": "create-item.ts",
-        "to": "/entries/items/create-item.ts",
-        "children": [],
-        "id": "04372ef9-90e8-46f4-ae6e-1913436d2d16",
-        "icon": "bookmark"
-    },
-    {
-        "label": "create-multiple.ts",
-        "to": "/entries/items/create-multiple.ts",
-        "children": [],
-        "id": "e6262730-0af1-42b8-abcc-fb0f05efdccb",
-        "icon": "bookmark"
+        "children": [
+            {
+                "label": "create-multiple.ts",
+                "to": "/entries/items/create-multiple.ts",
+                "children": [],
+                "id": "e6262730-0af1-42b8-abcc-fb0f05efdccb",
+                "icon": "bookmark"
+            },
+            {
+                "label": "create-item.ts",
+                "to": "/entries/items/create-item.ts",
+                "children": [],
+                "id": "04372ef9-90e8-46f4-ae6e-1913436d2d16",
+                "icon": "bookmark"
+            }
+        ]
     }
 ]
