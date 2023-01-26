@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import { toCssMeasurement } from '@composables/utils'
+import uniq from 'lodash/uniq'
 
-interface ColumnPadding {
-    top?: number
-    left?: number
-    right?: number
-    bottom?: number
-}
+import type { PropType } from 'vue'
+import { toCssMeasurement } from '@composables/utils'
+import { useVModel } from 'vue-wind/composables/v-model'
 
 interface Column {
     name: string
     label?: string
     field?: string
     width?: number
-    padding?: ColumnPadding
+    [key: string]: any
 }
 
 // Props & Emits
 const props = defineProps({
+    modelValue: {
+        type: Array as PropType<any[] | null>,
+        default: null,
+    },
     items: {
         type: Array as () => any[],
         default: () => [],
@@ -49,24 +49,18 @@ const props = defineProps({
     },
 })
 
+const emit = defineEmits(['update:modelValue'])
+
 // Pagination
 const pagination = ref({ page: 1 })
 
 // Parse columns
-const parsedColumns = computed(() =>
-    props.columns.map((column) => {
+const parsedColumns = computed(() => {
+    const result: Column[] = props.columns.map((column) => {
         const style: any = {}
 
         if (column.width) {
             style.width = toCssMeasurement(column.width)
-        }
-
-        if (column.padding?.left) {
-            style['padding-left'] = toCssMeasurement(column.padding.left)
-        }
-
-        if (column.padding?.right) {
-            style['padding-right'] = toCssMeasurement(column.padding.right)
         }
 
         return {
@@ -74,7 +68,20 @@ const parsedColumns = computed(() =>
             style,
         }
     })
-)
+
+    if (selected.value) {
+        result.unshift({
+            id: 'select',
+            name: 'select',
+            label: '',
+            style: {
+                width: toCssMeasurement(40),
+            },
+        })
+    }
+
+    return result
+})
 
 // Parse items
 
@@ -85,10 +92,57 @@ function getKey(item: any, index: number) {
 
     return item[props.itemKey]
 }
+
+// Selected
+
+const selected = useVModel(props, 'modelValue', emit)
+
+function onSelect(item: any, itemIndex: number, e: MouseEvent) {
+    if (!selected.value) return
+
+    e.preventDefault()
+
+    const key = getKey(item, itemIndex)
+
+    if (!e.ctrlKey && !e.shiftKey) {
+        selected.value = [key]
+        return
+    }
+
+    if (e.ctrlKey) {
+        selected.value = uniq([...selected.value, key])
+        return
+    }
+
+    if (!selected.value.length) {
+        return
+    }
+
+    const start = selected.value[0]
+
+    const firstIndex = props.items.findIndex((item) => getKey(item, itemIndex) === start)
+
+    const lastIndex = props.items.findIndex((item) => getKey(item, itemIndex) === key)
+
+    const startIndex = Math.min(firstIndex, lastIndex)
+    const endIndex = Math.max(firstIndex, lastIndex)
+
+    const all = props.items.slice(startIndex, endIndex + 1).map((item) => getKey(item, itemIndex))
+
+    selected.value = all
+}
+
+function selectItem(item: any, itemIndex: number) {
+    if (!selected.value) return
+
+    const key = getKey(item, itemIndex)
+
+    selected.value = [key]
+}
 </script>
 <template>
     <table
-        class="w-full border-lines border-separate border-spacing-0 relative"
+        class="w-full border-lines border-spacing-0 relative"
         :class="[fixed ? 'table-fixed' : '', loading ? 'animate-pulse' : '']"
     >
         <thead>
@@ -115,6 +169,11 @@ function getKey(item: any, index: number) {
             :columns="parsedColumns"
             :item="item"
             :index="index"
+            :select="() => selectItem(item, index)"
+            :is-selected="() => selected?.includes(getKey(item, index))"
+            :select-attrs="{
+                onClick: (e: MouseEvent) => onSelect(item, index, e),
+            }"
             name="item"
         >
             <v-tr>
@@ -143,10 +202,11 @@ function getKey(item: any, index: number) {
             :pagination="pagination"
             :limit="limit"
             :length="visibleItems.length"
+            :columns="parsedColumns"
         >
-            <v-tr v-if="visibleItems.length < items.length">
+            <v-tr v-if="visibleItems.length < items.length" class="border-b border-lines">
                 <v-td
-                    :colspan="columns.length"
+                    :colspan="parsedColumns.length"
                     class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0 text-center"
                     @click="pagination.page++"
                 >
@@ -157,6 +217,6 @@ function getKey(item: any, index: number) {
             </v-tr>
         </slot>
 
-        <slot name="append" />
+        <slot name="append" :columns="parsedColumns" />
     </table>
 </template>

@@ -38,7 +38,7 @@ declare module '@vue/runtime-core' {
     VSelect: typeof import('./components/v-select.vue')['default']
     VTab: typeof import('./components/v-tab.vue')['default']
     VTabItem: typeof import('./components/v-tab-item.vue')['default']
-    VTable: typeof import('./components/v-table.vue')['default']
+    VTable: typeof import('./components/VTable.vue')['default']
     VTd: typeof import('./components/VTd.vue')['default']
     VTextarea: typeof import('./components/v-textarea.vue')['default']
     VTh: typeof import('./components/VTh.vue')['default']

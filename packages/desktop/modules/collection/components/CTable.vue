@@ -2,7 +2,7 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
-import { ref, watch, computed, useAttrs } from 'vue'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
 import Draggable from 'vuedraggable'
 
@@ -103,12 +103,6 @@ const columns = computed({
             })
         }
 
-        result.unshift({
-            id: '_actions_left',
-            label: '#',
-            width: 43,
-        })
-
         result.push({
             id: '_actions_right',
             width: '100%',
@@ -167,14 +161,39 @@ const actions = ref({
 })
 
 function showActions(event: MouseEvent, id: string) {
-    const reacts = (event.target as HTMLElement).getBoundingClientRect()
+    selected.value = [id]
 
-    actions.value.x = reacts.x
-    actions.value.y = reacts.y + 32
+    actions.value.x = event.clientX
+    actions.value.y = event.clientY
 
     actions.value.id = id
     actions.value.menu = true
 }
+
+// selected
+const table = ref(null)
+
+const selected = ref<string[]>([])
+
+onClickOutside(table, () => {
+    selected.value = []
+})
+
+onKeyStroke('Escape', () => {
+    selected.value = []
+})
+
+onKeyStroke('Delete', async () => {
+    if (!selected.value.length) {
+        return
+    }
+
+    for await (const id of selected.value) {
+        await itemsStore.destroy(id)
+    }
+
+    selected.value = []
+})
 </script>
 
 <template>
@@ -216,29 +235,31 @@ function showActions(event: MouseEvent, id: string) {
             </v-menu>
 
             <v-table
+                ref="table"
+                v-model="selected"
                 :items="items"
                 :columns="columns"
                 :limit="view.limit"
                 item-key="id"
                 v-bind="bindings.table"
             >
-                <template #column>
+                <template #column="data">
                     <Draggable
-                        v-model="columns"
+                        v-model="data.columns"
                         handle=".drag"
                         item-key="id"
                         tag="tr"
                         :component-data="{ class: 'h-[41px]' }"
                     >
-                        <template #item="{ element: c, index }">
+                        <template #item="{ element: c }">
+                            <v-th v-if="c.id === 'select'" width="40"></v-th>
+
                             <v-th
+                                v-else
                                 v-show="!c.hide"
                                 :id="c.id"
                                 :width="c.width || 200"
-                                :class="[
-                                    c.id.startsWith('_') ? '!border-x-0 py-0 !px-2' : '',
-                                    index === 1 ? '!pl-0' : '',
-                                ]"
+                                :class="[c.id.startsWith('_') ? '!border-x-0 py-0 !px-2' : '']"
                             >
                                 <v-btn
                                     v-if="c.id === '_actions_right'"
@@ -281,29 +302,54 @@ function showActions(event: MouseEvent, id: string) {
                 </template>
 
                 <template #item="data">
-                    <v-tr class="relative group/item" height="41">
+                    <v-tr
+                        class="relative group/item"
+                        :class="selected.includes(data.item.id) ? 'bg-accent/10' : ''"
+                        height="41"
+                        @contextmenu.prevent="showActions($event, data.item.id)"
+                    >
                         <v-td
-                            v-for="(c, cIndex) in columns"
+                            v-for="c in data.columns"
                             v-show="!c.hide"
                             :key="c.id"
+                            :class="[
+                                c.id.startsWith('_') ? '!border-x-0' : '',
+                                selected.length ? 'select-none' : '',
+                            ]"
                             no-padding
-                            :class="[c.id.startsWith('_') ? '!border-x-0' : '']"
                             class="relative"
                         >
-                            <div
-                                v-if="c.id === '_actions_left'"
-                                class="flex justify-center opacity-0 group-hover/item:opacity-100"
+                            <v-btn
+                                v-if="c.name === 'select'"
+                                :class="
+                                    selected.includes(data.item.id)
+                                        ? 'text-accent opacity-100'
+                                        : 'text-t-secondary'
+                                "
+                                class="mx-auto opacity-0 group-hover/item:opacity-100"
+                                size="xs"
+                                color="none"
+                                mode="text"
+                                v-bind="data['selectAttrs']"
+                                @dblclick.stop="
+                                    $router.push(
+                                        `/collections/${collectionId}/items/${data.item.id}`
+                                    )
+                                "
                             >
-                                <v-btn
-                                    size="sm"
-                                    color="b-secondary"
-                                    :to="`/collections/${collectionId}/items/${data.item.id}`"
-                                    data-test-id="actions-btn"
-                                    @contextmenu.prevent="showActions($event, data.item.id)"
-                                >
-                                    <v-icon name="grip-vertical" />
-                                </v-btn>
-                            </div>
+                                <v-icon name="diamond" />
+                            </v-btn>
+
+                            <div
+                                v-else-if="c.id === '_actions_right'"
+                                class="h-[40px] w-full"
+                                v-bind="data['selectAttrs']"
+                                @dblclick.stop="
+                                    $router.push(
+                                        `/collections/${collectionId}/items/${data.item.id}`
+                                    )
+                                "
+                            />
 
                             <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>
 
@@ -314,7 +360,7 @@ function showActions(event: MouseEvent, id: string) {
                                 :item-id="data.item.id"
                                 :type="c.type"
                                 size="none"
-                                :class="cIndex === 1 ? 'py-2' : 'px-4 py-2'"
+                                class="px-4 py-2"
                                 select:no-chevron
                                 menu:offset-y
                                 color="none"
@@ -324,14 +370,9 @@ function showActions(event: MouseEvent, id: string) {
                     </v-tr>
                 </template>
 
-                <template #append>
+                <template #append="data">
                     <v-tr class="cursor-pointer hover:bg-b-secondary" @click="create">
-                        <v-td class="!border-x-0"></v-td>
-
-                        <v-td
-                            :colspan="rawColumns.length"
-                            class="!border-x-0 !px-0 text-t-secondary text-sm"
-                        >
+                        <v-td :colspan="data.columns.length" class="text-t-secondary text-sm">
                             <fa-icon icon="plus" class="mr-2" />
 
                             <span>New</span>

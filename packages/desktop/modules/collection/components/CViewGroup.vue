@@ -6,7 +6,7 @@ import ViewGroup from '@core/entities/view-group'
 import ViewTable from '@core/entities/view-table'
 import ViewGallery from '@core/entities/view-gallery'
 
-import { createViewStore } from '@modules/view/store'
+import { useViewStore } from '@modules/view/store'
 import { useView } from '@modules/view/composables/use-view'
 import { createBindings } from '@composables/binding'
 import { useState } from '@composables/state'
@@ -38,7 +38,7 @@ const bindings = computed(() => createBindings(useAttrs(), ['head', 'table', 'ga
 // view
 const loading = ref(true)
 
-let store = createViewStore(props.collectionId)
+let store = useViewStore(props.collectionId)
 
 let view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
 
@@ -49,7 +49,7 @@ let selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected
 async function setView() {
     loading.value = true
 
-    store = createViewStore(props.collectionId)
+    store = useViewStore(props.collectionId)
 
     selectedView = useState(`view:${props.collectionId}:${props.viewId}:selected`, '', {
         localStorage: true,
@@ -64,6 +64,10 @@ async function setView() {
     }
 
     view = useView<ViewGroup>(props.collectionId, props.viewId, new ViewGroup({}, props.viewId))
+
+    if (!selectedView.value && view.value.viewIds.length) {
+        selectedView.value = view.value.viewIds[0]
+    }
 
     loading.value = false
 }
