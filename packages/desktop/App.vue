@@ -5,9 +5,11 @@ import { useState } from './composables/state'
 
 import NNotify from '@modules/notify/components/NNotify.vue'
 import DDialog from '@modules/dialog/components/DDialog.vue'
+import { useStore } from '@store/global'
 
 // save last navigation
 const router = useRouter()
+const store = useStore()
 const route = useRoute()
 const loading = ref(false)
 
@@ -16,6 +18,12 @@ const lastRoute = useState('app:router:last', '/', {
 })
 
 router.push(lastRoute.value)
+watch(
+    () => store.workspace.currentId,
+    () => {
+        router.push('/collections')
+    }
+)
 
 loading.value = false
 

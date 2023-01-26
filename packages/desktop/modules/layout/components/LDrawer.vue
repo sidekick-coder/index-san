@@ -76,21 +76,51 @@ async function onUpdate() {
         v-model="drawer"
         class="bg-b-secondary text-t-primary border-r border-b-primary group"
     >
-        <v-list-item class="pl-7 border-b border-lines">
-            <h1 class="text-lg font-bold mr-auto">
-                {{ title }}
-            </h1>
-            <v-btn
-                mode="text"
-                class="opacity-0 group-hover:opacity-100"
-                size="sm"
-                @click.prevent.stop="drawer = false"
-            >
-                <v-icon name="chevron-left" />
-            </v-btn>
-        </v-list-item>
+        <v-menu offset-y>
+            <template #activator="{ attrs }">
+                <v-list-item
+                    class="pl-7 border-b border-lines"
+                    v-bind="attrs"
+                    color="hover:bg-b-primary/40"
+                >
+                    <v-logo class="h-[20px] w-[20px] mr-3" />
 
-        <l-drawer-item v-for="item in defaultItems" :key="item.id" :item="item" />
+                    <h1 class="font-bold">
+                        {{ title }}
+                    </h1>
+
+                    <v-btn
+                        mode="text"
+                        class="opacity-0 group-hover:opacity-100 ml-auto"
+                        size="xs"
+                        @click.prevent.stop="drawer = false"
+                    >
+                        <v-icon name="chevron-left" />
+                    </v-btn>
+                </v-list-item>
+            </template>
+
+            <v-card color="b-primary">
+                <v-list-item
+                    v-for="workspace in store.workspace.workspaces.filter(
+                        (w) => w.id !== store.workspace.currentId
+                    )"
+                    :key="workspace.id"
+                    class="pl-7"
+                    color="hover:bg-b-secondary/40"
+                    @click="store.workspace.currentId = workspace.id"
+                >
+                    {{ workspace.name }}
+                </v-list-item>
+            </v-card>
+        </v-menu>
+
+        <l-drawer-item
+            v-for="item in defaultItems"
+            :key="item.id"
+            :item="item"
+            icon:class="text-t-secondary"
+        />
 
         <v-draggable v-model="store.menu.menu" v-bind="dragOptions" @update="onUpdate">
             <template #item="{ index }">

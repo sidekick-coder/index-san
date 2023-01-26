@@ -1,10 +1,17 @@
+<script lang="ts">
+export default {
+    inheritAttrs: false,
+}
+</script>
 <script setup lang="ts">
 import Menu from '@core/entities/menu'
 
 import VDraggable from 'vuedraggable'
 
 import { useState } from '@composables/state'
+import { createBindings } from '@composables/binding'
 
+// Props & Emits
 const props = defineProps({
     item: {
         type: Object as () => Menu,
@@ -21,6 +28,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update'])
+
+// Bindings
+const attrs = useAttrs()
+
+const bindings = createBindings(attrs, ['label', 'icon'])
 
 // toggle children
 const hideSections = useState<string[]>('app:menu:hide', [], {
@@ -85,12 +97,18 @@ watch(
         </template>
 
         <template v-else>
-            <v-btn class="-ml-1 mr-2" size="xs" color="hover:bg-b-primary/40" mode="text">
+            <v-btn
+                class="-ml-1 mr-2"
+                size="xs"
+                color="hover:bg-b-primary/40"
+                mode="text"
+                v-bind="bindings.icon"
+            >
                 <v-icon v-if="item.icon" :name="item.icon"></v-icon>
                 <v-icon v-else name="circle"></v-icon>
             </v-btn>
 
-            <div>{{ item.label }}</div>
+            <div v-bind="bindings.label">{{ item.label }}</div>
         </template>
     </v-list-item>
 
