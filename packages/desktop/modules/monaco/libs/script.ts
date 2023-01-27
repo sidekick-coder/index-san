@@ -29,6 +29,8 @@ export function mount() {
 
         declare const scope: Record<string, any>
 
+        declare function createItemRepository(name: string): Promise<import("core/repositories/item/item-repository").default>
+
         declare function setResult(data: any): void
     `
 

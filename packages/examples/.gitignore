@@ -4,3 +4,5 @@ gtd/projects/.is/metas.json
 todo-list/**/*.png
 
 scripts/collections/todos/.is/metas.json
+
+large-data/data

@@ -1,0 +1,16 @@
+[
+    {
+        "label": "generate.ts",
+        "to": "/entries/generate.ts",
+        "children": [],
+        "id": "d589c974-bba4-4abc-9c40-870542952231",
+        "icon": "bookmark"
+    },
+    {
+        "label": "data",
+        "to": "/collections/data/items",
+        "children": [],
+        "id": "1e8d3adf-697d-4f51-9048-9fb67071ad5b",
+        "icon": "bookmark"
+    }
+]

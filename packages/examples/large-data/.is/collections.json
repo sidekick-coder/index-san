@@ -1,0 +1,24 @@
+[
+    {
+        "columns": [
+            {
+                "label": "Name",
+                "id": "7e1b7cc4-3b8b-4320-b5b6-5b7efb703ce9",
+                "field": "name",
+                "type": "text",
+                "options": []
+            },
+            {
+                "label": "",
+                "id": "a186c26e-7db6-47fa-a9ad-750e83edb71e",
+                "field": "done",
+                "type": "checkbox",
+                "options": []
+            }
+        ],
+        "id": "data",
+        "repositoryType": "entry",
+        "name": "data",
+        "path": "/data"
+    }
+]
