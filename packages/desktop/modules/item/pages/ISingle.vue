@@ -12,6 +12,7 @@ import IValue from '../components/IValue.vue'
 import Item from '@core/entities/item'
 import { useState } from '@composables/state'
 import DirectoryEntry from '@core/entities/directory-entry'
+import { useColumnStore } from '@modules/column/store'
 
 // Props & Emit
 const props = defineProps({
@@ -48,16 +49,17 @@ watch(props, setItem, {
 })
 
 // columns
+let columnStore = useColumnStore(props.collectionId)
 
-const columns = computed(() => store.column.all(props.collectionId))
+async function load() {
+    columnStore = useColumnStore(props.collectionId)
 
-watch(
-    () => props.collectionId,
-    () => store.column.set(props.collectionId),
-    {
-        immediate: true,
+    if (!columnStore.columns.length) {
+        await columnStore.load()
     }
-)
+}
+
+watch(() => props.collectionId, load, { deep: true })
 
 // drawer
 const drawer = useState('app:item-drawer', true, {
@@ -84,7 +86,7 @@ watch(() => props.itemId, setContentPath, {
     <v-layout use-percentage>
         <v-layout-drawer v-if="item" v-model="drawer" class="border-l border-lines px-4 py-4" right>
             <i-value
-                v-for="c in columns"
+                v-for="c in columnStore.columns"
                 :key="c.id"
                 :column-id="c.id"
                 :collection-id="collectionId"

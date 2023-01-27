@@ -6,7 +6,7 @@ import { useStore } from '@store/global'
 
 import { useView } from '@modules/view/composables/use-view'
 
-import { withOnlyView, withView } from '@modules/collection-column/composables/with-view'
+import { convertToViewColumns, mergeWithViewColumns } from '@modules/view/composables'
 
 // Props & emit
 const props = defineProps({
@@ -37,12 +37,12 @@ const collection = store.collection.get(props.collectionId)
 
 const columns = computed({
     get() {
-        return withView(collection?.columns || [], view.value?.columns)
+        return mergeWithViewColumns(collection?.columns, view.value?.columns)
     },
     set(value) {
         view.value = {
             ...view.value,
-            columns: withOnlyView(value),
+            columns: convertToViewColumns(value),
         }
     },
 })

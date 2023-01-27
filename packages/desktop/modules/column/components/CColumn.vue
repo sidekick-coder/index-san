@@ -10,6 +10,7 @@ import { useNonReactive } from '@composables/utils'
 import { useI18n } from 'vue-i18n'
 
 import { lib as libScriptColumn } from '@modules/monaco/libs/column-script'
+import { useColumnStore } from '../store'
 
 const MEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
 
@@ -26,21 +27,19 @@ const props = defineProps({
 })
 
 // column
-const store = useStore()
+let store = useColumnStore(props.collectionId)
 
-const column = computed(() => store.column.get(props.collectionId, props.columnId))
+const column = computed(() => store.get(props.columnId))
 
-const loading = ref(false)
+async function load() {
+    store = useColumnStore(props.collectionId)
 
-async function setColumn() {
-    loading.value = true
-
-    await store.column
-        .set(props.collectionId)
-        .finally(() => setTimeout(() => (loading.value = false), 500))
+    if (!store.columns.length) {
+        await store.load()
+    }
 }
 
-watch(props, setColumn, { deep: true, immediate: true })
+watch(props, load, { deep: true })
 
 // form
 const tm = useI18n()
@@ -108,7 +107,7 @@ watch(dialog, (value) => {
 })
 
 async function deleteColumn() {
-    await store.column.destroy(props.collectionId, props.columnId)
+    await store.destroy(props.columnId)
 
     dialog.value = false
 }
@@ -131,15 +130,7 @@ const relation = computed(() => {
 })
 </script>
 <template>
-    <div
-        v-if="loading"
-        class="text-t-secondary text-sm overflow-hidden animate-pulse"
-        v-bind="$attrs"
-    >
-        {{ $t('loading') }}...
-    </div>
-
-    <div v-else-if="!column" class="text-t-secondary text-sm overflow-hidden" v-bind="$attrs">
+    <div v-if="!column" class="text-t-secondary text-sm overflow-hidden" v-bind="$attrs">
         <v-icon name="triangle-exclamation" class="mr-2 text-xs" />
         {{ $t('errors.unknown') }}
     </div>
@@ -300,7 +291,7 @@ const relation = computed(() => {
                         <v-card color="b-secondary" class="h-full">
                             <m-editor
                                 v-model="payload.content"
-                                :libs="libScriptColumn.mount(store.column.all(collectionId))"
+                                :libs="libScriptColumn.mount(store.columns)"
                             />
                         </v-card>
                     </v-drawer>

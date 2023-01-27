@@ -41,6 +41,7 @@ const components: Record<Column['type'], any> = {
     updatedAt: CFilterText,
     link: CFilterText,
     date: CFilterDate,
+    checkbox: CFilterText,
 }
 
 const column = computed(() => props.columns.find((c) => c.id === model.value.columnId))

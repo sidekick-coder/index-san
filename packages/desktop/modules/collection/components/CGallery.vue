@@ -14,11 +14,10 @@ import IValue from '@modules/item/components/IValue.vue'
 import EImg from '@modules/entry/components/EImg.vue'
 
 import { createPayload } from '../composables/filter'
-import { withView } from '@modules/collection-column/composables/with-view'
 import { createViewIfNotExists, useView } from '@modules/view/composables/use-view'
 import { useHooks, Events } from '@plugins/hooks'
 import { useItemStore } from '@modules/item/store'
-import { withViewIterations } from '@modules/view/composables'
+import { mergeWithViewColumns, withViewIterations } from '@modules/view/composables'
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
 // Props & Emits
@@ -71,7 +70,7 @@ const store = useStore()
 
 const collection = store.collection.get(props.collectionId)
 
-const columns = computed(() => withView(collection?.columns || [], view.value?.columns))
+const columns = computed(() => mergeWithViewColumns(collection?.columns || [], view.value?.columns))
 
 // count visible columns
 

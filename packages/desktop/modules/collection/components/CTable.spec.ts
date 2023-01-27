@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { test, expect, describe, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
+import i18n from '@plugins/i18n'
 
 import type { VueWrapper, MountingOptions } from '@vue/test-utils'
 
@@ -12,31 +13,42 @@ import CollectionFactory from '@core/__tests__/factories/collections'
 import ColumnFactory from '@core/__tests__/factories/column'
 import { ViewTableFactory } from '@core/__tests__/factories/view'
 
-import VResizeLine from '@components/v-resize-line.vue'
-import VMenu from '@components/v-menu.vue'
+import VResizeLine from '@components/VResizeLine.vue'
+import VMenu from '@components/VMenu.vue'
+import CColumn from '@modules/column/components/CColumn.vue'
+import IValue from '@modules/item/components/IValue.vue'
 import CTable from './CTable.vue'
 import CActions from './CActions.vue'
-import CcColumn from '@modules/collection-column/components/CcColumn.vue'
 
-import { createComponentObject } from '@plugins/gc'
 import { useStore } from '@store/global'
 import { useItemStore } from '@modules/item/store'
 import { useViewStore } from '@modules/view/store'
-import IValue from '@modules/item/components/IValue.vue'
+import { useApp } from '__tests__/fixtures/app'
+import Workspace from '@core/entities/workspace'
 
 describe('CTable.vue', () => {
     let wrapper: VueWrapper<InstanceType<typeof CTable>>
     let globalStore: ReturnType<typeof useStore>
 
+    const app = useApp()
+
+    let workspace: Workspace
+
     function createComponent(options?: MountingOptions<InstanceType<typeof CTable>['$props']>) {
         wrapper = mount(CTable, {
             ...options,
             global: {
-                components: createComponentObject(),
+                plugins: [i18n],
                 stubs: {
                     IValue: true,
                     CcColumn: true,
                     CActions: true,
+                    WForm: true,
+                    VMenu: {
+                        render() {
+                            return this.$slots.default?.()
+                        },
+                    },
                 },
             },
         })
@@ -65,7 +77,7 @@ describe('CTable.vue', () => {
     }
 
     function findColumns() {
-        return wrapper.findAllComponents(CcColumn)
+        return wrapper.findAllComponents(CColumn)
     }
 
     function findColumnResizeLines() {
@@ -80,8 +92,12 @@ describe('CTable.vue', () => {
         return wrapper.find('[data-test-id=table-wrapper]')
     }
 
-    function findActionsBtn() {
-        return wrapper.findAll('[data-test-id=actions-btn]')
+    function findRowElements() {
+        return wrapper.findAll('[data-test-id=item-row]')
+    }
+
+    function findViewButton() {
+        return wrapper.find('[data-test-id=view-item]')
     }
 
     function findActionMenu() {
@@ -93,15 +109,22 @@ describe('CTable.vue', () => {
     }
 
     beforeEach(() => {
+        workspace = app.config.workspaceRepository.createFakeSync()
+
         setActivePinia(createPinia())
 
         globalStore = useStore()
+
+        globalStore.workspace.workspaces = [workspace]
+        globalStore.workspace.currentId = workspace.id
 
         wrapper?.unmount()
     })
 
     afterEach(() => {
         wrapper?.unmount()
+
+        app.config.clear()
     })
 
     test('should set component height and width', () => {
@@ -226,7 +249,7 @@ describe('CTable.vue', () => {
         expect(findColumnResizeLines().length).toBe(collection.columns.length)
     })
 
-    test('should render a v-btn with "to" for each item', async () => {
+    test('should show menu when trigger @contextmenu in item tr element', async () => {
         const collection = createCollection({
             columns: [ColumnFactory.create({ label: 'Name', field: 'name' })],
         })
@@ -247,45 +270,20 @@ describe('CTable.vue', () => {
             },
         })
 
-        const buttons = findActionsBtn()
+        const [el] = findRowElements()
+        const viewBtn = findViewButton()
 
-        expect(buttons.length).toBe(items.length)
+        console.log(wrapper.html())
 
-        buttons.forEach((btn, index) => {
-            const id = items[index].id
-
-            expect(btn.attributes('to')).toBe(`/collections/${collection.id}/items/${id}`)
-        })
-    })
-
-    test('should show menu when trigger right click in item v-btn action', async () => {
-        const collection = createCollection({
-            columns: [ColumnFactory.create({ label: 'Name', field: 'name' })],
-        })
-
-        const items = ItemFactory.createMany(5, {
-            name: faker.name.firstName(),
-        })
-
-        const store = useItemStore(collection.id)
-
-        store.items = items
-
-        await globalStore.column.set(collection.id, true)
-
-        createComponent({
-            props: {
-                collectionId: collection.id,
-            },
-        })
-
-        const [btn] = findActionsBtn()
-
-        await btn.trigger('contextmenu')
+        await el.trigger('contextmenu')
 
         const menu = findActionMenu()
 
         expect(menu.isVisible()).toBe(true)
+
+        expect(viewBtn.isVisible()).toBe(true)
+
+        expect(viewBtn.attributes('to')).toBe(`/collections/${collection.id}/items/${items[0].id}`)
     })
 
     test('should a i-value for each item and each column', async () => {

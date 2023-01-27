@@ -2,6 +2,7 @@ import { computed, ref, watch } from 'vue'
 
 import { useStore } from '@store/global'
 import { useItemStore } from '../store'
+import { useColumnStore } from '@modules/column/store'
 
 interface Params {
     collectionId: string
@@ -10,12 +11,17 @@ interface Params {
 }
 
 export function createValue<T = string | undefined>({ collectionId, columnId, itemId }: Params) {
-    const store = useStore()
+    // column
+    let columnStore = useColumnStore(collectionId)
 
-    const column = computed(() => store.column.get(collectionId, columnId))
+    const column = computed(() => columnStore.get(columnId))
 
     async function setColumn() {
-        await store.column.set(collectionId)
+        columnStore = useColumnStore(collectionId)
+
+        if (!columnStore.columns.length) {
+            await columnStore.load()
+        }
     }
 
     // item

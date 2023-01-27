@@ -28,9 +28,6 @@ const props = defineProps({
     },
 })
 
-// collection
-const store = useStore()
-
 let view = useView<ViewCommon>(props.collectionId, props.viewId, new ViewCommon({}, props.viewId))
 
 function setView() {
@@ -80,8 +77,6 @@ watch(
 
 async function refresh() {
     await itemsStore.load(true)
-
-    await store.column.set(props.collectionId, true)
 }
 
 function isCommon(v: View): v is ViewCommon {

@@ -25,12 +25,14 @@ export async function useCase<K extends CasesKeys, T = CasesMethod<K>>(
         .then((r: any) => (result = r))
         .catch((e: any) => (error = e))
 
-    console.debug(`[app] use-case(${name}):`, {
-        payload: args,
-        error,
-        result,
-        time: Date.now() - start,
-    })
+    if (import.meta.env.MODE !== 'test') {
+        console.debug(`[app] use-case(${name}):`, {
+            payload: args,
+            error,
+            result,
+            time: Date.now() - start,
+        })
+    }
 
     if (!error) return Promise.resolve(result as T)
 

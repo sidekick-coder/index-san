@@ -6,7 +6,7 @@ import ViewCommon from '@core/entities/view-common'
 
 import { useView } from '@modules/view/composables/use-view'
 import { useStore } from '@store/global'
-import { withView } from '@modules/collection-column/composables/with-view'
+import { mergeWithViewColumns } from '@modules/view/composables'
 
 const props = defineProps({
     collectionId: {
@@ -37,7 +37,7 @@ const store = useStore()
 
 const collection = store.collection.get(props.collectionId)
 
-const columns = computed(() => withView(collection?.columns || [], view.value?.columns))
+const columns = computed(() => mergeWithViewColumns(collection?.columns || [], view.value?.columns))
 
 const orderBy = computed({
     get() {

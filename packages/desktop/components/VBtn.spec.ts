@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import type { VueWrapper, MountingOptions } from '@vue/test-utils'
 
 import VBtn from './VBtn.vue'
-import VIcon from './v-icon.vue'
+import VIcon from './VIcon.vue'
 
 describe('v-btn.vue', () => {
     let wrapper: VueWrapper<InstanceType<typeof VBtn>>

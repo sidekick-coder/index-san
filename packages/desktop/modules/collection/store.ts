@@ -9,6 +9,7 @@ import { useCase } from '@composables/use-case'
 import ShowCollectionsDTO from '@core/use-cases/show-collection/show-collection.dto'
 import { useViewStore } from '@modules/view/store'
 import { useItemStore } from '@modules/item/store'
+import { useColumnStore } from '@modules/column/store'
 
 export const useStore = defineStore('collection', () => {
     const workspace = useWorkspace()
@@ -89,7 +90,7 @@ export const useStore = defineStore('collection', () => {
     }
 
     function releaseCollection(id: string) {
-        const stores = [useViewStore(id), useItemStore(id)]
+        const stores = [useViewStore(id), useItemStore(id), useColumnStore(id)]
 
         stores.forEach((store) => {
             store.clear()

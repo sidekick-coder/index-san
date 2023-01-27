@@ -4,8 +4,6 @@ export default { inheritAttrs: false }
 <script setup lang="ts">
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
-import Draggable from 'vuedraggable'
-
 import ViewTable from '@core/entities/view-table'
 import Item from '@core/entities/item'
 
@@ -13,16 +11,23 @@ import { createBindings } from '@composables/binding'
 import { useStore } from '@store/global'
 
 import { createPayload } from '../composables/filter'
-import { withOnlyView, withView } from '@modules/collection-column/composables/with-view'
 
-import { withViewIterations } from '@modules/view/composables'
+import {
+    withViewIterations,
+    mergeWithViewColumns,
+    convertToViewColumns,
+} from '@modules/view/composables'
 import { createViewIfNotExists, useView } from '@modules/view/composables/use-view'
 
 import { useItemStore } from '@modules/item/store'
 
+import VDraggable from 'vuedraggable'
 import CActions from './CActions.vue'
-import CcColumn from '@modules/collection-column/components/CcColumn.vue'
+import CColumn from '@modules/column/components/CColumn.vue'
+
 import IValue from '@modules/item/components/IValue.vue'
+import { useColumnStore } from '@modules/column/store'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
     width: {
@@ -85,16 +90,13 @@ watch(
 watch([() => props.viewId, () => props.collectionId], setView)
 
 // columns
+const tm = useI18n()
 
-const rawColumns = computed(() => store.column.all(props.collectionId))
-
-if (!rawColumns.value.length) {
-    store.column.set(props.collectionId)
-}
+let columnStore = useColumnStore(props.collectionId)
 
 const columns = computed({
     get() {
-        const result: any[] = withView(rawColumns.value, view.value.columns)
+        const result: any[] = mergeWithViewColumns(columnStore.columns, view.value.columns)
 
         if (!result.length) {
             result.push({
@@ -111,7 +113,7 @@ const columns = computed({
         return result
     },
     set(value) {
-        view.value.columns = withOnlyView(value)
+        view.value.columns = convertToViewColumns(value)
     },
 })
 
@@ -125,11 +127,35 @@ function resizeColumn(id: string, width: number) {
     })
 }
 
+function createNewColumn() {
+    columnStore.create({
+        label: tm.t('newEntity', [tm.t('column')]),
+    })
+}
+
+watch(
+    () => props.collectionId,
+    async (id) => {
+        columnStore = useColumnStore(id)
+
+        if (!columnStore.columns.length) {
+            await columnStore.load()
+        }
+    },
+    { immediate: true }
+)
+
 // items
 
 let itemsStore = useItemStore(props.collectionId)
 
 const items = computed(() => withViewIterations(itemsStore.items, view.value))
+
+async function create() {
+    const item = new Item(createPayload(view.value?.filters, columnStore.columns))
+
+    await itemsStore.create(item)
+}
 
 watch(
     () => props.collectionId,
@@ -142,14 +168,6 @@ watch(
     },
     { immediate: true }
 )
-
-// create item
-
-async function create() {
-    const item = new Item(createPayload(view.value?.filters, rawColumns.value))
-
-    await itemsStore.create(item)
-}
 
 // actions
 
@@ -175,13 +193,9 @@ const table = ref(null)
 
 const selected = ref<string[]>([])
 
-onClickOutside(table, () => {
-    selected.value = []
-})
+onClickOutside(table, () => (selected.value = []))
 
-onKeyStroke('Escape', () => {
-    selected.value = []
-})
+onKeyStroke('Escape', () => (selected.value = []))
 
 onKeyStroke('Delete', async () => {
     if (!selected.value.length) {
@@ -216,6 +230,7 @@ onKeyStroke('Delete', async () => {
                         size="xs"
                         color="info"
                         dark
+                        data-test-id="view-item"
                         :to="`/collections/${collectionId}/items/${actions.id}`"
                     >
                         <v-icon name="eye" class="mr-2" />
@@ -244,15 +259,16 @@ onKeyStroke('Delete', async () => {
                 v-bind="bindings.table"
             >
                 <template #column="data">
-                    <Draggable
-                        v-model="data.columns"
+                    <v-draggable
+                        :model-value="data.columns"
                         handle=".drag"
                         item-key="id"
                         tag="tr"
                         :component-data="{ class: 'h-[41px]' }"
+                        @update:model-value="columns = $event"
                     >
                         <template #item="{ element: c }">
-                            <v-th v-if="c.id === 'select'" width="40"></v-th>
+                            <v-th v-if="c.name === 'select'" width="40"></v-th>
 
                             <v-th
                                 v-else
@@ -266,7 +282,7 @@ onKeyStroke('Delete', async () => {
                                     size="sm"
                                     class="text-t-secondary"
                                     mode="text"
-                                    @click="store.column.create(collectionId)"
+                                    @click="createNewColumn"
                                 >
                                     <v-icon name="plus" />
                                 </v-btn>
@@ -276,15 +292,11 @@ onKeyStroke('Delete', async () => {
                                     class="text-t-secondary text-sm"
                                     data-test-id="no-columns"
                                 >
-                                    {{
-                                        store.column.isLoading(collectionId)
-                                            ? $t('loading')
-                                            : $t('noEntity', [$t('column', 2)])
-                                    }}
+                                    {{ $t('noEntity', [$t('column', 2)]) }}
                                 </div>
 
                                 <template v-else-if="!c.id.startsWith('_')">
-                                    <cc-column
+                                    <c-column
                                         class="drag"
                                         :collection-id="collectionId"
                                         :column-id="c.id"
@@ -298,7 +310,7 @@ onKeyStroke('Delete', async () => {
                                 </template>
                             </v-th>
                         </template>
-                    </Draggable>
+                    </v-draggable>
                 </template>
 
                 <template #item="data">
@@ -306,6 +318,7 @@ onKeyStroke('Delete', async () => {
                         class="relative group/item"
                         :class="selected.includes(data.item.id) ? 'bg-accent/10' : ''"
                         height="41"
+                        data-test-id="item-row"
                         @contextmenu.prevent="showActions($event, data.item.id)"
                     >
                         <v-td

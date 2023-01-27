@@ -163,8 +163,7 @@ function selectAllVisible() {
                 <v-tr :class="[headerStick ? 'sticky top-0' : '']" class="bg-b-primary">
                     <slot
                         v-for="column in parsedColumns"
-                        :key="column.name"
-                        :name="`column-${column.name}`"
+                        :key="`column-${column.name}`"
                         :attrs="{ style: column.style }"
                     >
                         <v-th
@@ -179,6 +178,7 @@ function selectAllVisible() {
                                 @update:model-value="selectAllVisible"
                             />
                         </v-th>
+
                         <v-th v-else :style="column.style" class="text-t-secondary">
                             {{ column.label }}
                         </v-th>

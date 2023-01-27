@@ -7,6 +7,7 @@ import ViewCommon from '@core/entities/view-common'
 import CFilter from './CFilter.vue'
 import { useView } from '@modules/view/composables/use-view'
 import { useStore } from '@store/global'
+import { useColumnStore } from '@modules/column/store'
 
 const props = defineProps({
     collectionId: {
@@ -19,13 +20,18 @@ const props = defineProps({
     },
 })
 
-const store = useStore()
+// column
+let columnStore = useColumnStore(props.collectionId)
 
-const columns = computed(() => store.column.all(props.collectionId))
+async function load() {
+    columnStore = useColumnStore(props.collectionId)
 
-if (!columns.value.length) {
-    store.column.set(props.collectionId)
+    if (!columnStore.columns.length) {
+        await columnStore.load()
+    }
 }
+
+watch(() => props.collectionId, load, { deep: true })
 
 // view
 
@@ -94,7 +100,7 @@ function add(column: Column) {
             v-for="(f, index) in view.filters"
             :key="index"
             :model-value="f"
-            :columns="columns"
+            :columns="columnStore.columns"
             @update:model-value="(v) => (view.filters[index] = v)"
             @destroy="view.filters.splice(index, 1)"
         />
@@ -113,7 +119,7 @@ function add(column: Column) {
                 </template>
 
                 <v-card color="b-secondary">
-                    <v-list-item v-for="c in columns" :key="c.id" @click="add(c)">
+                    <v-list-item v-for="c in columnStore.columns" :key="c.id" @click="add(c)">
                         {{ c.label }}
                     </v-list-item>
                 </v-card>

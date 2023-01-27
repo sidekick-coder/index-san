@@ -6,7 +6,7 @@ import { useStore as useCollection } from '@modules/collection/store'
 import { useStore as useItem } from '@modules/item/store'
 import { useStore as useEntry } from '@modules/entry/store'
 import { useStore as useView } from '@modules/view/store'
-import { useStore as useColumn } from '@modules/collection-column/store'
+
 import { useStore as useMenu } from '@modules/menu/store'
 import { useStore as useScript } from '@modules/script/store'
 import { useStore as useDrive } from '@modules/drive/store'
@@ -19,7 +19,6 @@ export const useStore = defineStore('global', () => {
     const item = useItem()
     const view = useView()
     const entry = useEntry()
-    const column = useColumn()
     const menu = useMenu()
     const script = useScript()
     const notify = useNotify()
@@ -34,7 +33,6 @@ export const useStore = defineStore('global', () => {
         item,
         entry,
         view,
-        column,
         menu,
         script,
     }
