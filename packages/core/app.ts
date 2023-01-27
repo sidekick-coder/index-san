@@ -36,6 +36,7 @@ import UpdateDirectoryEntry from './use-cases/update-directory-entry/update-dire
 import ShowViews from './use-cases/show-views/show-views'
 import UpdateViews from './use-cases/update-views/update-views'
 import AppConfig from './config/app'
+import MoveDirectoryEntry from './use-cases/move-directory-entry/move-directory-entry'
 
 function createUseCases(app: AppConfig) {
     return {
@@ -53,6 +54,7 @@ function createUseCases(app: AppConfig) {
         'show-directory-entry': new ShowDirectoryEntry(app),
         'create-directory-entry': new CreateDirectoryEntry(app),
         'copy-directory-entry': new CopyDirectoryEntry(app),
+        'move-directory-entry': new MoveDirectoryEntry(app),
         'update-directory-entry': new UpdateDirectoryEntry(app),
         'delete-directory-entry': new DeleteDirectoryEntry(app),
         'read-directory-entry': new ReadDirectoryEntry(app),

@@ -33,6 +33,8 @@ export default class DirectoryEntry {
     public static extname(...paths: string[]) {
         const basename = this.basename(...paths)
 
+        if (!basename.includes('.')) return ''
+
         const extname = basename.split('.').pop()
 
         return extname ?? ''
