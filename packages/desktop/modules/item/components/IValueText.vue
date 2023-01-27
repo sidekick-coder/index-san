@@ -43,11 +43,5 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
         {{ payload }}
     </div>
 
-    <v-input
-        v-else
-        v-model="payload"
-        autofocus
-        @update:model-value="save"
-        @blur="editModel = false"
-    />
+    <v-input v-else v-model="payload" @update:model-value="save" @blur="editModel = false" />
 </template>

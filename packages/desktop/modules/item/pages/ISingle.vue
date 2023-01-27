@@ -4,15 +4,13 @@ import { useRouter } from 'vue-router'
 
 import { useStore } from '@store/global'
 
-import LLayout from '@modules/layout/LLayout.vue'
-import LToolbar from '@modules/layout/components/LToolbar.vue'
 import EMarkdown from '@modules/entry/pages/EMarkdown.vue'
 
 import IValue from '../components/IValue.vue'
 import Item from '@core/entities/item'
-import { useState } from '@composables/state'
 import DirectoryEntry from '@core/entities/directory-entry'
 import { useColumnStore } from '@modules/column/store'
+import { useLocalStorage } from '@vueuse/core'
 
 // Props & Emit
 const props = defineProps({
@@ -36,11 +34,16 @@ const router = useRouter()
 
 const item = ref<Item>()
 
+const loading = ref(false)
+
 async function setItem() {
+    loading.value = true
+
     await store.item
         .show(props.collectionId, props.itemId)
         .then((r) => (item.value = r ?? undefined))
         .catch(() => router.push('404'))
+        .finally(() => (loading.value = false))
 }
 
 watch(props, setItem, {
@@ -59,12 +62,10 @@ async function load() {
     }
 }
 
-watch(() => props.collectionId, load, { deep: true })
+watch(() => props.collectionId, load)
 
 // drawer
-const drawer = useState('app:item-drawer', true, {
-    localStorage: true,
-})
+const drawer = useLocalStorage('app:item-drawer', true)
 
 // content path
 
@@ -84,22 +85,29 @@ watch(() => props.itemId, setContentPath, {
 </script>
 <template>
     <v-layout use-percentage>
-        <v-layout-drawer v-if="item" v-model="drawer" class="border-l border-lines px-4 py-4" right>
-            <i-value
-                v-for="c in columnStore.columns"
-                :key="c.id"
-                :column-id="c.id"
-                :collection-id="collectionId"
-                :item-id="item.id"
-                :label="c.label"
-                :type="c.type"
-                edit
-                class="mb-4 last:mb-0"
-            />
+        <v-layout-drawer :model-value="drawer" class="border-l border-lines px-4 py-4" right>
+            <div v-if="item">
+                <i-value
+                    v-for="c in columnStore.columns"
+                    :key="c.id"
+                    :column-id="c.id"
+                    :collection-id="collectionId"
+                    :item-id="item.id"
+                    :label="c.label"
+                    :type="c.type"
+                    edit
+                    class="mb-4 last:mb-0"
+                />
+            </div>
         </v-layout-drawer>
 
-        <v-layout-content v-if="contentPath">
-            <e-markdown ref="editorRef" :path="contentPath" :doc:scope="{ item }">
+        <v-layout-content>
+            <e-markdown
+                v-if="contentPath"
+                ref="editorRef"
+                :path="contentPath"
+                :doc:scope="{ item }"
+            >
                 <template #append-actions>
                     <v-btn mode="text" size="sm" @click="drawer = !drawer">
                         <v-icon name="cog" />

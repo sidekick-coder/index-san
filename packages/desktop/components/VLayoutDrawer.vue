@@ -3,9 +3,8 @@ export default defineComponent({ inheritAttrs: false })
 </script>
 
 <script setup lang="ts">
-import { ref, computed, defineComponent, onMounted, onUnmounted } from 'vue'
 import { useLayout, LayoutItem } from '@composables/layout'
-import { useVModel } from 'vue-wind/composables/v-model'
+import { useVModel } from '@vueuse/core'
 
 // Props & Emits
 const props = defineProps({
@@ -59,21 +58,33 @@ const padding = computed(() => {
 })
 
 // transform
-const transform = computed(() => {
-    if (model.value) return 'translateX(0)'
-
-    return props.right ? 'translateX(200%)' : 'translateX(-100%)'
-})
-
-// v-model
 const model = useVModel(props, 'modelValue', emit)
+
+const style = computed(() => {
+    let transform = 'translateX(0)'
+    let width = `${props.width}px`
+
+    if (!model.value) {
+        transform = props.right ? 'translateX(200%)' : 'translateX(-100%)'
+    }
+
+    if (props.right && !model.value) {
+        // width = `0px`
+    }
+
+    return {
+        padding,
+        transform,
+        width,
+    }
+})
 </script>
 <template>
     <aside
         ref="root"
-        class="absolute overflow-hidden top-0 transition-transform h-full"
+        class="absolute overflow-hidden top-0 h-full transition-transform duration-300 ease-in-out"
         :class="[right ? 'right-0' : 'left-0']"
-        :style="{ padding, transform, width: `${width}px` }"
+        :style="(style as any)"
     >
         <div class="h-full w-full overflow-auto" v-bind="$attrs">
             <slot />
