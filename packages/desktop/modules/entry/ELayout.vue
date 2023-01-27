@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import DirectoryEntry from '@core/entities/directory-entry'
-import LLayout from '@modules/layout/LLayout.vue'
 import { watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useStore } from './store'
+import { useStore } from '@store/global'
 
 const props = defineProps({
     entryId: {

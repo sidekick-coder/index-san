@@ -65,10 +65,7 @@ async function setView() {
 
     const { path, type } = entry.value
 
-    store.layout.toolbar = true
-
     if (type === 'directory') {
-        store.layout.toolbar = false
         current.value = 'folder'
         return
     }

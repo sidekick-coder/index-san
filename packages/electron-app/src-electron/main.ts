@@ -83,7 +83,19 @@ app.whenReady().then(async () => {
     )
 
     ipcMain.handle('use-case', async (_, name, args) => {
-        return indexSan.useCase(name, args)
+        let result: any = undefined
+        let error: any = undefined
+
+        await indexSan
+            .useCase(name, args)
+            .then((r) => (result = r))
+            .catch((e) => (error = e))
+
+        if (error?.serialize) {
+            error = error.serialize()
+        }
+
+        return { result, error }
     })
 
     ipcMain.handle('dialog:show-open-dialog', (_, args: OpenDialogOptions) => {

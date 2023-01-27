@@ -2,7 +2,11 @@ import type { ClientAppConfig } from '@client/config'
 import { contextBridge, ipcRenderer, shell, type OpenDialogReturnValue } from 'electron'
 
 async function useCase(name: string, args?: any) {
-    return ipcRenderer.invoke('use-case', name, args)
+    const response = await ipcRenderer.invoke('use-case', name, args)
+
+    if (response.error) return Promise.reject(response.error)
+
+    return Promise.resolve(response.result)
 }
 
 const electronConfig: ClientAppConfig = {

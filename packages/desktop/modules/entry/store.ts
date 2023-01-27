@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 
 import { useCase } from '@composables/use-case'
 import { useStore as useWorkspace } from '@modules/workspace/store'
-import { useStore as useCollection } from '@modules/collection/store'
 
 import ListDirectoryEntryDTO from '@core/use-cases/list-directory-entry/list-directory.dto'
 import ShowDirectoryEntryDTO from '@core/use-cases/show-directory-entry/show-directory-entry.dto'
@@ -16,14 +14,6 @@ import WriteDirectoryEntryDTO from '@core/use-cases/write-directory-entry/write-
 
 export const useStore = defineStore('entry', () => {
     const workspace = useWorkspace()
-
-    const stores = {
-        collection: useCollection(),
-    }
-
-    const layout = ref({
-        toolbar: true,
-    })
 
     function list(payload: Partial<ListDirectoryEntryDTO>) {
         if (!payload.workspaceId && workspace.currentId) {
@@ -57,12 +47,20 @@ export const useStore = defineStore('entry', () => {
         return useCase('update-directory-entry', payload as any)
     }
 
-    function destroy(payload: Partial<DeleteDirectoryEntryDTO>) {
-        if (!payload.workspaceId && workspace.currentId) {
-            payload.workspaceId = workspace.currentId
-        }
+    function copy(source: string, target: string) {
+        return useCase('copy-directory-entry', {
+            workspaceId: workspace.currentId!,
+            sourcePath: source,
+            targetPath: target,
+        })
+    }
 
-        return useCase('delete-directory-entry', payload as any)
+    function move(source: string, target: string) {
+        return useCase('move-directory-entry', {
+            workspaceId: workspace.currentId!,
+            sourcePath: source,
+            targetPath: target,
+        })
     }
 
     function read(payload: Partial<ReadDirectoryEntryDTO>, silent?: boolean) {
@@ -81,17 +79,23 @@ export const useStore = defineStore('entry', () => {
         return useCase('write-directory-entry', payload as any)
     }
 
+    function destroy(payload: Partial<DeleteDirectoryEntryDTO>) {
+        if (!payload.workspaceId && workspace.currentId) {
+            payload.workspaceId = workspace.currentId
+        }
+
+        return useCase('delete-directory-entry', payload as any)
+    }
+
     return {
-        collection: stores.collection,
-
-        layout,
-
         list,
         show,
         create,
         update,
-        destroy,
+        copy,
+        move,
         read,
         write,
+        destroy,
     }
 })

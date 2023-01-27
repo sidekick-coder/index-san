@@ -97,15 +97,20 @@ function getKey(item: any, index: number) {
 
 const selected = useVModel(props, 'modelValue', emit)
 
-function onSelect(item: any, itemIndex: number, e: MouseEvent) {
+function onSelect(item: any, itemIndex: number, e?: MouseEvent) {
     if (!selected.value) return
 
-    e.preventDefault()
+    if (e) e.preventDefault()
 
     const key = getKey(item, itemIndex)
 
-    if (!e.ctrlKey && !e.shiftKey) {
+    if (!e?.ctrlKey && !e?.shiftKey) {
         selected.value = [key]
+        return
+    }
+
+    if (e.ctrlKey && selected.value.includes(key)) {
+        selected.value = selected.value.filter((item) => item !== key)
         return
     }
 
@@ -120,14 +125,30 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
 
     const start = selected.value[0]
 
-    const firstIndex = props.items.findIndex((item) => getKey(item, itemIndex) === start)
+    const firstIndex = props.items.findIndex((item, index) => getKey(item, index) === start)
 
-    const lastIndex = props.items.findIndex((item) => getKey(item, itemIndex) === key)
+    const lastIndex = props.items.findIndex((item, index) => getKey(item, index) === key)
 
     const startIndex = Math.min(firstIndex, lastIndex)
     const endIndex = Math.max(firstIndex, lastIndex)
 
-    const all = props.items.slice(startIndex, endIndex + 1).map((item) => getKey(item, itemIndex))
+    const all: any[] = []
+
+    props.items.forEach((item, index) => {
+        if (index >= startIndex && index <= endIndex) {
+            all.push(getKey(item, index))
+        }
+    })
+
+    selected.value = all
+}
+
+function selectAllVisible() {
+    const all: any[] = []
+
+    visibleItems.value.forEach((item, index) => {
+        all.push(getKey(item, index))
+    })
 
     selected.value = all
 }
@@ -146,7 +167,19 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
                         :name="`column-${column.name}`"
                         :attrs="{ style: column.style }"
                     >
-                        <v-th :style="column.style" class="text-t-secondary">
+                        <v-th
+                            v-if="column.name === 'select'"
+                            :style="column.style"
+                            class="text-t-secondary"
+                            no-padding
+                        >
+                            <v-checkbox
+                                class="justify-center"
+                                :model-value="selected?.length === visibleItems.length"
+                                @update:model-value="selectAllVisible"
+                            />
+                        </v-th>
+                        <v-th v-else :style="column.style" class="text-t-secondary">
                             {{ column.label }}
                         </v-th>
                     </slot>
@@ -165,6 +198,7 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
             :select-attrs="{
                 onClick: (e: MouseEvent) => onSelect(item, index, e),
             }"
+            :select="(e?: MouseEvent) => onSelect(item, index, e)"
             name="item"
         >
             <v-tr>
@@ -173,9 +207,21 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
                     :name="`item-${column.name}`"
                     :item="item"
                     :column="column"
+                    :index="index"
                     :attrs="{ style: column.style }"
                 >
-                    <v-td :key="`${item.id}-${column.name}`" :style="column.style">
+                    <v-td
+                        v-if="column.name === 'select'"
+                        :key="`${item.id}-select`"
+                        :style="column.style"
+                    >
+                        <v-checkbox
+                            :model-value="selected?.includes(getKey(item, index))"
+                            @click="(e: MouseEvent) => onSelect(item, index, e)"
+                        />
+                    </v-td>
+
+                    <v-td v-else :key="`${item.id}-${column.name}`" :style="column.style">
                         {{ column.field ? item[column.field] : '' }}
                     </v-td>
                 </slot>
@@ -183,7 +229,7 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
         </slot>
 
         <v-tr v-if="!visibleItems.length">
-            <v-td :colspan="columns.length" class="text-t-secondary text-sm text-center">
+            <v-td :colspan="parsedColumns.length" class="text-t-secondary text-sm text-center">
                 {{ $t('noEntity', [$t('item', 2)]) }}
             </v-td>
         </v-tr>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DirectoryEntry from '@core/entities/directory-entry'
@@ -7,9 +6,9 @@ import { useI18n } from 'vue-i18n'
 import { useStore } from '../store'
 
 import VTr from '@components/VTr.vue'
-import LToolbar from '@modules/layout/components/LToolbar.vue'
 import EEntryIcon from '../components/EEntryIcon.vue'
-import { onKeyStroke } from '@vueuse/core'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import VTable from '@components/VTable.vue'
 
 const props = defineProps({
     path: {
@@ -66,9 +65,6 @@ const columns = [
         name: 'name',
         field: 'name',
         label: tm.t('name'),
-        padding: {
-            left: 40,
-        },
     },
 ]
 
@@ -78,14 +74,27 @@ const menu = ref(false)
 
 function createFilename(prefix = 'New') {
     let count = 0
+    const ext = DirectoryEntry.extname(prefix)
+
+    let prefixWithoutExt = prefix
+
+    if (ext) {
+        prefixWithoutExt = prefix.replace(`.${ext}`, '')
+    }
 
     entries.value.forEach((e) => {
+        let result = `${prefixWithoutExt} (${count})`
+
+        if (ext) {
+            result += `.${ext}`
+        }
+
         if (count === 0 && e.name === prefix) {
             count++
             return
         }
 
-        if (e.name === `${prefix} (${count})`) {
+        if (e.name === result) {
             count++
         }
     })
@@ -94,7 +103,13 @@ function createFilename(prefix = 'New') {
         return prefix
     }
 
-    return `${prefix} (${count})`
+    let result = `${prefixWithoutExt} (${count})`
+
+    if (ext) {
+        result += `.${ext}`
+    }
+
+    return result
 }
 
 async function addFile() {
@@ -130,35 +145,9 @@ async function deleteEntry(item: DirectoryEntry) {
 // select item
 
 const selected = ref<number[]>([])
+const tableRef = ref(null)
+const menuCardRef = ref(null)
 const trRef = ref<InstanceType<typeof VTr>[]>([])
-
-function onSelect(e: MouseEvent, itemIndex: number) {
-    if (!e.ctrlKey && !e.shiftKey) {
-        selected.value = [itemIndex]
-        return
-    }
-
-    if (e.ctrlKey) {
-        selected.value.push(itemIndex)
-        return
-    }
-
-    const selectedIndex = selected.value[0]
-
-    if (itemIndex > selectedIndex) {
-        selected.value = entries.value
-            .map((e, index) => index)
-            .filter((index) => index <= itemIndex)
-            .filter((index) => index >= selectedIndex)
-    }
-
-    if (itemIndex < selectedIndex) {
-        selected.value = entries.value
-            .map((e, index) => index)
-            .filter((index) => index >= itemIndex)
-            .filter((index) => index <= selectedIndex)
-    }
-}
 
 function updateSelection() {
     if (selected.value.length !== 1) return
@@ -171,12 +160,13 @@ function updateSelection() {
 }
 
 watch(selected, updateSelection)
+
 watch(
     () => props.path,
-    () => {
-        selected.value = []
-    }
+    () => (selected.value = [])
 )
+
+onClickOutside(tableRef, () => (selected.value = []), { ignore: [menuCardRef] })
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
     if (!entries.value.length) return
@@ -198,7 +188,7 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
     }
 })
 
-// update item
+// update
 
 const editItem = ref<number>()
 
@@ -249,6 +239,138 @@ async function onEnter(item: DirectoryEntry) {
 
     updateSelection()
 }
+
+// menu
+const entryMenu = ref({
+    x: 0,
+    y: 0,
+    show: false,
+    item: null as DirectoryEntry | null,
+})
+
+function showEntryMenu(event: MouseEvent, item?: DirectoryEntry) {
+    entryMenu.value.item = null
+
+    entryMenu.value.x = event.clientX
+    entryMenu.value.y = event.clientY
+
+    entryMenu.value.show = true
+
+    if (!item) return
+
+    entryMenu.value.item = item
+
+    const index = entries.value.indexOf(item)
+
+    if (selected.value.length === 1) {
+        selected.value = [index]
+        return
+    }
+
+    if (!selected.value.includes(index)) {
+        selected.value.push(index)
+    }
+}
+
+async function duplicate() {
+    const entriesToDuplicate = selected.value.map((i) => entries.value[i])
+
+    for await (const entry of entriesToDuplicate) {
+        let ext = DirectoryEntry.extname(entry.name)
+
+        let filename = entry.name + ` (${tm.t('copy').toLocaleLowerCase()})`
+
+        if (ext) {
+            filename = entry.name.replace(
+                `.${ext}`,
+                ` (${tm.t('copy').toLocaleLowerCase()}).${ext}`
+            )
+        }
+
+        filename = createFilename(filename)
+
+        const copy = new DirectoryEntry(entry)
+
+        copy.path = DirectoryEntry.normalize(props.path, filename)
+        copy.name = filename
+
+        await store.copy(entry.path, copy.path)
+
+        entries.value.push(copy)
+    }
+}
+
+function copy() {
+    if (editItem.value) return
+
+    const paths = selected.value.map((index) => entries.value[index].path)
+
+    navigator.clipboard.writeText(`copy-entries:${paths.join(';')}`)
+}
+
+function cut() {
+    if (editItem.value) return
+
+    const paths = selected.value.map((index) => entries.value[index].path)
+
+    navigator.clipboard.writeText(`cut-entries:${paths.join(';')}`)
+}
+
+async function paste() {
+    if (editItem.value) return
+
+    const content = await navigator.clipboard.readText()
+
+    if (content.startsWith('copy-entries:')) {
+        const paths = content.replace('copy-entries:', '').split(';')
+
+        for await (const path of paths) {
+            const target = DirectoryEntry.normalize(props.path, DirectoryEntry.basename(path))
+
+            await store.copy(path, target)
+        }
+
+        await setEntries()
+    }
+
+    if (content.startsWith('cut-entries:')) {
+        const paths = content.replace('cut-entries:', '').split(';')
+
+        for await (const path of paths) {
+            if (path.startsWith(props.path)) continue
+
+            const target = DirectoryEntry.normalize(props.path, DirectoryEntry.basename(path))
+
+            await store.move(path, target)
+        }
+
+        await setEntries()
+    }
+}
+
+async function deleteAll() {
+    if (!selected.value.length) return
+
+    const entriesToDelete = selected.value.map((i) => entries.value[i])
+
+    for await (const entry of entriesToDelete) {
+        await deleteEntry(entry)
+    }
+
+    const newIndex = Math.max(0, entries.value.length - 1)
+
+    selected.value = entries.value[newIndex] ? [newIndex] : []
+}
+
+onKeyStroke('Delete', deleteAll)
+
+onKeyStroke(['c'], (e) => e.ctrlKey && copy())
+
+onKeyStroke(['v'], (e) => e.ctrlKey && paste())
+
+onKeyStroke(['x'], (e) => e.ctrlKey && cut())
+
+onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
 </script>
 
 <template>
@@ -288,66 +410,152 @@ async function onEnter(item: DirectoryEntry) {
                 <v-icon name="folder" class="text-[5rem] text-t-secondary animate-pulse" />
             </div>
 
-            <div class="h-full overflow-auto">
+            <v-menu
+                v-model="entryMenu.show"
+                :x="entryMenu.x"
+                :y="entryMenu.y"
+                close-on-content-click
+            >
+                <v-card ref="menuCardRef" color="b-secondary" width="200">
+                    <template v-if="entryMenu.item">
+                        <v-list-item
+                            v-if="selected.length === 1"
+                            size="xs"
+                            color="info"
+                            :to="`/entries/${entryMenu.item?.path}`"
+                        >
+                            <div class="w-2/12">
+                                <v-icon name="eye" />
+                            </div>
+
+                            <div class="w-6/12">
+                                {{ $t('open') }}
+                            </div>
+
+                            <div class="w-4/12">
+                                <div class="text-t-secondary">Enter</div>
+                            </div>
+                        </v-list-item>
+
+                        <v-list-item size="xs" color="info" @click="duplicate">
+                            <div class="w-2/12">
+                                <v-icon name="clone" />
+                            </div>
+
+                            <div class="w-6/12">
+                                {{ $t('duplicate', selected.length) }}
+                            </div>
+
+                            <div class="text-t-secondary">Ctrl + D</div>
+                        </v-list-item>
+
+                        <v-list-item size="xs" color="info" @click="copy">
+                            <div class="w-2/12">
+                                <v-icon name="copy" />
+                            </div>
+
+                            <div class="w-6/12">
+                                {{ $t('copy', selected.length) }}
+                            </div>
+
+                            <div class="text-t-secondary">Ctrl + C</div>
+                        </v-list-item>
+
+                        <v-list-item size="xs" color="info" @click="cut">
+                            <div class="w-2/12">
+                                <v-icon name="copy" />
+                            </div>
+
+                            <div class="w-6/12">
+                                {{ $t('cut', selected.length) }}
+                            </div>
+
+                            <div class="text-t-secondary">Ctrl + X</div>
+                        </v-list-item>
+
+                        <v-list-item size="xs" color="danger" @click="deleteAll">
+                            <div class="w-2/12">
+                                <v-icon name="trash" />
+                            </div>
+
+                            <div class="w-6/12">
+                                {{ $t('delete', selected.length) }}
+                            </div>
+
+                            <div class="text-t-secondary">Ctrl + C</div>
+                        </v-list-item>
+                    </template>
+
+                    <template v-else>
+                        <v-list-item size="xs" color="info" @click="addFile">
+                            <v-icon name="plus" class="mr-2" />
+                            {{ $t('newEntity', [$t('file').toLowerCase()]) }}
+                        </v-list-item>
+
+                        <v-list-item size="xs" color="info" @click="addFolder">
+                            <v-icon name="plus" class="mr-2" />
+                            {{ $t('newEntity', [$t('folder').toLowerCase()]) }}
+                        </v-list-item>
+
+                        <v-list-item size="xs" color="info" @click="paste">
+                            <v-icon name="paste" class="mr-2" />
+                            {{ $t('paste') }}
+                        </v-list-item>
+                    </template>
+                </v-card>
+            </v-menu>
+
+            <div class="h-full overflow-auto" @contextmenu.prevent="showEntryMenu">
                 <v-table
+                    ref="tableRef"
+                    v-model="selected"
                     :columns="columns"
                     :items="filteredEntries"
                     :fixed="false"
                     header-stick
                     limit="100"
                 >
-                    <template #item="{ item, index }">
+                    <template #item="{ item, index, select }">
                         <v-tr
                             :ref="(el: any) => trRef[index] = el"
-                            class="cursor-pointer hover:bg-b-secondary group focus:outline-0"
+                            class="cursor-pointer hover:bg-b-secondary focus:outline-0"
                             :class="[selected.includes(index) ? 'bg-b-secondary' : '']"
                             tabindex="0"
-                            @dblclick="show(item)"
-                            @click="onSelect($event, index)"
                             @keyup.enter="onEnter(item)"
                             @keydown.f2="editItem = index"
                             @keydown.esc="updateSelection"
-                            @mousedown.prevent
+                            @dblclick.stop="show(item)"
+                            @click="select"
+                            @contextmenu.prevent.stop="showEntryMenu($event, item)"
                         >
-                            <v-td class="pl-10 flex pr-7">
-                                <div class="w-4 mr-2">
-                                    <e-entry-icon :model-value="item" />
+                            <v-td no-padding>
+                                <v-checkbox
+                                    :model-value="selected.includes(index)"
+                                    class="justify-center"
+                                />
+                            </v-td>
+
+                            <v-td>
+                                <div class="flex">
+                                    <div class="w-4 mr-2">
+                                        <e-entry-icon :model-value="item" />
+                                    </div>
+
+                                    <v-input
+                                        v-if="editItem === index"
+                                        v-model="item.name"
+                                        flat
+                                        size="sm"
+                                        class="w-full max-w-[70%]"
+                                        autofocus
+                                    />
+
+                                    <div
+                                        v-else
+                                        class="text-sm select-none px-4 py-1"
+                                        v-text="item.name"
+                                    />
                                 </div>
-
-                                <v-input
-                                    v-if="editItem === index"
-                                    v-model="item.name"
-                                    flat
-                                    size="sm"
-                                    class="w-full max-w-[70%]"
-                                    autofocus
-                                />
-
-                                <div
-                                    v-else
-                                    class="text-sm select-none px-4 py-1"
-                                    v-text="item.name"
-                                />
-
-                                <v-btn
-                                    mode="text"
-                                    size="sm"
-                                    color="info"
-                                    class="ml-auto text-t-secondary opacity-0 group-hover:opacity-100"
-                                    :to="`/entries/${item.path}`"
-                                >
-                                    <v-icon name="eye"></v-icon>
-                                </v-btn>
-
-                                <v-btn
-                                    mode="text"
-                                    size="sm"
-                                    color="danger"
-                                    class="text-t-secondary opacity-0 group-hover:opacity-100"
-                                    @click.prevent.stop="deleteEntry(item)"
-                                >
-                                    <v-icon name="trash"></v-icon>
-                                </v-btn>
                             </v-td>
                         </v-tr>
                     </template>

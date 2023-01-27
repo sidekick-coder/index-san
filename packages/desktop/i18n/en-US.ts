@@ -101,9 +101,18 @@ export default {
     sideBySide: 'Side by side',
     checkbox: 'Checkbox',
     repositoryType: 'Repository type',
+    open: 'Open',
+    duplicate: 'Duplicate | Duplicate all',
+    copy: 'Copy | Copy all',
+    paste: 'Paste | Paste all',
+    cut: 'Cut | Cut all',
+    delete: 'Delete | Delete all',
+    newEntity: 'New {0}',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',
         collectionNotFound: '@:collection not found: {1}',
+        directoryEntryNotFound: 'Entry not found: {0}',
+        directoryEntryAlreadyExists: 'Entry already exists: {0}',
     },
 }

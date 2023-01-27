@@ -4,6 +4,7 @@ import fs from 'fs'
 import DirectoryEntry from '@core/entities/directory-entry'
 
 import type Drive from '@core/gateways/drive/drive'
+import DirectoryEntryAlreadyExists from '@core/exceptions/directory-entry-already-exists'
 
 export default class FSDrive implements Drive {
     public config = {
@@ -106,10 +107,19 @@ export default class FSDrive implements Drive {
         const targetExist = await this.exists(target)
 
         if (targetExist) {
-            throw new Error('Target filename already exists')
+            throw new DirectoryEntryAlreadyExists(systemPath.target)
         }
 
         await fs.promises.rename(systemPath.source, systemPath.target)
+    }
+
+    public async copy(source: string, target: string) {
+        const systemPath = {
+            source: this.resolve([this.config.path, source]),
+            target: this.resolve([this.config.path, target]),
+        }
+
+        await fs.promises.cp(systemPath.source, systemPath.target, { recursive: true })
     }
 
     public async mkdir(entryPath: string) {

@@ -7,6 +7,10 @@ const props = defineProps({
         type: [String, Number],
         default: null,
     },
+    noPadding: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const style = computed(() => {
@@ -21,7 +25,8 @@ const style = computed(() => {
 </script>
 <template>
     <th
-        class="text-left py-2 px-4 border-b border-r last:border-r-0 relative border-lines transition-width"
+        class="text-left border-b border-r last:border-r-0 relative border-lines transition-width"
+        :class="[noPadding ? '' : 'py-2 px-4']"
         :style="style"
     >
         <slot></slot>
