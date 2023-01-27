@@ -43,6 +43,25 @@ export default class InMemoryDrive implements Drive {
         entry.path = target
     }
 
+    public async copy(source: string, target: string) {
+        const entry = this.entries.find((e) => e.path === source)
+
+        if (!entry) return
+
+        const copy = new DirectoryEntry(entry)
+
+        copy.name = DirectoryEntry.basename(target)
+        copy.path = target
+
+        this.entries.push(copy)
+
+        const content = await this.read(source)
+
+        if (content) {
+            this.content.set(target, content)
+        }
+    }
+
     public async read(path: string) {
         return this.content.get(path) ?? null
     }

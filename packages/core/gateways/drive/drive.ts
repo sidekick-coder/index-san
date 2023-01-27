@@ -6,6 +6,7 @@ export default interface Drive {
     get: (entryPath: string) => Promise<DirectoryEntry | null>
     mkdir: (entryPath: string) => Promise<DirectoryEntry>
 
+    copy: (source: string, target: string) => Promise<void>
     move: (source: string, target: string) => Promise<void>
     read: (entryPath: string) => Promise<Uint8Array | null>
     write: (entryPath: string, bytes: Uint8Array) => Promise<void>

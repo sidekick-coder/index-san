@@ -12,6 +12,7 @@ import ShowDirectoryEntry from './use-cases/show-directory-entry/show-directory-
 import ListDirectoryEntry from './use-cases/list-directory-entry/list-directory-entry'
 import ReadDirectoryEntry from './use-cases/read-directory-entry/read-directory-entry'
 import CreateDirectoryEntry from './use-cases/create-directory-entry/create-directory-entry'
+import CopyDirectoryEntry from './use-cases/copy-directory-entry/copy-directory-entry'
 import WriteDirectoryEntry from './use-cases/write-directory-entry/write-directory-entry'
 import DeleteDirectoryEntry from './use-cases/delete-directory-entry/delete-directory-entry'
 
@@ -50,8 +51,9 @@ function createUseCases(app: AppConfig) {
 
         'list-directory-entry': new ListDirectoryEntry(app),
         'show-directory-entry': new ShowDirectoryEntry(app),
-        'update-directory-entry': new UpdateDirectoryEntry(app),
         'create-directory-entry': new CreateDirectoryEntry(app),
+        'copy-directory-entry': new CopyDirectoryEntry(app),
+        'update-directory-entry': new UpdateDirectoryEntry(app),
         'delete-directory-entry': new DeleteDirectoryEntry(app),
         'read-directory-entry': new ReadDirectoryEntry(app),
         'write-directory-entry': new WriteDirectoryEntry(app),
