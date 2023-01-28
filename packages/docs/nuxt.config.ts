@@ -15,6 +15,7 @@ export default defineNuxtConfig({
             {
                 path: path.resolve(desktopPath, 'components'),
                 global: true,
+                ignore: ['*.spec.ts'],
             },
         ],
     },
