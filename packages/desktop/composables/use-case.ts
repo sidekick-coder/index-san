@@ -1,7 +1,7 @@
 import { useStore } from '@modules/notify/store'
 import { i18n } from '@plugins/i18n'
 
-import { CasesKeys, CasesMethod, CasesParams } from '@core/app'
+import type { CasesKeys, CasesMethod, CasesParams } from '@core/app'
 
 export interface DataResponse<T> {
     data: T
@@ -39,6 +39,8 @@ export async function useCase<K extends CasesKeys, T = CasesMethod<K>>(
     let message = error.message || error
 
     if (error.i18nKey) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         message = i18n.global.t(error.i18nKey, error.i18nArgs)
     }
 

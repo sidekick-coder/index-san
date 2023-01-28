@@ -1,7 +1,7 @@
 import vm from 'vm'
 
 import EvaluationOutput from '../../../entities/evaluation-output'
-import IEvaluationService from '../evaluation'
+import type IEvaluationService from '../evaluation'
 
 export default class ScriptService implements IEvaluationService {
     protected async _evaluate(code: string, scope?: Record<string, any>) {

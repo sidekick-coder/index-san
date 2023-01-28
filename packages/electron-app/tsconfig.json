@@ -1,18 +1,27 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src-electron/*", "src/**/*.vue"],
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src-electron/*",
+    "src/**/*.vue", 
+    "../desktop/auto-import.d.ts"
+  ],
   "compilerOptions": {
     "baseUrl": ".",
     "importsNotUsedAsValues": "preserve",
     "strictPropertyInitialization": false,
     "paths": {
       "@client/*": ["../desktop/*"],
-      "@/*": ["../desktop/*"],
       "@core/*": ["../core/*"],
+      "@composables/*": [ "../desktop/composables/*" ],
+      "@plugins/*": [ "../desktop/plugins/*" ],
+      "@modules/*": [ "../desktop/modules/*" ],
+      "@store/*": [ "../desktop/store/*"]
     }
   },
 
   "references": [
-    { "path": "./tsconfig.config.json" },
+    { "path": "./tsconfig.config.json" }
   ]
 }

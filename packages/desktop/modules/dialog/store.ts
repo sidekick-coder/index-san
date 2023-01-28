@@ -9,7 +9,7 @@ interface DialogParameters {
 
 interface DialogWithResolves extends DialogParameters {
     id: string
-    resolve: (value?: unknown) => any
+    resolve: (value?: any) => any
     interval: NodeJS.Timer
 }
 
@@ -47,10 +47,10 @@ export const useStore = defineStore('dialog', () => {
         }
     }
 
-    function confirm(payload: DialogParameters) {
+    function confirm(payload: DialogParameters): Promise<boolean> {
         const id = uuid()
 
-        return new Promise<boolean>((resolve) => {
+        return new Promise((resolve) => {
             const dialogResolve = createResolve(resolve, id)
 
             const dialogInterval = createInterval(dialogResolve)

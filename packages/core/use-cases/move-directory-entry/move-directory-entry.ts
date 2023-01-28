@@ -1,4 +1,4 @@
-import MoveDirectoryEntryDTO from './move-directory-entry.dto'
+import type MoveDirectoryEntryDTO from './move-directory-entry.dto'
 import type AppConfig from '../../config/app'
 import DirectoryEntryNotFound from '../../exceptions/directory-entry-not-found'
 

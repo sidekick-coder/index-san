@@ -1,4 +1,4 @@
-import CopyDirectoryEntryDTO from './copy-directory-entry.dto'
+import type CopyDirectoryEntryDTO from './copy-directory-entry.dto'
 import type AppConfig from '../../config/app'
 import DirectoryEntryAlreadyExists from '../../exceptions/directory-entry-already-exists'
 import DirectoryEntryNotFound from '../../exceptions/directory-entry-not-found'

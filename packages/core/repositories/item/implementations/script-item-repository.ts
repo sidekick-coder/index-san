@@ -1,7 +1,7 @@
 import Collection from '../../../entities/collection'
 import Item from '../../../entities/item'
-import IEvaluationService from '../../../gateways/evaluation/evaluation'
-import IItemRepository from '../item-repository'
+import type IEvaluationService from '../../../gateways/evaluation/evaluation'
+import type IItemRepository from '../item-repository'
 
 export default class ScriptItemRepository implements IItemRepository {
     constructor(

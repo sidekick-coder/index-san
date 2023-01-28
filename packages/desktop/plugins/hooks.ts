@@ -1,6 +1,6 @@
-import { AnyView } from '@modules/view/store'
+import type { Plugin } from 'vue'
+import type { AnyView } from '@modules/view/store'
 import Item from '@core/entities/item'
-import { Plugin } from 'vue'
 
 export interface Events {
     'view:created': { collectionId: string; payload: AnyView }
@@ -26,7 +26,7 @@ const listeners = [] as Listener[]
 
 export function createHookManager() {
     function on<K extends keyof Events>(name: K, handler: (args: Events[K]) => any) {
-        this.listeners.push({ name, handler })
+        listeners.push({ name, handler })
     }
 
     function off<K extends keyof Events>(name: K, handler: (args: Events[K]) => any) {

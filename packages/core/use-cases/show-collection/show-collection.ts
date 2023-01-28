@@ -11,8 +11,6 @@ export default class ShowCollection {
 
         const collection = await repository.show(collectionId)
 
-        collection.workspaceId = workspaceId
-
         return {
             data: collection,
         }

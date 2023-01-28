@@ -6,7 +6,7 @@ import Collection from '@core/entities/collection'
 import { useStore as useWorkspace } from '@modules/workspace/store'
 import { useCase } from '@composables/use-case'
 
-import ShowCollectionsDTO from '@core/use-cases/show-collection/show-collection.dto'
+import type ShowCollectionsDTO from '@core/use-cases/show-collection/show-collection.dto'
 import { useViewStore } from '@modules/view/store'
 import { useItemStore } from '@modules/item/store'
 import { useColumnStore } from '@modules/column/store'

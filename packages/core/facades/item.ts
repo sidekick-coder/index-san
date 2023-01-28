@@ -1,6 +1,6 @@
 import { RepositoryType } from '../entities/collection'
 import Workspace from '../entities/workspace'
-import IEvaluationService from '../gateways/evaluation/evaluation'
+import type IEvaluationService from '../gateways/evaluation/evaluation'
 import EntryItemRepository from '../repositories/item/implementations/entry-item-repository'
 import ScriptItemRepository from '../repositories/item/implementations/script-item-repository'
 import CollectionFacade from './collection'

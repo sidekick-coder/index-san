@@ -1,4 +1,5 @@
-import ViewCommon, { ViewColumn } from './view-common'
+import ViewCommon from './view-common'
+import type { ViewColumn } from './view-common'
 
 export interface ViewTableColumn extends ViewColumn {
     width: number | string
