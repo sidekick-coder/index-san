@@ -23,10 +23,7 @@ test.group('show-collection (use-case)', (group) => {
             collectionId: collection.id,
         })
 
-        expect(result.data).toEqual({
-            ...collection,
-            workspaceId: workspace.id,
-        })
+        expect(result.data).toEqual(collection)
     })
 
     test('should trigger an error if is an invalid collection', async ({ expect }) => {
