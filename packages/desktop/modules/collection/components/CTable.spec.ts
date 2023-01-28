@@ -174,12 +174,10 @@ describe('CTable.vue', () => {
         expect(classes.includes('h-[calc(100%_-_53px)]')).toBe(true)
     })
 
-    test('should render a cc-column for each collection column', async () => {
+    test('should render a c-column for each collection column', async () => {
         const collection = createCollection({
             columns: ColumnFactory.createMany(20),
         })
-
-        await globalStore.column.set(collection.id, true)
 
         createComponent({
             props: {
@@ -194,8 +192,6 @@ describe('CTable.vue', () => {
         const collection = createCollection({
             columns: [],
         })
-
-        await globalStore.column.set(collection.id, true)
 
         createComponent({
             props: {
@@ -219,8 +215,6 @@ describe('CTable.vue', () => {
             })),
         })
 
-        await globalStore.column.set(collection.id, true)
-
         createComponent({
             props: {
                 collectionId: collection.id,
@@ -237,8 +231,6 @@ describe('CTable.vue', () => {
         const collection = createCollection({
             columns: ColumnFactory.createMany(20),
         })
-
-        await globalStore.column.set(collection.id, true)
 
         createComponent({
             props: {
@@ -261,8 +253,6 @@ describe('CTable.vue', () => {
         const store = useItemStore(collection.id)
 
         store.items = items
-
-        await globalStore.column.set(collection.id, true)
 
         createComponent({
             props: {
@@ -298,8 +288,6 @@ describe('CTable.vue', () => {
         const store = useItemStore(collection.id)
 
         store.items = items
-
-        await globalStore.column.set(collection.id, true)
 
         createComponent({
             props: {
