@@ -1,1 +1,0 @@
-/* empty css                            */import{b as o,o as t,e as r,O as c}from"./entry.319287c6.js";const n={};function s(e,a){return t(),r("blockquote",null,[c(e.$slots,"default",{},void 0,!0)])}const f=o(n,[["render",s],["__scopeId","data-v-34efb797"]]);export{f as default};

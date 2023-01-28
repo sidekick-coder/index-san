@@ -1,0 +1,1 @@
+import{a as o,o as r,f as s,r as n,G as m}from"./entry.9864e5b4.js";const p=o({__name:"VForm",emits:["submit"],setup(a){return(e,t)=>(r(),s("form",{onSubmit:t[0]||(t[0]=m(i=>e.$emit("submit"),["prevent"]))},[n(e.$slots,"default")],32))}});export{p as default};

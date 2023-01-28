@@ -1,0 +1,1 @@
+import{t,o,f as s,r as n}from"./entry.9864e5b4.js";const c={},r={class:"w-full py-3 px-4 flex"};function _(e,a){return o(),s("div",r,[n(e.$slots,"default")])}const f=t(c,[["render",_]]);export{f as default};

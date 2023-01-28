@@ -1,0 +1,1 @@
+function i(c,n){const l={},o={};n.forEach(t=>{o[t]={}}),Object.keys(c).forEach(t=>{const r=n.find(e=>t.startsWith(`${e}:`));if(r){o[r][t.replace(`${r}:`,"")]=c[t];return}l[t]=c[t]}),o.root=l;function u(t){let r={};return t.forEach(e=>{r={...r,...o[e]}}),r}return o.multiple=u,o}export{i as c};
