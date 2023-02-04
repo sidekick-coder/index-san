@@ -6,6 +6,7 @@ import HandleGoogleCallback from './user-cases/handle-google-callback'
 
 import GoogleConfig from './config/google'
 import ConnectionRepository from './repository/connection-repository'
+import ShowConnection from './user-cases/show-connection'
 
 const environment = process.env.NODE_ENV ?? 'development'
 
@@ -70,11 +71,9 @@ server.get('/auth/google/callback', async (request) => {
 server.get('/auth/google/connections/:id', async (request) => {
     const connectionId = (request.params as any).id
 
-    const connection = await connectionRepository.show(connectionId)
+    const showConnection = new ShowConnection(connectionRepository)
 
-    return {
-        data: connection,
-    }
+    return await showConnection.execute({ connectionId })
 })
 
 // start server

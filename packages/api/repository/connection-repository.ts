@@ -32,4 +32,12 @@ export default class ConnectionRepository {
 
         return data
     }
+
+    public async delete(id: string) {
+        const index = this.connections.findIndex((connection) => connection.id === id)
+
+        if (index === -1) return
+
+        this.connections.splice(index, 1)
+    }
 }
