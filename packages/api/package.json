@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx src/server.ts",
-    "dev": "tsx src/server.ts --watch",
+    "start": "tsx server.ts",
+    "dev": "tsx watch server.ts",
     "test": "vitest",
     "build": "tsup"
   },
@@ -13,9 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.12.0"
+    "@fastify/env": "^4.2.0",
+    "fastify": "^4.12.0",
+    "uuid-random": "^1.3.2"
   },
   "devDependencies": {
+    "pino-pretty": "^9.1.1",
     "tsup": "^6.5.0",
     "tsx": "^3.12.2",
     "vitest": "^0.28.4"
