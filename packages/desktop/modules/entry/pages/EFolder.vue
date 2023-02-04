@@ -357,9 +357,7 @@ async function deleteAll() {
         await deleteEntry(entry)
     }
 
-    const newIndex = Math.max(0, entries.value.length - 1)
-
-    selected.value = entries.value[newIndex] ? [newIndex] : []
+    selected.value = []
 }
 
 onKeyStroke('Delete', deleteAll)
