@@ -1,0 +1,23 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "dev": "tsx src/server.ts --watch",
+    "test": "vitest",
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.12.0"
+  },
+  "devDependencies": {
+    "tsup": "^6.5.0",
+    "tsx": "^3.12.2",
+    "vitest": "^0.28.4"
+  }
+}
