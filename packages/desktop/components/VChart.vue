@@ -10,8 +10,11 @@ import { isJSON } from '@composables/utils'
 
 import { Chart, registerables } from 'chart.js'
 import { onMounted, onUnmounted, ref, useSlots } from 'vue'
+import annotationPlugin from 'chartjs-plugin-annotation'
 
 Chart.register(...registerables)
+
+Chart.register(annotationPlugin)
 
 const props = defineProps({
     options: {
