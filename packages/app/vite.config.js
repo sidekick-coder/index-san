@@ -1,15 +1,15 @@
-import path from 'path'
-import tailwindcss from 'tailwindcss'
+const path = require('path')
+const tailwindcss = require('tailwindcss')
 
-import { defineConfig } from 'vite'
+const { defineConfig } = require('vite')
 
-import vue from '@vitejs/plugin-vue'
-import Components from 'unplugin-vue-components/vite'
-import AutoImport from 'unplugin-auto-import/vite'
+const vue = require('@vitejs/plugin-vue')
+const Components = require('unplugin-vue-components/vite')
+const AutoImport = require('unplugin-auto-import/vite')
 
 const root = path.resolve(__dirname, '..', '..')
 
-export default defineConfig({
+module.exports = defineConfig({
     resolve: {
         alias: {
             // root

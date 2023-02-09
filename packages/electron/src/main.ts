@@ -1,5 +1,5 @@
-import type { ClientAppConfig } from '@client/config'
-import { createApp } from '@client/app'
+import type { ClientAppConfig } from '@is/app/config'
+import { createApp } from '@is/app/app'
 
 declare global {
     interface Window {

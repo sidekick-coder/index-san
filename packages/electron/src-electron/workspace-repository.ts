@@ -3,11 +3,11 @@ import path from 'path'
 import uniqBy from 'lodash/uniqBy'
 import { app } from 'electron'
 
-import WorkspaceNotFound from '@core/exceptions/workspace-not-found'
-import { isJSON } from '@core/services/utils'
+import WorkspaceNotFound from '@is/core/exceptions/workspace-not-found'
+import { isJSON } from '@is/core/services/utils'
 
-import type Workspace from '@core/entities/workspace'
-import type IWorkspaceRepository from '@core/repositories/workspace/workspace-repository'
+import type Workspace from '@is/core/entities/workspace'
+import type IWorkspaceRepository from '@is/core/repositories/workspace/workspace-repository'
 
 export default class WorkspaceRepository implements IWorkspaceRepository {
     public async save(workspaces: Workspace[]) {

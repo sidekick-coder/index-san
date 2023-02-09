@@ -14,27 +14,13 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@root/*": [
-        "../../*"
-      ],
-      "@core/*": [
-        "../core/*"
-      ],
-      "@components/*": [
-        "./components/*"
-      ],
-      "@composables/*": [
-        "./composables/*"
-      ],
-      "@plugins/*": [
-        "./plugins/*"
-      ],
-      "@modules/*": [
-        "./modules/*"
-      ],
-      "@store/*": [
-        "./store/*"
-      ]
+      "@root/*": ["../../*"],
+      "@core/*": ["../core/*"],
+      "@components/*": ["./components/*"],
+      "@composables/*": ["./composables/*"],
+      "@plugins/*": ["./plugins/*"],
+      "@modules/*": ["./modules/*"],
+      "@store/*": ["./store/*"]
     }
   },
   "exclude": ["out", "dist", "scripts"],

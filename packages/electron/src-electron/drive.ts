@@ -1,10 +1,10 @@
 import path from 'path'
 import fs from 'fs'
 
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@is/core/entities/directory-entry'
 
-import type Drive from '@core/gateways/drive/drive'
-import DirectoryEntryAlreadyExists from '@core/exceptions/directory-entry-already-exists'
+import type Drive from '@is/core/gateways/drive/drive'
+import DirectoryEntryAlreadyExists from '@is/core/exceptions/directory-entry-already-exists'
 
 export default class FSDrive implements Drive {
     public config = {

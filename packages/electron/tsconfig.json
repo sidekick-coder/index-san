@@ -8,9 +8,9 @@
     "../app/auto-import.d.ts"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
     "importsNotUsedAsValues": "preserve",
     "strictPropertyInitialization": false,
+    "baseUrl": ".",
     "paths": {
       "@client/*": ["../app/*"],
       "@core/*": ["../core/*"],

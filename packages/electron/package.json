@@ -20,6 +20,8 @@
     "make": "electron-forge make"
   },
   "dependencies": {
+    "@is/app": "*",
+    "@is/core": "^0.9.5",
     "node-fetch": "^3.3.0",
     "vue": "^3.2.45"
   },

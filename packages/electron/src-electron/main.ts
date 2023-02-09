@@ -13,15 +13,15 @@ import fs from 'fs'
 import path from 'path'
 import debounce from 'lodash/debounce'
 
-import IndexSan from '@core/app'
+import IndexSan from '@is/core/app'
 
 interface Preference {
     name: string
     value: any
 }
 
-import AppConfig from '@core/config/app'
-import NodeVMEvaluation from '@core/gateways/evaluation/implementations/node-vm-evaluation'
+import AppConfig from '@is/core/config/app'
+import NodeVMEvaluation from '@is/core/gateways/evaluation/implementations/node-vm-evaluation'
 
 import WorkspaceRepository from './workspace-repository'
 
