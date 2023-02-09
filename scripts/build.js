@@ -8,7 +8,7 @@ const { command } = require('./utils')
 const BASE_PATH = path.resolve(__dirname, '..')
 
 async function main() {
-    const appPath = path.resolve(BASE_PATH, 'packages', 'electron-app')
+    const appPath = path.resolve(BASE_PATH, 'packages', 'electron')
     const outputFolder = path.resolve(BASE_PATH, 'artifacts')
 
     if (fs.existsSync(outputFolder)) {
@@ -19,11 +19,11 @@ async function main() {
 
     // build app
 
-    await command('npm -w electron-app run build')
+    await command('npm -w @is/electron run build')
 
     // make app artifacts
 
-    await command('npm -w electron-app run make')
+    await command('npm -w @is/electron run make')
 
     // moving artifacts
 
