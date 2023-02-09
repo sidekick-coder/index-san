@@ -54,10 +54,10 @@ describe('CTable.vue', () => {
         })
     }
 
-    function createCollection(data?: Partial<Collection>) {
+    async function createCollection(data?: Partial<Collection>) {
         const collection = CollectionFactory.create(data)
 
-        globalStore.collection.collections = [collection]
+        await globalStore.collection.create(collection)
 
         return collection
     }
@@ -108,7 +108,7 @@ describe('CTable.vue', () => {
         return wrapper.findAllComponents(IValue)
     }
 
-    beforeEach(() => {
+    beforeEach(async () => {
         workspace = app.config.workspaceRepository.createFakeSync()
 
         setActivePinia(createPinia())
@@ -117,6 +117,8 @@ describe('CTable.vue', () => {
 
         globalStore.workspace.workspaces = [workspace]
         globalStore.workspace.currentId = workspace.id
+
+        await globalStore.collection.setCollections()
 
         wrapper?.unmount()
     })
@@ -127,10 +129,12 @@ describe('CTable.vue', () => {
         app.config.clear()
     })
 
-    test('should set component height and width', () => {
+    test('should set component height and width', async () => {
+        const collection = await createCollection()
+
         createComponent({
             props: {
-                collectionId: '1',
+                collectionId: collection.id,
                 height: 500,
                 width: 1000,
             },
@@ -141,20 +145,24 @@ describe('CTable.vue', () => {
         expect(style).toBe('width: 1000px; height: 500px;')
     })
 
-    test('should show c-actions by default', () => {
+    test('should show c-actions by default', async () => {
+        const collection = await createCollection()
+
         createComponent({
             props: {
-                collectionId: '1',
+                collectionId: collection.id,
             },
         })
 
         expect(findActions().exists()).toBe(true)
     })
 
-    test('should hide c-actions when props hideActions is true', () => {
+    test('should hide c-actions when props hideActions is true', async () => {
+        const collection = await createCollection()
+
         createComponent({
             props: {
-                collectionId: '1',
+                collectionId: collection.id,
                 hideActions: true,
             },
         })
@@ -162,10 +170,12 @@ describe('CTable.vue', () => {
         expect(findActions().exists()).toBe(false)
     })
 
-    test('should table wrapper element have dynamic height if actions is showed', () => {
+    test('should table wrapper element have dynamic height if actions is showed', async () => {
+        const collection = await createCollection()
+
         createComponent({
             props: {
-                collectionId: '1',
+                collectionId: collection.id,
             },
         })
 
@@ -175,7 +185,7 @@ describe('CTable.vue', () => {
     })
 
     test('should render a c-column for each collection column', async () => {
-        const collection = createCollection({
+        const collection = await createCollection({
             columns: ColumnFactory.createMany(20),
         })
 
@@ -189,7 +199,7 @@ describe('CTable.vue', () => {
     })
 
     test('should render empty message when collections columns are empty', async () => {
-        const collection = createCollection({
+        const collection = await createCollection({
             columns: [],
         })
 
@@ -203,7 +213,7 @@ describe('CTable.vue', () => {
     })
 
     test('should columns hidden in view not be visible', async () => {
-        const collection = createCollection({
+        const collection = await createCollection({
             columns: ColumnFactory.createMany(20),
         })
 
@@ -228,7 +238,7 @@ describe('CTable.vue', () => {
     })
 
     test('should each column render a v-resize-line', async () => {
-        const collection = createCollection({
+        const collection = await createCollection({
             columns: ColumnFactory.createMany(20),
         })
 
@@ -242,7 +252,7 @@ describe('CTable.vue', () => {
     })
 
     test('should show menu when trigger @contextmenu in item tr element', async () => {
-        const collection = createCollection({
+        const collection = await createCollection({
             columns: [ColumnFactory.create({ label: 'Name', field: 'name' })],
         })
 
@@ -263,8 +273,6 @@ describe('CTable.vue', () => {
         const [el] = findRowElements()
         const viewBtn = findViewButton()
 
-        console.log(wrapper.html())
-
         await el.trigger('contextmenu')
 
         const menu = findActionMenu()
@@ -277,7 +285,7 @@ describe('CTable.vue', () => {
     })
 
     test('should a i-value for each item and each column', async () => {
-        const collection = createCollection({
+        const collection = await createCollection({
             columns: ColumnFactory.createMany(),
         })
 

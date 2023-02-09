@@ -1,5 +1,6 @@
 <script lang="ts">
 export default {
+    name: 'VMenu',
     inheritAttrs: false,
 }
 </script>
