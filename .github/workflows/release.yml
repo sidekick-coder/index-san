@@ -20,14 +20,14 @@ jobs:
       - name: install dependence 
         run: |
           npm install
-          npm -w core install
-          npm -w desktop install
+          npm -w @is/core install
+          npm -w @is/app install
       
       - name: lint
         run: npm run lint
       
       - name: test
-        run: npm -w core test
+        run: npm test
   
   build:
     name: build
@@ -47,8 +47,8 @@ jobs:
       - name: install dependence 
         run: |
           npm install
-          npm -w core install
-          npm -w desktop install
+          npm -w @is/core install
+          npm -w @is/app install
       
       - name: build
         run: npm run build

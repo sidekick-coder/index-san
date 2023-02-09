@@ -1,6 +1,6 @@
 import path from 'path'
 
-const desktopPath = path.resolve(__dirname, '..', 'desktop')
+const appPath = path.resolve(__dirname, '..', 'app')
 
 export default defineNuxtConfig({
     extends: '@nuxt-themes/docus',
@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         dirs: [
             '~/components',
             {
-                path: path.resolve(desktopPath, 'components'),
+                path: path.resolve(appPath, 'components'),
                 global: true,
                 ignore: ['*.spec.ts'],
             },
@@ -22,15 +22,15 @@ export default defineNuxtConfig({
     alias: {
         '@core': path.resolve(__dirname, '..', 'core'),
         // app
-        '@components': path.resolve(desktopPath, 'components'),
-        '@composables': path.resolve(desktopPath, 'composables'),
-        '@plugins': path.resolve(desktopPath, 'plugins'),
-        '@modules': path.resolve(desktopPath, 'modules'),
-        '@store': path.resolve(desktopPath, 'store'),
+        '@components': path.resolve(appPath, 'components'),
+        '@composables': path.resolve(appPath, 'composables'),
+        '@plugins': path.resolve(appPath, 'plugins'),
+        '@modules': path.resolve(appPath, 'modules'),
+        '@store': path.resolve(appPath, 'store'),
     },
     tailwindcss: {
-        cssPath: path.resolve(__dirname, '..', 'desktop', 'assets', 'tailwind.scss'),
-        configPath: path.resolve(desktopPath, 'tailwind.config.js'),
+        cssPath: path.resolve(__dirname, '..', 'app', 'assets', 'tailwind.scss'),
+        configPath: path.resolve(appPath, 'tailwind.config.js'),
         injectPosition: 'last',
     },
     pinceau: {

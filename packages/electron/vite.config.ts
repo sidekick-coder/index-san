@@ -5,11 +5,11 @@ import electron from 'vite-plugin-electron'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import viteConfig from '../desktop/vite.config'
+import viteConfig from '../app/vite.config'
 
 const alias = {
     '@core': path.resolve(__dirname, '..', 'core'),
-    '@client': path.resolve(__dirname, '..', 'desktop'),
+    '@client': path.resolve(__dirname, '..', 'app'),
 }
 
 export default mergeConfig(

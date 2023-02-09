@@ -5,19 +5,19 @@
     "src/**/*",
     "src-electron/*",
     "src/**/*.vue", 
-    "../desktop/auto-import.d.ts"
+    "../app/auto-import.d.ts"
   ],
   "compilerOptions": {
     "baseUrl": ".",
     "importsNotUsedAsValues": "preserve",
     "strictPropertyInitialization": false,
     "paths": {
-      "@client/*": ["../desktop/*"],
+      "@client/*": ["../app/*"],
       "@core/*": ["../core/*"],
-      "@composables/*": [ "../desktop/composables/*" ],
-      "@plugins/*": [ "../desktop/plugins/*" ],
-      "@modules/*": [ "../desktop/modules/*" ],
-      "@store/*": [ "../desktop/store/*"]
+      "@composables/*": [ "../app/composables/*" ],
+      "@plugins/*": [ "../app/plugins/*" ],
+      "@modules/*": [ "../app/modules/*" ],
+      "@store/*": [ "../app/store/*"]
     }
   },
 

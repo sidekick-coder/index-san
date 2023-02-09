@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "@is/docs",
   "version": "0.9.5",
   "private": true,
   "scripts": {
