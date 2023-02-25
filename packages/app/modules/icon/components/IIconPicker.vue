@@ -106,7 +106,7 @@ async function setIcons() {
 const doSearch = debounce(async () => {
     search.value.loading = true
 
-    await fetch(`https://api.iconify.design/search?query=${search.value.input}`)
+    await fetch(`https://api.iconify.design/search?query=${search.value.input}&limit=100`)
         .then((res) => res.json())
         .then((data) => {
             search.value.icons = data.icons
@@ -162,7 +162,7 @@ watch(selectedIconSet, setIcons, { immediate: true })
 
         <div class="w-8/12 px-4 items-start flex flex-wrap h-full overflow-y-auto">
             <div class="w-full p-2">
-                <v-input v-model="search.input" placeholder="Youtube...">
+                <v-input v-model="search.input" placeholder="youtube, mdi:user, fa:folder, etc...">
                     <template #append>
                         <v-btn
                             v-if="search.input"

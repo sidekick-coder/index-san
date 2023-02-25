@@ -147,8 +147,8 @@ function onUpdateChildren(childItem: Menu) {
                 mode="text"
                 @mousedown.stop="dialog = true"
             >
-                <Icon v-if="item.icon?.includes(':')" :icon="item.icon" class="w-4 h-4" />
-                <Icon v-else icon="fa:bookmark" class="w-4 h-4" />
+                <Icon v-if="item.icon?.includes(':')" :icon="item.icon" class="w-3.5 h-3.5" />
+                <Icon v-else icon="fa:bookmark" class="w-3.5 h-3.5" />
             </v-btn>
 
             <div v-bind="bindings.label">{{ item.label }}</div>
