@@ -53,6 +53,8 @@ const components = {
     CTable: defineAsyncComponent(() => import('@modules/collection/components/CTable.vue')),
     CGallery: defineAsyncComponent(() => import('@modules/collection/components/CGallery.vue')),
     CViewGroup: defineAsyncComponent(() => import('@modules/collection/components/CViewGroup.vue')),
+    VInput: defineAsyncComponent(() => import('@components/VInput.vue')),
+    VBtn: defineAsyncComponent(() => import('@components/VBtn.vue')),
 }
 
 const view = defineComponent({

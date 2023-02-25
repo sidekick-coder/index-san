@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import Menu from '@core/entities/menu'
+import packageJSON from '@root/package.json'
 
 import { useStore } from '@store/global'
 
@@ -111,6 +112,12 @@ async function onUpdate() {
                     @click="store.workspace.currentId = workspace.id"
                 >
                     {{ workspace.name }}
+                </v-list-item>
+
+                <v-list-item class="border-t border-lines">
+                    <div class="w-full text-xs text-center">
+                        {{ `Index-san v${packageJSON.version}` }}
+                    </div>
                 </v-list-item>
             </v-card>
         </v-menu>
