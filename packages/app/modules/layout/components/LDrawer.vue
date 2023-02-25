@@ -32,28 +32,28 @@ const defaultItems: Menu[] = [
         to: '/workspaces',
         children: [],
         id: 'workspaces',
-        icon: 'cubes',
+        icon: 'fa:cubes',
     },
     {
         label: tm.t('collection', 2),
         to: '/collections',
         children: [],
         id: 'collections',
-        icon: 'database',
+        icon: 'fa:database',
     },
     {
         label: tm.t('entry', 2),
         to: '/entries',
         children: [],
         id: 'entries',
-        icon: 'folder',
+        icon: 'fa:folder',
     },
     {
         label: tm.t('option', 2),
         to: '/options',
         children: [],
         id: 'options',
-        icon: 'cog',
+        icon: 'fa:cog',
     },
 ]
 
@@ -69,6 +69,16 @@ const title = computed(() => {
 
 async function onUpdate() {
     await store.menu.save()
+}
+
+async function updateItem(item: Menu) {
+    store.menu.menu.forEach((i) => {
+        if (i.id === item.id) {
+            Object.assign(i, item)
+        }
+    })
+
+    await onUpdate()
 }
 </script>
 
@@ -127,6 +137,7 @@ async function onUpdate() {
             :key="item.id"
             :item="item"
             icon:class="text-t-secondary"
+            disable-icon-picker
         />
 
         <v-draggable v-model="store.menu.menu" v-bind="dragOptions" @update="onUpdate">
@@ -136,6 +147,7 @@ async function onUpdate() {
                         :item="store.menu.menu[index]"
                         :drag-options="dragOptions"
                         @update="onUpdate"
+                        @update:item="updateItem"
                     />
                 </div>
             </template>

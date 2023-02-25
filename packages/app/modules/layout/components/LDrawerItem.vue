@@ -11,6 +11,10 @@ import VDraggable from 'vuedraggable'
 import { useState } from '@composables/state'
 import { createBindings } from '@composables/binding'
 
+import { Icon } from '@iconify/vue'
+import { useNonReactive } from '@composables/utils'
+const IIconPicker = defineAsyncComponent(() => import('@modules/icon/components/IIconPicker.vue'))
+
 // Props & Emits
 const props = defineProps({
     item: {
@@ -25,9 +29,13 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    disableIconPicker: {
+        type: Boolean,
+        default: false,
+    },
 })
 
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update', 'update:item'])
 
 // Bindings
 const attrs = useAttrs()
@@ -60,6 +68,36 @@ watch(
     () => emit('update'),
     { deep: true }
 )
+// Icon
+
+const dialog = ref(false)
+
+function updateIcon(name: string) {
+    if (!props.item) return
+
+    emit('update:item', { ...props.item, icon: name })
+
+    dialog.value = false
+}
+
+// children
+
+function onUpdateChildren(childItem: Menu) {
+    if (!props.item) return
+
+    const newChildren = useNonReactive(props.item.children).map((i) => {
+        if (i.id === childItem.id) {
+            return childItem
+        }
+
+        return i
+    })
+
+    emit('update:item', {
+        ...props.item,
+        children: newChildren,
+    })
+}
 </script>
 <template>
     <v-list-item
@@ -69,6 +107,10 @@ watch(
         color="hover:bg-t-secondary/5 "
         class="py-2 text-sm"
     >
+        <v-dialog v-if="!disableIconPicker" v-model="dialog">
+            <i-icon-picker @update:model-value="updateIcon" />
+        </v-dialog>
+
         <v-btn
             mode="text"
             size="xs"
@@ -98,14 +140,15 @@ watch(
 
         <template v-else>
             <v-btn
+                v-bind="bindings.icon"
                 class="-ml-1 mr-2"
                 size="xs"
-                color="hover:bg-b-primary/40"
+                :color="disableIconPicker ? 'none' : 'hover:bg-b-primary/40'"
                 mode="text"
-                v-bind="bindings.icon"
+                @mousedown.stop="dialog = true"
             >
-                <v-icon v-if="item.icon" :name="item.icon"></v-icon>
-                <v-icon v-else name="circle"></v-icon>
+                <Icon v-if="item.icon?.includes(':')" :icon="item.icon" class="w-4 h-4" />
+                <Icon v-else icon="fa:bookmark" class="w-4 h-4" />
             </v-btn>
 
             <div v-bind="bindings.label">{{ item.label }}</div>
@@ -126,7 +169,7 @@ watch(
                     :item="item.children[index]"
                     :deep="deep + 1"
                     :drag-options="dragOptions"
-                    @update="$t('update')"
+                    @update:item="onUpdateChildren"
                 />
             </div>
         </template>

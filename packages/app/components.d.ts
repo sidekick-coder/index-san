@@ -42,6 +42,7 @@ declare module '@vue/runtime-core' {
     VTd: typeof import('./components/VTd.vue')['default']
     VTextarea: typeof import('./components/VTextarea.vue')['default']
     VTh: typeof import('./components/VTh.vue')['default']
+    VTooltip: typeof import('./components/VTooltip.vue')['default']
     VTr: typeof import('./components/VTr.vue')['default']
   }
 }
