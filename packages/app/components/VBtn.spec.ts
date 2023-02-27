@@ -5,7 +5,7 @@ import type { VueWrapper, MountingOptions } from '@vue/test-utils'
 import VBtn from './VBtn.vue'
 import VIcon from './VIcon.vue'
 
-describe('v-btn.vue', () => {
+describe('VBtn.vue', () => {
     let wrapper: VueWrapper<InstanceType<typeof VBtn>>
 
     function createComponent(options?: MountingOptions<InstanceType<typeof VBtn>['$props']>) {

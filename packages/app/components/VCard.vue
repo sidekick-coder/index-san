@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { toCssMeasurement } from '@composables/utils'
+import { useCss } from '@composables/css'
+import { useVariant } from '@composables/use-variant'
 
 const props = defineProps({
     width: {
@@ -15,10 +16,6 @@ const props = defineProps({
         type: String,
         default: null,
     },
-    text: {
-        type: Boolean,
-        default: false,
-    },
     to: {
         type: String,
         default: null,
@@ -27,7 +24,7 @@ const props = defineProps({
 
 // colors
 
-const defaultColors = {
+const colorVariation = useVariant(props, 'color', {
     'b-primary': 'bg-b-primary',
     'b-secondary': 'bg-b-secondary',
 
@@ -35,39 +32,33 @@ const defaultColors = {
     'danger': 'bg-danger hover:bg-danger/75',
     'info': 'bg-info hover:bg-info/75',
     'warn': 'bg-warn hover:bg-warn/75',
-}
+    '_empty': (value) => {
+        if (!css.isColor(value)) return { classes: value }
 
-const colors = computed(() => {
-    const result = defaultColors
-
-    return result
+        return {
+            styles: `--color:${value}`,
+            classes: 'bg-[var(--color)]',
+        }
+    },
 })
 
-// classes
-const classes = computed(() => {
-    const result: string[] = ['transition-all']
+// class & styles
+const css = useCss()
 
-    if (props.color) {
-        result.push(colors.value[props.color] || props.color)
-    }
-
-    return result
-})
-
-// style
+const classes = computed(() => ['transition-all'].concat(colorVariation.classes))
 
 const style = computed(() => {
-    const result: any = {}
+    let result = ''
 
     if (props.width) {
-        result.width = toCssMeasurement(props.width)
+        result += `width:${css.toMeasurement(props.width)};`
     }
 
     if (props.height) {
-        result.height = toCssMeasurement(props.height)
+        result += `height:${css.toMeasurement(props.height)};`
     }
 
-    return result
+    return result + colorVariation.styles
 })
 </script>
 
