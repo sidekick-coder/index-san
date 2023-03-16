@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, useAttrs, watch } from 'vue'
-import { useRouter } from 'vue-router'
 
 import ViewGallery from '@core/entities/view-gallery'
 
@@ -127,13 +126,6 @@ async function create() {
     const item = new Item(createPayload(view.value?.filters, collection?.columns))
 
     await itemsStore.create(item)
-}
-
-// on item click
-const router = useRouter()
-
-function onClick(item: Item) {
-    router.push(`/collections/${props.collectionId}/items/${item.id}`)
 }
 
 // actions

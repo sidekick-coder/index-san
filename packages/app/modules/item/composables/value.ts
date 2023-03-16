@@ -1,6 +1,5 @@
 import { computed, ref, watch } from 'vue'
 
-import { useStore } from '@store/global'
 import { useItemStore } from '../store'
 import { useColumnStore } from '@modules/column/store'
 

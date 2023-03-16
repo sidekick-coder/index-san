@@ -3,7 +3,7 @@
     "version": "0.9.5",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
-        "lint": "eslint . --ext .vue,.ts,.js",
+        "lint": "eslint . --ext .vue,.ts,.js --max-warnings 10",
         "dev": "npm -w @is/electron run dev",
         "test": "npm -ws test --if-present",
         "build": "node scripts/build.js",

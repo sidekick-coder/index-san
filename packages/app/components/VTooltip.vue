@@ -5,7 +5,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 import debounce from 'lodash/debounce'

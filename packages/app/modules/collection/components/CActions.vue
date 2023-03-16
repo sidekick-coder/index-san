@@ -3,7 +3,6 @@ import ViewCommon from '@core/entities/view-common'
 
 import { debounce } from 'lodash'
 import { ref, computed, watch, defineAsyncComponent } from 'vue'
-import { useStore } from '@store/global'
 
 import View from '@core/entities/view'
 import { useView } from '@modules/view/composables/use-view'

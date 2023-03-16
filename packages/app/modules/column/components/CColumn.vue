@@ -4,7 +4,6 @@ import { computed, ref, watch, defineAsyncComponent } from 'vue'
 import Column, { ColumnType } from '@core/entities/column'
 
 import { useStore as useCollectionStore } from '@modules/collection/store'
-import { useStore } from '@store/global'
 
 import { useNonReactive } from '@composables/utils'
 import { useI18n } from 'vue-i18n'

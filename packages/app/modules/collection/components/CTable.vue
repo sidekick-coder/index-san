@@ -8,7 +8,6 @@ import ViewTable from '@core/entities/view-table'
 import Item from '@core/entities/item'
 
 import { createBindings } from '@composables/binding'
-import { useStore } from '@store/global'
 
 import { createPayload } from '../composables/filter'
 
@@ -58,10 +57,6 @@ const props = defineProps({
 
 // bindings
 const bindings = computed(() => createBindings(useAttrs(), ['table', 'head']))
-
-// collection
-
-const store = useStore()
 
 // view
 

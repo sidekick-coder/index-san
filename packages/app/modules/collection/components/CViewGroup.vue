@@ -10,7 +10,6 @@ import { useViewStore } from '@modules/view/store'
 import { useView } from '@modules/view/composables/use-view'
 import { createBindings } from '@composables/binding'
 import { useState } from '@composables/state'
-import { tmpdir } from 'os'
 import { useI18n } from 'vue-i18n'
 
 const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))

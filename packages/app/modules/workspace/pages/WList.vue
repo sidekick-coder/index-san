@@ -6,7 +6,6 @@ import Workspace from '@core/entities/workspace'
 
 import { useStore } from '@store/global'
 import { useMeta } from '@composables/metas'
-import { useConfig } from '@composables/use-config'
 
 import WForm from '../components/WForm.vue'
 

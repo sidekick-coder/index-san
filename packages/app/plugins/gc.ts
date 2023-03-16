@@ -1,4 +1,4 @@
-import { App, Component } from 'vue'
+import { Component } from 'vue'
 import camelCase from 'lodash/camelCase'
 import upperFirst from 'lodash/upperFirst'
 
@@ -24,8 +24,7 @@ export function createComponentObject() {
     return components
 }
 
-export default (app: App) => {
-    const components = createComponentObject()
-
+export default () => {
+    // const components = createComponentObject()
     // Object.entries(components).map(([key, value]) => app.component(key, value))
 }

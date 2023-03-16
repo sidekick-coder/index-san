@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import { createValue } from '@modules/item/composables/value'
 import EvaluationOutput from '@core/entities/evaluation-output'
+
+import { createValue } from '@modules/item/composables/value'
 import { useStore } from '@store/global'
-import { useModelOrInnerValue } from '@composables/model'
 
 const props = defineProps({
     collectionId: {
@@ -24,8 +24,6 @@ const props = defineProps({
         default: null,
     },
 })
-
-const emit = defineEmits(['update:edit'])
 
 const { column, item, onLoaded } = createValue({
     collectionId: props.collectionId,
@@ -58,10 +56,6 @@ await setResult()
 watch([column, item], setResult, {
     deep: true,
 })
-
-// edit mode
-
-const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import Column from '@core/entities/column'
 import ViewCommon from '@core/entities/view-common'
 
 import CFilter from './CFilter.vue'
 import { useView } from '@modules/view/composables/use-view'
-import { useStore } from '@store/global'
 import { useColumnStore } from '@modules/column/store'
 
 const props = defineProps({
