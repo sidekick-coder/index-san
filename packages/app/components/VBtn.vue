@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useVariant } from '@composables/use-variant'
-import { useCss } from '@composables/css'
+import { useVariant } from '../composables/use-variant'
+import { useCss } from '../composables/css'
 
 const props = defineProps({
     mode: {
