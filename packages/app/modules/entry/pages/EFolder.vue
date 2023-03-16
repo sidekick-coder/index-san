@@ -360,7 +360,11 @@ async function deleteAll() {
     selected.value = []
 }
 
-onKeyStroke('Delete', deleteAll)
+onKeyStroke('Delete', () => {
+    if (editItem.value) return
+
+    deleteAll()
+})
 
 onKeyStroke(['c'], (e) => e.ctrlKey && copy())
 
