@@ -1,6 +1,7 @@
 import { lib as core } from './core'
 
 import momentTypes from 'moment/moment.d.ts?raw'
+import xmlTypes from 'xml-js/types/index.d.ts?raw'
 
 export function mount() {
     const uri = 'ts:runtime/script.d.ts'
@@ -11,6 +12,13 @@ export function mount() {
         uri: 'ts:moment.d.ts',
         source: `
             declare module 'moment' { ${momentTypes} }
+        `,
+    })
+
+    libs.push({
+        uri: 'ts:xml-js.d.ts',
+        source: `
+            declare module 'xml-js' { ${xmlTypes} }
         `,
     })
 
@@ -26,6 +34,8 @@ export function mount() {
         declare const Facades: import("core/config/app").default['facades']
         
         declare const Moment: typeof import("moment")
+
+        declare const XML: typeof import("xml-js")
 
         declare const scope: Record<string, any>
 

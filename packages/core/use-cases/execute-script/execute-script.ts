@@ -5,6 +5,8 @@ import type AppConfig from '../../config/app'
 
 import Moment from 'moment'
 
+import XML from 'xml-js'
+
 import EvaluationFacade from '../../facades/script'
 export default class ExecuteScript {
     constructor(private readonly app: AppConfig) {}
@@ -24,6 +26,7 @@ export default class ExecuteScript {
             Workspace: workspace,
             Drive: drive,
             Moment,
+            XML,
             DirectoryEntry,
             createItemRepository,
             Facades: this.app.facades,
