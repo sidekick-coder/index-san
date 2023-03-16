@@ -36,6 +36,8 @@ export function createColumnsStore(collectionId: string) {
 
     const saveWithDebounce = debounce(save, 500)
 
+    watch(columns, saveWithDebounce, { deep: true })
+
     function get(id: string) {
         const column = columns.value.find((c) => c.id === id)
 
