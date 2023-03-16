@@ -74,6 +74,8 @@ async function submit() {
         column.value.field = '_updatedAt'
     }
 
+    await store.save()
+
     dialog.value = false
 }
 
