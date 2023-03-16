@@ -19,13 +19,6 @@ const drawer = useToggleDrawer()
 const tm = useI18n()
 const store = useStore()
 
-const dragOptions = {
-    emptyInsertThreshold: 22,
-    itemKey: 'id',
-    group: 'menu',
-    ghostClass: 'ghost',
-}
-
 const defaultItems: Menu[] = [
     {
         label: tm.t('workspace', 2),
@@ -80,6 +73,16 @@ async function updateItem(item: Menu) {
 
     await onUpdate()
 }
+
+// Drag
+const dragOptions = {
+    emptyInsertThreshold: 22,
+    itemKey: 'id',
+    group: 'menu',
+    ghostClass: 'ghost',
+}
+
+const isDragging = ref(false)
 </script>
 
 <template>
@@ -140,18 +143,40 @@ async function updateItem(item: Menu) {
             disable-icon-picker
         />
 
-        <v-draggable v-model="store.menu.menu" v-bind="dragOptions" @update="onUpdate">
+        <v-draggable
+            v-model="store.menu.menu"
+            v-bind="dragOptions"
+            @update="onUpdate"
+            @start="isDragging = true"
+            @end="isDragging = false"
+        >
             <template #item="{ index }">
                 <div>
                     <l-drawer-item
                         :item="store.menu.menu[index]"
                         :drag-options="dragOptions"
+                        :is-dragging="isDragging"
+                        @drag="(v) => (isDragging = v)"
                         @update="onUpdate"
                         @update:item="updateItem"
+                        @destroy="store.menu.menu.splice(index, 1)"
                     />
                 </div>
             </template>
         </v-draggable>
+
+        <template #footer>
+            <v-list-item
+                color="bg-b-secondary hover:bg-b-primary/40 text-t-secondary"
+                size="h-full py-3 px-10 text-xs"
+                class="border-t border-lines justify-between"
+                @click="store.menu.addSection"
+            >
+                {{ $t('addEntity', [$t('section')]) }}
+
+                <v-icon name="plus" />
+            </v-list-item>
+        </template>
     </v-layout-drawer>
 </template>
 

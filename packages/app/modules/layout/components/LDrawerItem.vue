@@ -13,6 +13,7 @@ import { createBindings } from '@composables/binding'
 
 import { Icon } from '@iconify/vue'
 import { useNonReactive } from '@composables/utils'
+import { useVModel } from '@vueuse/core'
 const IIconPicker = defineAsyncComponent(() => import('@modules/icon/components/IIconPicker.vue'))
 
 // Props & Emits
@@ -20,6 +21,10 @@ const props = defineProps({
     item: {
         type: Object as () => Menu,
         required: true,
+    },
+    isDragging: {
+        type: Boolean,
+        default: false,
     },
     deep: {
         type: Number,
@@ -35,12 +40,14 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['update', 'update:item'])
+const emit = defineEmits(['update', 'update:item', 'destroy', 'drag'])
+
+// model
+
+const itemModel = useVModel(props, 'item', emit)
 
 // Bindings
-const attrs = useAttrs()
-
-const bindings = createBindings(attrs, ['label', 'icon'])
+const bindings = createBindings(useAttrs(), ['label', 'icon'])
 
 // toggle children
 const hideSections = useState<string[]>('app:menu:hide', [], {
@@ -98,14 +105,42 @@ function onUpdateChildren(childItem: Menu) {
         children: newChildren,
     })
 }
+
+// Menu
+
+const menu = ref({
+    show: false,
+    x: 0,
+    y: 0,
+})
+
+function showMenu(e: MouseEvent) {
+    menu.value.x = e.clientX
+    menu.value.y = e.clientY
+
+    menu.value.show = true
+}
 </script>
 <template>
+    <v-menu v-model="menu.show" :x="menu.x" :y="menu.y">
+        <v-card color="b-primary" width="200">
+            <v-list-item>
+                <v-input v-model="itemModel.label" placeholder="Label..." />
+            </v-list-item>
+            <v-list-item color="danger" @click="$emit('destroy')">
+                <v-icon name="trash" class="mr-4" />
+                {{ $t('delete') }}
+            </v-list-item>
+        </v-card>
+    </v-menu>
+
     <v-list-item
         :to="item.to"
         active-class="bg-t-secondary/10"
         size="none"
         color="hover:bg-t-secondary/5 "
         class="py-2 text-sm"
+        @contextmenu.prevent.stop="showMenu"
     >
         <v-dialog v-if="!disableIconPicker" v-model="dialog">
             <i-icon-picker @update:model-value="updateIcon" />
@@ -156,12 +191,14 @@ function onUpdateChildren(childItem: Menu) {
     </v-list-item>
 
     <v-draggable
-        v-if="show && item.children.length"
+        v-if="(show && item.children.length) || isDragging"
         v-bind="dragOptions"
         :list="item.children"
         :component-data="{
             style: `margin-left: ${deep * 20}px`,
         }"
+        @start="() => $emit('drag', true)"
+        @end="() => $emit('drag', false)"
     >
         <template #item="{ index }">
             <div>
@@ -169,6 +206,8 @@ function onUpdateChildren(childItem: Menu) {
                     :item="item.children[index]"
                     :deep="deep + 1"
                     :drag-options="dragOptions"
+                    :is-dragging="isDragging"
+                    @destroy="itemModel.children.splice(index, 1)"
                     @update:item="onUpdateChildren"
                 />
             </div>

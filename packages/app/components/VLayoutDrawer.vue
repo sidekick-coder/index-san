@@ -86,8 +86,16 @@ const style = computed(() => {
         :class="[right ? 'right-0' : 'left-0']"
         :style="(style as any)"
     >
-        <div class="h-full w-full overflow-auto" v-bind="$attrs">
+        <div
+            class="w-full overflow-auto"
+            v-bind="$attrs"
+            :class="$slots.footer ? 'h-[calc(100%-3rem)]' : 'h-full'"
+        >
             <slot />
+        </div>
+
+        <div v-if="$slots.footer" class="h-12">
+            <slot name="footer" />
         </div>
     </aside>
 </template>

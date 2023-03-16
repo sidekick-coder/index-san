@@ -37,12 +37,25 @@ export const useStore = defineStore('menu', () => {
         await save()
     }
 
+    function addSection() {
+        menu.value.push({
+            id: String(Math.random() * 9999),
+            label: 'Label',
+            icon: 'code',
+            isSection: true,
+            children: [],
+        })
+    }
+
     watch(() => workspace.currentId, setMenu)
+
+    watch(menu, save, { deep: true })
 
     return {
         menu,
 
         setMenu,
+        addSection,
         save,
         create,
     }

@@ -6,7 +6,8 @@ export default {
 </script>
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch, onMounted } from 'vue'
-import { useVModel } from 'vue-wind/composables/v-model'
+import { useVModel } from '@vueuse/core'
+import throttle from 'lodash/throttle'
 
 // Props & Emits
 const props = defineProps({
@@ -92,14 +93,10 @@ watch(show, () => {
 
     if (!el) return
 
-    max.value.loading = true
-
     setTimeout(() => {
         max.value.y = window.innerHeight - el.clientHeight
         max.value.x = window.innerWidth - el.clientWidth
     }, 100)
-
-    setTimeout(() => (max.value.loading = false), 200)
 })
 
 // track mouse position
@@ -127,7 +124,7 @@ function setPosition() {
 
 onMounted(() => setTimeout(setPosition, 500))
 
-function onClickDom(event: MouseEvent) {
+const onClickDom = throttle((event: MouseEvent) => {
     if (!show.value) return
 
     const isClickOnContent = max.value.el?.contains(event.target as any)
@@ -139,16 +136,9 @@ function onClickDom(event: MouseEvent) {
     if (props.closeOnContentClick) {
         show.value = false
     }
-}
+}, 100)
 
-watch(show, (value) => {
-    if (value) {
-        setTimeout(() => document.addEventListener('click', onClickDom), 200)
-        return
-    }
-
-    document.removeEventListener('click', onClickDom)
-})
+onMounted(() => document.addEventListener('click', onClickDom))
 
 onUnmounted(() => document.removeEventListener('click', onClickDom))
 
@@ -190,15 +180,16 @@ const style = computed(() => {
     />
 
     <teleport to="body">
-        <div
-            v-show="show"
-            :ref="(el: any) => (max.el = el)"
-            :style="style"
-            class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
-            :class="max.loading ? 'opacity-0' : 'opacity-100'"
-            v-bind="$attrs"
-        >
-            <slot />
-        </div>
+        <transition name="fade">
+            <div
+                v-show="show"
+                :ref="(el: any) => (max.el = el)"
+                :style="style"
+                class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
+                v-bind="$attrs"
+            >
+                <slot />
+            </div>
+        </transition>
     </teleport>
 </template>
