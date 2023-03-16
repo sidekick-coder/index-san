@@ -14,7 +14,7 @@ async function main() {
     await command('npm test')
 
     // build docs
-    await command('npm -w docs run generate')
+    await command('npm -w @is/docs run generate')
 
     // build app
     await command('npm run build')
