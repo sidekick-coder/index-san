@@ -7,7 +7,7 @@ const store = useStore()
 <template>
     <teleport to="body">
         <div class="fixed px-4 py-2 bottom-0 right-0">
-            <transition-group name="notify" mode="in-out">
+            <transition-group name="notify">
                 <div
                     v-for="message in store.messages"
                     :key="message.id"

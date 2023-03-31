@@ -129,13 +129,11 @@ const onClickDom = throttle((event: MouseEvent) => {
 
     const isClickOnContent = max.value.el?.contains(event.target as any)
 
-    if (!isClickOnContent) {
-        show.value = false
-    }
+    const isClickOnActivator = mouse.value.el?.contains(event.target as any)
 
-    if (props.closeOnContentClick) {
-        show.value = false
-    }
+    if (isClickOnActivator || isClickOnContent) return
+
+    show.value = false
 }, 100)
 
 onMounted(() => document.addEventListener('click', onClickDom))

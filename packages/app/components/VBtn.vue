@@ -130,9 +130,7 @@ const classes = computed(() => {
     return result.concat(colorVariation.classes).concat(sizeVariation.classes)
 })
 
-const styles = computed(() => {
-    return colorVariation.styles
-})
+const styles = computed(() => colorVariation.styles)
 </script>
 <template>
     <component
