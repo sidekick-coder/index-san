@@ -14,6 +14,10 @@ const props = defineProps({
         type: [String, Number],
         default: '',
     },
+    modelModifiers: {
+        type: Object,
+        default: () => ({}),
+    },
     label: {
         type: String,
         default: '',
@@ -122,6 +126,18 @@ function onBlur() {
     emit('blur')
 }
 
+function onInput(e: Event) {
+    if (props.modelModifiers.lazy) return
+
+    model.value = (e.target as HTMLInputElement).value
+}
+
+function onChange(e: Event) {
+    if (!props.modelModifiers.lazy) return
+
+    model.value = (e.target as HTMLInputElement).value
+}
+
 const classes = computed(() => {
     const result: string[] = ['transition-all bg-transparent w-full flex']
 
@@ -194,7 +210,7 @@ const ui = computed(() => (props.disabled ? 'disabled' : ''))
             <input
                 :id="label"
                 ref="inputRef"
-                v-model="model"
+                :value="modelValue"
                 :type="type"
                 :placeholder="placeholder"
                 :readonly="readonly"
@@ -203,6 +219,8 @@ const ui = computed(() => (props.disabled ? 'disabled' : ''))
                 class="bg-transparent outline-none grow w-full placeholder:text-t-secondary/50"
                 @focus="onFocus"
                 @blur="onBlur"
+                @input="onInput"
+                @change="onChange"
             />
             <slot name="append" />
         </div>
