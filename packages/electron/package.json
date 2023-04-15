@@ -1,6 +1,6 @@
 {
   "name": "@is/electron",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "private": true,
   "main": "dist-electron/main.js",
   "description": "Productivity app",
