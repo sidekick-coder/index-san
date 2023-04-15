@@ -13,19 +13,19 @@ export default class ScriptItemRepository implements IItemRepository {
         throw new Error('Method not implemented.')
     }
 
-    public async show(id: string): Promise<Item> {
+    public async show(_id: string): Promise<Item> {
         throw new Error('Method not implemented.')
     }
 
-    public create(payload: Item): Promise<Item> {
+    public create(_payload: Item): Promise<Item> {
         throw new Error('Method not implemented.')
     }
 
-    public update(id: string, payload: Partial<Item>): Promise<Item> {
+    public update(_id: string, _payload: Partial<Item>): Promise<Item> {
         throw new Error('Method not implemented.')
     }
 
-    public destroy(id: string): Promise<void> {
+    public destroy(_id: string): Promise<void> {
         throw new Error('Method not implemented.')
     }
 }
