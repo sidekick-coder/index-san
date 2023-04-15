@@ -1,1 +1,0 @@
-import{a as r,o,f,r as s,G as a,u as i}from"./entry.9864e5b4.js";function l(e){return window.clientConfig.open.url(e)}const u=["href"],c=r({__name:"VLink",props:{href:{type:String,default:""}},setup(e){return(t,n)=>(o(),f("a",{href:e.href,onClick:n[0]||(n[0]=a(p=>i(l)(e.href),["prevent"]))},[s(t.$slots,"default")],8,u))}});export{c as default};

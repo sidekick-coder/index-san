@@ -1,1 +1,0 @@
-import{t as o}from"./utils.5590a87e.js";import{a as n,b as a,o as l,f as u,r as m,l as p,u as c}from"./entry.9864e5b4.js";const _=n({__name:"VTr",props:{height:{type:[String,Number],default:null}},setup(r){const t=r,s=a(()=>{const e={};return t.height&&(e.height=o(t.height)),e});return(e,i)=>(l(),u("tr",{style:p(c(s))},[m(e.$slots,"default")],4))}});export{_};

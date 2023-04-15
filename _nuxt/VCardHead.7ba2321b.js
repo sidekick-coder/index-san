@@ -1,1 +1,0 @@
-import{a as r,o as s,f as n,r as o,k as l}from"./entry.9864e5b4.js";const p=r({__name:"VCardHead",props:{padding:{type:Boolean,default:!1}},setup(e){return(a,t)=>(s(),n("div",{class:l(["w-full flex items-center border-b border-lines min-h-[45px]",[e.padding?"px-4":""]])},[o(a.$slots,"default")],2))}});export{p as default};

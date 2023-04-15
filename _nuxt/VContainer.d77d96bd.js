@@ -1,1 +1,0 @@
-import{t,o,f as r,r as s}from"./entry.9864e5b4.js";const n={},a={class:"px-10 w-full flex flex-wrap"};function c(e,l){return o(),r("div",a,[s(e.$slots,"default")])}const _=t(n,[["render",c]]);export{_ as default};

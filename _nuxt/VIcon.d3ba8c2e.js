@@ -1,1 +1,0 @@
-import{o,f as t,h as c,p as a}from"./entry.9864e5b4.js";const i={__name:"VIcon",props:{name:{type:String,required:!0}},setup(e){return(r,s)=>{const n=a("fa-icon");return o(),t("i",null,[c(n,{icon:e.name},null,8,["icon"])])}}};export{i as default};
