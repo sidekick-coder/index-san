@@ -67,6 +67,7 @@ onMounted(() => {
         padding: props.padding,
         overviewRulerBorder: false,
         lineNumbers: props.lineNumbers as any,
+        wordWrap: 'on',
         scrollbar: {
             verticalScrollbarSize: 10,
             horizontalScrollbarSize: 10,
