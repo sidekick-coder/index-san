@@ -1,14 +1,24 @@
-<s-chart height="300">
+# Sample charts
+
+<s-chart height="500" width="800">
 
 ```ts
+
+const data = []
+
+for (let i = 0; i < 100; i++) {
+    const value = Math.round(Math.random() * 1000)
+    data.push(value)
+}
+
 setResult({
     type: 'bar',
     data: {
-        labels: Moment.months(),
+        labels: data,
         datasets: [
             {
                 label: 'Dataset',
-                data: Moment.months().map(() => Math.random() * 100),
+                data: data,
                 backgroundColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(255, 159, 64, 1)',
@@ -27,7 +37,7 @@ setResult({
 
 <br />
 
-<s-chart height="300">
+<s-chart height="500" width="800">
 
 ```ts
 setResult({
@@ -53,7 +63,7 @@ setResult({
 
 <br />
 
-<s-chart height="300">
+<s-chart height="500" width="800">
 
 ```ts
 const repository = await Facades.item
