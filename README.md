@@ -1,6 +1,6 @@
 <div align="center">
 
-# Index-san
+# Index-san (beta)
 
 <img src="./logo.ico" height="200" />
 

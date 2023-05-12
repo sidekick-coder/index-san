@@ -4,19 +4,15 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { ref, watch, computed, useAttrs, defineAsyncComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import debounce from 'lodash/debounce'
 
 import DirectoryEntry from '@core/entities/directory-entry'
 
-import { useState } from '@composables/state'
 import { useStore } from '@modules/entry/store'
-import { createBindings } from '@composables/binding'
 
-import EMarkdownDoc from '../components/EMarkdownDoc.vue'
-
-const MEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
+import MEditor from '@modules/markdown-editor/components/MEditor.vue'
 
 const props = defineProps({
     path: {
@@ -28,23 +24,6 @@ const props = defineProps({
         default: false,
     },
 })
-
-// set preview
-const preview = ref({
-    el: null as null | InstanceType<typeof EMarkdownDoc>,
-    loading: false,
-    height: 100,
-})
-
-async function setPreview() {
-    if (preview.value.el) {
-        preview.value.height = preview.value.el.$el.clientHeight
-    }
-
-    preview.value.loading = true
-
-    setTimeout(() => (preview.value.loading = false), 800)
-}
 
 // set content
 const store = useStore()
@@ -61,54 +40,27 @@ async function setContent() {
     if (!contentBuffer) return
 
     content.value = decoder.decode(contentBuffer)
-
-    setPreview()
 }
+
+const save = debounce(async () => {
+    await store.write({
+        data: DirectoryEntry.encode(content.value),
+        path: props.path,
+    })
+}, 1000)
 
 watch(() => props.path, setContent, {
     immediate: true,
 })
 
-// update entry
+watch(content, save)
 
-const edit = useState('app:markdown:preview', false, {
-    localStorage: true,
-})
-
-async function save() {
-    await store.write({
-        data: DirectoryEntry.encode(content.value),
-        path: props.path,
-    })
-
-    setPreview()
-}
-
-// state
-const route = useRoute()
-
-const key = `app:markdown:states:${route.path}`
-
-const state = useState(key, {}, { localStorage: true })
-
-// define expose
-
-defineExpose({
-    edit,
-    save,
-    setPreview,
-})
-
-// bindings
-
-const bindings = computed(() => createBindings(useAttrs(), ['doc']))
+// save
 
 // mode
 const tm = useI18n()
 
-const mode = useState<'edit' | 'side-by-side' | 'view'>('app:markdown-editor:mode', 'view', {
-    localStorage: true,
-})
+const mode = ref('edit')
 
 const modeLabels: Record<typeof mode.value, string> = {
     'edit': tm.t('editMode'),
@@ -117,7 +69,7 @@ const modeLabels: Record<typeof mode.value, string> = {
 }
 </script>
 <template>
-    <v-layout :id="path" use-percentage v-bind="bindings.root">
+    <v-layout :id="path" use-percentage>
         <v-layout-toolbar class="border-b border-b-lines">
             <div class="flex pl-6 pr-7 w-full">
                 <v-menu offset-y :close-on-content-click="true">
@@ -139,10 +91,10 @@ const modeLabels: Record<typeof mode.value, string> = {
                 </v-menu>
 
                 <template v-if="['edit', 'side-by-side'].includes(mode)">
-                    <v-btn size="sm" mode="text" @click="setPreview">
+                    <v-btn size="sm" mode="text">
                         <v-icon name="arrows-rotate" />
                     </v-btn>
-                    <v-btn size="sm" mode="text" @click="save">
+                    <v-btn size="sm" mode="text">
                         <v-icon name="save" />
                     </v-btn>
                 </template>
@@ -152,49 +104,7 @@ const modeLabels: Record<typeof mode.value, string> = {
         </v-layout-toolbar>
 
         <v-layout-content>
-            <div class="h-full flex">
-                <div
-                    v-if="['edit', 'side-by-side'].includes(mode)"
-                    class="min-h-full"
-                    :class="[mode === 'side-by-side' ? 'w-6/12 pl-[calc(40px_-_26px)]' : 'w-full']"
-                >
-                    <m-editor
-                        v-model="content"
-                        language="markdown"
-                        :minimap="false"
-                        :padding="{ top: 20 }"
-                        line-numbers="off"
-                        @keydown.ctrl.s="save"
-                    />
-                </div>
-
-                <div
-                    v-if="['view', 'side-by-side'].includes(mode)"
-                    class="pt-5 overflow-auto px-10"
-                    :class="[mode === 'side-by-side' ? 'w-6/12' : 'w-full']"
-                >
-                    <div
-                        v-if="preview.loading"
-                        :style="`min-height: ${preview.height}px`"
-                        class="flex w-full h-full items-center justify-center"
-                    >
-                        <v-icon
-                            name="fa-brands fa-markdown"
-                            class="text-[5rem] text-t-secondary animate-pulse"
-                        />
-                    </div>
-
-                    <e-markdown-doc
-                        v-else-if="content"
-                        :ref="(r: any) => (preview.el = r)"
-                        v-model:state="state"
-                        class="w-full pb-32"
-                        :content="content"
-                        :base-path="DirectoryEntry.dirname(path)"
-                        v-bind="bindings.doc"
-                    />
-                </div>
-            </div>
+            <m-editor v-model="content" />
         </v-layout-content>
     </v-layout>
 </template>

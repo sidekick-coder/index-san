@@ -68,6 +68,7 @@ module.exports = {
         'vue/no-setup-props-destructure': 'off',
         'vue/one-component-per-file': 'off',
         'vue/no-v-html': 'off',
+        'vue/no-v-text-v-html-on-component': 'off',
         'no-undef': 'off',
     },
 }

@@ -4,7 +4,7 @@
     "module": "ESNext",
     "jsx": "preserve",
     "esModuleInterop": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "allowJs": true,
     "declaration": false,
