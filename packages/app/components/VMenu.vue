@@ -131,6 +131,11 @@ const onClickDom = throttle((event: MouseEvent) => {
 
     const isClickOnActivator = mouse.value.el?.contains(event.target as any)
 
+    if (props.closeOnContentClick && isClickOnContent) {
+        show.value = false
+        return
+    }
+
     if (isClickOnActivator || isClickOnContent) return
 
     show.value = false
