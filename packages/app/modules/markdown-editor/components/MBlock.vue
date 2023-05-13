@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div class="flex min-h-[50px] items-center group">
+    <div class="flex min-h-[30px] items-center group">
         <div class="w-[50px] flex justify-center">
             <v-menu offset-y offset-x close-on-content-click>
                 <template #activator="{ attrs }">

@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "declaration": false,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
     "outDir": "dist",
