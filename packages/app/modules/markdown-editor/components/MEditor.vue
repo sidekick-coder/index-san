@@ -5,6 +5,7 @@ import { Parser, Node as MarkdownNode, NodeType } from '@language-kit/markdown'
 import MHeading from './MHeading.vue'
 import MParagraph from './MParagraph.vue'
 import MSetup from './MSetup.vue'
+import MComponent from './MComponent.vue'
 import { provideContext } from '../composable/context'
 
 const props = defineProps({
@@ -73,6 +74,13 @@ function isSetup(node: MarkdownNode) {
                     :model-value="node"
                     @update:model-value="updateNode(index, $event)"
                 />
+
+                <MComponent
+                    v-else-if="node.type === 'component'"
+                    :model-value="node"
+                    @update:model-value="updateNode(index, $event)"
+                />
+
                 <MHeading
                     v-else-if="node.type === 'heading'"
                     :model-value="node"

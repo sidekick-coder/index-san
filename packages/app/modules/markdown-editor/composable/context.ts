@@ -88,6 +88,8 @@ function createMainContext() {
     return reactive({
         instance,
         sfc,
+        methods,
+        variables,
         mount,
         setInstance,
     })
