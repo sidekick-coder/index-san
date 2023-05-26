@@ -1,27 +1,17 @@
 import { defineExportProcessor } from '../processors/exports'
 import { defineImportProcessor } from '../processors/imports'
-
-interface ImportResolver {
-    test: (id: string) => boolean
-    order?: number
-    resolve: (id: string) => Promise<any>
-}
-
-interface Processor {
-    order?: number
-    process: (code: string) => string | undefined
-}
+import Processor from '../types/processor'
+import Resolver from '../types/resolver'
 
 const prefix = '__INDEX_SAN'
 
-export function useCode() {
+export function useEvaluation() {
     const state = {
-        prefix: '__INDEX_SAN',
-        resolvers: [] as ImportResolver[],
+        resolvers: [] as Resolver[],
         processors: [] as Processor[],
     }
 
-    function addResolver(resolver: ImportResolver) {
+    function addResolver(resolver: Resolver) {
         state.resolvers.push(resolver)
     }
 
@@ -29,7 +19,7 @@ export function useCode() {
         state.processors.push(Processor)
     }
 
-    function setResolvers(resolvers: ImportResolver[]) {
+    function setResolvers(resolvers: Resolver[]) {
         state.resolvers = resolvers
     }
 
@@ -115,8 +105,8 @@ export function useCode() {
         const exported = {} as Record<string, any>
 
         const context = {
-            [`${state.prefix}_IMPORT`]: (moduleId: string) => spec.imports[moduleId],
-            [`${state.prefix}_EXPORT`]: (newExported: Record<string, any>) => {
+            [`${prefix}_IMPORT`]: (moduleId: string) => spec.imports[moduleId],
+            [`${prefix}_EXPORT`]: (newExported: Record<string, any>) => {
                 Object.assign(exported, newExported)
             },
         }
