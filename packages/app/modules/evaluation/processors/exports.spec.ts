@@ -2,41 +2,41 @@ import { describe, expect, it } from 'vitest'
 import { defineExportProcessor } from './exports'
 
 describe('useCode', () => {
+    function mount(key: string, value: string) {
+        return `__CUSTOM_EXPORT_HANDLE({${key}:${value}});`
+    }
+
     const items = [
-        [`export default { foo: 'bar' }`, `__CUSTOM_EXPORT_HANDLE({ default: { foo: 'bar' } })`],
+        [`export default { foo: 'bar' }`, mount('default', `{ foo: 'bar' }`)],
         [
             `export default function (){ return {foo: 'bar'} }`,
-            `__CUSTOM_EXPORT_HANDLE({ default: function (){ return {foo: 'bar'} } })`,
+            mount('default', `function (){ return {foo: 'bar'} }`),
         ],
-        [`export const foo = 'bar'`, `__CUSTOM_EXPORT_HANDLE({ foo: 'bar' })`],
+        [`export const foo = 'bar'`, mount('foo', `'bar'`)],
+        [`export const foo = ref("Hello word")`, mount('foo', `ref("Hello word")`)],
+        [`export function foo(){}`, mount('foo', `function () {}`)],
+        [`export function foo(arg1,arg2){}`, mount('foo', `function (arg1,arg2) {}`)],
+        [
+            `export default {\nfoo: 'bar',\nbaz: 'qux'\n}`,
+            mount('default', `{\nfoo: 'bar',\nbaz: 'qux'\n}`),
+        ],
         [
             `
-            export default {
-                foo: 'bar',
-                baz: 'qux'
-            }
+                export const foo = 'bar';
+                export const baz = 'qux';
             `,
             `
-            __CUSTOM_EXPORT_HANDLE({
-                default: {
-                    foo: 'bar',
-                    baz: 'qux'
-                }
-            })
+                ${mount('foo', `'bar'`)}
+                ${mount('baz', `'qux'`)}
             `,
         ],
     ]
 
     it.each(items)('should replace %s with %s', async (source, expected) => {
-        const processor = defineExportProcessor((key, value) => {
-            return `__CUSTOM_EXPORT_HANDLE({ ${key}: ${value} })`
-        })
+        const processor = defineExportProcessor(mount)
 
         const result = processor(source)
 
-        const resultWithoutSpaces = result.replace(/\s/g, '')
-        const expectedWithoutSpaces = expected.replace(/\s/g, '')
-
-        expect(resultWithoutSpaces).toBe(expectedWithoutSpaces)
+        expect(result).toBe(expected)
     })
 })

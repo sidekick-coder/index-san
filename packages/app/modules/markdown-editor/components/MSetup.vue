@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import * as Vue from 'vue'
+
+import { waitFor } from '@composables/utils'
 import { useContext } from '../composable/context'
 import { Node as MarkdownNode } from '@language-kit/markdown'
-
-import debounce from 'lodash/debounce'
+import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
+import { defineFunctionProcessor } from '@modules/evaluation/processors/functions'
+import { defineVariableProcessor } from '@modules/evaluation/processors/variables'
 
 const props = defineProps({
     modelValue: {
@@ -12,10 +16,39 @@ const props = defineProps({
 })
 
 const loading = ref(false)
-const context = useContext()
-const instanceRef = ref<any>()
 
-const load = debounce(() => {
+const evaluation = useEvaluation()
+
+evaluation.addResolver({
+    test: (id) => id === 'vue',
+    resolve: () => Promise.resolve(Vue),
+})
+
+evaluation.addProcessor({
+    order: 1,
+    process: defineFunctionProcessor((name, params, body) => {
+        return `export function ${name}(${params}) {${body}}`
+    }),
+})
+
+evaluation.addProcessor({
+    order: 1,
+    process: defineVariableProcessor((name, value) => {
+        return `
+            const ${name} = ${value}
+
+            __INDEX_SAN_EXPORT({ ${name} })
+        `
+    }),
+})
+
+const context = useContext()
+
+async function load() {
+    if (loading.value) {
+        await waitFor(() => !loading.value)
+    }
+
     loading.value = true
 
     const startCodeIndex = props.modelValue.tokens.findIndex((t) => t.value === '\n')
@@ -25,22 +58,18 @@ const load = debounce(() => {
         .map((t) => t.value)
         .join('')
 
-    context.mount(code)
+    const result = await evaluation.run(code)
+
+    Object.assign(context, result)
 
     loading.value = false
-}, 1000)
+}
 
 watch(() => props.modelValue, load, {
     immediate: true,
 })
-
-watch(instanceRef, (value) => {
-    if (!value) return
-
-    context.setInstance(value)
-})
 </script>
 
 <template>
-    <component :is="context.sfc" v-if="context.sfc && !loading" ref="instanceRef" />
+    <div class="hidden"></div>
 </template>

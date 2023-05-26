@@ -82,23 +82,23 @@ function findAttrs() {
         if (!name) return
 
         if (name[0] === ':' && value[1] === '`') {
-            // replace ${variable} to ${context.instance.variable}
+            // replace ${variable} to ${context.variable}
             value = value.replace(/\$\{([a-zA-Z0-9_]+)\}/g, (_, name) => {
-                return `\${context.instance.${name}}`
+                return `\${context.${name}}`
             })
         }
 
         if (name[0] === '@' && !value.includes('(')) {
-            // replace method to context.instance.method
+            // replace method to context.method
             value = value.replace(/([a-zA-Z0-9_]+)/g, (_, name) => {
-                return `context.instance.${name}`
+                return `context.${name}`
             })
         }
 
         if (name[0] === '@' && value.includes('(')) {
-            // replace method(..args) to context.instance.method(..args)
+            // replace method(..args) to context.method(..args)
             value = value.replace(/([a-zA-Z0-9_]+)\(/g, (_, name) => {
-                return `context.instance.${name}(`
+                return `context.${name}(`
             })
         }
 
@@ -115,15 +115,15 @@ function findContent() {
 
     let content = tokens.map((t) => t.value).join('')
 
-    // replace {{variable}} to {{context.instance.variable}}
+    // replace {{variable}} to {{context.variable}}
     content = content.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (_, name) => {
-        return `{{context.instance.${name}}}`
+        return `{{context.${name}}}`
     })
 
-    // replace {{ `...${variable}...` }} to {{ `...${context.instance.variable}...` }}
+    // replace {{ `...${variable}...` }} to {{ `...${context.variable}...` }}
     content = content.replace(/\{\{ `(.+)` \}\}/g, (_, content) => {
         return `{{ \`${content.replace(/\$\{([a-zA-Z0-9_]+)\}/g, (_, name) => {
-            return `\${context.instance.${name}}`
+            return `\${context.${name}}`
         })}\` }}`
     })
 
@@ -149,8 +149,6 @@ function load() {
 
     componentData.value.template = template
 
-    console.log(componentData.value)
-
     setTimeout(() => {
         loading.value = false
     }, 800)
@@ -166,7 +164,7 @@ onMounted(load)
         <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
         <component
             :is="componentData as any"
-            v-else-if="componentData.template && context.instance"
+            v-else-if="componentData.template"
             :context="context"
         />
     </m-block>

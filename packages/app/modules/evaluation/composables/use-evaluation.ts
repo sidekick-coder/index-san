@@ -12,11 +12,17 @@ export function useEvaluation() {
     }
 
     function addResolver(resolver: Resolver) {
-        state.resolvers.push(resolver)
+        state.resolvers.push({
+            order: 99,
+            ...resolver,
+        })
     }
 
     function addProcessor(Processor: Processor) {
-        state.processors.push(Processor)
+        state.processors.push({
+            order: 99,
+            ...Processor,
+        })
     }
 
     function setResolvers(resolvers: Resolver[]) {
@@ -64,6 +70,7 @@ export function useEvaluation() {
 
     async function mount(source: string) {
         state.resolvers.sort((a, b) => (a.order || 99) - (b.order || 99))
+        state.processors.sort((a, b) => (a.order || 99) - (b.order || 99))
 
         let code = source
         const { resolved, notResolved } = await findModules(source)
@@ -92,6 +99,9 @@ export function useEvaluation() {
 
         const fn = new Function(wrapCode)
 
+        // update name
+        Object.defineProperty(fn, 'name', { value: 'useEvaluate' })
+
         fn.call(context)
     }
 
@@ -119,13 +129,13 @@ export function useEvaluation() {
     // add default processors
     addProcessor({
         process: defineExportProcessor((key, value) => {
-            return `${prefix}_EXPORT({ ${key}: ${value} })`
+            return `${prefix}_EXPORT({ ${key}: ${value} });`
         }),
     })
 
     addProcessor({
         process: defineImportProcessor((statements, moduleId) => {
-            return `const ${statements} = ${prefix}_IMPORT("${moduleId}")`
+            return `const ${statements} = ${prefix}_IMPORT("${moduleId}");`
         }),
     })
 
@@ -134,6 +144,7 @@ export function useEvaluation() {
         evaluate,
         run,
         addResolver,
+        addProcessor,
         setResolvers,
     }
 }
