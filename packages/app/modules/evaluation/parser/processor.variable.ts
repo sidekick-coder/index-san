@@ -2,19 +2,106 @@ import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
 import { Node, NodeType, NodeVariable } from '../types/node'
 import { ParserToken } from '../types/token'
+import { useTokenHelper } from '../helpers/token-helper'
 
-function findName(tokens: ParserToken[]) {
-    return tokens.slice(1).find((t) => t.type === TokenType.Word)
+const helper = useTokenHelper()
+
+const declarationTypes = ['const', 'let', 'var']
+
+export function findVariableNameTokens(tokens: ParserToken[]) {
+    const declarationIndex = tokens.findIndex((t) => declarationTypes.includes(t.value))
+    const separatorIndex = tokens.findIndex((t) => t.value === '=')
+
+    if ([declarationIndex, separatorIndex].includes(-1)) return []
+
+    const start = declarationIndex + 1
+    const end = separatorIndex
+
+    return tokens.slice(start, end)
 }
 
-function findDeclaration(tokens: ParserToken[]) {
-    const declarationIndex = tokens.findIndex((t, i) => {
-        const prev = tokens[i - 2]
+export function findVariableName(tokens: ParserToken[]) {
+    const nameTokens = findVariableNameTokens(tokens)
 
-        return prev && prev.value === '='
+    if (!nameTokens.length) return ''
+
+    const nameWithoutWhiteSpace = helper.withoutWhiteSpace(nameTokens)
+
+    return helper.toString(nameWithoutWhiteSpace)
+}
+
+export function findVariableEndIndex(tokens: ParserToken[]) {
+    const startIndex = tokens.findIndex((t) => t.value === '=')
+
+    const startStatement = tokens[startIndex + 2]
+
+    if (!startStatement || startIndex === -1) return -1
+
+    const startStatementIndex = tokens.findIndex((t) => t === startStatement)
+
+    const cases = [
+        { start: `"`, end: `"` },
+        { start: `'`, end: `'` },
+        { start: '`', end: '`' },
+        { start: '{', end: '}' },
+        { start: '[', end: ']' },
+    ]
+
+    const currentCase = cases.find((c) => c.start === startStatement.value)
+    const isFunction = startStatement.value === 'function'
+    const isArrowFunction = helper.toString(tokens.slice(startStatementIndex)).includes('() => {')
+    const isFunctionCall = helper.isCall(tokens.slice(startStatementIndex))
+
+    const endMustBeBreakLine = !currentCase && !isFunction
+
+    return tokens.findIndex((t, i) => {
+        if (i <= startStatementIndex) return false
+
+        // const test = "123"
+        // const test = '123'
+        // const test = `123`
+        // const test = { a: 1 }
+
+        if (currentCase) {
+            return t.value === currentCase.end
+        }
+
+        // const test = function() {}
+        if (isFunction) {
+            return t.value === '}'
+        }
+
+        // const test = () => {}
+        if (isArrowFunction) {
+            return t.value === '}'
+        }
+
+        // const test = ref(1)
+        // const test = ref({ a: 1 })
+        if (isFunctionCall) {
+            return t.value === ')'
+        }
+
+        // const test = 123
+        // const test = 1 + 2
+        // const test = anotherVariable
+        if (endMustBeBreakLine && t.type === TokenType.BreakLine) return true
+
+        if (t.type === TokenType.EndOfFile) return true
+
+        return false
     })
+}
 
-    return tokens[declarationIndex]
+export function findVariableValue(tokens: ParserToken[]) {
+    const start = tokens.findIndex((t) => t.value === '=')
+    const end = findVariableEndIndex(tokens)
+
+    if (start === -1 || end === -1) return ''
+
+    const valueTokens = tokens.slice(start + 2, end + 1)
+
+    return helper.toString(valueTokens)
 }
 
 export default defineProcessor({
@@ -27,68 +114,22 @@ export default defineProcessor({
             nodes,
         }
 
-        const current = tokens[0]
-        const name = findName(tokens)
-        const declaration = findDeclaration(tokens)
-        const declarationIndex = tokens.indexOf(declaration)
-
-        if (!current || !declaration || !name) {
+        if (!['const', 'let', 'var'].includes(tokens[0].value)) {
             return result
         }
 
-        if (!['const', 'let', 'var'].includes(current.value)) {
-            return result
-        }
-
-        const openCloseCases = [
-            { open: '"', close: '"' },
-            { open: "'", close: "'" },
-            { open: '`', close: '`' },
-            { open: '{', close: '}' },
-            { open: '[', close: ']' },
-        ]
-
-        const openCase = openCloseCases.find((o) => o.open === declaration.value)
-
-        const isCall =
-            declaration.type === TokenType.Word && tokens[declarationIndex + 1].value === '('
-
-        let isOpen = !!openCase
-
-        const endIndex = tokens.findIndex((t, i) => {
-            if (i <= declarationIndex) return false
-
-            if (openCase && isOpen) {
-                isOpen = t.value !== openCase.close
-
-                return false
-            }
-
-            if (isCall) {
-                return t.value === ')'
-            }
-
-            if (t.type === TokenType.BreakLine) return true
-
-            if (t.type === TokenType.EndOfFile) return true
-
-            if (t.value === ';') return true
-
-            return false
-        })
+        const endIndex = findVariableEndIndex(tokens)
 
         if (endIndex === -1) return result
 
+        const current = tokens[0]
+        const name = findVariableName(tokens)
         const nodeTokens = tokens.slice(0, endIndex + 1)
-
-        const value = nodeTokens
-            .slice(declarationIndex)
-            .map((t) => t.value)
-            .join('')
+        const value = findVariableValue(tokens)
 
         const node: NodeVariable = {
             start: current.start,
-            name: name.value,
+            name: name,
             value: value,
             end: tokens[endIndex].end,
             type: NodeType.Variable,

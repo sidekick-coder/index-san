@@ -4,6 +4,7 @@ import { Processor } from '../types/processor'
 import { ParserToken } from '../types/token'
 
 import importProcessor from './processor.import'
+import exportProcessor from './processor.export'
 import variableProcessor from './processor.variable'
 import functionProcessor from './processor.function'
 import eofProcessor from './processor.eof'
@@ -12,6 +13,7 @@ export function createParser() {
     const lexer = new Lexer()
     const processors: Processor[] = [
         importProcessor,
+        exportProcessor,
         variableProcessor,
         functionProcessor,
         eofProcessor,

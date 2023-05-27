@@ -5,6 +5,7 @@ export enum NodeType {
     Variable = 'Variable',
     Function = 'Function',
     Import = 'Import',
+    Export = 'Export',
 }
 
 export interface Node {
@@ -30,5 +31,11 @@ export interface NodeFunction extends Node {
 export interface NodeImport extends Node {
     type: NodeType.Import
     moduleId: string
+    statements: string
+}
+
+export interface NodeExport extends Node {
+    type: NodeType.Export
+    key: string
     statements: string
 }
