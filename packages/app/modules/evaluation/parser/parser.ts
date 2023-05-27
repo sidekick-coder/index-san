@@ -2,13 +2,20 @@ import { Lexer, TokenType } from '@language-kit/lexer'
 import { Node } from '../types/node'
 import { Processor } from '../types/processor'
 import { ParserToken } from '../types/token'
+
+import importProcessor from './processor.import'
 import variableProcessor from './processor.variable'
 import functionProcessor from './processor.function'
 import eofProcessor from './processor.eof'
 
 export function createParser() {
     const lexer = new Lexer()
-    const processors: Processor[] = [variableProcessor, functionProcessor, eofProcessor]
+    const processors: Processor[] = [
+        importProcessor,
+        variableProcessor,
+        functionProcessor,
+        eofProcessor,
+    ]
 
     function toTokens(value: string) {
         const tokens = lexer.tokenize(value)
