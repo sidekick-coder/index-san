@@ -12,3 +12,9 @@ export interface Node {
     type: NodeType
     tokens: ParserToken[]
 }
+
+export interface NodeVariable extends Node {
+    type: NodeType.Variable
+    name: string
+    value: string
+}

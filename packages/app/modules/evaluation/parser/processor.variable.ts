@@ -1,6 +1,21 @@
 import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { Node, NodeType } from '../types/node'
+import { Node, NodeType, NodeVariable } from '../types/node'
+import { ParserToken } from '../types/token'
+
+function findName(tokens: ParserToken[]) {
+    return tokens.slice(1).find((t) => t.type === TokenType.Word)
+}
+
+function findDeclaration(tokens: ParserToken[]) {
+    const declarationIndex = tokens.findIndex((t, i) => {
+        const prev = tokens[i - 2]
+
+        return prev && prev.value === '='
+    })
+
+    return tokens[declarationIndex]
+}
 
 export default defineProcessor({
     process(options) {
@@ -13,20 +28,17 @@ export default defineProcessor({
         }
 
         const current = tokens[0]
+        const name = findName(tokens)
+        const declaration = findDeclaration(tokens)
+        const declarationIndex = tokens.indexOf(declaration)
 
-        const isVariable = ['const', 'let', 'var'].includes(current.value)
+        if (!current || !declaration || !name) {
+            return result
+        }
 
-        if (!isVariable) return result
-
-        const declarationIndex = tokens.findIndex((t, i) => {
-            const prev = tokens[i - 2]
-
-            return prev && prev.value === '='
-        })
-
-        const declaration = tokens[declarationIndex]
-
-        if (!declaration) return result
+        if (!['const', 'let', 'var'].includes(current.value)) {
+            return result
+        }
 
         const openCloseCases = [
             { open: '"', close: '"' },
@@ -67,11 +79,20 @@ export default defineProcessor({
 
         if (endIndex === -1) return result
 
-        const node: Node = {
+        const nodeTokens = tokens.slice(0, endIndex + 1)
+
+        const value = nodeTokens
+            .slice(declarationIndex)
+            .map((t) => t.value)
+            .join('')
+
+        const node: NodeVariable = {
             start: current.start,
+            name: name.value,
+            value: value,
             end: tokens[endIndex].end,
             type: NodeType.Variable,
-            tokens: tokens.slice(0, endIndex + 1),
+            tokens: nodeTokens,
         }
 
         result.processed = true
