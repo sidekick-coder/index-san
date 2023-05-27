@@ -1,9 +1,8 @@
-import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
 import { Node, NodeType } from '../types/node'
 
 export default defineProcessor({
-    order: 98,
+    order: 99,
     process(options) {
         const { tokens, nodes } = options
 
@@ -15,18 +14,16 @@ export default defineProcessor({
 
         const current = tokens[0]
 
-        const isEof = current.type === TokenType.EndOfFile
-
-        if (!isEof) return result
-
-        const lastNode = result.nodes[nodes.length - 1]
-
-        if (!lastNode) return result
-
-        lastNode.tokens.push(current)
+        const node: Node = {
+            type: NodeType.Unknown,
+            tokens: [current],
+            start: current.start,
+            end: current.end,
+        }
 
         result.processed = true
-        result.tokens = tokens.slice(1)
+        result.nodes.push(node)
+        result.tokens.shift()
 
         return result
     },
