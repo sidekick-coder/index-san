@@ -7,8 +7,7 @@ import { Node as MarkdownNode } from '@language-kit/markdown'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import { createParser } from '@modules/evaluation/parser/parser'
 import { useNodeHelper } from '@modules/evaluation/helpers/node-helper'
-import { ParserToken } from '@modules/evaluation/types/token'
-import { TokenType } from '@language-kit/lexer'
+import npmResolver from '@modules/evaluation/resolvers/npm'
 
 const props = defineProps({
     modelValue: {
@@ -28,6 +27,8 @@ evaluation.addResolver({
     test: (id) => id === 'vue',
     resolve: () => Promise.resolve(Vue),
 })
+
+evaluation.addResolver(npmResolver)
 
 async function load() {
     if (loading.value) {

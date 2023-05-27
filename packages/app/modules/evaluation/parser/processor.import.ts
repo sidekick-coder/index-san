@@ -5,6 +5,18 @@ import { ParserToken } from '../types/token'
 
 const quotes = [`'`, `"`, '`']
 
+function findImportEndIndex(tokens: ParserToken[]) {
+    const start = tokens.findIndex((t) => t.value === 'from')
+
+    if (start === -1) return -1
+
+    return tokens.findIndex((t, i) => {
+        if (i <= start + 2) return false
+
+        return quotes.includes(t.value)
+    })
+}
+
 function findStatements(tokens: ParserToken[]) {
     const start = tokens[2]
 
@@ -33,9 +45,7 @@ function findModuleId(tokens: ParserToken[]) {
         return quotes.includes(t.value)
     })
 
-    if (start === -1 || end === -1) {
-        return ''
-    }
+    if ([start, end].includes(-1)) return ''
 
     return tokens
         .slice(start + 1, end)
@@ -53,29 +63,17 @@ export default defineProcessor({
             nodes,
         }
 
-        const current = tokens[0]
-        const moduleId = findModuleId(tokens)
-
-        if (current.value !== 'import') {
+        if (tokens[0].value !== 'import') {
             return result
         }
 
-        const endIndex = tokens.findIndex((t, i) => {
-            const prev = tokens[i - 1]
-
-            if (!prev) return false
-
-            if (prev.type !== TokenType.Word) return false
-
-            if (prev.value !== moduleId) return false
-
-            return quotes.includes(t.value)
-        })
+        const endIndex = findImportEndIndex(tokens)
 
         if (endIndex === -1) {
             return result
         }
 
+        const moduleId = findModuleId(tokens)
         const nodeTokens = tokens.slice(0, endIndex + 1)
         const statementsTokens = findStatements(tokens)
         const statements = statementsTokens.map((t) => t.value).join('')

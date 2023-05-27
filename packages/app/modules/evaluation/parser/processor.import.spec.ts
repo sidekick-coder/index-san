@@ -9,6 +9,7 @@ describe('Processor import', () => {
     it.each([
         ["import lodash from 'lodash'", 'lodash', 'lodash'],
         [`import lodash from "lodash"`, 'lodash', 'lodash'],
+        [`import lodash from "npm:lodash"`, 'npm:lodash', 'lodash'],
         ['import lodash from `lodash`', 'lodash', 'lodash'],
         ['import { ref } from "vue"', 'vue', '{ ref }'],
         ['import { ref, computed } from "vue"', 'vue', '{ ref, computed }'],

@@ -3,7 +3,7 @@ import { createParser } from '../parser/parser'
 import { NodeExport, NodeImport, NodeType } from '../types/node'
 import { Processor } from '../types/processor'
 
-import Resolver from '../types/resolver'
+import { Resolver } from '../types/resolver'
 
 export function useEvaluation() {
     const parser = createParser()
@@ -70,7 +70,11 @@ export function useEvaluation() {
         nodes
             .filter((n) => n.type === NodeType.Import)
             .forEach((node: NodeImport) => {
-                const newCode = `const ${node.statements} = ${importIdentifier}("${node.moduleId}");`
+                let newCode = `const ${node.statements} = ${importIdentifier}("${node.moduleId}");`
+
+                if (!node.statements.includes('{')) {
+                    newCode = `const ${node.statements} = ${importIdentifier}("${node.moduleId}").default;`
+                }
 
                 helper.replaceNodeByCode(nodes, node, newCode)
             })
