@@ -1,6 +1,6 @@
 import { Token } from '@language-kit/lexer'
 
-export interface ParserToken extends Token {
+export class ParserToken extends Token {
     start: number
     end: number
 }

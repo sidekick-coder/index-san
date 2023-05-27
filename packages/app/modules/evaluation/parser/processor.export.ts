@@ -110,11 +110,11 @@ export default defineProcessor({
 
         const node: NodeExport = {
             type: NodeType.Export,
+            start: nodeTokens[0].start,
+            end: nodeTokens[nodeTokens.length - 1].end,
             key,
             statements: statements,
             tokens: nodeTokens,
-            end: nodeTokens[nodeTokens.length - 1].end,
-            start: nodeTokens[0].start,
         }
 
         result.processed = true

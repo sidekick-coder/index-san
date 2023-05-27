@@ -128,11 +128,11 @@ export default defineProcessor({
         const value = findVariableValue(tokens)
 
         const node: NodeVariable = {
+            type: NodeType.Variable,
             start: current.start,
+            end: tokens[endIndex].end,
             name: name,
             value: value,
-            end: tokens[endIndex].end,
-            type: NodeType.Variable,
             tokens: nodeTokens,
         }
 

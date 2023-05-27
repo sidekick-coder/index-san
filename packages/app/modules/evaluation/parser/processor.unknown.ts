@@ -16,9 +16,9 @@ export default defineProcessor({
 
         const node: Node = {
             type: NodeType.Unknown,
-            tokens: [current],
             start: current.start,
             end: current.end,
+            tokens: [current],
         }
 
         result.processed = true

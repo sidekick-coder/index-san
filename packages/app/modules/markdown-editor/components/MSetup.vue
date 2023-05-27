@@ -5,8 +5,10 @@ import { waitFor } from '@composables/utils'
 import { useContext } from '../composable/context'
 import { Node as MarkdownNode } from '@language-kit/markdown'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
-import { defineFunctionProcessor } from '@modules/evaluation/processors/functions'
-import { defineVariableProcessor } from '@modules/evaluation/processors/variables'
+import { createParser } from '@modules/evaluation/parser/parser'
+import { useNodeHelper } from '@modules/evaluation/helpers/node-helper'
+import { ParserToken } from '@modules/evaluation/types/token'
+import { TokenType } from '@language-kit/lexer'
 
 const props = defineProps({
     modelValue: {
@@ -18,31 +20,14 @@ const props = defineProps({
 const loading = ref(false)
 
 const evaluation = useEvaluation()
+const parser = createParser()
+const nodeHelper = useNodeHelper()
+const context = useContext()
 
 evaluation.addResolver({
     test: (id) => id === 'vue',
     resolve: () => Promise.resolve(Vue),
 })
-
-evaluation.addProcessor({
-    order: 1,
-    process: defineFunctionProcessor((name, params, body) => {
-        return `export function ${name}(${params}) {${body}}`
-    }),
-})
-
-evaluation.addProcessor({
-    order: 1,
-    process: defineVariableProcessor((name, value) => {
-        return `
-            const ${name} = ${value}
-
-            __INDEX_SAN_EXPORT({ ${name} })
-        `
-    }),
-})
-
-const context = useContext()
 
 async function load() {
     if (loading.value) {
@@ -58,7 +43,23 @@ async function load() {
         .map((t) => t.value)
         .join('')
 
-    const result = await evaluation.run(code)
+    const nodes = parser.toNodes(code)
+
+    const toExportNames = [] as string[]
+
+    nodes.forEach((node) => {
+        if (nodeHelper.isVariable(node) || nodeHelper.isFunction(node)) {
+            toExportNames.push(node.name)
+        }
+    })
+
+    let preparedCode = nodeHelper.toString(nodes)
+
+    preparedCode += '\n\n'
+
+    preparedCode += toExportNames.map((n) => `export const ${n} = ${n}`).join('\n')
+
+    const result = await evaluation.run(preparedCode)
 
     Object.assign(context, result)
 

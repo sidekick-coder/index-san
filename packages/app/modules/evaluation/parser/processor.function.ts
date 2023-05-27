@@ -70,13 +70,13 @@ export default defineProcessor({
         const body = findBody(nodeTokens)
 
         const node: NodeFunction = {
+            type: NodeType.Function,
             start: current.start,
             end: tokens[endIndex].end,
-            type: NodeType.Function,
-            tokens: nodeTokens,
             name: name,
             params: params,
             body: body,
+            tokens: nodeTokens,
         }
 
         result.processed = true

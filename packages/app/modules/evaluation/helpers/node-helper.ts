@@ -1,5 +1,5 @@
 import { createParser } from '../parser/parser'
-import { Node } from '../types/node'
+import { Node, NodeFunction, NodeType, NodeVariable } from '../types/node'
 import { useTokenHelper } from './token-helper'
 
 export function useNodeHelper() {
@@ -48,10 +48,21 @@ export function useNodeHelper() {
         return result.join('')
     }
 
+    function isVariable(node: Node): node is NodeVariable {
+        return node.type === NodeType.Variable
+    }
+
+    function isFunction(node: Node): node is NodeFunction {
+        return node.type === NodeType.Function
+    }
+
     return {
         toString,
         replaceNodeInCode,
         replaceNode,
         replaceNodeByCode,
+        updateNodeStartAndEnd,
+        isVariable,
+        isFunction,
     }
 }

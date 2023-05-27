@@ -86,11 +86,11 @@ export default defineProcessor({
 
         const node: NodeImport = {
             type: NodeType.Import,
-            tokens: nodeTokens,
             start: nodeTokens[0].start,
             end: nodeTokens[nodeTokens.length - 1].end,
             moduleId,
             statements,
+            tokens: nodeTokens,
         }
 
         result.processed = true
