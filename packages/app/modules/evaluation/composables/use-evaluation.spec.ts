@@ -8,20 +8,23 @@ describe('useEvaluation', () => {
         composable.setResolvers([])
     })
 
-    it('should use resolver to handle imports', async () => {
-        const lodash = { camelCase: () => '' }
+    it.each([
+        ['import lodash from "lodash"', `const lodash = ${composable.importIdentifier}("lodash");`],
+        [
+            'import { camelCase } from "lodash"',
+            `const { camelCase } = ${composable.importIdentifier}("lodash");`,
+        ],
+        [
+            'import {\n ref\ncomputed\n } from "vue"',
+            `const {\n ref\ncomputed\n } = ${composable.importIdentifier}("vue");`,
+        ],
+    ])('should replace imports to handle imports', async (code, expected) => {
+        const result = composable.mount(code)
 
-        composable.addResolver({
-            test: (id) => id === 'lodash',
-            resolve: () => Promise.resolve(lodash),
-        })
-
-        const result = await composable.mount(`import { camelCase } from 'lodash'`)
-
-        expect(result.imports.lodash).toEqual(lodash)
+        expect(result).toBe(expected)
     })
 
-    it('should handle multiple resolvers and imports', async () => {
+    it('should use resolver to handle imports', async () => {
         const lodash = { camelCase: () => '' }
         const vue = { ref: () => '' }
 
@@ -35,16 +38,16 @@ describe('useEvaluation', () => {
             resolve: () => Promise.resolve(vue),
         })
 
-        const result = await composable.mount(`
+        const result = await composable.mountImports(`
             import { camelCase } from 'lodash'
             import { ref } from 'vue'
         `)
 
-        expect(result.imports.lodash).toEqual(lodash)
-        expect(result.imports.vue).toEqual(vue)
+        expect(result.lodash).toEqual(lodash)
+        expect(result.vue).toEqual(vue)
     })
 
-    it('should run code and return results', async () => {
+    it('should run code and return exported results', async () => {
         const lodash = { uppercase: (v: string) => v.toUpperCase() }
         const vue = { ref: (v: string) => `ref(${v})` }
 
@@ -64,7 +67,7 @@ describe('useEvaluation', () => {
 
             const foo = uppercase('foo')
             const bar = ref('bar')
-            
+
             export default { foo, bar }
         `)
 

@@ -1,11 +1,18 @@
-import { defineExportProcessor } from '../processors/exports'
-import { defineImportProcessor } from '../processors/imports'
-import Processor from '../types/processor'
+import { useNodeHelper } from '../helpers/node-helper'
+import { createParser } from '../parser/parser'
+import { NodeExport, NodeImport, NodeType } from '../types/node'
+import { Processor } from '../types/processor'
+
 import Resolver from '../types/resolver'
 
-const prefix = '__INDEX_SAN'
-
 export function useEvaluation() {
+    const parser = createParser()
+    const helper = useNodeHelper()
+
+    const identifierPrefix = '___INTERNAL_EVALUATION_'
+    const importIdentifier = `${identifierPrefix}_IMPORT`
+    const exportIdentifier = `${identifierPrefix}_EXPORT`
+
     const state = {
         resolvers: [] as Resolver[],
         processors: [] as Processor[],
@@ -29,64 +36,54 @@ export function useEvaluation() {
         state.resolvers = resolvers
     }
 
-    function findModuleImportNames(code: string) {
-        const regex = /import\s+([a-zA-Z0-9_,\s{}]+)\s+from\s+['"](.*)['"]/g
+    async function mountImports(source: string) {
+        const nodes = parser
+            .toNodes(source)
+            .filter((n) => n.type === NodeType.Import) as NodeImport[]
 
-        const matched = code.matchAll(regex)
+        const names = nodes.map((n) => n.moduleId)
 
-        if (!matched) {
-            return []
-        }
-
-        return Array.from(matched).map((m) => m[2])
-    }
-
-    async function findModules(source: string) {
-        const names = findModuleImportNames(source)
-
-        const resolved = {} as Record<string, any>
-        const notResolved = [] as string[]
+        const result = {} as Record<string, any>
 
         for await (const moduleId of names) {
             const resolver = state.resolvers.find((r) => r.test(moduleId))
 
             if (!resolver) {
-                notResolved.push(moduleId)
-                continue
+                throw new Error(`Resolver not found for ${moduleId}`)
             }
 
             const moduleResolved = await resolver.resolve(moduleId)
 
             if (!moduleResolved) {
-                notResolved.push(moduleId)
-                continue
+                throw new Error(`Module not resolved for ${moduleId}`)
             }
 
-            resolved[moduleId] = moduleResolved
+            result[moduleId] = moduleResolved
         }
 
-        return { resolved, notResolved }
+        return result
     }
 
-    async function mount(source: string) {
-        state.resolvers.sort((a, b) => (a.order || 99) - (b.order || 99))
-        state.processors.sort((a, b) => (a.order || 99) - (b.order || 99))
+    function mount(source: string) {
+        const nodes = parser.toNodes(source)
 
-        let code = source
-        const { resolved, notResolved } = await findModules(source)
-        const errors = [] as Error[]
+        nodes
+            .filter((n) => n.type === NodeType.Import)
+            .forEach((node: NodeImport) => {
+                const newCode = `const ${node.statements} = ${importIdentifier}("${node.moduleId}");`
 
-        notResolved.forEach((moduleId) => {
-            errors.push(new Error(`Module ${moduleId} not found`))
-        })
+                helper.replaceNodeByCode(nodes, node, newCode)
+            })
 
-        code = state.processors.reduce((code, Processor) => Processor.process(code) || code, code)
+        nodes
+            .filter((n) => n.type === NodeType.Export)
+            .forEach((node: NodeExport) => {
+                const newCode = `${exportIdentifier}({ ${node.key}: ${node.statements} });`
 
-        return {
-            imports: resolved,
-            errors,
-            code,
-        }
+                helper.replaceNodeByCode(nodes, node, newCode)
+            })
+
+        return helper.toString(nodes)
     }
 
     function evaluate(source: string, context = {}) {
@@ -106,41 +103,27 @@ export function useEvaluation() {
     }
 
     async function run(source: string) {
-        const spec = await mount(source)
-
-        if (spec.errors.length) {
-            return Promise.reject(spec.errors[0])
-        }
-
+        const imports = await mountImports(source)
+        const code = mount(source)
         const exported = {} as Record<string, any>
 
         const context = {
-            [`${prefix}_IMPORT`]: (moduleId: string) => spec.imports[moduleId],
-            [`${prefix}_EXPORT`]: (newExported: Record<string, any>) => {
+            [`${importIdentifier}`]: (moduleId: string) => imports[moduleId],
+            [`${exportIdentifier}`]: (newExported: Record<string, any>) => {
                 Object.assign(exported, newExported)
             },
         }
 
-        evaluate(spec.code, context)
+        evaluate(code, context)
 
         return exported
     }
 
-    // add default processors
-    addProcessor({
-        process: defineExportProcessor((key, value) => {
-            return `${prefix}_EXPORT({ ${key}: ${value} });`
-        }),
-    })
-
-    addProcessor({
-        process: defineImportProcessor((statements, moduleId) => {
-            return `const ${statements} = ${prefix}_IMPORT("${moduleId}");`
-        }),
-    })
-
     return {
+        importIdentifier,
+        exportIdentifier,
         mount,
+        mountImports,
         evaluate,
         run,
         addResolver,

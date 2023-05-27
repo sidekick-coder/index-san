@@ -8,6 +8,7 @@ import exportProcessor from './processor.export'
 import variableProcessor from './processor.variable'
 import functionProcessor from './processor.function'
 import eofProcessor from './processor.eof'
+import unknownProcessor from './processor.unknown'
 
 export function createParser() {
     const lexer = new Lexer()
@@ -17,6 +18,7 @@ export function createParser() {
         variableProcessor,
         functionProcessor,
         eofProcessor,
+        unknownProcessor,
     ]
 
     function toTokens(value: string) {
