@@ -20,6 +20,13 @@ export interface NodeVariable extends Node {
     value: string
 }
 
+export interface NodeFunction extends Node {
+    type: NodeType.Function
+    name: string
+    params: string
+    body: string
+}
+
 export interface NodeImport extends Node {
     type: NodeType.Import
     moduleId: string

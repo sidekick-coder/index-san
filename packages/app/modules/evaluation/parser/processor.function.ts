@@ -1,6 +1,41 @@
 import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { Node, NodeType } from '../types/node'
+import { Node, NodeFunction, NodeType } from '../types/node'
+import { ParserToken } from '../types/token'
+
+function findName(tokens: ParserToken[]) {
+    const token = tokens.slice(1).find((t) => t.type === TokenType.Word)
+
+    return token ? token.value : ''
+}
+
+function findParams(tokens: ParserToken[]) {
+    const start = tokens.findIndex((t) => t.value === '(')
+    const end = tokens.findIndex((t) => t.value === ')')
+
+    if (start === -1 || end === -1) {
+        return ''
+    }
+
+    return tokens
+        .slice(start + 1, end)
+        .map((t) => t.value)
+        .join('')
+}
+
+function findBody(tokens: ParserToken[]) {
+    const start = tokens.findIndex((t) => t.value === '{')
+    const end = tokens.findIndex((t) => t.value === '}')
+
+    if (start === -1 || end === -1) {
+        return ''
+    }
+
+    return tokens
+        .slice(start + 1, end)
+        .map((t) => t.value)
+        .join('')
+}
 
 export default defineProcessor({
     process(options) {
@@ -28,11 +63,20 @@ export default defineProcessor({
 
         if (endIndex === -1) return result
 
-        const node: Node = {
+        const nodeTokens = tokens.slice(0, endIndex + 1)
+
+        const name = findName(nodeTokens)
+        const params = findParams(nodeTokens)
+        const body = findBody(nodeTokens)
+
+        const node: NodeFunction = {
             start: current.start,
             end: tokens[endIndex].end,
             type: NodeType.Function,
-            tokens: tokens.slice(0, endIndex + 1),
+            tokens: nodeTokens,
+            name: name,
+            params: params,
+            body: body,
         }
 
         result.processed = true
