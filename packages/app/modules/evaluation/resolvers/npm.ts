@@ -7,6 +7,6 @@ export default defineResolver({
         const version = 'latest'
         const url = `https://unpkg.com/${name}@${version}?module`
 
-        return import(url)
+        return import(/* @vite-ignore */ url)
     },
 })

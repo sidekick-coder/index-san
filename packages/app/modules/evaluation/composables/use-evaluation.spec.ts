@@ -9,7 +9,10 @@ describe('useEvaluation', () => {
     })
 
     it.each([
-        ['import lodash from "lodash"', `const lodash = ${composable.importIdentifier}("lodash");`],
+        [
+            'import lodash from "lodash"',
+            `const lodash = ${composable.importIdentifier}("lodash").default;`,
+        ],
         [
             'import { camelCase } from "lodash"',
             `const { camelCase } = ${composable.importIdentifier}("lodash");`,

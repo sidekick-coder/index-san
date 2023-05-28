@@ -54,7 +54,7 @@ function update(newHtml: string) {
     tokens.splice(lastIndex, 0, breakLine as any)
 
     const node = new MarkdownNode({
-        type: NodeType.Heading,
+        type: NodeType.Paragraph,
         tokens,
     })
 
@@ -63,7 +63,7 @@ function update(newHtml: string) {
 </script>
 
 <template>
-    <m-block>
+    <m-block :node="model">
         <m-html :model-value="html" @update:model-value="update" />
     </m-block>
 </template>

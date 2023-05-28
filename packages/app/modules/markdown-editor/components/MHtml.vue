@@ -44,13 +44,10 @@ const onInput = debounce((event: InputEvent) => {
 
 const loading = ref(false)
 
-const componentData = shallowRef({
+const componentData = shallowRef<any>({
     template: '<div></div>',
-    props: {
-        context: {
-            type: Object,
-            required: true,
-        },
+    setup() {
+        return context
     },
 })
 
@@ -60,16 +57,6 @@ function setComponentData() {
     loading.value = true
 
     let text = props.modelValue
-
-    // replace any {{ variable }} with {{ context[variable] }}
-    text = text.replaceAll(/{{ ([a-zA-Z0-9]+) }}/g, (match, p1) => {
-        return `{{ context.${p1} }}`
-    })
-
-    // replace any {{ method(arg1, arg2) }} with {{ context.method(arg1, arg2) }}
-    text = text.replaceAll(/{{ ([a-zA-Z0-9]+)\((.*)\) }}/g, (match, p1, p2) => {
-        return `{{ context.${p1}(${p2}) }}`
-    })
 
     componentData.value.template = `<div>${text}</div>`
 
@@ -86,7 +73,7 @@ watch(() => props.modelValue, setComponentData, {
 <template>
     <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
 
-    <component :is="componentData as any" v-else-if="textHaveVariable" :context="context" />
+    <component :is="componentData" v-else-if="textHaveVariable" :context="context" />
 
     <div
         v-else

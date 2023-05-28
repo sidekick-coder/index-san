@@ -40,7 +40,7 @@ async function load() {
     const startCodeIndex = props.modelValue.tokens.findIndex((t) => t.value === '\n')
 
     const code = props.modelValue.tokens
-        .slice(startCodeIndex + 1)
+        .slice(startCodeIndex + 1, props.modelValue.tokens.length - 2)
         .map((t) => t.value)
         .join('')
 
