@@ -116,4 +116,7 @@ export default {
         directoryEntryAlreadyExists: 'Entry already exists: {0}',
         errorRenderingBlock: 'Error rendering block: {0}',
     },
+    markdownEditor: {
+        notEditWhenUseVariable: 'You can not edit this block because it uses a variable',
+    },
 }

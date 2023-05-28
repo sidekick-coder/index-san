@@ -33,11 +33,36 @@ function create() {
         emit('remove')
     }
 
+    function addNode(index: number, node: Node) {
+        nodes.value.splice(index, 0, node)
+
+        emit('add')
+    }
+
+    function addNodeBefore(node: Node, before: Node) {
+        const index = nodes.value.indexOf(node)
+
+        if (index === -1) return
+
+        addNode(index - 1, before)
+    }
+
+    function addNodeAfter(node: Node, after: Node) {
+        const index = nodes.value.indexOf(node)
+
+        if (index === -1) return
+
+        addNode(index + 1, after)
+    }
+
     return reactive({
         nodes,
         on,
         emit,
         updateNodeByIndex,
+        addNode,
+        addNodeAfter,
+        addNodeBefore,
         removeNode,
     })
 }

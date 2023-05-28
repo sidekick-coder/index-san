@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Node } from '@language-kit/markdown'
 import { useManger } from '../composable/nodes-manager'
+import debounce from 'lodash/debounce'
+import { onKeyDown, onKeyStroke } from '@vueuse/core'
+import { useFocusList } from '../composable/focus-list'
 
 const props = defineProps({
     node: {
@@ -14,10 +17,52 @@ const manager = useManger()
 function deleteBlock() {
     manager.removeNode(props.node)
 }
+
+const isFocused = ref(false)
+const root = ref<HTMLElement>()
+const content = ref<HTMLElement>()
+const focusList = useFocusList('[data-block] [contenteditable]')
+
+const setIsFocused = debounce(() => {
+    if (!content.value) return
+
+    isFocused.value = content.value.contains(document.activeElement)
+}, 50)
+
+const focusBlock = debounce((direction = 1) => {
+    if (!root.value) return
+
+    if (!isFocused.value) return
+
+    focusList.focus(direction)
+}, 50)
+
+onKeyStroke('ArrowDown', (e) => {
+    e.preventDefault()
+    focusBlock(1)
+})
+
+onKeyStroke('ArrowUp', (e) => {
+    e.preventDefault()
+    focusBlock(-1)
+})
+
+onMounted(() => {
+    window.addEventListener('focus', setIsFocused, true)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('focus', setIsFocused)
+})
 </script>
 
 <template>
-    <div class="flex min-h-[30px] items-center group">
+    <div
+        ref="root"
+        class="flex min-h-[50px] items-center group hover:bg-b-secondary/50 border-y border-b-secondary/25"
+        :class="isFocused ? 'bg-b-secondary/50' : ''"
+        data-block
+    >
         <div class="w-[50px] flex justify-center">
             <v-menu offset-y close-on-content-click>
                 <template #activator="{ attrs }">
@@ -42,7 +87,7 @@ function deleteBlock() {
             </v-menu>
         </div>
 
-        <div class="flex-1">
+        <div ref="content" class="flex-1">
             <slot />
         </div>
     </div>

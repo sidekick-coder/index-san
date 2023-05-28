@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import debounce from 'lodash/debounce'
 import { useContext } from '../composable/context'
+import { useNotify } from '@modules/notify/store'
+import { useI18n } from 'vue-i18n'
 
 // Props & Emit
 
@@ -37,11 +39,14 @@ watch(() => props.modelValue, setInnerModel, {
 const onInput = debounce((event: InputEvent) => {
     const html = (event.target as HTMLElement).innerHTML
 
-    emit('update:modelValue', html)
+    const text = html.replace('&nbsp;', ' ')
+
+    emit('update:modelValue', text)
 }, 100)
 
 // render vue component
-
+const tm = useI18n()
+const notify = useNotify()
 const loading = ref(false)
 
 const componentData = shallowRef<any>({
@@ -65,6 +70,10 @@ function setComponentData() {
     }, 800)
 }
 
+function alertOfNotEditWhenUseVariable() {
+    notify.warn(tm.t('markdownEditor.notEditWhenUseVariable'))
+}
+
 watch(() => props.modelValue, setComponentData, {
     immediate: true,
 })
@@ -73,7 +82,12 @@ watch(() => props.modelValue, setComponentData, {
 <template>
     <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
 
-    <component :is="componentData" v-else-if="textHaveVariable" :context="context" />
+    <component
+        :is="componentData"
+        v-else-if="textHaveVariable"
+        :context="context"
+        @click="alertOfNotEditWhenUseVariable"
+    />
 
     <div
         v-else
@@ -81,7 +95,6 @@ watch(() => props.modelValue, setComponentData, {
         contenteditable
         class="outline-none"
         @input="onInput"
-        @keydown.enter.prevent
         v-html="innerModel"
     ></div>
 </template>

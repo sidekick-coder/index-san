@@ -28,7 +28,11 @@ module.exports = defineConfig({
         },
     },
     plugins: [
-        vue(),
+        vue({
+            script: {
+                defineModel: true,
+            },
+        }),
         AutoImport({
             dts: path.resolve(__dirname, 'auto-import.d.ts'),
             imports: ['vue'],

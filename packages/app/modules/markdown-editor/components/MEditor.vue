@@ -27,9 +27,11 @@ const manager = provideManager()
 const text = ref('')
 
 function load() {
-    manager.nodes = parser.toNodes(props.modelValue)
+    const prepareText = props.modelValue.replace(/\r\n/g, '\n')
 
-    text.value = props.modelValue
+    manager.nodes = parser.toNodes(prepareText)
+
+    text.value = prepareText
 }
 
 function updateNode(index: number, node: MarkdownNode) {
@@ -48,13 +50,16 @@ function updateText(value: string) {
     emit('update:modelValue', value)
 }
 
+function updateTextFromNodes() {
+    text.value = manager.nodes.map((n) => n.toText()).join('')
+}
+
 watch(() => props.modelValue, load, {
     immediate: true,
 })
 
-manager.on('remove', () => {
-    text.value = manager.nodes.map((n) => n.toText()).join('')
-})
+manager.on('remove', updateTextFromNodes)
+manager.on('add', updateTextFromNodes)
 
 // context
 
@@ -74,7 +79,7 @@ function isSetup(node: MarkdownNode) {
             <MonacoEditor v-model="text" language="markdown" @keydown.ctrl.s="updateText(text)" />
         </div>
 
-        <div class="h-full w-6/12 overflow-auto">
+        <div class="h-full w-6/12 overflow-auto pb-80 border-l border-b-secondary/25">
             <template v-for="(node, index) in manager.nodes" :key="index">
                 <MSetup
                     v-if="isSetup(node)"
