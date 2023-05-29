@@ -3,17 +3,18 @@ import * as Vue from 'vue'
 
 import { waitFor } from '@composables/utils'
 import { useContext } from '../composable/context'
-import { Node as MarkdownNode } from '@language-kit/markdown'
+import { Node as MarkdownNode, NodeType } from '@language-kit/markdown'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import { createParser } from '@modules/evaluation/parser/parser'
 import { useNodeHelper } from '@modules/evaluation/helpers/node-helper'
 import npmResolver from '@modules/evaluation/resolvers/npm'
+import { useMagicKeys, whenever } from '@vueuse/core'
+import MonacoEditor from '../../monaco/components/MEditor.vue'
+import { NodeWithId } from '../types/node'
 
-const props = defineProps({
-    modelValue: {
-        type: Object as () => MarkdownNode,
-        required: true,
-    },
+const model = defineModel({
+    type: Object as PropType<NodeWithId>,
+    required: true,
 })
 
 const loading = ref(false)
@@ -37,14 +38,9 @@ async function load() {
 
     loading.value = true
 
-    const startCodeIndex = props.modelValue.tokens.findIndex((t) => t.value === '\n')
+    if (!model.value.isComponent()) return
 
-    const code = props.modelValue.tokens
-        .slice(startCodeIndex + 1, props.modelValue.tokens.length - 2)
-        .map((t) => t.value)
-        .join('')
-
-    const nodes = parser.toNodes(code)
+    const nodes = parser.toNodes(model.value.body)
 
     const toExportNames = [] as string[]
 
@@ -67,11 +63,72 @@ async function load() {
     loading.value = false
 }
 
-watch(() => props.modelValue, load, {
+watch(() => model.value, load, {
     immediate: true,
+})
+
+// edit
+
+const dialog = ref(false)
+const text = ref('')
+
+const keys = useMagicKeys()
+
+function save() {
+    const payload = [':: setup', text.value, '', '::', ''].join('\n')
+
+    const tokens = parser.toTokens(payload)
+
+    // remove eof
+    tokens.pop()
+
+    const node = new NodeWithId(model.value.id, {
+        ...model.value,
+        tokens,
+    })
+
+    if (node.isComponent()) {
+        node.name = 'setup'
+        node.body = text.value
+    }
+
+    model.value = node
+
+    dialog.value = false
+
+    load()
+}
+
+whenever(keys.Alt_S, () => {
+    dialog.value = !dialog.value
+})
+
+watch(dialog, (v) => {
+    if (!v) return
+
+    text.value = model.value.isComponent() ? model.value.body : ''
 })
 </script>
 
 <template>
-    <div class="hidden"></div>
+    <v-dialog v-model="dialog">
+        <v-card width="800" height="500" color="b-secondary">
+            <v-card-head padding>
+                <v-card-title>
+                    {{ $t('editEntity', [$t('block')]) }}
+                </v-card-title>
+
+                <div class="ml-auto flex gap-x-4">
+                    <v-btn color="danger" @click="dialog = false">
+                        {{ $t('cancel') }}
+                    </v-btn>
+
+                    <v-btn @click="save">
+                        {{ $t('save') }}
+                    </v-btn>
+                </div>
+            </v-card-head>
+            <MonacoEditor v-model="text" language="javascript" autofocus />
+        </v-card>
+    </v-dialog>
 </template>

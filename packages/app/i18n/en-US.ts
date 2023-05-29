@@ -114,6 +114,7 @@ export default {
         collectionNotFound: '@:collection not found: {1}',
         directoryEntryNotFound: 'Entry not found: {0}',
         directoryEntryAlreadyExists: 'Entry already exists: {0}',
+        errorRenderingBlocks: 'Error rendering blocks',
         errorRenderingBlock: 'Error rendering block: {0}',
     },
     markdownEditor: {
