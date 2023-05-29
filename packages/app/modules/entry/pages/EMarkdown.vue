@@ -28,9 +28,12 @@ const props = defineProps({
 // set content
 const store = useStore()
 
+const loading = ref(false)
 const content = ref('')
 
 async function setContent() {
+    loading.value = true
+
     const decoder = new TextDecoder('utf-8')
 
     const contentBuffer = await store.read({
@@ -40,6 +43,8 @@ async function setContent() {
     if (!contentBuffer) return
 
     content.value = decoder.decode(contentBuffer)
+
+    loading.value = false
 }
 
 const save = debounce(async () => {
@@ -104,7 +109,7 @@ const modeLabels: Record<typeof mode.value, string> = {
         </v-layout-toolbar>
 
         <v-layout-content>
-            <m-editor v-model="content" />
+            <m-editor v-if="!loading" v-model="content" />
         </v-layout-content>
     </v-layout>
 </template>

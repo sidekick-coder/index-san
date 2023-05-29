@@ -7,11 +7,12 @@ import { useManger } from '../composable/nodes-manager'
 import { useFocusList } from '../composable/focus-list'
 import { Token } from '@language-kit/lexer'
 import { useCursorHelper } from '../composable/cursor'
+import { NodeWithId } from '../types/node'
 
 // Props & Emit
 
 const model = defineModel({
-    type: MarkdownNode,
+    type: NodeWithId,
     required: true,
 })
 
@@ -41,7 +42,7 @@ function update(newHtml: string) {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new MarkdownNode({
+    const node = new NodeWithId(model.value.id, {
         type: NodeType.Paragraph,
         tokens,
     })
@@ -49,7 +50,7 @@ function update(newHtml: string) {
     model.value = node
 }
 
-watch(model, load)
+// watch(model, load)
 
 onMounted(load)
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MonacoEditor from '../../monaco/components/MEditor.vue'
 import { Parser, Node as MarkdownNode, NodeType } from '@language-kit/markdown'
+import NodeEditor from './NodeEditor.vue'
 
 import uniqueId from 'lodash/uniqueId'
 
@@ -10,56 +11,51 @@ import MSetup from './MSetup.vue'
 import MComponent from './MComponent.vue'
 import { provideContext } from '../composable/context'
 import { provideManager } from '../composable/nodes-manager'
+import { NodeWithId } from '../types/node'
 
-const props = defineProps({
-    modelValue: {
-        type: String,
-        default: '',
-    },
+const model = defineModel({
+    type: String,
+    default: '',
 })
-
-const emit = defineEmits(['update:modelValue'])
 
 const parser = new Parser()
 
 const manager = provideManager()
 
 const text = ref('')
+const nodes = ref<NodeWithId[]>([])
 
-function load() {
-    const prepareText = props.modelValue.replace(/\r\n/g, '\n')
-
-    manager.nodes = parser.toNodes(prepareText)
-
-    text.value = prepareText
+function mountNodes(value: string) {
+    return parser.toNodes(value).map((n) => new NodeWithId(uniqueId('node:'), n))
 }
 
-function updateNode(index: number, node: MarkdownNode) {
-    manager.nodes.splice(index, 1, node)
+function load() {
+    nodes.value = mountNodes(model.value)
 
-    text.value = manager.nodes.map((n) => n.toText()).join('')
-
-    emit('update:modelValue', text.value)
+    text.value = model.value
 }
 
 function updateText(value: string) {
     text.value = value
 
-    manager.nodes = parser.toNodes(value)
+    nodes.value = mountNodes(value)
 
-    emit('update:modelValue', value)
+    model.value = value
 }
 
-function updateTextFromNodes() {
-    text.value = manager.nodes.map((n) => n.toText()).join('')
+function updateNodes(newNodes: NodeWithId[]) {
+    nodes.value = newNodes
+
+    text.value = nodes.value.map((n) => n.toText()).join('')
 }
 
-watch(() => props.modelValue, load, {
-    immediate: true,
-})
+function onChangeNodes() {
+    text.value = nodes.value.map((n) => n.toText()).join('')
 
-manager.on('remove', updateTextFromNodes)
-manager.on('add', updateTextFromNodes)
+    model.value = text.value
+}
+
+onMounted(load)
 
 // context
 
@@ -79,7 +75,10 @@ function isSetup(node: MarkdownNode) {
             <MonacoEditor v-model="text" language="markdown" @keydown.ctrl.s="updateText(text)" />
         </div>
 
-        <div class="h-full w-6/12 overflow-auto pb-80 border-l border-b-secondary/25">
+        <div class="h-full w-6/12">
+            <NodeEditor v-model="nodes" @change="onChangeNodes" />
+        </div>
+        <!-- <div class="h-full w-6/12 overflow-auto pb-80 border-l border-b-secondary/25">
             <template v-for="(node, index) in manager.nodes" :key="index">
                 <MSetup
                     v-if="isSetup(node)"
@@ -109,6 +108,6 @@ function isSetup(node: MarkdownNode) {
                     {{ $t('errors.errorRenderingBlock', [node.type]) }}
                 </div>
             </template>
-        </div>
+        </div> -->
     </div>
 </template>

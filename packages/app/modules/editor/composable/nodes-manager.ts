@@ -1,4 +1,4 @@
-import { Node } from '@language-kit/markdown'
+import type { NodeWithId } from '../types/node'
 
 const key = Symbol('editor:nodes')
 
@@ -8,7 +8,7 @@ interface Observer {
 }
 
 function create() {
-    const nodes = ref<Node[]>([])
+    const nodes = ref<NodeWithId[]>([])
 
     const observers: Observer[] = []
 
@@ -19,11 +19,11 @@ function create() {
         observers.filter((o) => o.name === name).forEach((o) => o.callback())
     }
 
-    function updateNodeByIndex(index: number, node: Node) {
+    function updateNodeByIndex(index: number, node: NodeWithId) {
         nodes.value[index] = node
     }
 
-    function removeNode(node: Node) {
+    function removeNode(node: NodeWithId) {
         const index = nodes.value.indexOf(node)
 
         if (index === -1) return
@@ -33,13 +33,13 @@ function create() {
         emit('remove')
     }
 
-    function addNode(index: number, node: Node) {
+    function addNode(index: number, node: NodeWithId) {
         nodes.value.splice(index, 0, node)
 
         emit('add')
     }
 
-    function addNodeBefore(node: Node, before: Node) {
+    function addNodeBefore(node: NodeWithId, before: NodeWithId) {
         const index = nodes.value.indexOf(node)
 
         if (index === -1) return
@@ -47,7 +47,7 @@ function create() {
         addNode(index - 1, before)
     }
 
-    function addNodeAfter(node: Node, after: Node) {
+    function addNodeAfter(node: NodeWithId, after: NodeWithId) {
         const index = nodes.value.indexOf(node)
 
         if (index === -1) return
