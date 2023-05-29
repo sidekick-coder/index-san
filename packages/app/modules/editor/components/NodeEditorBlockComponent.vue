@@ -1,41 +1,26 @@
 <script setup lang="ts">
 import MBlock from './NodeEditorBlock.vue'
-import { Node as MarkdownNode } from '@language-kit/markdown'
-import { TokenType } from '@language-kit/lexer'
 import { useContext } from '../composable/context'
 import { createComponentObject } from '@plugins/gc'
+import { NodeWithId } from '../types/node'
+import { useNodeEditor } from '../composable/node-editor'
 
-// Props & Emit
-
-const props = defineProps({
-    modelValue: {
-        type: Object as () => MarkdownNode,
-        required: true,
-    },
+const model = defineModel({
+    type: Object as PropType<NodeWithId>,
+    required: true,
 })
 
-const emit = defineEmits(['update:modelValue'])
+const editor = useNodeEditor()
 
-const model = computed({
-    get: () => {
-        return props.modelValue
-    },
-    set(value: MarkdownNode) {
-        emit('update:modelValue', value)
-    },
-})
-
-const context = useContext()
 const loading = ref(false)
-const componentData = shallowRef({
-    template: null as null | string,
+const componentData = shallowRef<any>({
+    name: 'NodeEditorBlockComponentRender',
+    template: '<div></div>',
     components: createComponentObject(),
-    setup() {
-        return context
-    },
+    setup: () => editor.setupContext,
 })
 
-function load() {
+function setComponentData() {
     loading.value = true
 
     const globalComponents = {
@@ -66,42 +51,32 @@ function load() {
 
     const template = `<${name} ${props} ${attrs} ${events} >${model.value.body}</${name}>`
 
-    componentData.value.template = template
+    componentData.value = {
+        name: componentData.value.name,
+        components: componentData.value.components,
+        setup: componentData.value.setup,
+        template,
+    }
 
     setTimeout(() => {
         loading.value = false
     }, 800)
 }
 
+async function load() {
+    await editor.onLoadedContext()
+
+    setComponentData()
+}
+
 watch(model, load)
 
 onMounted(load)
-
-// destroy
-
-const destroy = ref(false)
-
-watch(loading, (value) => {
-    if (value) {
-        destroy.value = true
-        return
-    }
-
-    destroy.value = false
-})
-
-onUnmounted(() => {
-    destroy.value = true
-})
 </script>
 
 <template>
-    <m-block v-if="!destroy" :node="model">
+    <m-block :node="model">
         <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
-        <component
-            :is="componentData as any"
-            v-else-if="componentData.template"
-            :context="context"
-        />
+        <component :is="componentData" v-else-if="componentData.template" />
     </m-block>
 </template>

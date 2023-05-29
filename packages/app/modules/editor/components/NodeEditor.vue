@@ -4,7 +4,7 @@ import { NodeWithId } from '@modules/editor/types/node'
 import MHeading from './MHeading.vue'
 import MParagraph from './MParagraph.vue'
 import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
-import MComponent from './MComponent.vue'
+import NodeEditorBlockComponent from './NodeEditorBlockComponent.vue'
 import { provideNodeEditor } from '../composable/node-editor'
 import { NodeType } from '@language-kit/markdown'
 import { Token, TokenType } from '@language-kit/lexer'
@@ -118,7 +118,7 @@ onErrorCaptured((err) => {
                 @update:model-value="updateNode(index, $event)"
             />
 
-            <MComponent
+            <NodeEditorBlockComponent
                 v-else-if="node.type === 'component'"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"
