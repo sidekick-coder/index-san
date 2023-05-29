@@ -12,7 +12,7 @@ import DirectoryEntry from '@core/entities/directory-entry'
 
 import { useStore } from '@modules/entry/store'
 
-import MEditor from '@modules/markdown-editor/components/MEditor.vue'
+import MEditor from '@modules/editor/components/MEditor.vue'
 
 const props = defineProps({
     path: {
