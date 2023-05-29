@@ -2,7 +2,7 @@
 import { NodeWithId } from '@modules/editor/types/node'
 
 import MHeading from './MHeading.vue'
-import MParagraph from './MParagraph.vue'
+import NodeEditorBlockParagraph from './NodeEditorBlockParagraph.vue'
 import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
 import NodeEditorBlockComponent from './NodeEditorBlockComponent.vue'
 import { provideNodeEditor } from '../composable/node-editor'
@@ -130,7 +130,7 @@ onErrorCaptured((err) => {
                 @update:model-value="updateNode(index, $event)"
             />
 
-            <MParagraph
+            <NodeEditorBlockParagraph
                 v-else-if="node.type === 'paragraph'"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"
