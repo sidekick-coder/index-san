@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onKeyStroke } from '@vueuse/core'
 import MBlock from './NodeEditorBlock.vue'
-import MHtml from './MHtml.vue'
+import MHtml from './NodeEditorRenderer.vue'
 import { Node as MarkdownNode, MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import { useManger } from '../composable/nodes-manager'
 import { useFocusList } from '../composable/focus-list'

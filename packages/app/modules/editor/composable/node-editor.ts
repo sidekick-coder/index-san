@@ -1,10 +1,13 @@
 import { waitFor } from '@composables/utils'
 
+import NodeEditorBlock from '../components/NodeEditorBlock.vue'
+
 const key = Symbol('node-editor')
 
 export function create() {
     const setupContext = reactive({})
     const setupIsLoading = ref(false)
+    const blocksRef = ref<InstanceType<typeof NodeEditorBlock>[]>([])
 
     function onLoadedContext() {
         return waitFor(() => setupIsLoading.value === false, 5000)
@@ -34,6 +37,7 @@ export function create() {
     }
 
     return reactive({
+        blocksRef,
         validate,
         setupContext,
         setupIsLoading,

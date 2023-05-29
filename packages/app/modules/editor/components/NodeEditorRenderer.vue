@@ -4,6 +4,7 @@ import { useContext } from '../composable/context'
 import { useNotify } from '@modules/notify/store'
 import { useI18n } from 'vue-i18n'
 import { useNodeEditor } from '../composable/node-editor'
+import { onClickOutside } from '@vueuse/core'
 
 // Props & Emit
 
@@ -15,8 +16,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
-
-const context = useContext()
 
 const el = ref<HTMLElement>()
 const innerModel = ref('')
@@ -57,6 +56,8 @@ function onBlur() {
     update()
 
     editMode.value = false
+
+    setTimeout(setInnerModel, 500)
 }
 
 function onFocus() {
@@ -72,6 +73,8 @@ function onFocus() {
 watch(() => props.modelValue, setInnerModel, {
     immediate: true,
 })
+
+onClickOutside(el, onBlur)
 
 // render vue component
 const loading = ref(false)
@@ -120,28 +123,29 @@ watch(() => props.modelValue, loadComponent, {
 </script>
 
 <template>
-    <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
+    <transition
+        enter-active-class="transition duration-200"
+        leave-active-class="transition duration-200"
+        enter-from-class="absolute opacity-0 translate-x-2"
+        leave-to-class="absolute opacity-0 translate-x-2"
+    >
+        <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
 
-    <div v-else-if="error" class="text-danger text-sm">
-        {{ error.message }}
-    </div>
+        <div v-else-if="error" class="text-danger text-sm">
+            {{ error.message }}
+        </div>
 
-    <component
-        :is="componentData"
-        v-else-if="textHaveVariable && !editMode"
-        class="outline-none"
-        contenteditable
-        @focus="onFocus"
-        @click="onFocus"
-    />
+        <component :is="componentData" v-else-if="textHaveVariable && !editMode" @click="onFocus" />
 
-    <div
-        v-else
-        ref="el"
-        contenteditable
-        class="outline-none"
-        @input="onInput"
-        @blur="onBlur"
-        v-html="innerModel"
-    ></div>
+        <div
+            v-else
+            ref="el"
+            contenteditable
+            class="outline-none"
+            :autofocus="textHaveVariable"
+            @input="onInput"
+            @blur="onBlur"
+            v-html="innerModel"
+        ></div>
+    </transition>
 </template>
