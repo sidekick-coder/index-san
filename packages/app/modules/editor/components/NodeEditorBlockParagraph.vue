@@ -4,8 +4,6 @@ import MHtml from './NodeEditorRenderer.vue'
 import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import { NodeWithId } from '../types/node'
 
-// Props & Emit
-
 const model = defineModel({
     type: NodeWithId,
     required: true,

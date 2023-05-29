@@ -143,7 +143,7 @@ onUnmounted(() => {
                     </v-btn>
                 </template>
 
-                <v-card color="b-secondary">
+                <v-card color="b-secondary" class="rounded">
                     <v-list-item @click="deleteBlock">
                         <v-icon name="trash" class="mr-2" />
 

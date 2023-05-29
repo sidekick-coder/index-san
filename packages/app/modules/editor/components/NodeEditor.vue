@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { NodeWithId } from '@modules/editor/types/node'
 
-import MHeading from './MHeading.vue'
+import NodeEditorBlockHeading from './NodeEditorBlockHeading.vue'
 import NodeEditorBlockParagraph from './NodeEditorBlockParagraph.vue'
 import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
 import NodeEditorBlockComponent from './NodeEditorBlockComponent.vue'
 import { provideNodeEditor } from '../composable/node-editor'
-import { NodeType } from '@language-kit/markdown'
-import { Token, TokenType } from '@language-kit/lexer'
+import { TokenType } from '@language-kit/lexer'
 import { Icon } from '@iconify/vue'
 
 const nodes = defineModel({
@@ -17,7 +16,7 @@ const nodes = defineModel({
 
 const emit = defineEmits(['change'])
 
-const editor = provideNodeEditor()
+provideNodeEditor()
 
 function isSetupNode(node: NodeWithId) {
     if (!node.isComponent()) return
@@ -124,7 +123,7 @@ onErrorCaptured((err) => {
                 @update:model-value="updateNode(index, $event)"
             />
 
-            <MHeading
+            <NodeEditorBlockHeading
                 v-else-if="node.type === 'heading'"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"

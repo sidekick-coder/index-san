@@ -3,25 +3,11 @@ import MBlock from './NodeEditorBlock.vue'
 import { Node as MarkdownNode, MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 
 import debounce from 'lodash/debounce'
+import { NodeWithId } from '../types/node'
 
-// Props & Emit
-
-const props = defineProps({
-    modelValue: {
-        type: Object as () => MarkdownNode,
-        required: true,
-    },
-})
-
-const emit = defineEmits(['update:modelValue'])
-
-const model = computed({
-    get: () => {
-        return props.modelValue
-    },
-    set(value: MarkdownNode) {
-        emit('update:modelValue', value)
-    },
+const model = defineModel({
+    type: NodeWithId,
+    required: true,
 })
 
 const el = ref<HTMLElement>()
@@ -62,7 +48,7 @@ function updateNode(markdown: string) {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new MarkdownNode({
+    const node = new NodeWithId(model.value.id, {
         type: NodeType.Heading,
         tokens,
     })
@@ -96,7 +82,7 @@ onMounted(setLevel)
 </script>
 
 <template>
-    <m-block class="md-heading">
+    <m-block :node="model" class="md-heading">
         <component
             :is="'h' + level"
             ref="el"
@@ -108,7 +94,9 @@ onMounted(setLevel)
         />
 
         <template #menu>
-            <v-list-item v-for="n in 6" :key="n" @click="updateLevel(n)"> H{{ n }} </v-list-item>
+            <v-list-item v-for="n in 6" :key="n" @click="updateLevel(n)">
+                <v-icon name="heading" class="mr-2" /> Heading {{ n }}
+            </v-list-item>
         </template>
     </m-block>
 </template>
