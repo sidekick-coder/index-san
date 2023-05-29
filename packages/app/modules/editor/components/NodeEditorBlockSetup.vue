@@ -11,18 +11,18 @@ import npmResolver from '@modules/evaluation/resolvers/npm'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import MonacoEditor from '../../monaco/components/MEditor.vue'
 import { NodeWithId } from '../types/node'
+import { useNodeEditor } from '../composable/node-editor'
 
 const model = defineModel({
     type: Object as PropType<NodeWithId>,
     required: true,
 })
 
-const loading = ref(false)
+const editor = useNodeEditor()
 
 const evaluation = useEvaluation()
 const parser = createParser()
 const nodeHelper = useNodeHelper()
-const context = useContext()
 
 evaluation.addResolver({
     test: (id) => id === 'vue',
@@ -32,13 +32,13 @@ evaluation.addResolver({
 evaluation.addResolver(npmResolver)
 
 async function load() {
-    if (loading.value) {
-        await waitFor(() => !loading.value)
+    if (editor.setupIsLoading) {
+        await editor.onLoadedContext()
     }
 
-    loading.value = true
-
     if (!model.value.isComponent()) return
+
+    editor.setupIsLoading = true
 
     const nodes = parser.toNodes(model.value.body)
 
@@ -58,9 +58,9 @@ async function load() {
 
     const result = await evaluation.run(preparedCode)
 
-    Object.assign(context, result)
+    Object.assign(editor.setupContext, result)
 
-    loading.value = false
+    editor.setupIsLoading = false
 }
 
 watch(() => model.value, load, {

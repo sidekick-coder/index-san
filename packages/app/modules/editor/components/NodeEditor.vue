@@ -3,7 +3,7 @@ import { NodeWithId } from '@modules/editor/types/node'
 
 import MHeading from './MHeading.vue'
 import MParagraph from './MParagraph.vue'
-import MSetup from './MSetup.vue'
+import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
 import MComponent from './MComponent.vue'
 import { provideNodeEditor } from '../composable/node-editor'
 import { NodeType } from '@language-kit/markdown'
@@ -112,7 +112,7 @@ onErrorCaptured((err) => {
             :class="hiddenIds.includes(node.id) ? 'hidden' : ''"
             class="w-full"
         >
-            <MSetup
+            <NodeEditorBlockSetup
                 v-if="isSetupNode(node)"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"

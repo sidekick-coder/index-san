@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MBlock from './MBlock.vue'
+import MBlock from './NodeEditorBlock.vue'
 import { Node as MarkdownNode } from '@language-kit/markdown'
 import { TokenType } from '@language-kit/lexer'
 import { useContext } from '../composable/context'

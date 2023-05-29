@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onKeyStroke } from '@vueuse/core'
-import MBlock from './MBlock.vue'
+import MBlock from './NodeEditorBlock.vue'
 import MHtml from './MHtml.vue'
 import { Node as MarkdownNode, MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import { useManger } from '../composable/nodes-manager'
@@ -120,6 +120,11 @@ onKeyStroke('Enter', addNewNode, {
 
 <template>
     <m-block :node="model">
-        <m-html ref="content" :model-value="html" @update:model-value="update" />
+        <m-html
+            ref="content"
+            :model-value="html"
+            data-block-focusable
+            @update:model-value="update"
+        />
     </m-block>
 </template>

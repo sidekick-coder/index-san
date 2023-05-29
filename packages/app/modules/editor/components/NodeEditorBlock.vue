@@ -4,10 +4,11 @@ import { useManger } from '../composable/nodes-manager'
 import debounce from 'lodash/debounce'
 import { onKeyDown, onKeyStroke } from '@vueuse/core'
 import { useFocusList } from '../composable/focus-list'
+import { NodeWithId } from '../types/node'
 
 const props = defineProps({
     node: {
-        type: Object as () => Node,
+        type: Object as () => NodeWithId,
         required: true,
     },
 })
@@ -18,16 +19,19 @@ function deleteBlock() {
     manager.removeNode(props.node)
 }
 
+// focus
 const isFocused = ref(false)
-const root = ref<HTMLElement>()
 const content = ref<HTMLElement>()
-const focusList = useFocusList('[data-block] [contenteditable]')
 
 const setIsFocused = debounce(() => {
     if (!content.value) return
 
     isFocused.value = content.value.contains(document.activeElement)
 }, 50)
+
+// key strokes
+const root = ref<HTMLElement>()
+const focusList = useFocusList('[data-block] [contenteditable]')
 
 const focusBlock = debounce((direction = 1) => {
     if (!root.value) return

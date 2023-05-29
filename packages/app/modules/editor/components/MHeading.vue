@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MBlock from './MBlock.vue'
+import MBlock from './NodeEditorBlock.vue'
 import { Node as MarkdownNode, MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 
 import debounce from 'lodash/debounce'
