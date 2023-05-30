@@ -25,9 +25,11 @@ const textHaveVariable = computed(() => props.modelValue.includes('{{'))
 function setInnerModel() {
     let text = props.modelValue
 
+    const innerHTML = (el.value?.innerHTML ?? '').replace('&nbsp;', ' ')
+
     if (text === innerModel.value) return
 
-    if (text === el.value?.innerHTML) return
+    if (el.value && text === innerHTML) return
 
     innerModel.value = text
 }

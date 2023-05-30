@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MBlock from './NodeEditorBlock.vue'
-import MHtml from './NodeEditorRenderer.vue'
+import NodeEditorRenderer from './NodeEditorRenderer.vue'
 import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import { NodeWithId } from '../types/node'
 
@@ -17,10 +17,6 @@ function load() {
         .map((t) => t.value)
         .join('')
         .trim()
-
-    const isEqual = value === html.value
-
-    if (isEqual) return
 
     html.value = value
 }
@@ -47,12 +43,7 @@ onMounted(load)
 </script>
 
 <template>
-    <m-block :node="model">
-        <m-html
-            ref="content"
-            :model-value="html"
-            data-block-focusable
-            @update:model-value="update"
-        />
-    </m-block>
+    <MBlock :node="model">
+        <NodeEditorRenderer :model-value="html" @update:model-value="update" />
+    </MBlock>
 </template>

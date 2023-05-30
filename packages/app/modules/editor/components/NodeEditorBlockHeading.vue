@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MBlock from './NodeEditorBlock.vue'
 import { Node as MarkdownNode, MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
+import NodeEditorRenderer from './NodeEditorRenderer.vue'
 
 import debounce from 'lodash/debounce'
 import { NodeWithId } from '../types/node'
@@ -10,14 +11,11 @@ const model = defineModel({
     required: true,
 })
 
-const el = ref<HTMLElement>()
-const text = ref('')
+const html = ref('')
 const level = ref(1)
 const parser = new Parser()
 
 function setText() {
-    if (!el.value) return
-
     const tokens = model.value.tokens.filter((t) => t.value !== '#')
 
     const value = tokens
@@ -26,12 +24,7 @@ function setText() {
         .join('')
         .trim()
 
-    const isEqual = value === el.value.innerHTML || value === text.value
-
-    if (isEqual) return
-
-    text.value = value
-    el.value.innerHTML = value
+    html.value = value
 }
 
 function setLevel() {
@@ -40,8 +33,8 @@ function setLevel() {
     level.value = tokens
 }
 
-function updateNode(markdown: string) {
-    const tokens = parser.toTokens(markdown)
+function updateNode(text: string) {
+    const tokens = parser.toTokens(text)
 
     const lastIndex = tokens.length - 1
     const breakLine = MarkdownToken.breakLine()
@@ -56,42 +49,32 @@ function updateNode(markdown: string) {
     model.value = node
 }
 
-const onInput = debounce((event: InputEvent) => {
-    const html = (event.target as HTMLElement).innerHTML
+function update(newHtml: string) {
+    html.value = newHtml
 
-    const markdown = '#'.repeat(level.value) + ' ' + html
-
-    updateNode(markdown)
-}, 100)
+    updateNode('#'.repeat(level.value) + ' ' + newHtml)
+}
 
 function updateLevel(value: number) {
     level.value = value
 
-    const markdown = '#'.repeat(value) + ' ' + text.value
+    const markdown = '#'.repeat(value) + ' ' + html.value
 
     updateNode(markdown)
 }
 
-watch(model, setText)
+watch(model, setText, {
+    immediate: true,
+})
 
 watch(model, setLevel)
-
-onMounted(setText)
-
-onMounted(setLevel)
 </script>
 
 <template>
     <m-block :node="model" class="md-heading">
-        <component
-            :is="'h' + level"
-            ref="el"
-            contenteditable
-            class="outline-none"
-            @input="onInput"
-            @keydown.enter.prevent
-            v-html="text"
-        />
+        <component :is="'h' + level">
+            <NodeEditorRenderer :model-value="html" @update:model-value="update" />
+        </component>
 
         <template #menu>
             <v-list-item v-for="n in 6" :key="n" @click="updateLevel(n)">

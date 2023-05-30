@@ -51,6 +51,15 @@ onKeyStroke('ArrowUp', (e) => {
     focusBlock(-1)
 })
 
+onKeyStroke(
+    'Enter',
+    (e) => {
+        e.preventDefault()
+        // focusBlock(-1)
+    },
+    { target: content }
+)
+
 onMounted(() => {
     window.addEventListener('focus', setIsFocused, true)
 })
