@@ -107,6 +107,11 @@ export default {
     paste: 'Paste | Paste all',
     cut: 'Cut | Cut all',
     delete: 'Delete | Delete all',
+    block: 'Block | Blocks',
+    below: 'Below',
+    above: 'Above',
+    addBlockBelow: 'Add block below',
+    addBlockAbove: 'Add block above',
     newEntity: 'New {0}',
     errors: {
         unknown: 'Unknown error',

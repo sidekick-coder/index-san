@@ -124,6 +124,7 @@ function blur() {
 }
 
 defineExpose({
+    inputRef: el,
     focus,
     blur,
 })

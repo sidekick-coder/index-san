@@ -6,11 +6,20 @@ import { onKeyDown, onKeyStroke, useFocusWithin } from '@vueuse/core'
 import { useFocusList } from '../composable/focus-list'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
+import { useI18n } from 'vue-i18n'
+import upperFirst from 'lodash/upperFirst'
+import lowerCase from 'lodash/lowerCase'
+
+type KeybindingNames = keyof typeof keybindings
 
 const props = defineProps({
     node: {
         type: Object as () => NodeWithId,
         required: true,
+    },
+    disableKeybindings: {
+        type: [Boolean, Array] as PropType<boolean | KeybindingNames[]>,
+        default: false,
     },
 })
 
@@ -36,11 +45,16 @@ const keybindings = {
         handler: selectPreviousBlock,
         target: undefined,
     },
-    // Backspace: {
-    //     preventDefault: true,
-    //     handler: deleteBlock,
-    //     target: undefined,
-    // },
+    Backspace: {
+        preventDefault: true,
+        handler: deleteBlock,
+        target: undefined,
+    },
+    Delete: {
+        preventDefault: true,
+        handler: deleteBlock,
+        target: undefined,
+    },
     Enter: {
         preventDefault: true,
         handler: addNewBlock,
@@ -60,13 +74,31 @@ function selectNextBlock() {
     setTimeout(() => editor.move(), 100)
 }
 
-function addNewBlock() {}
+function addNewBlock() {
+    const created = editor.addNodeAfter(props.node)
 
-function deleteBlock() {
-    // editor.remove(props.node.id)
+    if (!created) return
+
+    setTimeout(() => editor.select(created.id), 100)
+}
+
+function deleteBlock(direction?: number) {
+    if (editor.selectedBlockId === props.node.id) {
+        editor.move(direction)
+    }
+
+    editor.removeNode(props.node)
 }
 
 Object.entries(keybindings).forEach(([key, action]) => {
+    const disableKeybindings = props.disableKeybindings
+
+    if (disableKeybindings === true) return
+
+    if (Array.isArray(disableKeybindings) && disableKeybindings.includes(key as KeybindingNames)) {
+        return
+    }
+
     onKeyDown(
         key,
         (e) => {
@@ -106,68 +138,31 @@ onUnmounted(() => {
     editor.blocks.splice(index, 1)
 })
 
-// keybindings
+defineExpose({
+    delete: deleteBlock,
+})
 
-// const manager = useManger()
-// const focusList = useFocusList('[data-block] [contenteditable]')
-// const cursor = useCursorHelper()
+// menu options
 
-// const content = ref<HTMLElement>()
+const tm = useI18n()
 
-// function onBackspace(e: KeyboardEvent) {
-//     if (!cursor.isCaretOnStart()) return
-
-//     e.preventDefault()
-
-//     focusList.focus(-1)
-
-//     cursor.setCaretOnEnd()
-
-//     manager.removeNode(model.value)
-// }
-
-// function onDeleteKeypress(e: KeyboardEvent) {
-//     const haveText = model.value.toText().trim().length > 0
-
-//     if (haveText) return
-
-//     e.preventDefault()
-
-//     manager.removeNode(model.value)
-// }
-
-// function addNewNode(e: KeyboardEvent) {
-//     e.preventDefault()
-
-//     const paragraph = new MarkdownNode({
-//         type: NodeType.Paragraph,
-//         tokens: [Token.breakLine()],
-//     })
-
-//     if (cursor.isCaretOnStart()) {
-//         manager.addNodeBefore(model.value, paragraph)
-//     }
-
-//     if (!cursor.isCaretOnStart()) {
-//         manager.addNodeAfter(model.value, paragraph)
-//     }
-
-//     setTimeout(() => {
-//         focusList.focus(1)
-//     }, 50)
-// }
-
-// onKeyStroke('Backspace', onBackspace, {
-//     target: content,
-// })
-
-// onKeyStroke('Delete', onDeleteKeypress, {
-//     target: content,
-// })
-
-// onKeyStroke('Enter', addNewNode, {
-//     target: content,
-// })
+const options = [
+    {
+        icon: 'trash',
+        label: tm.t('deleteEntity', [tm.t('block')]),
+        handler: deleteBlock,
+    },
+    {
+        icon: 'plus',
+        label: tm.t('addBlockAbove'),
+        handler: () => editor.addNodeBefore(props.node),
+    },
+    {
+        icon: 'plus',
+        label: tm.t('addBlockBelow'),
+        handler: () => editor.addNodeAfter(props.node),
+    },
+]
 </script>
 
 <template>
@@ -175,7 +170,6 @@ onUnmounted(() => {
         ref="root"
         class="flex min-h-[50px] items-center group hover:bg-b-secondary/50 border-y border-b-secondary/25"
         :class="isSelected ? 'bg-b-secondary/50' : ''"
-        tabindex="0"
     >
         <div class="w-[50px] flex justify-center">
             <v-menu offset-y close-on-content-click>
@@ -191,10 +185,15 @@ onUnmounted(() => {
                 </template>
 
                 <v-card color="b-secondary" class="rounded">
-                    <v-list-item @click="deleteBlock">
-                        <v-icon name="trash" class="mr-2" />
+                    <v-list-item
+                        v-for="(option, index) in options"
+                        :key="index"
+                        size="xs"
+                        @click="option.handler"
+                    >
+                        <v-icon :name="option.icon" class="mr-2" />
 
-                        {{ $t('delete') }}
+                        {{ upperFirst(lowerCase(option.label)) }}
                     </v-list-item>
                     <slot name="menu" />
                 </v-card>

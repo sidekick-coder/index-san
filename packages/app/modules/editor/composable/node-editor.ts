@@ -15,58 +15,9 @@ interface Observers {
 }
 
 export function create() {
+    // setup
     const setupContext = reactive({})
     const setupIsLoading = ref(false)
-    const selectedBlockId = ref<string>()
-    const hiddenIds = ref<string[]>([])
-    const blocks = ref<NodeEditorBlockArgs[]>([])
-    const observers = ref<Observers[]>([])
-
-    function on(name: string, callback: (value: any) => void) {
-        observers.value.push({ name, callback })
-    }
-
-    function off(name: string) {
-        observers.value = observers.value.filter((o) => o.name !== name)
-    }
-
-    function emit(name: string, value: any) {
-        observers.value.filter((o) => o.name === name).forEach((o) => o.callback(value))
-    }
-
-    function select(id: string) {
-        selectedBlockId.value = id
-    }
-
-    function move(direction = 1) {
-        if (!selectedBlockId.value) return
-
-        const index = blocks.value.findIndex((b) => b.id === selectedBlockId.value)
-
-        if (index === -1) return
-
-        let moveNode: NodeEditorBlockArgs | undefined
-
-        if (direction >= 1) {
-            moveNode = blocks.value.find((b, i) => {
-                if (hiddenIds.value.includes(b.id)) return false
-
-                return i > index
-            })
-        }
-
-        if (direction <= -1) {
-            moveNode = blocks.value.findLast((b, i) => {
-                if (hiddenIds.value.includes(b.id)) return false
-
-                return i < index
-            })
-        }
-
-        if (!moveNode) return
-
-        select(moveNode.id)
-    }
 
     function onLoadedContext() {
         return waitFor(() => setupIsLoading.value === false, 5000)
@@ -95,20 +46,112 @@ export function create() {
         return null
     }
 
-    function addNode(payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
-        let node = payload
+    // nodes
+    let nodesRef: Ref<NodeWithId[]> | undefined
+    const nodes = computed(() => nodesRef?.value ?? [])
 
-        if (!node) {
-            node = {
+    function setNodesRef(_nodes: Ref<NodeWithId[]>) {
+        nodesRef = _nodes
+    }
+
+    // events
+    const observers = ref<Observers[]>([])
+
+    function on(name: string, callback: (value: any) => void) {
+        observers.value.push({ name, callback })
+    }
+
+    function off(name: string) {
+        observers.value = observers.value.filter((o) => o.name !== name)
+    }
+
+    function emit(name: string, value: any) {
+        observers.value.filter((o) => o.name === name).forEach((o) => o.callback(value))
+    }
+
+    // selection
+    const hiddenIds = ref<string[]>([])
+    const selectedBlockId = ref<string>()
+    const blocks = ref<NodeEditorBlockArgs[]>([])
+
+    function select(id: string) {
+        selectedBlockId.value = id
+    }
+
+    function move(direction = 1) {
+        if (!selectedBlockId.value) return
+
+        const index = nodes.value.findIndex((b) => b.id === selectedBlockId.value)
+
+        if (index === -1) return
+
+        let moveNode: NodeEditorBlockArgs | undefined
+
+        if (direction >= 1) {
+            moveNode = nodes.value.find((b, i) => {
+                if (hiddenIds.value.includes(b.id)) return false
+
+                // is last
+                if (i === nodes.value.length - 1) return true
+
+                return i > index
+            })
+        }
+
+        if (direction <= -1) {
+            moveNode = nodes.value.findLast((b, i) => {
+                if (hiddenIds.value.includes(b.id)) return false
+
+                return i < index
+            })
+        }
+
+        if (!moveNode) return
+
+        select(moveNode.id)
+    }
+
+    function addNodeAt(index: number, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
+        if (!payload) {
+            payload = {
                 type: NodeType.Paragraph,
                 tokens: [Token.breakLine()],
             }
         }
 
-        emit('add-node', node)
+        const node = new NodeWithId(payload)
+
+        nodes.value.splice(index, 0, node)
+
+        return node
+    }
+
+    function addNodeAfter(node: NodeWithId, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
+        const index = nodes.value.findIndex((n) => n.id === node.id)
+
+        if (index === -1) return
+
+        return addNodeAt(index + 1, payload)
+    }
+
+    function addNodeBefore(node: NodeWithId, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
+        const index = nodes.value.findIndex((n) => n.id === node.id)
+
+        if (index === -1) return
+
+        return addNodeAt(index, payload)
+    }
+
+    function removeNode(node: NodeWithId) {
+        const index = nodes.value.findIndex((n) => n.id === node.id)
+
+        if (index === -1) return
+
+        nodes.value.splice(index, 1)
     }
 
     return reactive({
+        nodes,
         selectedBlockId,
         hiddenIds,
         blocks,
@@ -121,7 +164,10 @@ export function create() {
         on,
         off,
         emit,
-        addNode,
+        setNodesRef,
+        addNodeAfter,
+        addNodeBefore,
+        removeNode,
     })
 }
 

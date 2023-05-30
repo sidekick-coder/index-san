@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import MBlock from './NodeEditorBlock.vue'
+import NodeEditorBlock from './NodeEditorBlock.vue'
 import NodeEditorRenderer from './NodeEditorRenderer.vue'
 import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import { NodeWithId } from '../types/node'
+import { useCursorHelper } from '../composable/cursor'
+import { onKeyStroke } from '@vueuse/core'
 
 const model = defineModel({
     type: NodeWithId,
@@ -56,10 +58,49 @@ function onBlockUnselected() {
 }
 
 onMounted(load)
+
+// keybindings
+const blockRef = ref<InstanceType<typeof NodeEditorBlock>>()
+
+const cursor = useCursorHelper()
+
+function onDeleteKeypress(e: KeyboardEvent) {
+    const haveText = model.value.toText().trim().length > 0
+
+    if (haveText) return
+
+    e.preventDefault()
+
+    if (cursor.isCaretOnStart() && e.key === 'Delete') {
+        blockRef.value?.delete()
+        return
+    }
+
+    blockRef.value?.delete(-1)
+}
+
+// onKeyStroke('Backspace', onBackspace, {
+//     target: blockRef.value?.$el,
+// })
+
+// onKeyStroke('Delete', onDeleteKeypress, {
+//     target: blockRef.value?.$el,
+// })
 </script>
 
 <template>
-    <MBlock :node="model" @on-select="onBlockSelected" @on-unselect="onBlockUnselected">
-        <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
-    </MBlock>
+    <NodeEditorBlock
+        ref="blockRef"
+        :node="model"
+        :disable-keybindings="['Delete', 'Backspace']"
+        @on-select="onBlockSelected"
+        @on-unselect="onBlockUnselected"
+    >
+        <NodeEditorRenderer
+            ref="renderRef"
+            :model-value="html"
+            @keydown.delete="onDeleteKeypress"
+            @update:model-value="update"
+        />
+    </NodeEditorBlock>
 </template>

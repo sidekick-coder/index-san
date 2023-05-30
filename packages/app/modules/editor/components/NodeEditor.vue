@@ -18,6 +18,8 @@ const emit = defineEmits(['change'])
 
 const editor = provideNodeEditor()
 
+editor.setNodesRef(nodes)
+
 function isSetupNode(node: NodeWithId) {
     if (!node.isComponent()) return
 
@@ -42,29 +44,11 @@ function findStartNodeIndex() {
     })
 }
 
-function findStartNode() {
-    const setupNode = findNodeSetup()
-
-    if (!setupNode) return nodes.value[0]
-
-    const setupIndex = nodes.value.indexOf(setupNode)
-
-    return nodes.value.find((n, i) => {
-        if (i <= setupIndex) return false
-
-        return n.tokens.find((t) => t.type !== TokenType.BreakLine)
-    })
-}
-
 function updateNode(index: number, node: NodeWithId) {
     nodes.value.splice(index, 1, node)
 
     emit('change', nodes.value)
 }
-
-editor.on('add-node', (node: Pick<NodeWithId, 'type' | 'tokens'>) => {
-    nodes.value.push(new NodeWithId(node))
-})
 
 // Hidden blocks
 
