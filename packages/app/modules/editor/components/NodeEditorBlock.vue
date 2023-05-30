@@ -124,20 +124,6 @@ watch(isSelected, (v) => {
     emit(v ? 'onSelect' : 'onUnselect')
 })
 
-onMounted(() => {
-    editor.blocks.push({
-        id: props.node.id,
-    })
-})
-
-onUnmounted(() => {
-    const index = editor.blocks.findIndex((block) => block.id === props.node.id)
-
-    if (index === -1) return
-
-    editor.blocks.splice(index, 1)
-})
-
 defineExpose({
     delete: deleteBlock,
 })

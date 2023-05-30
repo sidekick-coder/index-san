@@ -72,7 +72,6 @@ export function create() {
     // selection
     const hiddenIds = ref<string[]>([])
     const selectedBlockId = ref<string>()
-    const blocks = ref<NodeEditorBlockArgs[]>([])
 
     function select(id: string) {
         selectedBlockId.value = id
@@ -123,6 +122,8 @@ export function create() {
 
         nodes.value.splice(index, 0, node)
 
+        emit('add', node)
+
         return node
     }
 
@@ -148,13 +149,14 @@ export function create() {
         if (index === -1) return
 
         nodes.value.splice(index, 1)
+
+        emit('remove', node)
     }
 
     return reactive({
         nodes,
         selectedBlockId,
         hiddenIds,
-        blocks,
         validate,
         setupContext,
         setupIsLoading,

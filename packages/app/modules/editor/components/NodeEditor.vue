@@ -50,6 +50,9 @@ function updateNode(index: number, node: NodeWithId) {
     emit('change', nodes.value)
 }
 
+editor.on('add', () => emit('change'))
+editor.on('remove', () => emit('change'))
+
 // Hidden blocks
 
 function isBreakLine(node: NodeWithId) {

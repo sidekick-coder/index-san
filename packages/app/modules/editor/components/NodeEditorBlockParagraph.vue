@@ -78,14 +78,6 @@ function onDeleteKeypress(e: KeyboardEvent) {
 
     blockRef.value?.delete(-1)
 }
-
-// onKeyStroke('Backspace', onBackspace, {
-//     target: blockRef.value?.$el,
-// })
-
-// onKeyStroke('Delete', onDeleteKeypress, {
-//     target: blockRef.value?.$el,
-// })
 </script>
 
 <template>

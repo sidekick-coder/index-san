@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import MBlock from './NodeEditorBlock.vue'
-import { Node as MarkdownNode, MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
+import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import NodeEditorRenderer from './NodeEditorRenderer.vue'
 
-import debounce from 'lodash/debounce'
 import { NodeWithId } from '../types/node'
 
 const model = defineModel({
@@ -41,10 +40,13 @@ function updateNode(text: string) {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new NodeWithId(model.value.id, {
-        type: NodeType.Heading,
-        tokens,
-    })
+    const node = new NodeWithId(
+        {
+            type: NodeType.Heading,
+            tokens,
+        },
+        model.value.id
+    )
 
     model.value = node
 }
@@ -67,17 +69,41 @@ watch(model, setText, {
     immediate: true,
 })
 
-watch(model, setLevel)
+watch(model, setLevel, {
+    immediate: true,
+})
+
+// selection
+
+const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
+
+function onBlockSelected() {
+    if (!renderRef.value) return
+
+    renderRef.value.focus()
+}
+
+function onBlockUnselected() {
+    if (!renderRef.value) return
+
+    renderRef.value.blur()
+}
 </script>
 
 <template>
-    <m-block :node="model" class="md-heading">
+    <m-block
+        :node="model"
+        :disable-keybindings="['Delete', 'Backspace']"
+        class="node-editor-block-heading"
+        @on-select="onBlockSelected"
+        @on-unselect="onBlockUnselected"
+    >
         <component :is="'h' + level">
-            <NodeEditorRenderer :model-value="html" @update:model-value="update" />
+            <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
         </component>
 
         <template #menu>
-            <v-list-item v-for="n in 6" :key="n" @click="updateLevel(n)">
+            <v-list-item v-for="n in 6" :key="n" size="xs" @click="updateLevel(n)">
                 <v-icon name="heading" class="mr-2" /> Heading {{ n }}
             </v-list-item>
         </template>
@@ -85,7 +111,7 @@ watch(model, setLevel)
 </template>
 
 <style lang="scss">
-.md-heading {
+.node-editor-block-heading {
     h1,
     h2,
     h3,
