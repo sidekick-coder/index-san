@@ -82,10 +82,13 @@ function save() {
     // remove eof
     tokens.pop()
 
-    const node = new NodeWithId(model.value.id, {
-        ...model.value,
-        tokens,
-    })
+    const node = new NodeWithId(
+        {
+            ...model.value,
+            tokens,
+        },
+        model.value.id
+    )
 
     if (node.isComponent()) {
         node.name = 'setup'

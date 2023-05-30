@@ -2,6 +2,7 @@
 export default { inheritAttrs: false }
 </script>
 <script setup lang="ts">
+import { onKeyStroke } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 const props = defineProps({
@@ -36,6 +37,10 @@ const show = computed({
 function onClick() {
     show.value = !show.value
 }
+
+onKeyStroke('Escape', () => {
+    show.value = false
+})
 </script>
 <template>
     <slot name="activator" :attrs="{ onClick }" />

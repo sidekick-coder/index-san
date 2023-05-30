@@ -62,16 +62,6 @@ function onBlur() {
     setTimeout(setInnerModel, 500)
 }
 
-function onFocus() {
-    if (!textHaveVariable.value) return
-
-    editMode.value = true
-
-    if (!el.value) return
-
-    setTimeout(() => el.value!.focus(), 500)
-}
-
 watch(() => props.modelValue, setInnerModel, {
     immediate: true,
 })
@@ -122,6 +112,21 @@ async function loadComponent() {
 watch(() => props.modelValue, loadComponent, {
     immediate: true,
 })
+
+// expose methods
+
+function focus() {
+    el.value?.focus()
+}
+
+function blur() {
+    el.value?.blur()
+}
+
+defineExpose({
+    focus,
+    blur,
+})
 </script>
 
 <template>
@@ -136,14 +141,14 @@ watch(() => props.modelValue, loadComponent, {
             <component
                 :is="componentData"
                 v-if="textHaveVariable"
-                class="absolute left-0 top-0"
+                class="absolute left-0 top-0 transition-opacity w-full h-full"
                 :class="[textHaveVariable && editMode ? 'opacity-0' : '']"
             />
 
             <div
                 ref="el"
                 contenteditable
-                class="outline-none"
+                class="outline-none transition-opacity"
                 :class="[textHaveVariable && !editMode ? 'opacity-0' : '']"
                 @input="onInput"
                 @blur="onBlur"

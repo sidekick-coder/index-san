@@ -26,7 +26,7 @@ const text = ref('')
 const nodes = ref<NodeWithId[]>([])
 
 function mountNodes(value: string) {
-    return parser.toNodes(value).map((n) => new NodeWithId(uniqueId('node:'), n))
+    return parser.toNodes(value).map((n) => new NodeWithId(n))
 }
 
 function load() {

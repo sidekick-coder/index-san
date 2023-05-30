@@ -10,6 +10,7 @@ const model = defineModel({
 })
 
 const parser = new Parser()
+const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
 const html = ref('')
 
 function load() {
@@ -31,19 +32,34 @@ function update(newHtml: string) {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new NodeWithId(model.value.id, {
-        type: NodeType.Paragraph,
-        tokens,
-    })
+    const node = new NodeWithId(
+        {
+            type: NodeType.Paragraph,
+            tokens,
+        },
+        model.value.id
+    )
 
     model.value = node
+}
+
+function onBlockSelected() {
+    if (!renderRef.value) return
+
+    renderRef.value.focus()
+}
+
+function onBlockUnselected() {
+    if (!renderRef.value) return
+
+    renderRef.value.blur()
 }
 
 onMounted(load)
 </script>
 
 <template>
-    <MBlock :node="model">
-        <NodeEditorRenderer :model-value="html" @update:model-value="update" />
+    <MBlock :node="model" @on-select="onBlockSelected" @on-unselect="onBlockUnselected">
+        <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
     </MBlock>
 </template>

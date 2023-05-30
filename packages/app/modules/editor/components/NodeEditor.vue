@@ -16,7 +16,7 @@ const nodes = defineModel({
 
 const emit = defineEmits(['change'])
 
-provideNodeEditor()
+const editor = provideNodeEditor()
 
 function isSetupNode(node: NodeWithId) {
     if (!node.isComponent()) return
@@ -26,6 +26,20 @@ function isSetupNode(node: NodeWithId) {
 
 function findNodeSetup() {
     return nodes.value.find(isSetupNode)
+}
+
+function findStartNodeIndex() {
+    const setupNode = findNodeSetup()
+
+    if (!setupNode) return 0
+
+    const setupIndex = nodes.value.indexOf(setupNode)
+
+    return nodes.value.findIndex((n, i) => {
+        if (i <= setupIndex) return false
+
+        return n.tokens.find((t) => t.type !== TokenType.BreakLine)
+    })
 }
 
 function findStartNode() {
@@ -48,24 +62,34 @@ function updateNode(index: number, node: NodeWithId) {
     emit('change', nodes.value)
 }
 
+editor.on('add-node', (node: Pick<NodeWithId, 'type' | 'tokens'>) => {
+    nodes.value.push(new NodeWithId(node))
+})
+
 // Hidden blocks
 
-const hiddenIds = ref<string[]>([])
+function isBreakLine(node: NodeWithId) {
+    if (node.tokens.length > 1) return false
+
+    return node.tokens.find((t) => t.type === TokenType.BreakLine)
+}
 
 function setHideIds() {
-    hiddenIds.value = []
+    editor.hiddenIds = []
 
-    const startNode = findStartNode()
-
-    if (!startNode) return
-
-    const startNodeIndex = nodes.value.indexOf(startNode)
+    const startNodeIndex = findStartNodeIndex()
 
     if (startNodeIndex === -1) return
 
     nodes.value.forEach((n, index) => {
-        if (index < startNodeIndex) {
-            hiddenIds.value.push(n.id)
+        const prev = nodes.value[index - 1]
+
+        if (startNodeIndex !== -1 && index < startNodeIndex) {
+            editor.hiddenIds.push(n.id)
+        }
+
+        if (prev && prev.isComponent() && isBreakLine(n)) {
+            editor.hiddenIds.push(n.id)
         }
     })
 }
@@ -108,7 +132,7 @@ onErrorCaptured((err) => {
         <div
             v-for="(node, index) in nodes"
             :key="node.id"
-            :class="hiddenIds.includes(node.id) ? 'hidden' : ''"
+            :class="editor.hiddenIds.includes(node.id) ? 'hidden' : ''"
             class="w-full"
         >
             <NodeEditorBlockSetup

@@ -2,9 +2,10 @@
 import { Node } from '@language-kit/markdown'
 import { useManger } from '../composable/nodes-manager'
 import debounce from 'lodash/debounce'
-import { onKeyDown, onKeyStroke } from '@vueuse/core'
+import { onKeyDown, onKeyStroke, useFocusWithin } from '@vueuse/core'
 import { useFocusList } from '../composable/focus-list'
 import { NodeWithId } from '../types/node'
+import { useNodeEditor } from '../composable/node-editor'
 
 const props = defineProps({
     node: {
@@ -13,58 +14,96 @@ const props = defineProps({
     },
 })
 
-const manager = useManger()
+const emit = defineEmits(['onSelect', 'onUnselect'])
 
-function deleteBlock() {
-    manager.removeNode(props.node)
+// actions
+const editor = useNodeEditor()
+
+const root = ref<HTMLElement>()
+const content = ref<HTMLElement>()
+const isSelected = computed(() => editor.selectedBlockId === props.node.id)
+
+const { focused } = useFocusWithin(root)
+
+const keybindings = {
+    ArrowDown: {
+        preventDefault: true,
+        handler: selectNextBlock,
+        target: undefined,
+    },
+    ArrowUp: {
+        preventDefault: true,
+        handler: selectPreviousBlock,
+        target: undefined,
+    },
+    // Backspace: {
+    //     preventDefault: true,
+    //     handler: deleteBlock,
+    //     target: undefined,
+    // },
+    Enter: {
+        preventDefault: true,
+        handler: addNewBlock,
+        target: content,
+    },
 }
 
-// focus
-const isFocused = ref(false)
-const content = ref<HTMLElement>()
+function selectPreviousBlock() {
+    if (!isSelected.value) return
 
-const setIsFocused = debounce(() => {
-    if (!content.value) return
+    setTimeout(() => editor.move(-1), 100)
+}
 
-    isFocused.value = content.value.contains(document.activeElement)
-}, 50)
+function selectNextBlock() {
+    if (!isSelected.value) return
 
-// key strokes
-const root = ref<HTMLElement>()
-const focusList = useFocusList('[data-block] [contenteditable]')
+    setTimeout(() => editor.move(), 100)
+}
 
-const focusBlock = debounce((direction = 1) => {
-    if (!root.value) return
+function addNewBlock() {}
 
-    if (!isFocused.value) return
+function deleteBlock() {
+    // editor.remove(props.node.id)
+}
 
-    focusList.focus(direction)
-}, 50)
+Object.entries(keybindings).forEach(([key, action]) => {
+    onKeyDown(
+        key,
+        (e) => {
+            if (!isSelected.value) return
 
-onKeyStroke('ArrowDown', (e) => {
-    e.preventDefault()
-    focusBlock(1)
+            if (action.preventDefault) {
+                e.preventDefault()
+            }
+
+            action.handler()
+        },
+        { target: action.target }
+    )
 })
 
-onKeyStroke('ArrowUp', (e) => {
-    e.preventDefault()
-    focusBlock(-1)
+watch(focused, (focused) => {
+    if (focused) {
+        editor.select(props.node.id)
+    }
 })
 
-onKeyStroke(
-    'Enter',
-    (e) => {
-        e.preventDefault()
-    },
-    { target: content }
-)
+watch(isSelected, (v) => {
+    emit(v ? 'onSelect' : 'onUnselect')
+})
 
 onMounted(() => {
-    window.addEventListener('focus', setIsFocused, true)
+    editor.blocks.push({
+        id: props.node.id,
+    })
 })
 
 onUnmounted(() => {
-    window.removeEventListener('focus', setIsFocused)
+    const index = editor.blocks.findIndex((block) => block.id === props.node.id)
+
+    if (index === -1) return
+
+    editor.blocks.splice(index, 1)
 })
 
 // keybindings
@@ -135,8 +174,8 @@ onUnmounted(() => {
     <div
         ref="root"
         class="flex min-h-[50px] items-center group hover:bg-b-secondary/50 border-y border-b-secondary/25"
-        :class="isFocused ? 'bg-b-secondary/50' : ''"
-        data-block
+        :class="isSelected ? 'bg-b-secondary/50' : ''"
+        tabindex="0"
     >
         <div class="w-[50px] flex justify-center">
             <v-menu offset-y close-on-content-click>
