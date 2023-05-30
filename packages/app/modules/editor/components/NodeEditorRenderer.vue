@@ -20,7 +20,10 @@ const emit = defineEmits(['update:modelValue'])
 const el = ref<HTMLElement>()
 const innerModel = ref('')
 
-const textHaveVariable = computed(() => props.modelValue.includes('{{'))
+const textHaveVariable = computed(() => {
+    // have {{ }} in text
+    return /\{\{.*\}\}/.test(props.modelValue)
+})
 
 function setInnerModel() {
     let text = props.modelValue
@@ -44,17 +47,15 @@ function update() {
     emit('update:modelValue', text)
 }
 
-const onInput = debounce(() => {
-    if (textHaveVariable.value) return
+// const onInput = debounce(() => {
+//     if (textHaveVariable.value) return
 
-    update()
-}, 100)
+//     update()
+// }, 100)
 
 const editMode = ref(false)
 
 function onBlur() {
-    if (!textHaveVariable.value) return
-
     update()
 
     editMode.value = false
@@ -143,7 +144,7 @@ defineExpose({
                 :is="componentData"
                 v-if="textHaveVariable"
                 class="absolute left-0 top-0 transition-opacity w-full h-full"
-                :class="[textHaveVariable && editMode ? 'opacity-0' : '']"
+                :class="[editMode ? 'opacity-0' : '']"
             />
 
             <div
@@ -151,7 +152,6 @@ defineExpose({
                 contenteditable
                 class="outline-none transition-opacity"
                 :class="[textHaveVariable && !editMode ? 'opacity-0' : '']"
-                @input="onInput"
                 @blur="onBlur"
                 @focus="editMode = true"
                 @click="editMode = true"
