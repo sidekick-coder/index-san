@@ -70,11 +70,22 @@ export function create() {
     }
 
     // selection
-    const hiddenIds = ref<string[]>([])
     const selectedBlockId = ref<string>()
 
     function select(id: string) {
         selectedBlockId.value = id
+    }
+
+    function selectByIndex(index: string) {
+        selectedBlockId.value = nodes.value[index]?.id
+    }
+
+    function findNodeByIndex(index: number) {
+        const length = nodes.value.length
+
+        const moveIndex = ((index % length) + length) % length
+
+        return nodes.value[moveIndex]
     }
 
     function move(direction = 1) {
@@ -84,25 +95,13 @@ export function create() {
 
         if (index === -1) return
 
-        let moveNode: NodeEditorBlockArgs | undefined
+        let step = index + direction
 
-        if (direction >= 1) {
-            moveNode = nodes.value.find((b, i) => {
-                if (hiddenIds.value.includes(b.id)) return false
+        let moveNode = findNodeByIndex(step)
 
-                // is last
-                if (i === nodes.value.length - 1) return true
-
-                return i > index
-            })
-        }
-
-        if (direction <= -1) {
-            moveNode = nodes.value.findLast((b, i) => {
-                if (hiddenIds.value.includes(b.id)) return false
-
-                return i < index
-            })
+        if (moveNode.isComponent() && moveNode.name === 'setup') {
+            step += direction
+            moveNode = findNodeByIndex(step)
         }
 
         if (!moveNode) return
@@ -156,7 +155,6 @@ export function create() {
     return reactive({
         nodes,
         selectedBlockId,
-        hiddenIds,
         validate,
         setupContext,
         setupIsLoading,
@@ -170,6 +168,7 @@ export function create() {
         addNodeAfter,
         addNodeBefore,
         removeNode,
+        selectByIndex,
     })
 }
 

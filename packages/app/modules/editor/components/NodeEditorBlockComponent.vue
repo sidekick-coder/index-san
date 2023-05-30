@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MBlock from './NodeEditorBlock.vue'
+import NodeEditorBlock from './NodeEditorBlock.vue'
 import { createComponentObject } from '@plugins/gc'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
@@ -74,8 +74,8 @@ onMounted(load)
 </script>
 
 <template>
-    <m-block :node="model">
+    <NodeEditorBlock :node="model">
         <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
         <component :is="componentData" v-else-if="componentData.template" />
-    </m-block>
+    </NodeEditorBlock>
 </template>

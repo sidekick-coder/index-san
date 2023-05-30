@@ -10,16 +10,10 @@ import { useI18n } from 'vue-i18n'
 import upperFirst from 'lodash/upperFirst'
 import lowerCase from 'lodash/lowerCase'
 
-type KeybindingNames = keyof typeof keybindings
-
 const props = defineProps({
     node: {
         type: Object as () => NodeWithId,
         required: true,
-    },
-    disableKeybindings: {
-        type: [Boolean, Array] as PropType<boolean | KeybindingNames[]>,
-        default: false,
     },
 })
 
@@ -34,85 +28,61 @@ const isSelected = computed(() => editor.selectedBlockId === props.node.id)
 
 const { focused } = useFocusWithin(root)
 
-const keybindings = {
-    ArrowDown: {
-        preventDefault: true,
-        handler: selectNextBlock,
-        target: undefined,
-    },
-    ArrowUp: {
-        preventDefault: true,
-        handler: selectPreviousBlock,
-        target: undefined,
-    },
-    Backspace: {
-        preventDefault: true,
-        handler: deleteBlock,
-        target: undefined,
-    },
-    Delete: {
-        preventDefault: true,
-        handler: deleteBlock,
-        target: undefined,
-    },
-    Enter: {
-        preventDefault: true,
-        handler: addNewBlock,
-        target: content,
-    },
-}
-
-function selectPreviousBlock() {
+onKeyStroke('ArrowUp', (e) => {
     if (!isSelected.value) return
 
-    setTimeout(() => editor.move(-1), 100)
-}
+    e.preventDefault()
 
-function selectNextBlock() {
+    setTimeout(() => {
+        editor.move(-1)
+    }, 100)
+})
+
+onKeyStroke('ArrowDown', (e) => {
     if (!isSelected.value) return
 
-    setTimeout(() => editor.move(), 100)
-}
+    e.preventDefault()
 
-function addNewBlock() {
+    setTimeout(() => {
+        editor.move(1)
+    }, 100)
+
+    // editor.move(1)
+})
+
+onKeyStroke('Enter', (e) => {
+    if (!isSelected.value) return
+
+    e.preventDefault()
+
+    if (!e.ctrlKey) return
+
     const created = editor.addNodeAfter(props.node)
 
     if (!created) return
 
     setTimeout(() => editor.select(created.id), 100)
-}
-
-function deleteBlock(direction?: number) {
-    if (editor.selectedBlockId === props.node.id) {
-        editor.move(direction)
-    }
-
-    editor.removeNode(props.node)
-}
-
-Object.entries(keybindings).forEach(([key, action]) => {
-    const disableKeybindings = props.disableKeybindings
-
-    if (disableKeybindings === true) return
-
-    if (Array.isArray(disableKeybindings) && disableKeybindings.includes(key as KeybindingNames)) {
-        return
-    }
-
-    onKeyDown(
-        key,
-        (e) => {
-            if (!isSelected.value) return
-
-            if (action.preventDefault) {
-                e.preventDefault()
-            }
-
-            action.handler()
-        },
-        { target: action.target }
-    )
 })
+
+onKeyStroke(
+    'Delete',
+    (e) => {
+        if (!e.ctrlKey) return
+
+        e.preventDefault()
+
+        const index = editor.nodes.indexOf(props.node)
+
+        const isLast = editor.nodes.length - 1 === index
+
+        const direction = isLast ? -2 : 2
+
+        editor.move(direction)
+
+        setTimeout(() => editor.removeNode(props.node), 100)
+    },
+    { target: content }
+)
 
 watch(focused, (focused) => {
     if (focused) {
@@ -124,10 +94,6 @@ watch(isSelected, (v) => {
     emit(v ? 'onSelect' : 'onUnselect')
 })
 
-defineExpose({
-    delete: deleteBlock,
-})
-
 // menu options
 
 const tm = useI18n()
@@ -136,7 +102,7 @@ const options = [
     {
         icon: 'trash',
         label: tm.t('deleteEntity', [tm.t('block')]),
-        handler: deleteBlock,
+        handler: () => editor.removeNode(props.node),
     },
     {
         icon: 'plus',

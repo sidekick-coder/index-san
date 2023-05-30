@@ -93,7 +93,6 @@ function onBlockUnselected() {
 <template>
     <m-block
         :node="model"
-        :disable-keybindings="['Delete', 'Backspace']"
         class="node-editor-block-heading"
         @on-select="onBlockSelected"
         @on-unselect="onBlockUnselected"

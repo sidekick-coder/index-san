@@ -58,41 +58,10 @@ function onBlockUnselected() {
 }
 
 onMounted(load)
-
-// keybindings
-const blockRef = ref<InstanceType<typeof NodeEditorBlock>>()
-
-const cursor = useCursorHelper()
-
-function onDeleteKeypress(e: KeyboardEvent) {
-    const haveText = model.value.toText().trim().length > 0
-
-    if (haveText) return
-
-    e.preventDefault()
-
-    if (cursor.isCaretOnStart() && e.key === 'Delete') {
-        blockRef.value?.delete()
-        return
-    }
-
-    blockRef.value?.delete(-1)
-}
 </script>
 
 <template>
-    <NodeEditorBlock
-        ref="blockRef"
-        :node="model"
-        :disable-keybindings="['Delete', 'Backspace']"
-        @on-select="onBlockSelected"
-        @on-unselect="onBlockUnselected"
-    >
-        <NodeEditorRenderer
-            ref="renderRef"
-            :model-value="html"
-            @keydown.delete="onDeleteKeypress"
-            @update:model-value="update"
-        />
+    <NodeEditorBlock :node="model" @on-select="onBlockSelected" @on-unselect="onBlockUnselected">
+        <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
     </NodeEditorBlock>
 </template>

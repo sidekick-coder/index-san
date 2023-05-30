@@ -47,12 +47,6 @@ function update() {
     emit('update:modelValue', text)
 }
 
-// const onInput = debounce(() => {
-//     if (textHaveVariable.value) return
-
-//     update()
-// }, 100)
-
 const editMode = ref(false)
 
 function onBlur() {
@@ -62,7 +56,6 @@ function onBlur() {
 
     setTimeout(setInnerModel, 500)
 }
-
 watch(() => props.modelValue, setInnerModel, {
     immediate: true,
 })
@@ -118,10 +111,14 @@ watch(() => props.modelValue, loadComponent, {
 
 function focus() {
     el.value?.focus()
+
+    editMode.value = true
 }
 
 function blur() {
     el.value?.blur()
+
+    editMode.value = false
 }
 
 defineExpose({
@@ -133,9 +130,7 @@ defineExpose({
 
 <template>
     <div class="relative">
-        <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
-
-        <div v-else-if="error" class="text-danger text-sm">
+        <div v-if="error" class="text-danger text-sm">
             {{ error.message }}
         </div>
 
@@ -155,6 +150,8 @@ defineExpose({
                 @blur="onBlur"
                 @focus="editMode = true"
                 @click="editMode = true"
+                @keydown.ctrl.s="update"
+                @keydown.enter="update"
                 v-html="innerModel"
             />
         </template>

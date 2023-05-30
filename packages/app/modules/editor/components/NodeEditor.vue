@@ -6,7 +6,6 @@ import NodeEditorBlockParagraph from './NodeEditorBlockParagraph.vue'
 import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
 import NodeEditorBlockComponent from './NodeEditorBlockComponent.vue'
 import { provideNodeEditor } from '../composable/node-editor'
-import { TokenType } from '@language-kit/lexer'
 import { Icon } from '@iconify/vue'
 
 const nodes = defineModel({
@@ -26,24 +25,6 @@ function isSetupNode(node: NodeWithId) {
     return node.name === 'setup'
 }
 
-function findNodeSetup() {
-    return nodes.value.find(isSetupNode)
-}
-
-function findStartNodeIndex() {
-    const setupNode = findNodeSetup()
-
-    if (!setupNode) return 0
-
-    const setupIndex = nodes.value.indexOf(setupNode)
-
-    return nodes.value.findIndex((n, i) => {
-        if (i <= setupIndex) return false
-
-        return n.tokens.find((t) => t.type !== TokenType.BreakLine)
-    })
-}
-
 function updateNode(index: number, node: NodeWithId) {
     nodes.value.splice(index, 1, node)
 
@@ -52,38 +33,6 @@ function updateNode(index: number, node: NodeWithId) {
 
 editor.on('add', () => emit('change'))
 editor.on('remove', () => emit('change'))
-
-// Hidden blocks
-
-function isBreakLine(node: NodeWithId) {
-    if (node.tokens.length > 1) return false
-
-    return node.tokens.find((t) => t.type === TokenType.BreakLine)
-}
-
-function setHideIds() {
-    editor.hiddenIds = []
-
-    const startNodeIndex = findStartNodeIndex()
-
-    if (startNodeIndex === -1) return
-
-    nodes.value.forEach((n, index) => {
-        const prev = nodes.value[index - 1]
-
-        if (startNodeIndex !== -1 && index < startNodeIndex) {
-            editor.hiddenIds.push(n.id)
-        }
-
-        if (prev && prev.isComponent() && isBreakLine(n)) {
-            editor.hiddenIds.push(n.id)
-        }
-    })
-}
-
-watch(nodes, setHideIds, {
-    immediate: true,
-})
 
 // handle errors
 
@@ -116,12 +65,7 @@ onErrorCaptured((err) => {
     </div>
 
     <div v-else class="h-full overflow-auto pb-80 border-l border-b-secondary/25">
-        <div
-            v-for="(node, index) in nodes"
-            :key="node.id"
-            :class="editor.hiddenIds.includes(node.id) ? 'hidden' : ''"
-            class="w-full"
-        >
+        <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
             <NodeEditorBlockSetup
                 v-if="isSetupNode(node)"
                 :model-value="node"
