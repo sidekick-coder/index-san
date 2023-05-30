@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MBlock from './NodeEditorBlock.vue'
-import { useContext } from '../composable/context'
 import { createComponentObject } from '@plugins/gc'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'

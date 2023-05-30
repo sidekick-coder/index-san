@@ -55,7 +55,6 @@ onKeyStroke(
     'Enter',
     (e) => {
         e.preventDefault()
-        // focusBlock(-1)
     },
     { target: content }
 )

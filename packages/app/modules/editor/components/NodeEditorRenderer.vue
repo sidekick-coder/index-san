@@ -125,29 +125,32 @@ watch(() => props.modelValue, loadComponent, {
 </script>
 
 <template>
-    <transition
-        enter-active-class="transition duration-200"
-        leave-active-class="transition duration-200"
-        enter-from-class="absolute opacity-0 translate-x-2"
-        leave-to-class="absolute opacity-0 translate-x-2"
-    >
+    <div class="relative">
         <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
 
         <div v-else-if="error" class="text-danger text-sm">
             {{ error.message }}
         </div>
 
-        <component :is="componentData" v-else-if="textHaveVariable && !editMode" @click="onFocus" />
+        <template v-else>
+            <component
+                :is="componentData"
+                v-if="textHaveVariable"
+                class="absolute left-0 top-0"
+                :class="[textHaveVariable && editMode ? 'opacity-0' : '']"
+            />
 
-        <div
-            v-else
-            ref="el"
-            contenteditable
-            class="outline-none"
-            :autofocus="textHaveVariable"
-            @input="onInput"
-            @blur="onBlur"
-            v-html="innerModel"
-        ></div>
-    </transition>
+            <div
+                ref="el"
+                contenteditable
+                class="outline-none"
+                :class="[textHaveVariable && !editMode ? 'opacity-0' : '']"
+                @input="onInput"
+                @blur="onBlur"
+                @focus="editMode = true"
+                @click="editMode = true"
+                v-html="innerModel"
+            />
+        </template>
+    </div>
 </template>
