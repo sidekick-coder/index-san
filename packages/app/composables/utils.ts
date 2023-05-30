@@ -44,3 +44,11 @@ export function toCssMeasurement(value: string | number) {
 
     return value
 }
+
+export function findCircularItem<T extends Array<any>>(array: T, index: number) {
+    const length = array.length
+
+    const moveIndex = ((index % length) + length) % length
+
+    return array[moveIndex]
+}

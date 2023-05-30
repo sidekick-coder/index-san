@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { Icon } from '@iconify/vue'
+
+const props = defineProps({
     name: {
         type: String,
         required: true,
@@ -12,6 +14,7 @@ defineProps({
 </script>
 <template>
     <i>
-        <fa-icon :icon="name" :size="size" />
+        <Icon v-if="name.includes(':')" :icon="name" />
+        <fa-icon v-else :icon="name" :size="size" />
     </i>
 </template>

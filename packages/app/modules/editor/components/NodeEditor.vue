@@ -47,10 +47,7 @@ onErrorCaptured((err) => {
 })
 </script>
 <template>
-    <div
-        v-if="error"
-        class="h-full w-full flex items-center justify-center border-l border-b-secondary/25"
-    >
+    <div v-if="error" class="h-full w-full flex items-center justify-center">
         <div class="text-center">
             <div class="text-6xl text-danger mb-4">
                 <Icon icon="mdi:alert-circle-outline" class="mx-auto" />
@@ -64,7 +61,7 @@ onErrorCaptured((err) => {
         </div>
     </div>
 
-    <div v-else class="h-full overflow-auto pb-80 border-l border-b-secondary/25">
+    <div v-else class="h-full w-full overflow-auto pb-80">
         <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
             <NodeEditorBlockSetup
                 v-if="isSetupNode(node)"

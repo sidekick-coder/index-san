@@ -113,6 +113,7 @@ export default {
     addBlockBelow: 'Add block below',
     addBlockAbove: 'Add block above',
     newEntity: 'New {0}',
+    split: 'Split',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',
