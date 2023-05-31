@@ -7,6 +7,7 @@ import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
 import NodeEditorBlockComponent from './NodeEditorBlockComponent.vue'
 import { provideNodeEditor } from '../composable/node-editor'
 import { Icon } from '@iconify/vue'
+import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 
 const nodes = defineModel({
     type: Array as PropType<NodeWithId[]>,
@@ -29,6 +30,12 @@ function updateNode(index: number, node: NodeWithId) {
     nodes.value.splice(index, 1, node)
 
     emit('change', nodes.value)
+}
+
+function isComponent(name: string, node: NodeWithId) {
+    if (!node.isComponent()) return
+
+    return node.name === name
 }
 
 editor.on('add', () => emit('change'))
@@ -64,13 +71,7 @@ onErrorCaptured((err) => {
     <div v-else class="h-full w-full overflow-auto pb-80">
         <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
             <NodeEditorBlockSetup
-                v-if="isSetupNode(node)"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
-
-            <NodeEditorBlockComponent
-                v-else-if="node.type === 'component'"
+                v-if="isComponent('setup', node)"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"
             />
@@ -83,6 +84,12 @@ onErrorCaptured((err) => {
 
             <NodeEditorBlockParagraph
                 v-else-if="node.type === 'paragraph'"
+                :model-value="node"
+                @update:model-value="updateNode(index, $event)"
+            />
+
+            <NodeEditorBlockButton
+                v-else-if="isComponent('button', node)"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"
             />

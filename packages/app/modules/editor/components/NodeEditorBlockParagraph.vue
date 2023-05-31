@@ -3,8 +3,6 @@ import NodeEditorBlock from './NodeEditorBlock.vue'
 import NodeEditorRenderer from './NodeEditorRenderer.vue'
 import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import { NodeWithId } from '../types/node'
-import { useCursorHelper } from '../composable/cursor'
-import { onKeyStroke } from '@vueuse/core'
 
 const model = defineModel({
     type: NodeWithId,

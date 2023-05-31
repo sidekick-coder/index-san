@@ -13,12 +13,17 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    readonly: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 const el = ref<HTMLElement>()
 const innerModel = ref('')
+const editMode = ref(false)
 
 const textHaveVariable = computed(() => {
     // have {{ }} in text
@@ -47,7 +52,17 @@ function update() {
     emit('update:modelValue', text)
 }
 
-const editMode = ref(false)
+function onFocus() {
+    if (props.readonly) return
+
+    editMode.value = true
+}
+
+function onClick() {
+    if (props.readonly) return
+
+    editMode.value = true
+}
 
 function onBlur() {
     update()
@@ -56,6 +71,7 @@ function onBlur() {
 
     setTimeout(setInnerModel, 500)
 }
+
 watch(() => props.modelValue, setInnerModel, {
     immediate: true,
 })
@@ -110,12 +126,16 @@ watch(() => props.modelValue, loadComponent, {
 // expose methods
 
 function focus() {
+    if (props.readonly) return
+
     el.value?.focus()
 
     editMode.value = true
 }
 
 function blur() {
+    if (props.readonly) return
+
     el.value?.blur()
 
     editMode.value = false
@@ -144,12 +164,12 @@ defineExpose({
 
             <div
                 ref="el"
-                contenteditable
+                :contenteditable="!props.readonly"
                 class="outline-none transition-opacity"
                 :class="[textHaveVariable && !editMode ? 'opacity-0' : '']"
                 @blur="onBlur"
-                @focus="editMode = true"
-                @click="editMode = true"
+                @focus="onFocus"
+                @click="onClick"
                 @keydown.ctrl.s="update"
                 @keydown.enter="update"
                 v-html="innerModel"
