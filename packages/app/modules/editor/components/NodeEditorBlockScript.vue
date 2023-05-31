@@ -6,6 +6,7 @@ import EvaluationCard from '@modules/evaluation/components/EvaluationCard.vue'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import npmResolver from '@modules/evaluation/resolvers/npm'
 import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
+import merge from 'lodash/merge'
 
 // mount component
 const model = defineModel({
@@ -14,10 +15,17 @@ const model = defineModel({
 })
 
 const parser = new Parser()
-
 const loading = ref(false)
 const code = ref(`// write code`)
 const editor = useNodeEditor()
+
+const attrs = computed(() => {
+    if (!model.value.isComponent()) {
+        return {}
+    }
+
+    return merge(model.value.attrs, model.value.props)
+})
 
 const resolvers = [
     npmResolver,
@@ -77,6 +85,6 @@ onMounted(load)
 
 <template>
     <NodeEditorBlock :node="model">
-        <EvaluationCard v-model="code" :resolvers="resolvers" @change="update" />
+        <EvaluationCard v-bind="attrs" v-model="code" :resolvers="resolvers" @change="update" />
     </NodeEditorBlock>
 </template>

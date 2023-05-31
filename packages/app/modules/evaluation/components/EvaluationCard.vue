@@ -12,7 +12,7 @@ const props = defineProps({
         default: '200',
     },
     showEditor: {
-        type: Boolean,
+        type: [Boolean, String],
         default: true,
     },
     resolvers: {
@@ -28,7 +28,7 @@ const css = useCss()
 // config
 const config = ref({
     dialog: false,
-    showEditor: props.showEditor,
+    showEditor: /true/i.test(String(props.showEditor)),
     height: Number(props.height) || 200,
 })
 
@@ -142,7 +142,7 @@ async function run() {
         </div>
 
         <div class="bg-b-03 flex py-2 px-4 rounded items-center flex-wrap transition-all">
-            <div class="flex w-full items-center mb-4">
+            <div class="flex w-full items-center">
                 <div class="text-t-secondary">
                     {{ running ? 'Running...' : $t('clickToEvaluate') }}
                 </div>
@@ -178,7 +178,7 @@ async function run() {
                 </div>
             </div>
 
-            <div v-if="output.length" class="w-full text-sm whitespace-pre-wrap">
+            <div v-if="output.length" class="w-full text-sm whitespace-pre-wrap mt-4">
                 <div v-for="line in output" :key="line" v-html="line" />
             </div>
         </div>

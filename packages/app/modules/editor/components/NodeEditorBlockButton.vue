@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import NodeEditorBlock from './NodeEditorBlock.vue'
-import { Parser } from '@language-kit/markdown'
 import { NodeWithId } from '../types/node'
 import VBtn from '@components/VBtn.vue'
 import { useNodeEditor } from '../composable/node-editor'
