@@ -3,10 +3,8 @@ import { useCss } from '@composables/css'
 import MonacoEditor from '@modules/monaco/components/MEditor.vue'
 import ANSIToHtml from 'ansi-to-html'
 import { useEvaluation } from '../composables/use-evaluation'
-import { defineResolver } from '../helpers/define-resolver'
-import npmResolver from '../resolvers/npm'
-import { useContext } from '@modules/editor/composable/context'
-import { useNodeEditor } from '@modules/editor/composable/node-editor'
+import { useDefinedRef } from '@composables/utils'
+import { Resolver } from '../types/resolver'
 
 const props = defineProps({
     height: {
@@ -17,7 +15,13 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    resolvers: {
+        type: Array as PropType<Resolver[]>,
+        default: () => [],
+    },
 })
+
+const emit = defineEmits(['change'])
 
 const css = useCss()
 
@@ -34,11 +38,13 @@ const style = computed(() => ({
 
 // evaluation
 
-// model
-
 const slots = useSlots()
+const model = defineModel({
+    type: String,
+    default: null,
+})
 
-const code = ref(`// write code`)
+const code = useDefinedRef(model, ref(`// write code`))
 
 function setModel() {
     if (!slots?.default) return
@@ -65,19 +71,8 @@ const conversor = new ANSIToHtml()
 
 const running = ref(false)
 const output = ref<string[]>([])
-const editor = useNodeEditor()
 
-const pageResolver = defineResolver({
-    test: (id) => id.startsWith('app:page'),
-    resolve: async () => {
-        return {
-            useContext: () => editor.setupContext,
-        }
-    },
-})
-
-evaluation.addResolver(npmResolver)
-evaluation.addResolver(pageResolver)
+props.resolvers.forEach((r) => evaluation.addResolver(r))
 
 async function run() {
     running.value = true
@@ -103,7 +98,9 @@ async function run() {
 
             output.value.push(conversor.toHtml('🎉 Code executed successfully!'))
 
-            running.value = false
+            setTimeout(() => {
+                running.value = false
+            }, 800)
         })
         .catch((error) => {
             output.value.push(' ')
@@ -140,41 +137,48 @@ async function run() {
                     vertical: 'hidden',
                 }"
                 render-line-highlight="none"
+                @keydown.ctrl.s="emit('change', code)"
             />
         </div>
 
-        <div class="bg-b-03 flex py-2 px-4 rounded items-center flex-wrap">
-            <div class="text-t-secondary">
-                {{ $t('clickToEvaluate') }}
+        <div class="bg-b-03 flex py-2 px-4 rounded items-center flex-wrap transition-all">
+            <div class="flex w-full items-center mb-4">
+                <div class="text-t-secondary">
+                    {{ running ? 'Running...' : $t('clickToEvaluate') }}
+                </div>
+
+                <div class="flex gap-x-4 ml-auto">
+                    <v-menu offset-y>
+                        <template #activator="{ attrs }">
+                            <v-btn :disabled="running" color="b-secondary" v-bind="attrs">
+                                <v-icon name="cog" />
+                            </v-btn>
+                        </template>
+                        <v-card color="b-secondary" width="150" class="mt-2">
+                            <v-card-content class="flex flex-wrap space-y-4">
+                                <v-checkbox v-model="config.showEditor" :label="$t('showEditor')" />
+                                <v-input
+                                    v-model="config.height"
+                                    type="number"
+                                    :label="$t('height')"
+                                />
+                            </v-card-content>
+                        </v-card>
+                    </v-menu>
+
+                    <v-btn :disabled="running" @click="run">
+                        <v-icon
+                            :name="running ? 'spinner' : 'play'"
+                            :class="running ? 'animate-spin' : ''"
+                            class="mr-2"
+                        />
+
+                        {{ $t('run') }}
+                    </v-btn>
+                </div>
             </div>
 
-            <div class="flex gap-x-4 ml-auto">
-                <v-menu offset-y>
-                    <template #activator="{ attrs }">
-                        <v-btn :disabled="running" color="b-secondary" v-bind="attrs">
-                            <v-icon name="cog" />
-                        </v-btn>
-                    </template>
-                    <v-card color="b-secondary" width="150" class="mt-2">
-                        <v-card-content class="flex flex-wrap space-y-4">
-                            <v-checkbox v-model="config.showEditor" :label="$t('showEditor')" />
-                            <v-input v-model="config.height" type="number" :label="$t('height')" />
-                        </v-card-content>
-                    </v-card>
-                </v-menu>
-
-                <v-btn :disabled="running" @click="run">
-                    <v-icon
-                        :name="running ? 'spinner' : 'play'"
-                        :class="running ? 'animate-spin' : ''"
-                        class="mr-2"
-                    />
-
-                    {{ $t('run') }}
-                </v-btn>
-            </div>
-
-            <div v-if="output.length" class="w-full text-sm transition-all whitespace-pre-wrap">
+            <div v-if="output.length" class="w-full text-sm whitespace-pre-wrap">
                 <div v-for="line in output" :key="line" v-html="line" />
             </div>
         </div>

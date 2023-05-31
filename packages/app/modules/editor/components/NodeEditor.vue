@@ -4,10 +4,12 @@ import { NodeWithId } from '@modules/editor/types/node'
 import NodeEditorBlockHeading from './NodeEditorBlockHeading.vue'
 import NodeEditorBlockParagraph from './NodeEditorBlockParagraph.vue'
 import NodeEditorBlockSetup from './NodeEditorBlockSetup.vue'
-import NodeEditorBlockComponent from './NodeEditorBlockComponent.vue'
+import NodeEditorBlockScript from './NodeEditorBlockScript.vue'
+
 import { provideNodeEditor } from '../composable/node-editor'
 import { Icon } from '@iconify/vue'
 import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
+import NodeEditorBlockError from './NodeEditorBlockError.vue'
 
 const nodes = defineModel({
     type: Array as PropType<NodeWithId[]>,
@@ -94,9 +96,17 @@ onErrorCaptured((err) => {
                 @update:model-value="updateNode(index, $event)"
             />
 
-            <div v-else class="p-5 text-danger bg-danger/25 border-b">
-                {{ $t('errors.errorRenderingBlock', [node.type]) }}
-            </div>
+            <NodeEditorBlockScript
+                v-else-if="isComponent('script', node)"
+                :model-value="node"
+                @update:model-value="updateNode(index, $event)"
+            />
+
+            <NodeEditorBlockError
+                v-else
+                :model-value="node"
+                @update:model-value="updateNode(index, $event)"
+            />
         </div>
     </div>
 </template>
