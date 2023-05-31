@@ -1,7 +1,9 @@
 import { waitFor } from '@composables/utils'
 import { NodeWithId } from '../types/node'
-import { Token } from '@language-kit/lexer'
+import { Token, TokenType } from '@language-kit/lexer'
 import { NodeType } from '@language-kit/markdown'
+
+import { findCircularItem } from '@composables/utils'
 
 const key = Symbol('node-editor')
 
@@ -72,6 +74,16 @@ export function create() {
     // selection
     const selectedBlockId = ref<string>()
 
+    function isBreakLine(node: NodeWithId) {
+        if (node.type !== NodeType.Paragraph) return
+
+        if (node.tokens.length > 3) return
+
+        return node.tokens.every((token) =>
+            [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type)
+        )
+    }
+
     function select(id: string) {
         selectedBlockId.value = id
     }
@@ -88,6 +100,20 @@ export function create() {
         return nodes.value[moveIndex]
     }
 
+    function findMoveNode(sep: number) {
+        const node = findCircularItem(nodes.value, sep)
+
+        if (isBreakLine(node)) {
+            return findMoveNode(sep + 1)
+        }
+
+        if (node.isComponent() && node.name === 'setup') {
+            return findMoveNode(sep + 1)
+        }
+
+        return node
+    }
+
     function move(direction = 1) {
         if (!selectedBlockId.value) return
 
@@ -95,14 +121,7 @@ export function create() {
 
         if (index === -1) return
 
-        let step = index + direction
-
-        let moveNode = findNodeByIndex(step)
-
-        if (moveNode.isComponent() && moveNode.name === 'setup') {
-            step += direction
-            moveNode = findNodeByIndex(step)
-        }
+        const moveNode = findMoveNode(index + direction)
 
         if (!moveNode) return
 

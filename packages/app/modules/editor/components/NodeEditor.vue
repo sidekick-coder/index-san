@@ -10,6 +10,8 @@ import { provideNodeEditor } from '../composable/node-editor'
 import { Icon } from '@iconify/vue'
 import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 import NodeEditorBlockError from './NodeEditorBlockError.vue'
+import { TokenType } from '@language-kit/lexer'
+import { NodeType } from '@language-kit/markdown'
 
 const nodes = defineModel({
     type: Array as PropType<NodeWithId[]>,
@@ -22,13 +24,9 @@ const editor = provideNodeEditor()
 
 editor.setNodesRef(nodes)
 
-function isSetupNode(node: NodeWithId) {
-    if (!node.isComponent()) return
-
-    return node.name === 'setup'
-}
-
 function updateNode(index: number, node: NodeWithId) {
+    console.count('updateNode' + node.type)
+
     nodes.value.splice(index, 1, node)
 
     emit('change', nodes.value)
@@ -38,6 +36,16 @@ function isComponent(name: string, node: NodeWithId) {
     if (!node.isComponent()) return
 
     return node.name === name
+}
+
+function isBreakLine(node: NodeWithId) {
+    if (node.type !== NodeType.Paragraph) return
+
+    if (node.tokens.length > 3) return
+
+    return node.tokens.every((token) =>
+        [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type)
+    )
 }
 
 editor.on('add', () => emit('change'))
@@ -71,7 +79,12 @@ onErrorCaptured((err) => {
     </div>
 
     <div v-else class="h-full w-full overflow-auto pb-80">
-        <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
+        <div
+            v-for="(node, index) in nodes"
+            :key="node.id"
+            class="w-full"
+            :class="[isBreakLine(node) ? 'hidden' : '']"
+        >
             <NodeEditorBlockSetup
                 v-if="isComponent('setup', node)"
                 :model-value="node"

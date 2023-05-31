@@ -14,10 +14,7 @@ const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
 const html = ref('')
 
 function load() {
-    const value = model.value.tokens
-        .map((t) => t.value)
-        .join('')
-        .trim()
+    const value = model.value.tokens.map((t) => t.value).join('')
 
     html.value = value
 }

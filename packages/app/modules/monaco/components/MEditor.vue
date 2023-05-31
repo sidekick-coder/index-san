@@ -44,6 +44,10 @@ const props = defineProps({
         type: String as () => monacoEditor.IEditorOptions['renderLineHighlight'],
         default: undefined,
     },
+    trimAutoWhitespace: {
+        type: Boolean,
+        default: false,
+    },
     scrollbar: {
         type: Object as () => monacoEditor.IEditorScrollbarOptions,
         default: () => ({
@@ -104,6 +108,7 @@ onMounted(() => {
         wordWrap: 'on',
         scrollbar: props.scrollbar,
         renderLineHighlight: props.renderLineHighlight,
+        trimAutoWhitespace: props.trimAutoWhitespace,
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))

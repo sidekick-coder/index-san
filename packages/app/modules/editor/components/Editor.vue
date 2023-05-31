@@ -92,6 +92,7 @@ whenever(keys.Alt_m, () => {
                         <MonacoEditor
                             v-model="text"
                             language="markdown"
+                            :trim-auto-whitespace="false"
                             @keydown.ctrl.s="updateText(text)"
                         />
                     </div>
@@ -107,6 +108,7 @@ whenever(keys.Alt_m, () => {
                     v-else
                     v-model="text"
                     language="markdown"
+                    :trim-auto-whitespace="false"
                     @keydown.ctrl.s="updateText(text)"
                 />
             </transition>

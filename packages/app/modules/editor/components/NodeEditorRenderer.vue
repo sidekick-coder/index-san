@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import debounce from 'lodash/debounce'
-import { useContext } from '../composable/context'
-import { useNotify } from '@modules/notify/store'
-import { useI18n } from 'vue-i18n'
 import { useNodeEditor } from '../composable/node-editor'
 import { onClickOutside } from '@vueuse/core'
 
@@ -33,11 +29,8 @@ const textHaveVariable = computed(() => {
 function setInnerModel() {
     let text = props.modelValue
 
-    const innerHTML = (el.value?.innerHTML ?? '').replace('&nbsp;', ' ')
-
-    if (text === innerModel.value) return
-
-    if (el.value && text === innerHTML) return
+    // replace whitespace with &nbsp;
+    text = text.replace(/ /g, '&nbsp;')
 
     innerModel.value = text
 }
@@ -47,7 +40,10 @@ function update() {
 
     const html = (el.value as HTMLElement).innerHTML
 
-    const text = html.replace('&nbsp;', ' ')
+    // replace &nbsp; with whitespace
+    const text = html.replace(/&nbsp;/g, ' ')
+
+    if (text === props.modelValue) return
 
     emit('update:modelValue', text)
 }
@@ -76,7 +72,11 @@ watch(() => props.modelValue, setInnerModel, {
     immediate: true,
 })
 
-onClickOutside(el, onBlur)
+onClickOutside(el, () => {
+    if (editMode.value) {
+        onBlur()
+    }
+})
 
 // render vue component
 const loading = ref(false)
@@ -95,6 +95,9 @@ function setComponentData() {
     loading.value = true
 
     let text = props.modelValue
+
+    // replace whitespace with &nbsp;
+    text = text.replace(/ /g, '&nbsp;')
 
     componentData.value = {
         name: componentData.value.name,
