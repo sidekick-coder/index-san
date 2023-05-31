@@ -5,7 +5,7 @@ export default defineResolver({
     resolve: async (id) => {
         const name = id.replace('npm:', '')
         const version = 'latest'
-        const url = `https://unpkg.com/${name}@${version}?module`
+        const url = `https://unpkg.com/${name}?module`
 
         return import(/* @vite-ignore */ url)
     },

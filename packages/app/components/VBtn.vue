@@ -148,7 +148,7 @@ const styles = computed(() => colorVariation.styles)
             <v-icon name="spinner" class="animate-spin" />
         </div>
 
-        <div :class="[loading ? 'opacity-0' : '']">
+        <div :class="[loading ? 'opacity-0' : '']" class="flex">
             <slot />
         </div>
     </component>

@@ -44,6 +44,9 @@ module.exports = {
         data: {
             disabled: 'ui~="disabled"',
         },
+        fontFamily: {
+            roboto: ['Roboto', 'sans-serif'],
+        },
     },
     plugins: [],
 }

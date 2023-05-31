@@ -114,6 +114,11 @@ export default {
     addBlockAbove: 'Add block above',
     newEntity: 'New {0}',
     split: 'Split',
+    invalidComponent: 'Invalid component',
+    clickToEvaluate: 'Click to evaluate',
+    run: 'Run',
+    height: 'Height',
+    showEditor: 'Show editor',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

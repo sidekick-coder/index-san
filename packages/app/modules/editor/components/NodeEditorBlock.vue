@@ -51,17 +51,12 @@ onKeyStroke('ArrowDown', (e) => {
 })
 
 onKeyStroke('Enter', (e) => {
-    if (!isSelected.value) return
-
-    e.preventDefault()
-
-    if (!e.ctrlKey) return
-
-    const created = editor.addNodeAfter(props.node)
-
-    if (!created) return
-
-    setTimeout(() => editor.select(created.id), 100)
+    // if (!isSelected.value) return
+    // e.preventDefault()
+    // if (!e.ctrlKey) return
+    // const created = editor.addNodeAfter(props.node)
+    // if (!created) return
+    // setTimeout(() => editor.select(created.id), 100)
 })
 
 onKeyStroke(
@@ -154,6 +149,10 @@ const options = [
 
         <div ref="content" class="flex-1">
             <slot />
+        </div>
+
+        <div class="w-[50px] flex justify-center">
+            <slot name="after" />
         </div>
     </div>
 </template>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import NodeEditorBlock from './NodeEditorBlock.vue'
-import { createComponentObject } from '@plugins/gc'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
+import EvaluationCard from '@modules/evaluation/components/EvaluationCard.vue'
+import VBtn from '@components/VBtn.vue'
 
 const model = defineModel({
     type: Object as PropType<NodeWithId>,
@@ -12,25 +13,45 @@ const model = defineModel({
 const editor = useNodeEditor()
 
 const loading = ref(false)
+const componentAvailable = {
+    VBtn,
+    EvaluationCard,
+}
+
 const componentData = shallowRef<any>({
     name: 'NodeEditorBlockComponentRender',
     template: '<div></div>',
-    components: createComponentObject(),
+    components: componentAvailable,
     setup: () => editor.setupContext,
 })
 
-function setComponentData() {
-    loading.value = true
+const name = computed(() => {
+    if (!model.value.isComponent()) return 'div'
 
-    const globalComponents = {
+    let name = model.value.name
+
+    const replaceKeys = {
         button: 'VBtn',
+        script: 'EvaluationCard',
     }
 
-    let name = model.value.tokens[3].value
+    if (replaceKeys[name]) {
+        name = replaceKeys[name]
+    }
 
+    return name
+})
+
+const isValid = computed(() => {
+    return Object.keys(componentAvailable).includes(name.value)
+})
+
+function setComponentData() {
     if (!model.value.isComponent()) {
         return
     }
+
+    loading.value = true
 
     const attrs = Object.entries(model.value.attrs)
         .map(([key, value]) => `${key}="${value}"`)
@@ -44,11 +65,11 @@ function setComponentData() {
         .map(([key, value]) => `@${key}="${value}"`)
         .join(' ')
 
-    if (globalComponents[name]) {
-        name = globalComponents[name]
-    }
-
-    const template = `<${name} ${props} ${attrs} ${events} >${model.value.body}</${name}>`
+    const template = `
+        <${name.value} ${props} ${attrs} ${events} >
+            ${model.value.body}
+        </${name.value}>
+    `
 
     componentData.value = {
         name: componentData.value.name,
@@ -76,6 +97,9 @@ onMounted(load)
 <template>
     <NodeEditorBlock :node="model">
         <div v-if="loading" class="text-t-secondary text-sm">Loading...</div>
+        <div v-else-if="!isValid" class="text-danger text-sm">
+            {{ $t('invalidComponent') }}: {{ name }}
+        </div>
         <component :is="componentData" v-else-if="componentData.template" />
     </NodeEditorBlock>
 </template>

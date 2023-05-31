@@ -58,7 +58,7 @@ async function load() {
 
     const result = await evaluation.run(preparedCode)
 
-    Object.assign(editor.setupContext, result)
+    Object.assign(editor.setupContext, result.exports)
 
     editor.setupIsLoading = false
 }

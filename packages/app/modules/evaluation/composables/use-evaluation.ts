@@ -1,9 +1,17 @@
+import { inspect, waitFor } from '@composables/utils'
 import { useNodeHelper } from '../helpers/node-helper'
 import { createParser } from '../parser/parser'
 import { NodeExport, NodeImport, NodeType } from '../types/node'
 import { Processor } from '../types/processor'
 
 import { Resolver } from '../types/resolver'
+
+interface EvaluationState {
+    stdout: string
+    done: boolean
+    onDone: () => Promise<void>
+    on: (event: 'stdout', cb: () => any) => void
+}
 
 export function useEvaluation() {
     const parser = createParser()
@@ -93,20 +101,70 @@ export function useEvaluation() {
     function evaluate(source: string, context = {}) {
         let wrapCode = source
 
+        const observers: any[] = []
+
+        const output = {
+            stdout: '',
+            stderr: '',
+            done: false,
+            on: (event: 'stdout' | 'stderr', cb: (args: string) => any) => {
+                observers.push({
+                    event,
+                    cb,
+                })
+            },
+        }
+
+        const emit = (event: string, data: string) => {
+            observers.forEach((observer) => {
+                if (observer.event === event) {
+                    observer.cb(data)
+                }
+            })
+        }
+
+        const logger = {
+            log: (...args: any) => {
+                const value = args.map(inspect).join(' ') + '\n'
+
+                output.stdout += value
+
+                emit('stdout', value)
+            },
+        }
+
         // replace all keys with this.[key]
         Object.keys(context).forEach((key) => {
             wrapCode = wrapCode.replace(new RegExp(key, 'g'), `this.${key}`)
         })
 
-        const fn = new Function(wrapCode)
+        // replace all console[key] with this.logger[key]
+        Object.keys(logger).forEach((key) => {
+            wrapCode = wrapCode.replace(new RegExp(`console.${key}`, 'g'), `this.logger.${key}`)
+        })
 
-        // update name
-        Object.defineProperty(fn, 'name', { value: 'useEvaluate' })
+        const AsyncFunction = Object.getPrototypeOf(async function () {
+            /* empty */
+        }).constructor
 
-        fn.call(context)
+        const fn = new AsyncFunction(wrapCode)
+
+        fn.call({ ...context, logger: logger })
+            .then(() => {
+                output.done = true
+            })
+            .catch((err: Error) => {
+                output.done = true
+
+                output.stderr += err.message + '\n'
+
+                emit('stderr', err.message + '\n')
+            })
+
+        return output
     }
 
-    async function run(source: string) {
+    async function run(source: string, options = { waitEnd: true, timeout: 10000 }) {
         const imports = await mountImports(source)
         const code = mount(source)
         const exported = {} as Record<string, any>
@@ -118,9 +176,21 @@ export function useEvaluation() {
             },
         }
 
-        evaluate(code, context)
+        const evaluation = evaluate(code, context)
 
-        return exported
+        async function onDone() {
+            await waitFor(() => evaluation.done, options.timeout)
+        }
+
+        if (options.waitEnd) {
+            await onDone()
+        }
+
+        return {
+            evaluation,
+            exports: exported,
+            onDone,
+        }
     }
 
     return {

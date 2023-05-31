@@ -1,3 +1,4 @@
+import { Ref } from 'vue'
 export function isJSON(source: string) {
     try {
         JSON.parse(source)
@@ -51,4 +52,33 @@ export function findCircularItem<T extends Array<any>>(array: T, index: number) 
     const moveIndex = ((index % length) + length) % length
 
     return array[moveIndex]
+}
+
+export function useDefinedRef<T>(...arg1: Ref<T>[]) {
+    const defined = arg1.find((item) => item.value !== null && item.value !== undefined)
+
+    return computed<T>({
+        get() {
+            return defined!.value
+        },
+        set(value) {
+            if (!defined) return
+
+            defined.value = value
+        },
+    })
+}
+
+export function inspect(value: any) {
+    let result = value
+
+    if (typeof result === 'function') {
+        result = value.toString()
+    }
+
+    if (typeof result === 'object') {
+        result = JSON.stringify(result, null, 4)
+    }
+
+    return result
 }

@@ -13,8 +13,8 @@ const props = defineProps({
 })
 </script>
 <template>
-    <i>
+    <div class="inline-flex items-center">
         <Icon v-if="name.includes(':')" :icon="name" />
         <fa-icon v-else :icon="name" :size="size" />
-    </i>
+    </div>
 </template>
