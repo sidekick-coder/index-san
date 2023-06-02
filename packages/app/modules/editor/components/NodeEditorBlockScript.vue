@@ -7,6 +7,7 @@ import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import npmResolver from '@modules/evaluation/resolvers/npm'
 import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
 import merge from 'lodash/merge'
+import { useDefinedRef } from '@composables/utils'
 
 // mount component
 const model = defineModel({
@@ -80,11 +81,41 @@ function update() {
     model.value = node
 }
 
-onMounted(load)
+watch(model, load, { immediate: true })
+
+// attrs
+const config = reactive({
+    height: '200',
+    showEditor: false,
+})
+
+watch(
+    () => attrs.value,
+    (a) => {
+        config.height = a.height ?? '200'
+        config.showEditor = [a.showEditor, a['show-editor']].includes('true')
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
     <NodeEditorBlock :node="model">
-        <EvaluationCard v-bind="attrs" v-model="code" :resolvers="resolvers" @change="update" />
+        <EvaluationCard
+            v-model="code"
+            :height="config.height"
+            :resolvers="resolvers"
+            :show-editor="config.showEditor"
+        />
+
+        <template #menu-before>
+            <v-list-item size="xs">
+                <v-checkbox v-model="config.showEditor" type="number" :label="$t('showEditor')" />
+            </v-list-item>
+            <v-list-item size="xs">
+                <v-icon name="fluent:auto-fit-height-20-filled" class="-ml-1 mr-2 text-lg" />
+                <v-input v-model="config.height" placeholder="200" width="100" @click.stop />
+            </v-list-item>
+        </template>
     </NodeEditorBlock>
 </template>

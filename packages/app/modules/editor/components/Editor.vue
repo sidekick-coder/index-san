@@ -4,6 +4,7 @@ import { NodeWithId } from '../types/node'
 
 import MonacoEditor from '../../monaco/components/MEditor.vue'
 import NodeEditor from './NodeEditor.vue'
+import MDCEditor from './MDCEditor.vue'
 import { useLocalStorage, useMagicKeys, whenever } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { findCircularItem } from '@composables/utils'
@@ -89,12 +90,7 @@ whenever(keys.Alt_m, () => {
             >
                 <div v-if="mode === 'split'" class="w-full h-full flex flex-wrap">
                     <div class="h-full w-6/12">
-                        <MonacoEditor
-                            v-model="text"
-                            language="markdown"
-                            :trim-auto-whitespace="false"
-                            @keydown.ctrl.s="updateText(text)"
-                        />
+                        <MDCEditor v-model="text" @keydown.ctrl.s="updateText(text)" />
                     </div>
 
                     <div class="h-full w-6/12 border-l border-b-secondary/25">
@@ -104,13 +100,7 @@ whenever(keys.Alt_m, () => {
 
                 <NodeEditor v-else-if="mode === 'block'" v-model="nodes" @change="onChangeNodes" />
 
-                <MonacoEditor
-                    v-else
-                    v-model="text"
-                    language="markdown"
-                    :trim-auto-whitespace="false"
-                    @keydown.ctrl.s="updateText(text)"
-                />
+                <MDCEditor v-else v-model="text" @keydown.ctrl.s="updateText(text)" />
             </transition>
         </div>
 

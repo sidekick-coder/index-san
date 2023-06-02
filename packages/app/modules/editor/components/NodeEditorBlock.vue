@@ -7,6 +7,7 @@ import { useFocusList } from '../composable/focus-list'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
 import { useI18n } from 'vue-i18n'
+import { useBindings } from '@composables/binding'
 import upperFirst from 'lodash/upperFirst'
 import lowerCase from 'lodash/lowerCase'
 
@@ -21,6 +22,8 @@ const emit = defineEmits(['onSelect', 'onUnselect'])
 
 // actions
 const editor = useNodeEditor()
+const attrs = useAttrs()
+const bindings = useBindings(attrs, ['menu'])
 
 const root = ref<HTMLElement>()
 const content = ref<HTMLElement>()
@@ -118,8 +121,8 @@ const options = [
         class="flex min-h-[50px] items-center group hover:bg-b-secondary/50 border-y border-b-secondary/25"
         :class="isSelected ? 'bg-b-secondary/50' : ''"
     >
-        <div class="w-[50px] flex justify-center">
-            <v-menu offset-y close-on-content-click>
+        <div class="w-[50px] flex justify-center self-start mt-3">
+            <v-menu offset-y close-on-content-click v-bind="bindings.menu">
                 <template #activator="{ attrs }">
                     <v-btn
                         v-bind="attrs"
@@ -132,6 +135,8 @@ const options = [
                 </template>
 
                 <v-card color="b-secondary" class="rounded">
+                    <slot name="menu-before" />
+
                     <v-list-item
                         v-for="(option, index) in options"
                         :key="index"
@@ -142,7 +147,7 @@ const options = [
 
                         {{ upperFirst(lowerCase(option.label)) }}
                     </v-list-item>
-                    <slot name="menu" />
+                    <slot name="menu-after" />
                 </v-card>
             </v-menu>
         </div>

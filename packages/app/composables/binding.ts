@@ -1,4 +1,4 @@
-export function createBindings<K extends string>(attrs: Record<string, any>, bindings: K[]) {
+export function useBindings<K extends string>(attrs: Record<string, any>, bindings: K[]) {
     const root = {}
     const result: any = {}
 
@@ -35,4 +35,11 @@ export function createBindings<K extends string>(attrs: Record<string, any>, bin
     result.multiple = multiple
 
     return result as Record<K | 'root', any> & Record<'multiple', typeof multiple>
+}
+
+/**
+ * @deprecated use useBindings instead
+ */
+export function createBindings<K extends string>(attrs: Record<string, any>, bindings: K[]) {
+    return useBindings(attrs, bindings)
 }

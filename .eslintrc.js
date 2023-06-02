@@ -43,6 +43,7 @@ module.exports = {
         'no-console': ['warn', { allow: ['warn', 'error', 'debug'] }],
         'no-debugger': 'warn',
         'semi': ['error', 'never'],
+        'no-useless-escape': 'off',
         'prettier/prettier': [
             'error',
             {

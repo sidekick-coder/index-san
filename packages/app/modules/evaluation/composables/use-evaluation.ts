@@ -6,13 +6,6 @@ import { Processor } from '../types/processor'
 
 import { Resolver } from '../types/resolver'
 
-interface EvaluationState {
-    stdout: string
-    done: boolean
-    onDone: () => Promise<void>
-    on: (event: 'stdout', cb: () => any) => void
-}
-
 export function useEvaluation() {
     const parser = createParser()
     const helper = useNodeHelper()
@@ -26,11 +19,13 @@ export function useEvaluation() {
         processors: [] as Processor[],
     }
 
-    function addResolver(resolver: Resolver) {
-        state.resolvers.push({
-            order: 99,
-            ...resolver,
-        })
+    function addResolver(...resolver: Resolver[]) {
+        resolver.forEach((r) =>
+            state.resolvers.push({
+                order: 99,
+                ...r,
+            })
+        )
     }
 
     function addProcessor(Processor: Processor) {
@@ -98,12 +93,12 @@ export function useEvaluation() {
         return helper.toString(nodes)
     }
 
-    function evaluate(source: string, context = {}) {
+    function createInstance(source: string, context = {}) {
         let wrapCode = source
 
         const observers: any[] = []
 
-        const output = {
+        const instance = {
             stdout: '',
             stderr: '',
             done: false,
@@ -113,21 +108,26 @@ export function useEvaluation() {
                     cb,
                 })
             },
+            run: async () => {
+                //
+            },
         }
 
         const emit = (event: string, data: string) => {
-            observers.forEach((observer) => {
-                if (observer.event === event) {
-                    observer.cb(data)
-                }
-            })
+            observers
+                .filter((observer) => observer.event === event)
+                .forEach((observer) => {
+                    if (observer.event === event) {
+                        observer.cb(data)
+                    }
+                })
         }
 
         const logger = {
             log: (...args: any) => {
                 const value = args.map(inspect).join(' ') + '\n'
 
-                output.stdout += value
+                instance.stdout += value
 
                 emit('stdout', value)
             },
@@ -149,22 +149,32 @@ export function useEvaluation() {
 
         const fn = new AsyncFunction(wrapCode)
 
-        fn.call({ ...context, logger: logger })
-            .then(() => {
-                output.done = true
-            })
-            .catch((err: Error) => {
-                output.done = true
+        instance.run = async () => {
+            fn.call({ ...context, logger: logger })
+                .then(() => {
+                    instance.done = true
+                })
+                .catch((err: Error) => {
+                    instance.done = true
 
-                output.stderr += err.message + '\n'
+                    instance.stderr += err.message + '\n'
 
-                emit('stderr', err.message + '\n')
-            })
+                    emit('stderr', err.message + '\n')
+                })
+        }
 
-        return output
+        return instance
     }
 
-    async function run(source: string, options = { waitEnd: true, timeout: 10000 }) {
+    function evaluate(source: string, context = {}) {
+        const instance = createInstance(source, context)
+
+        instance.run()
+
+        return instance
+    }
+
+    async function run(source: string, options = { immediate: true, timeout: 10000 }) {
         const imports = await mountImports(source)
         const code = mount(source)
         const exported = {} as Record<string, any>
@@ -176,13 +186,15 @@ export function useEvaluation() {
             },
         }
 
-        const evaluation = evaluate(code, context)
+        const evaluation = createInstance(code, context)
 
         async function onDone() {
             await waitFor(() => evaluation.done, options.timeout)
         }
 
-        if (options.waitEnd) {
+        if (options.immediate) {
+            evaluation.run()
+
             await onDone()
         }
 
@@ -190,6 +202,8 @@ export function useEvaluation() {
             evaluation,
             exports: exported,
             onDone,
+            on: evaluation.on,
+            run: evaluation.run,
         }
     }
 

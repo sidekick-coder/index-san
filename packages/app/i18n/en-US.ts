@@ -28,6 +28,8 @@ export default {
     path: 'Path',
     editMode: 'Edit mode',
     viewMode: 'View mode',
+    debugMode: 'Debug mode',
+    datasetMode: 'Dataset mode',
     reload: 'Reload',
     save: 'Save',
     cancel: 'Cancel',

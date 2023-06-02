@@ -12,6 +12,7 @@ import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 import NodeEditorBlockError from './NodeEditorBlockError.vue'
 import { TokenType } from '@language-kit/lexer'
 import { NodeType } from '@language-kit/markdown'
+import NodeEditorBlockChart from './NodeEditorBlockChart.vue'
 
 const nodes = defineModel({
     type: Array as PropType<NodeWithId[]>,
@@ -25,8 +26,6 @@ const editor = provideNodeEditor()
 editor.setNodesRef(nodes)
 
 function updateNode(index: number, node: NodeWithId) {
-    console.count('updateNode' + node.type)
-
     nodes.value.splice(index, 1, node)
 
     emit('change', nodes.value)
@@ -111,6 +110,12 @@ onErrorCaptured((err) => {
 
             <NodeEditorBlockScript
                 v-else-if="isComponent('script', node)"
+                :model-value="node"
+                @update:model-value="updateNode(index, $event)"
+            />
+
+            <NodeEditorBlockChart
+                v-else-if="isComponent('chart', node)"
                 :model-value="node"
                 @update:model-value="updateNode(index, $event)"
             />

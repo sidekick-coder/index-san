@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useCss } from '@composables/css'
-import MonacoEditor from '@modules/monaco/components/MEditor.vue'
-import ANSIToHtml from 'ansi-to-html'
 import { useEvaluation } from '../composables/use-evaluation'
 import { useDefinedRef } from '@composables/utils'
 import { Resolver } from '../types/resolver'
+
+import MonacoEditor from '@modules/monaco/components/MEditor.vue'
+import ANSICard from './ANSICard.vue'
 
 const props = defineProps({
     height: {
@@ -12,7 +13,7 @@ const props = defineProps({
         default: '200',
     },
     showEditor: {
-        type: [Boolean, String],
+        type: Boolean,
         default: true,
     },
     resolvers: {
@@ -26,14 +27,9 @@ const emit = defineEmits(['change'])
 const css = useCss()
 
 // config
-const config = ref({
-    dialog: false,
-    showEditor: /true/i.test(String(props.showEditor)),
-    height: Number(props.height) || 200,
-})
 
 const style = computed(() => ({
-    height: css.toMeasurement(config.value.height),
+    height: css.toMeasurement(props.height),
 }))
 
 // evaluation
@@ -67,7 +63,6 @@ onMounted(setModel)
 
 // evaluate
 const evaluation = useEvaluation()
-const conversor = new ANSIToHtml()
 
 const running = ref(false)
 const output = ref<string[]>([])
@@ -79,24 +74,26 @@ async function run() {
 
     output.value = []
 
-    output.value.push(conversor.toHtml('🔥 Running code...'))
+    output.value.push('🔥 Running code...')
     output.value.push(' ')
 
     const runtime = await evaluation.run(code.value, {
-        waitEnd: false,
+        immediate: false,
         timeout: 10000,
     })
 
-    runtime.evaluation.on('stdout', (data) => {
-        output.value.push(conversor.toHtml(data))
-    })
+    runtime.on('stdout', (data) => output.value.push(data))
+
+    runtime.on('stderr', (data) => output.value.push(data))
+
+    runtime.run()
 
     runtime
         .onDone()
         .then(() => {
             output.value.push(' ')
 
-            output.value.push(conversor.toHtml('🎉 Code executed successfully!'))
+            output.value.push('🎉 Code executed successfully!')
 
             setTimeout(() => {
                 running.value = false
@@ -105,7 +102,7 @@ async function run() {
         .catch((error) => {
             output.value.push(' ')
 
-            output.value.push(conversor.toHtml(`❌ Code execution failed: ${error.message}`))
+            output.value.push(`❌ Code execution failed: ${error.message}`)
 
             running.value = false
         })
@@ -113,11 +110,7 @@ async function run() {
 </script>
 <template>
     <div class="my-2">
-        <div
-            v-if="config.showEditor"
-            class="min-h-[100px] mb-2 rounded overflow-hidden"
-            :style="style"
-        >
+        <div v-if="showEditor" class="min-h-[100px] mb-2 rounded overflow-hidden" :style="style">
             <MonacoEditor
                 v-model="code"
                 :line-options="{
@@ -141,31 +134,13 @@ async function run() {
             />
         </div>
 
-        <div class="bg-b-03 flex py-2 px-4 rounded items-center flex-wrap transition-all">
+        <ANSICard :model-value="output">
             <div class="flex w-full items-center">
                 <div class="text-t-secondary">
                     {{ running ? 'Running...' : $t('clickToEvaluate') }}
                 </div>
 
                 <div class="flex gap-x-4 ml-auto">
-                    <v-menu offset-y>
-                        <template #activator="{ attrs }">
-                            <v-btn :disabled="running" color="b-secondary" v-bind="attrs">
-                                <v-icon name="cog" />
-                            </v-btn>
-                        </template>
-                        <v-card color="b-secondary" width="150" class="mt-2">
-                            <v-card-content class="flex flex-wrap space-y-4">
-                                <v-checkbox v-model="config.showEditor" :label="$t('showEditor')" />
-                                <v-input
-                                    v-model="config.height"
-                                    type="number"
-                                    :label="$t('height')"
-                                />
-                            </v-card-content>
-                        </v-card>
-                    </v-menu>
-
                     <v-btn :disabled="running" @click="run">
                         <v-icon
                             :name="running ? 'spinner' : 'play'"
@@ -177,10 +152,6 @@ async function run() {
                     </v-btn>
                 </div>
             </div>
-
-            <div v-if="output.length" class="w-full text-sm whitespace-pre-wrap mt-4">
-                <div v-for="line in output" :key="line" v-html="line" />
-            </div>
-        </div>
+        </ANSICard>
     </div>
 </template>
