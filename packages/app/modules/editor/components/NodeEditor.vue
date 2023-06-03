@@ -10,8 +10,6 @@ import { provideNodeEditor } from '../composable/node-editor'
 import { Icon } from '@iconify/vue'
 import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 import NodeEditorBlockError from './NodeEditorBlockError.vue'
-import { TokenType } from '@language-kit/lexer'
-import { MarkdownNodeNodeType } from '@language-kit/markdown'
 import NodeEditorBlockChart from './NodeEditorBlockChart.vue'
 
 const nodes = defineModel({
@@ -35,16 +33,6 @@ function isComponent(name: string, node: NodeWithId) {
     if (!node.isComponent()) return
 
     return node.name === name
-}
-
-function isBreakLine(node: NodeWithId) {
-    if (node.type !== MarkdownNodeNodeType.Paragraph) return
-
-    if (node.tokens.length > 3) return
-
-    return node.tokens.every((token) =>
-        [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type as any)
-    )
 }
 
 editor.on('add', () => emit('change'))
@@ -78,12 +66,7 @@ onErrorCaptured((err) => {
     </div>
 
     <div v-else class="h-full w-full overflow-auto pb-80">
-        <div
-            v-for="(node, index) in nodes"
-            :key="node.id"
-            class="w-full"
-            :class="[isBreakLine(node) ? 'hidden' : '']"
-        >
+        <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
             <NodeEditorBlockSetup
                 v-if="isComponent('setup', node)"
                 :model-value="node"

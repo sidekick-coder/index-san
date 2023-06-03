@@ -20,7 +20,9 @@ const text = ref('')
 const nodes = ref<NodeWithId[]>([])
 
 function mountNodes(value: string) {
-    return parser.toNodes(value).map((n) => new NodeWithId(n))
+    const newText = value.replace(/\r\n/g, '\n')
+
+    return parser.toNodes(newText).map((n) => new NodeWithId(n))
 }
 
 function load() {

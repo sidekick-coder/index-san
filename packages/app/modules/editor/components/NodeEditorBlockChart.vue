@@ -69,19 +69,38 @@ watch(model, load, { immediate: true })
 
 const css = useCss()
 
+const attrs = computed(() => {
+    if (!model.value.isComponent()) {
+        return {}
+    }
+
+    return model.value.attrs
+})
+
 const config = reactive({
     height: '440',
+    width: '100%',
+    align: 'left',
     mode: 'view' as 'view' | 'editor' | 'debug' | 'dataset',
 })
 
-// watch(
-//     () => attrs.value,
-//     (a) => {
-//         config.height = a.height ?? '440'
-//         config.showEditor = [a.showEditor, a['show-editor']].includes('true')
-//     },
-//     { immediate: true }
-// )
+const style = computed(() => {
+    return {
+        height: css.toMeasurement(config.height),
+        width: css.toMeasurement(config.width),
+        marginLeft: ['right', 'center'].includes(config.align) ? 'auto' : undefined,
+        marginRight: ['left', 'center'].includes(config.align) ? 'auto' : undefined,
+    }
+})
+
+watch(
+    () => attrs.value,
+    (a) => {
+        config.height = a.height ?? '440'
+        config.align = a.align ?? 'left'
+    },
+    { immediate: true }
+)
 
 // chart
 
@@ -227,7 +246,12 @@ watch(model, setChart, { immediate: true })
                 <v-icon name="chart-pie" class="text-[10rem] text-t-secondary" />
             </div>
 
-            <v-chart v-else-if="config.mode === 'view'" ref="chartRef" :options="chartOptions" />
+            <v-chart
+                v-else-if="config.mode === 'view'"
+                ref="chartRef"
+                :style="style"
+                :options="chartOptions"
+            />
         </v-card>
     </NodeEditorBlock>
 </template>

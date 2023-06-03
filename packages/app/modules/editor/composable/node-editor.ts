@@ -188,6 +188,7 @@ export function create() {
         addNodeBefore,
         removeNode,
         selectByIndex,
+        isBreakLine,
     })
 }
 

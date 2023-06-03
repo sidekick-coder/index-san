@@ -4,6 +4,7 @@ import NodeEditorRenderer from './NodeEditorRenderer.vue'
 import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
 import { Token } from '@language-kit/lexer'
 import { NodeWithId } from '../types/node'
+import { useNodeEditor } from '../composable/node-editor'
 
 const model = defineModel({
     type: NodeWithId,
@@ -11,7 +12,11 @@ const model = defineModel({
 })
 
 const parser = new MarkdownParser()
+const editor = useNodeEditor()
 const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
+
+const shouldHide = computed(() => editor.isBreakLine(model.value))
+
 const html = ref('')
 
 function load() {
@@ -57,7 +62,12 @@ onMounted(load)
 </script>
 
 <template>
-    <NodeEditorBlock :node="model" @on-select="onBlockSelected" @on-unselect="onBlockUnselected">
+    <NodeEditorBlock
+        :class="shouldHide ? 'hidden' : ''"
+        :node="model"
+        @on-select="onBlockSelected"
+        @on-unselect="onBlockUnselected"
+    >
         <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
     </NodeEditorBlock>
 </template>
