@@ -5,12 +5,12 @@ import { useNodeEditor } from '../composable/node-editor'
 import MonacoEditor from '@modules/monaco/components/MEditor.vue'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import npmResolver from '@modules/evaluation/resolvers/npm'
-import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
-import merge from 'lodash/merge'
-import { inspect, useDefinedRef } from '@composables/utils'
+import { MarkdownParser } from '@language-kit/markdown'
+import { inspect } from '@composables/utils'
 import { useCss } from '@composables/css'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import ANSICard from '@modules/evaluation/components/ANSICard.vue'
+import { Token } from '@language-kit/lexer'
 
 // mount component
 const model = defineModel({
@@ -18,7 +18,7 @@ const model = defineModel({
     required: true,
 })
 
-const parser = new Parser()
+const parser = new MarkdownParser()
 const loading = ref(false)
 const code = ref(`// write code`)
 
@@ -42,13 +42,13 @@ function update() {
     const tokens = parser.toTokens(payload)
 
     const lastIndex = tokens.length - 1
-    const breakLine = MarkdownToken.breakLine()
+    const breakLine = Token.breakLine()
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
     const node = new NodeWithId(
         {
-            type: NodeType.Component,
+            type: NodeWithId.types.Component,
             tokens,
         },
         model.value.id
@@ -204,6 +204,7 @@ watch(model, setChart, { immediate: true })
                 :model-value="inspect(chartOptions)"
                 language="json"
                 folding
+                readonly
                 :padding="{
                     top: 8,
                     bottom: 8,

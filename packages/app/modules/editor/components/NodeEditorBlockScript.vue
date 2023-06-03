@@ -5,9 +5,8 @@ import { useNodeEditor } from '../composable/node-editor'
 import EvaluationCard from '@modules/evaluation/components/EvaluationCard.vue'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import npmResolver from '@modules/evaluation/resolvers/npm'
-import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
-import merge from 'lodash/merge'
-import { useDefinedRef } from '@composables/utils'
+import { MarkdownParser } from '@language-kit/markdown'
+import { Token } from '@language-kit/lexer'
 
 // mount component
 const model = defineModel({
@@ -15,7 +14,7 @@ const model = defineModel({
     required: true,
 })
 
-const parser = new Parser()
+const parser = new MarkdownParser()
 const loading = ref(false)
 const code = ref(`// write code`)
 const editor = useNodeEditor()
@@ -25,7 +24,7 @@ const attrs = computed(() => {
         return {}
     }
 
-    return merge(model.value.attrs, model.value.props)
+    return {}
 })
 
 const resolvers = [
@@ -60,13 +59,13 @@ function update() {
     const tokens = parser.toTokens(payload)
 
     const lastIndex = tokens.length - 1
-    const breakLine = MarkdownToken.breakLine()
+    const breakLine = Token.breakLine()
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
     const node = new NodeWithId(
         {
-            type: NodeType.Component,
+            type: NodeWithId.types.Component,
             tokens,
         },
         model.value.id
@@ -89,14 +88,14 @@ const config = reactive({
     showEditor: false,
 })
 
-watch(
-    () => attrs.value,
-    (a) => {
-        config.height = a.height ?? '200'
-        config.showEditor = [a.showEditor, a['show-editor']].includes('true')
-    },
-    { immediate: true }
-)
+// watch(
+//     () => attrs.value,
+//     (a) => {
+//         config.height = a.height ?? '200'
+//         config.showEditor = [a.showEditor, a['show-editor']].includes('true')
+//     },
+//     { immediate: true }
+// )
 </script>
 
 <template>
@@ -106,6 +105,7 @@ watch(
             :height="config.height"
             :resolvers="resolvers"
             :show-editor="config.showEditor"
+            @change="update"
         />
 
         <template #menu-before>

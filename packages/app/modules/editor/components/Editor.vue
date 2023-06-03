@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Parser } from '@language-kit/markdown'
+import { MarkdownParser } from '@language-kit/markdown'
 import { NodeWithId } from '../types/node'
 
 import MonacoEditor from '../../monaco/components/MEditor.vue'
@@ -14,7 +14,7 @@ const model = defineModel({
     default: '',
 })
 
-const parser = new Parser()
+const parser = new MarkdownParser()
 
 const text = ref('')
 const nodes = ref<NodeWithId[]>([])

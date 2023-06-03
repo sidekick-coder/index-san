@@ -1,7 +1,7 @@
 import { waitFor } from '@composables/utils'
 import { NodeWithId } from '../types/node'
-import { Token, TokenType } from '@language-kit/lexer'
-import { NodeType } from '@language-kit/markdown'
+import { Token, TokenArray, TokenType } from '@language-kit/lexer'
+import { MarkdownNodeNodeType } from '@language-kit/markdown'
 
 import { findCircularItem } from '@composables/utils'
 
@@ -75,12 +75,12 @@ export function create() {
     const selectedBlockId = ref<string>()
 
     function isBreakLine(node: NodeWithId) {
-        if (node.type !== NodeType.Paragraph) return
+        if (node.type !== MarkdownNodeNodeType.Paragraph) return
 
         if (node.tokens.length > 3) return
 
         return node.tokens.every((token) =>
-            [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type)
+            [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type as any)
         )
     }
 
@@ -131,8 +131,8 @@ export function create() {
     function addNodeAt(index: number, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
         if (!payload) {
             payload = {
-                type: NodeType.Paragraph,
-                tokens: [Token.breakLine()],
+                type: MarkdownNodeNodeType.Paragraph,
+                tokens: new TokenArray(Token.breakLine()),
             }
         }
 

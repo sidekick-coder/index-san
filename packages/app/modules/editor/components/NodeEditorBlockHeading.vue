@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import MBlock from './NodeEditorBlock.vue'
-import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
+import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
 import NodeEditorRenderer from './NodeEditorRenderer.vue'
 
 import { NodeWithId } from '../types/node'
+import { Token } from '@language-kit/lexer'
 
 const model = defineModel({
     type: NodeWithId,
@@ -12,7 +13,7 @@ const model = defineModel({
 
 const html = ref('')
 const level = ref(1)
-const parser = new Parser()
+const parser = new MarkdownParser()
 
 function setText() {
     const tokens = model.value.tokens.filter((t) => t.value !== '#')
@@ -36,13 +37,13 @@ function updateNode(text: string) {
     const tokens = parser.toTokens(text)
 
     const lastIndex = tokens.length - 1
-    const breakLine = MarkdownToken.breakLine()
+    const breakLine = Token.breakLine()
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
     const node = new NodeWithId(
         {
-            type: NodeType.Heading,
+            type: MarkdownNodeNodeType.Heading,
             tokens,
         },
         model.value.id

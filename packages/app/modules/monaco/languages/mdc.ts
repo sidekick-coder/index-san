@@ -5,5 +5,5 @@ import completion from './mdc.completion'
 export default defineLanguage({
     id: 'mdc',
     monarch,
-    completion,
+    // completion,
 })

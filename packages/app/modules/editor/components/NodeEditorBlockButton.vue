@@ -32,16 +32,8 @@ function load() {
         .map(([key, value]) => `${key}="${value}"`)
         .join(' ')
 
-    const props = Object.entries(model.value.props)
-        .map(([key, value]) => `:${key}="${value}"`)
-        .join(' ')
-
-    const events = Object.entries(model.value.events)
-        .map(([key, value]) => `@${key}="${value}"`)
-        .join(' ')
-
     const template = `
-        <v-btn ${props} ${attrs} ${events} >
+        <v-btn ${attrs} >
             ${model.value.body}
         </v-btn>
     `

@@ -1,11 +1,13 @@
-import { Node } from '@language-kit/markdown'
+import { MarkdownNode } from '@language-kit/markdown'
 import uniqueId from 'lodash/uniqueId'
 
-export class NodeWithId extends Node {
+export class NodeWithId extends MarkdownNode {
     public id: string
 
-    constructor(node: Pick<Node, 'tokens' | 'type'>, id?: string) {
-        super(node)
+    constructor(payload: Pick<MarkdownNode, 'tokens' | 'type'>, id?: string) {
+        super()
+
+        Object.assign(this, payload)
 
         this.id = id ?? uniqueId('node:')
     }

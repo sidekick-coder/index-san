@@ -1,4 +1,4 @@
-import { Parser as MarkdownParser, Node as MarkdowNode } from '@language-kit/markdown'
+import { MarkdownParser, MarkdownNode } from '@language-kit/markdown'
 import { defineCompletion } from '../composable/define-language'
 import * as monaco from 'monaco-editor'
 import { createParser } from '@modules/evaluation/parser/parser'

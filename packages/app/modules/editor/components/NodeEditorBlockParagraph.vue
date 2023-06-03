@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import NodeEditorBlock from './NodeEditorBlock.vue'
 import NodeEditorRenderer from './NodeEditorRenderer.vue'
-import { MarkdownToken, NodeType, Parser } from '@language-kit/markdown'
+import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
+import { Token } from '@language-kit/lexer'
 import { NodeWithId } from '../types/node'
 
 const model = defineModel({
@@ -9,7 +10,7 @@ const model = defineModel({
     required: true,
 })
 
-const parser = new Parser()
+const parser = new MarkdownParser()
 const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
 const html = ref('')
 
@@ -25,13 +26,13 @@ function update(newHtml: string) {
     const tokens = parser.toTokens(newHtml)
 
     const lastIndex = tokens.length - 1
-    const breakLine = MarkdownToken.breakLine()
+    const breakLine = Token.breakLine()
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
     const node = new NodeWithId(
         {
-            type: NodeType.Paragraph,
+            type: MarkdownNodeNodeType.Paragraph,
             tokens,
         },
         model.value.id

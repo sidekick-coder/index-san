@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { Node } from '@language-kit/markdown'
-import { useManger } from '../composable/nodes-manager'
-import debounce from 'lodash/debounce'
-import { onKeyDown, onKeyStroke, useFocusWithin } from '@vueuse/core'
-import { useFocusList } from '../composable/focus-list'
+import { onKeyStroke, useFocusWithin } from '@vueuse/core'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
 import { useI18n } from 'vue-i18n'

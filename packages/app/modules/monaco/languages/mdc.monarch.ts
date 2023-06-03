@@ -64,13 +64,22 @@ export default defineMonarch({
             // github style code blocks (with backticks but no language)
             [/^\s*```\s*$/, { token: 'string', next: '@codeblock' }],
 
-            // index-san setup block
+            // index-san scripts component block
             [
-                /^\s*::\s*setup\s*$/,
-                { token: 'variable.source', next: 'componentBody', nextEmbedded: 'javascript' },
+                /^\s*::\s*(script|chart|setup)\s*/,
+                {
+                    token: 'variable.source',
+                    next: 'scriptComponent',
+                },
             ],
-            // index-san component block
-            [/^\s*::\s*(script|chart)\s*$/, { token: 'variable.source', next: 'component' }],
+            // normal component block
+            [
+                /^\s*::\s*(button|card)?\s*/,
+                {
+                    token: 'variable.source',
+                    next: 'defaultComponent',
+                },
+            ],
 
             // markup within lines
             { include: '@linecontent' },
@@ -79,11 +88,35 @@ export default defineMonarch({
         // entity.other.attribute-name
 
         componentAttributes: [
+            // mach name="value"
+            [
+                /([^\s=]+)(=)("|')(.+)("|')/,
+                ['entity.other.attribute-name', 'keyword', 'string', 'string', 'string'],
+            ],
             // mach start quotes
-            [/'|"/, { token: 'string', next: '@pop', nextEmbedded: '@pop' }],
+            [/}/, { token: 'variable.source', next: '@pop' }],
         ],
         componentBody: [
             [/::\s*$/, { token: 'variable.source', next: '@pop', nextEmbedded: '@pop' }],
+        ],
+
+        // componentBody without script
+        defaultComponent: [
+            // mach attributes
+            [/{/, { token: 'variable.source', next: 'componentAttributes' }],
+            // mach end
+            [/::\s*$/, { token: 'variable.source', next: '@pop' }],
+        ],
+
+        // componentBody with script
+        scriptComponentBody: [
+            [/::\s*$/, { token: 'variable.source', next: '@popall', nextEmbedded: '@pop' }],
+        ],
+        scriptComponent: [
+            [/{/, { token: 'variable.source', next: 'componentAttributes' }],
+            // mach whitespace or }
+            [/./, { token: '@rematch', next: 'scriptComponentBody', nextEmbedded: 'javascript' }],
+            // [/::\s*$/, { token: 'variable.source', next: '@pop', nextEmbedded: '@pop' }],
         ],
 
         // github style code blocks

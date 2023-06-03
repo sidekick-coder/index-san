@@ -11,7 +11,7 @@ import { Icon } from '@iconify/vue'
 import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 import NodeEditorBlockError from './NodeEditorBlockError.vue'
 import { TokenType } from '@language-kit/lexer'
-import { NodeType } from '@language-kit/markdown'
+import { MarkdownNodeNodeType } from '@language-kit/markdown'
 import NodeEditorBlockChart from './NodeEditorBlockChart.vue'
 
 const nodes = defineModel({
@@ -38,12 +38,12 @@ function isComponent(name: string, node: NodeWithId) {
 }
 
 function isBreakLine(node: NodeWithId) {
-    if (node.type !== NodeType.Paragraph) return
+    if (node.type !== MarkdownNodeNodeType.Paragraph) return
 
     if (node.tokens.length > 3) return
 
     return node.tokens.every((token) =>
-        [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type)
+        [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type as any)
     )
 }
 
