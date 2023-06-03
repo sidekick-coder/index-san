@@ -90,7 +90,7 @@ export default defineMonarch({
         componentAttributes: [
             // mach name="value"
             [
-                /([^\s=]+)(=)("|')(.+)("|')/,
+                /(\w+)(\s*=\s*)("|')([^"']+)("|')/g,
                 ['entity.other.attribute-name', 'keyword', 'string', 'string', 'string'],
             ],
             // mach start quotes

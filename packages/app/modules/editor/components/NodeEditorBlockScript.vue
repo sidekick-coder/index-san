@@ -24,7 +24,7 @@ const attrs = computed(() => {
         return {}
     }
 
-    return {}
+    return model.value.attrs
 })
 
 const resolvers = [
@@ -88,14 +88,14 @@ const config = reactive({
     showEditor: false,
 })
 
-// watch(
-//     () => attrs.value,
-//     (a) => {
-//         config.height = a.height ?? '200'
-//         config.showEditor = [a.showEditor, a['show-editor']].includes('true')
-//     },
-//     { immediate: true }
-// )
+watch(
+    () => attrs.value,
+    (a) => {
+        config.height = a.height ?? '200'
+        config.showEditor = [a.showEditor, a['show-editor']].includes('true')
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
