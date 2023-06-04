@@ -30,6 +30,7 @@ export default {
     viewMode: 'View mode',
     debugMode: 'Debug mode',
     datasetMode: 'Dataset mode',
+    cheatSheet: 'Cheat sheet',
     reload: 'Reload',
     save: 'Save',
     cancel: 'Cancel',
