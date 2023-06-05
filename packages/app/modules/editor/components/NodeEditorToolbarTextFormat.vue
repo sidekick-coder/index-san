@@ -14,19 +14,19 @@ const model = defineModel({
 const actions = ref([
     {
         icon: 'bold',
-        action: () => alert(`bold ${model.value.id}`),
+        action: () => alert(`not implemented`),
     },
     {
         icon: 'italic',
-        action: () => {},
+        action: () => alert(`not implemented`),
     },
     {
         icon: 'strikethrough',
-        action: () => {},
+        action: () => alert(`not implemented`),
     },
     {
         icon: 'underline',
-        action: () => {},
+        action: () => alert(`not implemented`),
     },
 ])
 </script>

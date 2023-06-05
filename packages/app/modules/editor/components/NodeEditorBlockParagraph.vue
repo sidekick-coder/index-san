@@ -5,7 +5,7 @@ import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
 import { Token } from '@language-kit/lexer'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
-import NodeEditorBlockParagraphToolbar from './NodeEditorBlockParagraphToolbar.vue'
+import NodeEditorToolbarTextFormat from './NodeEditorToolbarTextFormat.vue'
 
 const model = defineModel({
     type: NodeWithId,
@@ -68,7 +68,7 @@ onMounted(load)
         @on-unselect="onBlockUnselected"
     >
         <template #toolbar-tools>
-            <NodeEditorBlockParagraphToolbar v-model="model" />
+            <NodeEditorToolbarTextFormat v-model="model" />
         </template>
         <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
     </NodeEditorBlock>

@@ -11,6 +11,9 @@ import { useCss } from '@composables/css'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import ANSICard from '@modules/evaluation/components/ANSICard.vue'
 import { Token } from '@language-kit/lexer'
+import NodeEditorToolbarBtn from './NodeEditorToolbarBtn.vue'
+import NodeEditorToolbarAlignment from './NodeEditorToolbarAlignment.vue'
+import VChart from '@components/VChart.vue'
 
 // mount component
 const model = defineModel({
@@ -69,7 +72,7 @@ watch(model, load, { immediate: true })
 
 const css = useCss()
 
-const attrs = computed(() => {
+const componentAttrs = computed(() => {
     if (!model.value.isComponent()) {
         return {}
     }
@@ -78,8 +81,8 @@ const attrs = computed(() => {
 })
 
 const config = reactive({
-    height: '440',
-    width: '100%',
+    height: '500',
+    width: '500',
     align: 'left',
     mode: 'view' as 'view' | 'editor' | 'debug' | 'dataset',
 })
@@ -94,11 +97,8 @@ const style = computed(() => {
 })
 
 watch(
-    () => attrs.value,
-    (a) => {
-        config.height = a.height ?? '440'
-        config.align = a.align ?? 'left'
-    },
+    () => componentAttrs.value,
+    (a) => Object.assign(config, a),
     { immediate: true }
 )
 
@@ -108,6 +108,7 @@ const evaluation = useEvaluation()
 const evaluationOutput = ref<string[]>([])
 const editor = useNodeEditor()
 
+const chartRef = ref<InstanceType<typeof VChart> | null>(null)
 const chartLoading = ref(false)
 const chartOptions = reactive<any>({})
 
@@ -163,35 +164,96 @@ async function setChart() {
 }
 
 watch(model, setChart, { immediate: true })
+
+watch([() => config.align, () => config.height, () => config.width], () => {
+    chartLoading.value = true
+
+    setTimeout(() => {
+        chartLoading.value = false
+    }, 800)
+})
 </script>
 
 <template>
     <NodeEditorBlock :node="model">
-        <template #menu-before>
-            <v-list-item size="xs">
-                <v-icon name="fluent:auto-fit-height-20-filled" class="-ml-1 mr-2 text-lg" />
-                <v-input v-model="config.height" placeholder="200" width="100" @click.stop />
-            </v-list-item>
-            <v-list-item size="xs" @click="setChart">
-                <v-icon name="rotate" class="mr-2" />
+        <template #toolbar-tools>
+            <NodeEditorToolbarAlignment v-model="config.align" />
+
+            <v-tooltip color="b-secondary">
+                <template #activator="{ attrs }">
+                    <NodeEditorToolbarBtn v-bind="attrs" @click="setChart">
+                        <v-icon name="rotate" />
+                    </NodeEditorToolbarBtn>
+                </template>
                 {{ $t('reload') }}
-            </v-list-item>
-            <v-list-item size="xs" @click="config.mode = 'view'">
-                <v-icon name="eye" class="mr-2" />
+            </v-tooltip>
+
+            <v-tooltip color="b-secondary">
+                <template #activator="{ attrs }">
+                    <NodeEditorToolbarBtn
+                        v-bind="attrs"
+                        :active="config.mode === 'view'"
+                        @click="config.mode = 'view'"
+                    >
+                        <v-icon name="chart-pie" />
+                    </NodeEditorToolbarBtn>
+                </template>
                 {{ $t('viewMode') }}
-            </v-list-item>
-            <v-list-item size="xs" @click="config.mode = 'editor'">
-                <v-icon name="pen" class="mr-2" />
+            </v-tooltip>
+
+            <v-tooltip color="b-secondary">
+                <template #activator="{ attrs }">
+                    <NodeEditorToolbarBtn
+                        v-bind="attrs"
+                        :active="config.mode === 'editor'"
+                        @click="config.mode = 'editor'"
+                    >
+                        <v-icon name="pen" />
+                    </NodeEditorToolbarBtn>
+                </template>
                 {{ $t('editMode') }}
-            </v-list-item>
-            <v-list-item size="xs" @click="config.mode = 'debug'">
-                <v-icon name="bug" class="mr-2" />
+            </v-tooltip>
+
+            <v-tooltip color="b-secondary">
+                <template #activator="{ attrs }">
+                    <NodeEditorToolbarBtn
+                        v-bind="attrs"
+                        :active="config.mode === 'debug'"
+                        @click="config.mode = 'debug'"
+                    >
+                        <v-icon name="bug" />
+                    </NodeEditorToolbarBtn>
+                </template>
                 {{ $t('debugMode') }}
-            </v-list-item>
-            <v-list-item size="xs" @click="config.mode = 'dataset'">
-                <v-icon name="bug" class="mr-2" />
+            </v-tooltip>
+
+            <v-tooltip color="b-secondary">
+                <template #activator="{ attrs }">
+                    <NodeEditorToolbarBtn
+                        v-bind="attrs"
+                        :active="config.mode === 'dataset'"
+                        @click="config.mode = 'dataset'"
+                    >
+                        <v-icon name="mdi:code-json" />
+                    </NodeEditorToolbarBtn>
+                </template>
                 {{ $t('dataset') }}
-            </v-list-item>
+            </v-tooltip>
+
+            <div class="w-28 flex items-center">
+                <v-input v-model.lazy.number="config.height" flat size="sm">
+                    <template #prepend>
+                        <div class="text-t-secondary mr-2">H</div>
+                    </template>
+                </v-input>
+            </div>
+            <div class="w-28 flex items-center">
+                <v-input v-model.lazy.number="config.width" flat size="sm">
+                    <template #prepend>
+                        <div class="text-t-secondary mr-2">W</div>
+                    </template>
+                </v-input>
+            </div>
         </template>
 
         <v-card :height="config.height" class="py-4">
@@ -237,7 +299,23 @@ watch(model, setChart, { immediate: true })
                 }"
             />
 
-            <ANSICard v-else-if="config.mode === 'debug'" :model-value="evaluationOutput" />
+            <ANSICard
+                v-else-if="config.mode === 'debug'"
+                :model-value="evaluationOutput"
+                :empty-message="$t('noEntity', [$t('log', 2)])"
+            >
+                <template #empty>
+                    <div class="h-full w-full flex items-center justify-center text-t-secondary">
+                        <div class="flex flex-col items-center space-y-2">
+                            <v-icon name="bug" class="text-4xl" />
+
+                            <div>
+                                {{ $t('noEntity', [$t('log', 2)]) }}
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </ANSICard>
 
             <div
                 v-else-if="chartLoading"

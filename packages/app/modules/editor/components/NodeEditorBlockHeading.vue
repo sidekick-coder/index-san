@@ -5,7 +5,7 @@ import NodeEditorRenderer from './NodeEditorRenderer.vue'
 
 import { NodeWithId } from '../types/node'
 import { Token } from '@language-kit/lexer'
-import NodeEditorBlockParagraphToolbar from './NodeEditorBlockParagraphToolbar.vue'
+import NodeEditorToolbarTextFormat from './NodeEditorToolbarTextFormat.vue'
 import NodeEditorToolbarBtn from './NodeEditorToolbarBtn.vue'
 
 const model = defineModel({
@@ -105,7 +105,7 @@ function onBlockUnselected() {
         </component>
 
         <template #toolbar-tools>
-            <NodeEditorBlockParagraphToolbar v-model="model" />
+            <NodeEditorToolbarTextFormat v-model="model" />
 
             <NodeEditorToolbarBtn
                 v-for="n in 6"

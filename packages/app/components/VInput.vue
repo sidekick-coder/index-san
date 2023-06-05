@@ -98,8 +98,8 @@ const inputColors = {
     },
     flat: {
         accent: {
-            normal: 'outline outline-1 outline-transparent hover:outline-accent',
-            focus: '!outline-accent bg-accent/20',
+            normal: 'outline-none hover:bg-b-secondary',
+            focus: 'bg-b-secondary',
         },
         danger: {
             normal: 'bg-transparent',
@@ -127,13 +127,21 @@ function onBlur() {
 }
 
 function onInput(e: Event) {
+    let value = (e.target as HTMLInputElement).value
+
     if (props.modelModifiers.lazy) return
+
+    if (props.modelModifiers.number && isNaN(Number(value))) return
 
     model.value = (e.target as HTMLInputElement).value
 }
 
 function onChange(e: Event) {
+    let value = (e.target as HTMLInputElement).value
+
     if (!props.modelModifiers.lazy) return
+
+    if (props.modelModifiers.number && isNaN(Number(value))) return
 
     model.value = (e.target as HTMLInputElement).value
 }

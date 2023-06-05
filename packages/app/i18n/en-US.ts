@@ -18,6 +18,7 @@ export default {
     browse: 'Browse',
     version: 'Version',
     ok: 'Ok',
+    log: 'Log | Logs',
     thisActinCanNotBeUndone: 'This action can not be undone',
     listEntity: '{0} list',
     createEntity: 'Create {0}',
