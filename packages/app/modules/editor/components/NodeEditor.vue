@@ -11,6 +11,7 @@ import { Icon } from '@iconify/vue'
 import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 import NodeEditorBlockError from './NodeEditorBlockError.vue'
 import NodeEditorBlockChart from './NodeEditorBlockChart.vue'
+import NodeEditorToolbar from './NodeEditorToolbar.vue'
 
 const nodes = defineModel({
     type: Array as PropType<NodeWithId[]>,
@@ -19,9 +20,7 @@ const nodes = defineModel({
 
 const emit = defineEmits(['change'])
 
-const editor = provideNodeEditor()
-
-editor.setNodesRef(nodes)
+const editor = provideNodeEditor(nodes)
 
 function updateNode(index: number, node: NodeWithId) {
     nodes.value.splice(index, 1, node)
@@ -65,49 +64,60 @@ onErrorCaptured((err) => {
         </div>
     </div>
 
-    <div v-else class="h-full w-full overflow-auto pb-80">
-        <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
-            <NodeEditorBlockSetup
-                v-if="isComponent('setup', node)"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+    <div v-else class="h-full w-full">
+        <NodeEditorToolbar />
+        <div class="h-[calc(100%-48px)] w-full overflow-auto pb-80">
+            <transition-group
+                move-class="transition duration-200"
+                enter-active-class="transition duration-200"
+                leave-active-class="transition duration-200 absolute"
+                enter-from-class="opacity-0"
+                leave-to-class="opacity-0 translate-x-[-50%]"
+            >
+                <div v-for="(node, index) in nodes" :key="node.id" class="w-full">
+                    <NodeEditorBlockSetup
+                        v-if="isComponent('setup', node)"
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
 
-            <NodeEditorBlockHeading
-                v-else-if="node.type === 'heading'"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+                    <NodeEditorBlockHeading
+                        v-else-if="node.type === 'heading'"
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
 
-            <NodeEditorBlockParagraph
-                v-else-if="node.type === 'paragraph'"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+                    <NodeEditorBlockParagraph
+                        v-else-if="node.type === 'paragraph'"
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
 
-            <NodeEditorBlockButton
-                v-else-if="isComponent('button', node)"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+                    <NodeEditorBlockButton
+                        v-else-if="isComponent('button', node)"
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
 
-            <NodeEditorBlockScript
-                v-else-if="isComponent('script', node)"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+                    <NodeEditorBlockScript
+                        v-else-if="isComponent('script', node)"
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
 
-            <NodeEditorBlockChart
-                v-else-if="isComponent('chart', node)"
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+                    <NodeEditorBlockChart
+                        v-else-if="isComponent('chart', node)"
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
 
-            <NodeEditorBlockError
-                v-else
-                :model-value="node"
-                @update:model-value="updateNode(index, $event)"
-            />
+                    <NodeEditorBlockError
+                        v-else
+                        :model-value="node"
+                        @update:model-value="updateNode(index, $event)"
+                    />
+                </div>
+            </transition-group>
         </div>
     </div>
 </template>

@@ -1,6 +1,7 @@
+import { Ref } from 'vue'
 import { waitFor } from '@composables/utils'
 import { NodeWithId } from '../types/node'
-import { Token, TokenArray, TokenType } from '@language-kit/lexer'
+import { Token, TokenArray } from '@language-kit/lexer'
 import { MarkdownNodeNodeType } from '@language-kit/markdown'
 
 import { findCircularItem } from '@composables/utils'
@@ -16,7 +17,7 @@ interface Observers {
     callback: (value: any) => void
 }
 
-export function create() {
+export function create(nodesRef: Ref<NodeWithId[]>) {
     // setup
     const setupContext = reactive({})
     const setupIsLoading = ref(false)
@@ -48,14 +49,6 @@ export function create() {
         return null
     }
 
-    // nodes
-    let nodesRef: Ref<NodeWithId[]> | undefined
-    const nodes = computed(() => nodesRef?.value ?? [])
-
-    function setNodesRef(_nodes: Ref<NodeWithId[]>) {
-        nodesRef = _nodes
-    }
-
     // events
     const observers = ref<Observers[]>([])
 
@@ -72,62 +65,112 @@ export function create() {
     }
 
     // selection
-    const selectedBlockId = ref<string>()
+    const currentSelectionId = ref<string[]>([])
+    const currentSelection = computed(() =>
+        nodesRef.value.filter((n) => currentSelectionId.value.includes(n.id))
+    )
 
-    function isBreakLine(node: NodeWithId) {
-        if (node.type !== MarkdownNodeNodeType.Paragraph) return
-
-        if (node.tokens.length > 3) return
-
-        return node.tokens.every((token) =>
-            [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type as any)
-        )
+    function isSelected(node: NodeWithId) {
+        return currentSelectionId.value.includes(node.id)
     }
 
-    function select(id: string) {
-        selectedBlockId.value = id
+    function selectNodes(...nodes: NodeWithId[]) {
+        currentSelectionId.value = nodes.map((n) => n.id)
     }
 
-    function selectByIndex(index: string) {
-        selectedBlockId.value = nodes.value[index]?.id
-    }
+    function findMoveNode(index: number, direction = 1) {
+        const node = findCircularItem(nodesRef.value, index)
 
-    function findNodeByIndex(index: number) {
-        const length = nodes.value.length
-
-        const moveIndex = ((index % length) + length) % length
-
-        return nodes.value[moveIndex]
-    }
-
-    function findMoveNode(sep: number) {
-        const node = findCircularItem(nodes.value, sep)
-
-        if (isBreakLine(node)) {
-            return findMoveNode(sep + 1)
+        if (node.isBreakLine()) {
+            return findMoveNode(index + direction, direction)
         }
 
-        if (node.isComponent() && node.name === 'setup') {
-            return findMoveNode(sep + 1)
+        if (node.isSetup()) {
+            return findMoveNode(index + direction, direction)
         }
 
         return node
     }
 
-    function move(direction = 1) {
-        if (!selectedBlockId.value) return
+    function selectPrevNode() {
+        const first = currentSelection.value.at(0)
 
-        const index = nodes.value.findIndex((b) => b.id === selectedBlockId.value)
+        if (!first) return
 
-        if (index === -1) return
+        const index = nodesRef.value.indexOf(first)
 
-        const moveNode = findMoveNode(index + direction)
+        const moveNode = findMoveNode(index - 1, -1)
 
         if (!moveNode) return
 
-        select(moveNode.id)
+        selectNodes(moveNode)
     }
 
+    function selectNextNode() {
+        const last = currentSelection.value.at(-1)
+
+        if (!last) return
+
+        const index = nodesRef.value.indexOf(last)
+
+        const moveNode = findMoveNode(index + 1)
+
+        if (!moveNode) return
+
+        selectNodes(moveNode)
+    }
+
+    // move nodes
+
+    function moveNodeByIndex(fromIndex: number, toIndex: number) {
+        const node = nodesRef.value[fromIndex]
+
+        nodesRef.value.splice(fromIndex, 1)
+
+        nodesRef.value.splice(toIndex, 0, node)
+    }
+
+    function moveNodeToUp(node: NodeWithId) {
+        const fromIndex = nodesRef.value.findIndex((n) => n.id === node.id)
+
+        if (fromIndex === -1) return
+
+        const prevNode = findMoveNode(fromIndex - 1, -1)
+
+        if (!prevNode) return
+
+        const toIndex = nodesRef.value.indexOf(prevNode)
+
+        if (toIndex === -1) return
+
+        moveNodeByIndex(fromIndex, toIndex)
+    }
+
+    function moveNodeToDown(node: NodeWithId) {
+        const fromIndex = nodesRef.value.findIndex((n) => n.id === node.id)
+
+        if (fromIndex === -1) return
+
+        const nextNode = findMoveNode(fromIndex + 1)
+
+        if (!nextNode) return
+
+        const toIndex = nodesRef.value.indexOf(nextNode)
+
+        if (toIndex === -1) return
+
+        moveNodeByIndex(fromIndex, toIndex)
+    }
+
+    function moveSelectedNodesToUp() {
+        currentSelection.value.forEach((node) => moveNodeToUp(node))
+    }
+
+    function moveSelectedNodesToDown() {
+        currentSelection.value.reverse().forEach((node) => moveNodeToDown(node))
+    }
+
+    // crud
     function addNodeAt(index: number, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
         if (!payload) {
             payload = {
@@ -138,7 +181,7 @@ export function create() {
 
         const node = new NodeWithId(payload)
 
-        nodes.value.splice(index, 0, node)
+        nodesRef.value.splice(index, 0, node)
 
         emit('add', node)
 
@@ -146,7 +189,7 @@ export function create() {
     }
 
     function addNodeAfter(node: NodeWithId, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
-        const index = nodes.value.findIndex((n) => n.id === node.id)
+        const index = nodesRef.value.findIndex((n) => n.id === node.id)
 
         if (index === -1) return
 
@@ -154,46 +197,65 @@ export function create() {
     }
 
     function addNodeBefore(node: NodeWithId, payload?: Pick<NodeWithId, 'type' | 'tokens'>) {
-        const index = nodes.value.findIndex((n) => n.id === node.id)
+        const index = nodesRef.value.findIndex((n) => n.id === node.id)
 
         if (index === -1) return
 
         return addNodeAt(index, payload)
     }
 
-    function removeNode(node: NodeWithId) {
-        const index = nodes.value.findIndex((n) => n.id === node.id)
+    function deleteNodes(...nodes: NodeWithId[]) {
+        nodesRef.value = nodesRef.value.filter((n) => !nodes.includes(n))
 
-        if (index === -1) return
+        emit('remove', nodes)
+    }
 
-        nodes.value.splice(index, 1)
-
-        emit('remove', node)
+    function deleteSelectedNodes() {
+        deleteNodes(...currentSelection.value)
     }
 
     return reactive({
-        nodes,
-        selectedBlockId,
+        // general
+        nodesRef,
+
+        // setup
+
         validate,
         setupContext,
-        setupIsLoading,
-        select,
-        move,
         onLoadedContext,
+        setupIsLoading,
+
+        // section
+        currentSelectionId,
+        currentSelection,
+        isSelected,
+        selectNodes,
+        selectNextNode,
+        selectPrevNode,
+
+        // move
+        moveNodeByIndex,
+        moveNodeToUp,
+        moveNodeToDown,
+        moveSelectedNodesToUp,
+        moveSelectedNodesToDown,
+
+        // crud
+        addNodeAfter,
+        addNodeBefore,
+
+        deleteSelectedNodes,
+        deleteNodes,
+
+        // events
         on,
         off,
         emit,
-        setNodesRef,
-        addNodeAfter,
-        addNodeBefore,
-        removeNode,
-        selectByIndex,
-        isBreakLine,
     })
 }
 
-export function provideNodeEditor() {
-    const state = create()
+export function provideNodeEditor(nodesRef: Ref<NodeWithId[]>) {
+    const state = create(nodesRef)
 
     provide(key, state)
 
@@ -201,5 +263,5 @@ export function provideNodeEditor() {
 }
 
 export function useNodeEditor() {
-    return inject(key, create())
+    return inject(key, create(ref([])))
 }

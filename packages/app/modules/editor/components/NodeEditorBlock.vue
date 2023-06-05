@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onKeyStroke, useFocusWithin } from '@vueuse/core'
+import { onKeyStroke, useFocusWithin, useKeyModifier } from '@vueuse/core'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
 import { useI18n } from 'vue-i18n'
@@ -16,35 +16,43 @@ const props = defineProps({
 
 const emit = defineEmits(['onSelect', 'onUnselect'])
 
-// actions
 const editor = useNodeEditor()
 const rootAttrs = useAttrs()
 const bindings = useBindings(rootAttrs, ['menu'])
 
 const root = ref<HTMLElement>()
 const content = ref<HTMLElement>()
-const isSelected = computed(() => editor.selectedBlockId === props.node.id)
+const isSelected = computed(() => editor.isSelected(props.node))
+const controlState = useKeyModifier('Control')
 
 const { focused } = useFocusWithin(root)
 
-onKeyStroke('ArrowUp', (e) => {
-    if (!isSelected.value) return
+function onMousedown(e: MouseEvent) {
+    if (e.ctrlKey) {
+        editor.selectNodes(...editor.currentSelection, props.node)
 
-    e.preventDefault()
+        return
+    }
 
-    setTimeout(() => {
-        editor.move(-1)
-    }, 100)
-})
+    editor.selectNodes(props.node)
+}
+
+onKeyStroke(
+    'ArrowUp',
+    (e) => {
+        e.preventDefault()
+
+        editor.selectPrevNode()
+    },
+    { target: root }
+)
 
 onKeyStroke('ArrowDown', (e) => {
     if (!isSelected.value) return
 
     e.preventDefault()
 
-    setTimeout(() => {
-        editor.move(1)
-    }, 100)
+    setTimeout(() => editor.selectNextNode(), 100)
 
     // editor.move(1)
 })
@@ -65,22 +73,22 @@ onKeyStroke(
 
         e.preventDefault()
 
-        const index = editor.nodes.indexOf(props.node)
+        // const index = editor.nodes.indexOf(props.node)
 
-        const isLast = editor.nodes.length - 1 === index
+        // const isLast = editor.nodes.length - 1 === index
 
-        const direction = isLast ? -2 : 2
+        // const direction = isLast ? -2 : 2
 
-        editor.move(direction)
+        // editor.move(direction)
 
-        setTimeout(() => editor.removeNode(props.node), 100)
+        // setTimeout(() => editor.removeNode(props.node), 100)
     },
     { target: content }
 )
 
 watch(focused, (focused) => {
-    if (focused) {
-        editor.select(props.node.id)
+    if (focused && !controlState.value) {
+        editor.selectNodes(props.node)
     }
 })
 
@@ -115,7 +123,9 @@ const options = [
     <div
         ref="root"
         class="flex min-h-[48px] items-center group hover:bg-b-secondary/50"
+        :data-block-id="node.id"
         :class="isSelected ? 'bg-b-secondary/50' : ''"
+        @mousedown="onMousedown"
     >
         <div class="w-[40px] flex justify-center self-start">
             <v-menu offset-y close-on-content-click v-bind="bindings.menu">
@@ -151,7 +161,7 @@ const options = [
             </v-menu>
         </div>
 
-        <div ref="content" class="flex-1">
+        <div ref="content" class="flex-1" :class="controlState ? 'pointer-events-none' : ''">
             <slot />
         </div>
 

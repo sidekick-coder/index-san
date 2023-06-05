@@ -36,6 +36,10 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    delay: {
+        type: Number,
+        default: 0,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -115,7 +119,7 @@ const onMouseover = debounce((event: MouseEvent) => {
     mouse.value.x = x
 
     show.value = true
-}, 50)
+}, props.delay)
 
 function onMouseleave() {
     show.value = false

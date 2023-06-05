@@ -15,8 +15,6 @@ const parser = new MarkdownParser()
 const editor = useNodeEditor()
 const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
 
-const shouldHide = computed(() => editor.isBreakLine(model.value))
-
 const html = ref('')
 
 function load() {
@@ -63,7 +61,7 @@ onMounted(load)
 
 <template>
     <NodeEditorBlock
-        :class="shouldHide ? 'hidden' : ''"
+        :class="model.isBreakLine() ? 'hidden' : ''"
         :node="model"
         @on-select="onBlockSelected"
         @on-unselect="onBlockUnselected"
