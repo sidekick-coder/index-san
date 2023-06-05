@@ -18,8 +18,8 @@ const emit = defineEmits(['onSelect', 'onUnselect'])
 
 // actions
 const editor = useNodeEditor()
-const attrs = useAttrs()
-const bindings = useBindings(attrs, ['menu'])
+const rootAttrs = useAttrs()
+const bindings = useBindings(rootAttrs, ['menu'])
 
 const root = ref<HTMLElement>()
 const content = ref<HTMLElement>()
@@ -114,20 +114,23 @@ const options = [
 <template>
     <div
         ref="root"
-        class="flex min-h-[50px] items-center group hover:bg-b-secondary/50 border-y border-b-secondary/25"
+        class="flex min-h-[48px] items-center group hover:bg-b-secondary/50"
         :class="isSelected ? 'bg-b-secondary/50' : ''"
     >
-        <div class="w-[50px] flex justify-center self-start mt-3">
+        <div class="w-[40px] flex justify-center self-start">
             <v-menu offset-y close-on-content-click v-bind="bindings.menu">
                 <template #activator="{ attrs }">
-                    <v-btn
-                        v-bind="attrs"
-                        mode="text"
-                        size="none"
-                        class="px-2 py-1 text-sm opacity-0 group-hover:opacity-100"
-                    >
-                        <v-icon name="grip-vertical" />
-                    </v-btn>
+                    <slot name="menu-activator" :attrs="attrs">
+                        <v-btn
+                            v-bind="attrs"
+                            mode="text"
+                            size="none"
+                            color="b-primary"
+                            class="h-12 text-sm opacity-0 group-hover:opacity-100"
+                        >
+                            <v-icon name="grip-vertical" />
+                        </v-btn>
+                    </slot>
                 </template>
 
                 <v-card color="b-secondary" class="rounded">
@@ -152,7 +155,7 @@ const options = [
             <slot />
         </div>
 
-        <div class="w-[50px] flex justify-center">
+        <div class="w-[40px] flex justify-center">
             <slot name="after" />
         </div>
     </div>

@@ -102,10 +102,22 @@ function onBlockUnselected() {
             <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
         </component>
 
-        <template #menu>
+        <template #menu-after>
             <v-list-item v-for="n in 6" :key="n" size="xs" @click="updateLevel(n)">
-                <v-icon name="heading" class="mr-2" /> Heading {{ n }}
+                <v-icon :name="`lucide:heading-${n}`" class="mr-2 text-lg" /> Heading {{ n }}
             </v-list-item>
+        </template>
+
+        <template #menu-activator="{ attrs }">
+            <v-btn
+                v-bind="attrs"
+                mode="text"
+                size="none"
+                class="py-1 text-t-secondary h-12"
+                color="b-primary"
+            >
+                <v-icon :name="`lucide:heading-${level}`" class="text-lg" />
+            </v-btn>
         </template>
     </m-block>
 </template>
