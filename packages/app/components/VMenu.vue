@@ -5,9 +5,9 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch, onMounted } from 'vue'
-import { useVModel } from '@vueuse/core'
-import throttle from 'lodash/throttle'
+import { TransitionProps } from 'vue'
+import { onClickOutside } from '@vueuse/core'
+import { useDefinedRef } from '@composables/utils'
 
 // Props & Emits
 const props = defineProps({
@@ -43,35 +43,71 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    transition: {
+        type: Object as PropType<TransitionProps>,
+        default: () => ({
+            enterActiveClass: 'transition duration-200',
+            leaveActiveClass: 'transition duration-200',
+            enterFromClass: 'opacity-0 translate-y-2',
+            leaveToClass: 'opacity-100 translate-y-0',
+        }),
+    },
 })
-
-const emit = defineEmits(['update:modelValue'])
 
 // Show
 
-const innerModel = ref(false)
-const model = useVModel(props, 'modelValue', emit)
+// Position
 
-const show = computed({
-    get() {
-        if (model.value !== null) {
-            return model.value
-        }
-
-        return innerModel.value
-    },
-    set(value) {
-        if (model.value !== null) {
-            model.value = value
-            return
-        }
-
-        innerModel.value = value
-    },
+const activatorRef = ref(null as null | HTMLElement)
+const contentRef = ref(null as null | HTMLElement)
+const model = defineModel()
+const show = useDefinedRef(model, ref(false))
+const position = ref({
+    x: 0,
+    y: 0,
 })
 
+function onActivatorRef(el: HTMLElement | ComponentPublicInstance | null) {
+    if (activatorRef.value) return
+
+    if (!el) return
+
+    if (el instanceof HTMLElement) {
+        activatorRef.value = el
+        return
+    }
+
+    if (el.$el instanceof HTMLElement) {
+        activatorRef.value = el.$el
+        return
+    }
+}
+
 function toggle() {
-    show.value = !show.value
+    if (show.value) {
+        show.value = false
+        return
+    }
+
+    const rects = activatorRef.value?.getBoundingClientRect()
+
+    if (!rects) {
+        show.value = true
+        return
+    }
+
+    position.value.x = rects.x
+    position.value.y = rects.y
+
+    if (props.offsetY) {
+        position.value.y += rects.height
+    }
+
+    if (props.offsetX) {
+        position.value.x -= rects.width
+    }
+
+    show.value = true
 }
 
 function onClick() {
@@ -80,95 +116,27 @@ function onClick() {
     }
 }
 
-// set max y & x position
-const max = ref({
-    loading: false,
-    el: null as null | HTMLElement,
-    x: window.innerWidth,
-    y: window.innerHeight - 300,
-})
+onClickOutside(
+    contentRef,
+    () => {
+        if (!props.closeOnContentClick) return
 
-watch(show, () => {
-    const el = max.value.el
-
-    if (!el) return
-
-    setTimeout(() => {
-        max.value.y = window.innerHeight - el.clientHeight
-        max.value.x = window.innerWidth - el.clientWidth
-    }, 100)
-})
-
-// track mouse position
-
-const mouse = ref({
-    el: null as null | HTMLElement,
-    x: 0,
-    y: 0,
-    elWidth: 0,
-    elHeight: 0,
-})
-
-function setPosition() {
-    let { el } = mouse.value
-
-    if (!el || !el.getBoundingClientRect) return
-
-    const rect = el.getBoundingClientRect()
-
-    mouse.value.y = rect.y
-    mouse.value.x = rect.x
-    mouse.value.elWidth = el.clientWidth
-    mouse.value.elHeight = el.clientHeight
-}
-
-onMounted(() => setTimeout(setPosition, 500))
-
-const onClickDom = throttle((event: MouseEvent) => {
-    if (!show.value) return
-
-    const isClickOnContent = max.value.el?.contains(event.target as any)
-
-    const isClickOnActivator = mouse.value.el?.contains(event.target as any)
-
-    if (props.closeOnContentClick && isClickOnContent) {
         show.value = false
-        return
+    },
+    {
+        ignore: [activatorRef],
     }
-
-    if (isClickOnActivator || isClickOnContent) return
-
-    show.value = false
-}, 100)
-
-onMounted(() => document.addEventListener('click', onClickDom))
-
-onUnmounted(() => document.removeEventListener('click', onClickDom))
+)
 
 // style
 const style = computed(() => {
-    let y = Math.min(props.y ?? mouse.value.y, max.value.y)
-    let x = Math.min(props.x ?? mouse.value.x, max.value.x)
-
-    if (props.offsetY) {
-        y += mouse.value.elHeight
-    }
-
-    if (props.offsetX) {
-        x -= mouse.value.elWidth
-    }
-
     const result = {
-        top: `${y}px`,
-        left: `${x}px`,
+        top: `${position.value.y}px`,
+        left: `${position.value.x}px`,
     }
 
     if (props.maxHeight) {
         result['max-height'] = `${props.maxHeight}px`
-    }
-
-    if (mouse.value.el) {
-        result['min-width'] = `${mouse.value.el.clientWidth}px`
     }
 
     return result
@@ -176,17 +144,13 @@ const style = computed(() => {
 </script>
 
 <template>
-    <slot
-        name="activator"
-        :attrs="{ onClick, ref: (el) => (mouse.el = el ? el.$el || el : el) }"
-        :toggle="toggle"
-    />
+    <slot name="activator" :attrs="{ onClick, ref: onActivatorRef }" :toggle="toggle" />
 
     <teleport to="body">
-        <transition name="fade">
+        <transition v-bind="transition">
             <div
                 v-show="show"
-                :ref="(el: any) => (max.el = el)"
+                ref="contentRef"
                 :style="style"
                 class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
                 v-bind="$attrs"
