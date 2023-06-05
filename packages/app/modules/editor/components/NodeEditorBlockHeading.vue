@@ -5,6 +5,8 @@ import NodeEditorRenderer from './NodeEditorRenderer.vue'
 
 import { NodeWithId } from '../types/node'
 import { Token } from '@language-kit/lexer'
+import NodeEditorBlockParagraphToolbar from './NodeEditorBlockParagraphToolbar.vue'
+import NodeEditorToolbarBtn from './NodeEditorToolbarBtn.vue'
 
 const model = defineModel({
     type: NodeWithId,
@@ -102,10 +104,17 @@ function onBlockUnselected() {
             <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
         </component>
 
-        <template #menu-after>
-            <v-list-item v-for="n in 6" :key="n" size="xs" @click="updateLevel(n)">
-                <v-icon :name="`lucide:heading-${n}`" class="mr-2 text-lg" /> Heading {{ n }}
-            </v-list-item>
+        <template #toolbar-tools>
+            <NodeEditorBlockParagraphToolbar v-model="model" />
+
+            <NodeEditorToolbarBtn
+                v-for="n in 6"
+                :key="n"
+                :active="level === n"
+                @click="updateLevel(n)"
+            >
+                <v-icon :name="`lucide:heading-${n}`" class="mr-2 text-lg" />
+            </NodeEditorToolbarBtn>
         </template>
 
         <template #menu-activator="{ attrs }">

@@ -1,14 +1,30 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { useNodeEditor } from '../composable/node-editor'
-import NodeEditorToolbarParagraph from './NodeEditorToolbarParagraph.vue'
-const tm = useI18n()
+
 const editor = useNodeEditor()
 
-const tooltip = {
-    delay: 500,
+// tools
+
+const tools = ref({
+    loading: false,
+})
+
+function setTools() {
+    // tools.value.loading = true
+    // setTimeout(() => {
+    //     tools.value.loading = false
+    // }, 800)
 }
 
+watch(() => editor.toolbar.tools, setTools, {
+    immediate: true,
+})
+
+onMounted(() => {
+    editor.toolbar.loaded = true
+})
+
+// block actions
 function addNewBlock() {
     alert('addNewBlock')
 }
@@ -27,7 +43,13 @@ function deleteBlock() {
 </script>
 <template>
     <div class="h-12 border-b border-lines px-7 flex items-center relative">
-        <NodeEditorToolbarParagraph />
+        <div
+            v-for="n in editor.nodesRef"
+            :id="`toolbar-tools-${n.id}`"
+            :key="n.id"
+            class="flex overflow-hidden h-full transition-all duration-300 opacity-0"
+            :class="editor.isSelected(n) ? 'opacity-100 ' : 'translate-y-2'"
+        />
 
         <div class="flex-1"></div>
 

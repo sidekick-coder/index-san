@@ -10,7 +10,7 @@ export class NodeWithId extends MarkdownNode {
 
         Object.assign(this, payload)
 
-        this.id = id ?? uniqueId('node:')
+        this.id = id ?? uniqueId('node-')
     }
 
     public isBreakLine() {

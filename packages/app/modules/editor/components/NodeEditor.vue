@@ -36,6 +36,7 @@ function isComponent(name: string, node: NodeWithId) {
 
 editor.on('add', () => emit('change'))
 editor.on('remove', () => emit('change'))
+editor.on('move', () => emit('change'))
 
 // handle errors
 

@@ -1,4 +1,4 @@
-import { Ref } from 'vue'
+import { ComponentPublicInstance, Ref, VNode } from 'vue'
 import { waitFor } from '@composables/utils'
 import { NodeWithId } from '../types/node'
 import { Token, TokenArray } from '@language-kit/lexer'
@@ -66,6 +66,7 @@ export function create(nodesRef: Ref<NodeWithId[]>) {
 
     // selection
     const currentSelectionId = ref<string[]>([])
+
     const currentSelection = computed(() =>
         nodesRef.value.filter((n) => currentSelectionId.value.includes(n.id))
     )
@@ -128,6 +129,8 @@ export function create(nodesRef: Ref<NodeWithId[]>) {
         nodesRef.value.splice(fromIndex, 1)
 
         nodesRef.value.splice(toIndex, 0, node)
+
+        emit('move', { from: fromIndex, to: toIndex })
     }
 
     function moveNodeToUp(node: NodeWithId) {
@@ -214,6 +217,13 @@ export function create(nodesRef: Ref<NodeWithId[]>) {
         deleteNodes(...currentSelection.value)
     }
 
+    // toolbar
+    const toolbar = ref({
+        loaded: false,
+        nodeId: null as null | string,
+        tools: null as null | VNode[],
+    })
+
     return reactive({
         // general
         nodesRef,
@@ -251,6 +261,9 @@ export function create(nodesRef: Ref<NodeWithId[]>) {
         on,
         off,
         emit,
+
+        // toolbar
+        toolbar,
     })
 }
 

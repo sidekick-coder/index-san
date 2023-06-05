@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useNodeEditor } from '../composable/node-editor'
+import { NodeWithId } from '../types/node'
 
 const tm = useI18n()
 const editor = useNodeEditor()
 
+const model = defineModel({
+    type: NodeWithId,
+    required: true,
+})
+
 const actions = ref([
     {
         icon: 'bold',
-        action: () => {},
+        action: () => alert(`bold ${model.value.id}`),
     },
     {
         icon: 'italic',
