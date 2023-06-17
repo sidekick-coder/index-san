@@ -25,7 +25,15 @@ function load() {
         return
     }
 
-    html.value = (node.children as MarkdownNodeArray).toHtml()
+    let text = (node.children as MarkdownNodeArray).toHtml()
+
+    // replace *Text* to <em>Text</em>
+    text = text.replaceAll(/\*([^*]+)\*/g, '<em>$1</em>')
+
+    // replace ~~Text~~ to <s>Text</s>
+    text = text.replaceAll(/~~([^~]+)~~/g, '<s>$1</s>')
+
+    html.value = text
 }
 
 function htmlToMarkdown(source: string) {

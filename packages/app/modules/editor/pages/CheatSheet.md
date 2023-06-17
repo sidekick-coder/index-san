@@ -29,7 +29,16 @@ setInterval(setTime, 1000)
  
 ## Paragraph
 
-Hello word
+Normal text
+
+*Italic text*
+
+**Bold text**
+
+~~Strikethrough text~~
+
+<u>Underline text</u>
+
  
 ## Text Colorful
 

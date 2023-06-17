@@ -40,11 +40,11 @@ const resolvers = [
 ]
 
 function load() {
-    if (!model.value.isComponent()) {
+    if (!model.value.node.is(MarkdownNodeNodeType.Component)) {
         return
     }
 
-    code.value = model.value.toText()
+    code.value = model.value.node.body
 
     loading.value = true
 
@@ -63,21 +63,15 @@ function update() {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    // const node = new NodeWithId(
-    //     {
-    //         type: NodeWithId.types.Component,
-    //         tokens,
-    //     },
-    //     model.value.id
-    // )
+    model.value.node.tokens = tokens
 
-    // if (node.isComponent() && model.value.isComponent()) {
-    //     node.body = code.value
-    //     node.name = model.value.name
-    //     node.attrs = model.value.attrs
-    // }
+    if (model.value.node.is(MarkdownNodeNodeType.Component)) {
+        model.value.node.body = code.value
+        model.value.node.name = model.value.node.name
+        model.value.node.attrs = model.value.node.attrs
+    }
 
-    // model.value = node
+    model.value = model.value
 }
 
 watch(model, load, { immediate: true })

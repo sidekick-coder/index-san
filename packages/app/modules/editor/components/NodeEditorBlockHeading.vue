@@ -43,15 +43,9 @@ function updateNode(text: string) {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new NodeWithId(
-        {
-            type: MarkdownNodeNodeType.Heading,
-            tokens,
-        },
-        model.value.id
-    )
+    model.value.node.tokens = tokens
 
-    model.value = node
+    model.value = model.value
 }
 
 function update(newHtml: string) {
