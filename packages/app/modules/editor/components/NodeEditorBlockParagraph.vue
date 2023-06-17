@@ -34,6 +34,12 @@ function htmlToMarkdown(source: string) {
     // replace <strong>Text</strong> to **Text**
     result = result.replaceAll(/<strong>([^<]+)<\/strong>/g, '**$1**')
 
+    // replace <em>Text</em> to *Text*
+    result = result.replaceAll(/<em>([^<]+)<\/em>/g, '*$1*')
+
+    // replace <s>Text</s> to ~~Text~~
+    result = result.replaceAll(/<s>([^<]+)<\/s>/g, '~~$1~~')
+
     // replace <span {attrs}>Text</span> to [Text]{attrs}
     result = result.replaceAll(/<span\s+([^>]+)>([^<]+)<\/span>/g, '[$2]{ $1 }')
 
@@ -55,6 +61,12 @@ function update(newHtml: string) {
     model.value.node.tokens = tokens
 
     model.value = model.value
+}
+
+function onTextFormat() {
+    if (!renderRef.value) return
+
+    renderRef.value.update()
 }
 
 function onBlockSelected() {
@@ -80,7 +92,7 @@ onMounted(load)
         @on-unselect="onBlockUnselected"
     >
         <template #toolbar-tools>
-            <NodeEditorToolbarTextFormat v-model="model" />
+            <NodeEditorToolbarTextFormat :model-value="model" @change="onTextFormat" />
         </template>
         <NodeEditorRenderer ref="renderRef" :model-value="html" @update:model-value="update" />
     </NodeEditorBlock>

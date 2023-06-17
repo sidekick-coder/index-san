@@ -19,7 +19,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const el = ref<HTMLElement>()
-const innerModel = ref('')
 const updating = ref(false)
 const editMode = ref(false)
 
@@ -28,10 +27,14 @@ const textHaveVariable = computed(() => {
     return /\{\{.*\}\}/.test(props.modelValue)
 })
 
-function setInnerModel() {
+function setInnerHTML() {
+    if (!el.value) return
+
     if (updating.value) return
 
-    innerModel.value = props.modelValue
+    if (props.modelValue == el.value.innerHTML) return
+
+    el.value.innerHTML = props.modelValue
 }
 
 function update() {
@@ -39,13 +42,10 @@ function update() {
 
     updating.value = true
 
-    const html = (el.value as HTMLElement).innerHTML
+    const html = el.value.innerHTML
 
-    // replace &nbsp; with whitespace
-    const text = html
-
-    if (text !== props.modelValue) {
-        emit('update:modelValue', text)
+    if (html !== props.modelValue) {
+        emit('update:modelValue', html)
     }
 
     delay(() => {
@@ -70,12 +70,12 @@ function onBlur() {
 
     editMode.value = false
 
-    setTimeout(setInnerModel, 500)
+    setTimeout(setInnerHTML, 500)
 }
 
-watch(() => props.modelValue, setInnerModel, {
-    immediate: true,
-})
+watch(() => props.modelValue, setInnerHTML)
+
+onMounted(setInnerHTML)
 
 onClickOutside(el, () => {
     if (editMode.value) {
@@ -151,6 +151,7 @@ function blur() {
 
 defineExpose({
     inputRef: el,
+    update,
     focus,
     blur,
 })
@@ -180,7 +181,6 @@ defineExpose({
                 @click="onClick"
                 @keydown.ctrl.s="update"
                 @keydown.enter="update"
-                v-html="innerModel"
             />
         </template>
     </div>
