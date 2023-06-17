@@ -71,5 +71,6 @@ module.exports = {
         'vue/no-v-html': 'off',
         'vue/no-v-text-v-html-on-component': 'off',
         'no-undef': 'off',
+        'no-self-assign': 'off',
     },
 }

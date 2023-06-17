@@ -3,6 +3,7 @@ import NodeEditorBlock from './NodeEditorBlock.vue'
 import { NodeWithId } from '../types/node'
 import VBtn from '@components/VBtn.vue'
 import { useNodeEditor } from '../composable/node-editor'
+import { MarkdownNodeNodeType } from '@language-kit/markdown'
 
 const model = defineModel({
     type: NodeWithId,
@@ -22,19 +23,21 @@ const componentData = shallowRef<any>({
 })
 
 function load() {
-    if (!model.value.isComponent()) {
+    const { node } = model.value
+
+    if (!node.is(MarkdownNodeNodeType.Component)) {
         return
     }
 
     loading.value = true
 
-    const attrs = Object.entries(model.value.attrs)
+    const attrs = Object.entries(node.attrs)
         .map(([key, value]) => `${key}="${value}"`)
         .join(' ')
 
     const template = `
-        <v-btn ${attrs} >
-            ${model.value.body}
+        <v-btn ${attrs}>
+            ${node.body}
         </v-btn>
     `
 

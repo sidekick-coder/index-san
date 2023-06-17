@@ -5,7 +5,7 @@ import { useNodeEditor } from '../composable/node-editor'
 import EvaluationCard from '@modules/evaluation/components/EvaluationCard.vue'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import npmResolver from '@modules/evaluation/resolvers/npm'
-import { MarkdownParser } from '@language-kit/markdown'
+import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
 import { Token } from '@language-kit/lexer'
 
 // mount component
@@ -20,11 +20,11 @@ const code = ref(`// write code`)
 const editor = useNodeEditor()
 
 const attrs = computed(() => {
-    if (!model.value.isComponent()) {
+    if (!model.value.node.is(MarkdownNodeNodeType.Component)) {
         return {}
     }
 
-    return model.value.attrs
+    return model.value.node.attrs
 })
 
 const resolvers = [
@@ -44,7 +44,7 @@ function load() {
         return
     }
 
-    code.value = model.value.body
+    code.value = model.value.toText()
 
     loading.value = true
 
@@ -63,21 +63,21 @@ function update() {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new NodeWithId(
-        {
-            type: NodeWithId.types.Component,
-            tokens,
-        },
-        model.value.id
-    )
+    // const node = new NodeWithId(
+    //     {
+    //         type: NodeWithId.types.Component,
+    //         tokens,
+    //     },
+    //     model.value.id
+    // )
 
-    if (node.isComponent() && model.value.isComponent()) {
-        node.body = code.value
-        node.name = model.value.name
-        node.attrs = model.value.attrs
-    }
+    // if (node.isComponent() && model.value.isComponent()) {
+    //     node.body = code.value
+    //     node.name = model.value.name
+    //     node.attrs = model.value.attrs
+    // }
 
-    model.value = node
+    // model.value = node
 }
 
 watch(model, load, { immediate: true })

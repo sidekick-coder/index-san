@@ -5,7 +5,7 @@ import { useNodeEditor } from '../composable/node-editor'
 import MonacoEditor from '@modules/monaco/components/MEditor.vue'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import npmResolver from '@modules/evaluation/resolvers/npm'
-import { MarkdownParser } from '@language-kit/markdown'
+import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
 import { inspect } from '@composables/utils'
 import { useCss } from '@composables/css'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
@@ -26,11 +26,13 @@ const loading = ref(false)
 const code = ref(`// write code`)
 
 function load() {
-    if (!model.value.isComponent()) {
+    const { node } = model.value
+
+    if (!node.is(MarkdownNodeNodeType.Component)) {
         return
     }
 
-    code.value = model.value.body
+    code.value = node.body
 
     loading.value = true
 
@@ -49,21 +51,21 @@ function update() {
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new NodeWithId(
-        {
-            type: NodeWithId.types.Component,
-            tokens,
-        },
-        model.value.id
-    )
+    // const node = new NodeWithId(
+    //     {
+    //         type: NodeWithId.types.Component,
+    //         tokens,
+    //     },
+    //     model.value.id
+    // )
 
-    if (node.isComponent() && model.value.isComponent()) {
-        node.body = code.value
-        node.name = model.value.name
-        node.attrs = model.value.attrs
-    }
+    // if (node.is(NodeWithId.types.Component) && model.value.is(NodeWithId.types.Component)) {
+    //     node.body = code.value
+    //     node.name = model.value.name
+    //     node.attrs = model.value.attrs
+    // }
 
-    model.value = node
+    // model.value = node
 }
 
 watch(model, load, { immediate: true })
@@ -73,11 +75,13 @@ watch(model, load, { immediate: true })
 const css = useCss()
 
 const componentAttrs = computed(() => {
-    if (!model.value.isComponent()) {
-        return {}
+    const { node } = model.value
+
+    if (!node.is(MarkdownNodeNodeType.Component)) {
+        return
     }
 
-    return model.value.attrs
+    return node.attrs
 })
 
 const config = reactive({
@@ -133,13 +137,15 @@ evaluation.addResolver(
 )
 
 async function setChart() {
-    if (!model.value.isComponent()) {
+    const { node } = model.value
+
+    if (!node.is(MarkdownNodeNodeType.Component)) {
         return
     }
 
     evaluationOutput.value = []
 
-    const runtime = await evaluation.run(model.value.body, {
+    const runtime = await evaluation.run(node.body, {
         immediate: false,
         timeout: 10000,
     })

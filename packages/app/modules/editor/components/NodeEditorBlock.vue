@@ -57,35 +57,6 @@ onKeyStroke('ArrowDown', (e) => {
     // editor.move(1)
 })
 
-onKeyStroke('Enter', (e) => {
-    // if (!isSelected.value) return
-    // e.preventDefault()
-    // if (!e.ctrlKey) return
-    // const created = editor.addNodeAfter(props.node)
-    // if (!created) return
-    // setTimeout(() => editor.select(created.id), 100)
-})
-
-onKeyStroke(
-    'Delete',
-    (e) => {
-        if (!e.ctrlKey) return
-
-        e.preventDefault()
-
-        // const index = editor.nodes.indexOf(props.node)
-
-        // const isLast = editor.nodes.length - 1 === index
-
-        // const direction = isLast ? -2 : 2
-
-        // editor.move(direction)
-
-        // setTimeout(() => editor.removeNode(props.node), 100)
-    },
-    { target: content }
-)
-
 watch(focused, (focused) => {
     if (focused && !controlState.value) {
         editor.selectNodes(props.node)

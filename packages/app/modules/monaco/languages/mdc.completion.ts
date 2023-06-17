@@ -3,6 +3,7 @@ import { defineCompletion } from '../composable/define-language'
 import * as monaco from 'monaco-editor'
 import { createParser } from '@modules/evaluation/parser/parser'
 import { useNodeHelper } from '@modules/evaluation/helpers/node-helper'
+import { NodeWithId } from '@modules/editor/types/node'
 
 const mdParser = new MarkdownParser()
 const jsParser = createParser()
@@ -19,8 +20,6 @@ async function createCompletionFromJavascriptString(
     const worker = await search(model.uri)
 
     const result = await worker.getCompletionsAtPosition(model.uri.toString(), offset)
-
-    console.log(result.entries)
 }
 
 function findCompletions(model: monaco.editor.ITextModel) {
@@ -34,12 +33,12 @@ function findCompletions(model: monaco.editor.ITextModel) {
     }
 
     const setupNode = nodes.find((node) => {
-        if (!node.isComponent()) return
+        if (!node.is(NodeWithId.types.Component)) return
 
         return node.name === 'setup'
     })
 
-    if (!setupNode || !setupNode.isComponent()) return result
+    if (!setupNode || !setupNode.is(NodeWithId.types.Component)) return result
 
     createCompletionFromJavascriptString(model, 20000)
 

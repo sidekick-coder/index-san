@@ -1,16 +1,35 @@
-import { TokenType } from '@language-kit/lexer'
+import { TokenArray, TokenType } from '@language-kit/lexer'
 import { MarkdownNode, MarkdownNodeNodeType } from '@language-kit/markdown'
 import uniqueId from 'lodash/uniqueId'
 
-export class NodeWithId extends MarkdownNode {
+export class NodeWithId<T extends MarkdownNode = MarkdownNode> {
     public id: string
+    public node: T
 
-    constructor(payload: Pick<MarkdownNode, 'tokens' | 'type'>, id?: string) {
-        super()
-
-        Object.assign(this, payload)
+    constructor(payload: T, id?: string) {
+        this.node = payload
 
         this.id = id ?? uniqueId('node-')
+    }
+
+    public get type() {
+        return this.node.type
+    }
+
+    public get tokens(): TokenArray {
+        return this.node.tokens
+    }
+
+    public toHtml(): string {
+        return this.node.toHtml()
+    }
+
+    public toText(): string {
+        return this.node.toText()
+    }
+
+    public isComponent() {
+        return this.node.is(MarkdownNode.types.Component)
     }
 
     public isBreakLine() {
@@ -24,8 +43,8 @@ export class NodeWithId extends MarkdownNode {
     }
 
     public isSetup() {
-        if (!this.isComponent()) return
+        if (!this.node.is(MarkdownNode.types.Component)) return
 
-        return this.name === 'setup'
+        return this.node.name === 'setup'
     }
 }

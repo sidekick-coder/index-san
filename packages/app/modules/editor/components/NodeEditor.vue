@@ -12,6 +12,7 @@ import NodeEditorBlockButton from './NodeEditorBlockButton.vue'
 import NodeEditorBlockError from './NodeEditorBlockError.vue'
 import NodeEditorBlockChart from './NodeEditorBlockChart.vue'
 import NodeEditorToolbar from './NodeEditorToolbar.vue'
+import { MarkdownNodeNodeType } from '@language-kit/markdown'
 
 const nodes = defineModel({
     type: Array as PropType<NodeWithId[]>,
@@ -29,9 +30,9 @@ function updateNode(index: number, node: NodeWithId) {
 }
 
 function isComponent(name: string, node: NodeWithId) {
-    if (!node.isComponent()) return
+    if (!node.node.is(MarkdownNodeNodeType.Component)) return
 
-    return node.name === name
+    return node.node.name === name
 }
 
 editor.on('add', () => emit('change'))

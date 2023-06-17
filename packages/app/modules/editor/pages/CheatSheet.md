@@ -14,8 +14,6 @@ function setTime(){
 
 setInterval(setTime, 1000)
 ::
- 
-# Headings
 
 # Heading 1
 
@@ -24,19 +22,39 @@ setInterval(setTime, 1000)
 ### Heading 3
 
 #### Heading 4
+
+##### Heading 5
+
+###### Heading 6
  
 ## Paragraph
 
 Hello word
  
+## Text Colorful
+
+[accent]{ style="color: rgb(var(--accent))" }
+[info]{ style="color: rgb(var(--info))" }
+[danger]{ style="color: rgb(var(--danger))" }
+[warn]{ style="color: rgb(var(--warn))" }
+[custom]{ style="color: #8b5cf6" }
+ 
+## Text Colorful with bold
+
+[accent with **bold**]{ style="color: rgb(var(--accent))" }
+[info with **bold**]{ style="color: rgb(var(--info))" }
+[danger with **bold**]{ style="color: rgb(var(--danger))" }
+[warn with **bold**]{ style="color: rgb(var(--warn))" }
+[custom with **bold**]{ style="color: #8b5cf6" }
+ 
 ## Code
 
 :: script
-for (let i = 0;i < 10; i++) {
-    console.log('count', i)
+for await (const i of [...Array(5).keys()]) {
+    console.log('count', i)    
+    await new Promise(resolve => setTimeout(resolve, 500))
 }
 ::
-
  
 ## Buttons
 
@@ -53,7 +71,7 @@ for (let i = 0;i < 10; i++) {
 ::
  
 ## Charts
- 
+
 :: chart
 import { useChart } from 'app:chart'
 

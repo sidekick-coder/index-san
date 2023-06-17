@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NodeEditorBlock from './NodeEditorBlock.vue'
 import NodeEditorRenderer from './NodeEditorRenderer.vue'
-import { MarkdownNodeNodeType, MarkdownParser } from '@language-kit/markdown'
+import { MarkdownNodeNodeType, MarkdownParser, MarkdownNodeArray } from '@language-kit/markdown'
 import { Token } from '@language-kit/lexer'
 import { NodeWithId } from '../types/node'
 import { useNodeEditor } from '../composable/node-editor'
@@ -19,30 +19,42 @@ const renderRef = ref<InstanceType<typeof NodeEditorRenderer>>()
 const html = ref('')
 
 function load() {
-    const value = model.value.tokens.map((t) => t.value).join('')
+    const { node } = model.value
 
-    html.value = value
+    if (!node.is(MarkdownNodeNodeType.Paragraph)) {
+        return
+    }
+
+    html.value = (node.children as MarkdownNodeArray).toHtml()
+}
+
+function htmlToMarkdown(source: string) {
+    let result = source
+
+    // replace <strong>Text</strong> to **Text**
+    result = result.replaceAll(/<strong>([^<]+)<\/strong>/g, '**$1**')
+
+    // replace <span {attrs}>Text</span> to [Text]{attrs}
+    result = result.replaceAll(/<span\s+([^>]+)>([^<]+)<\/span>/g, '[$2]{ $1 }')
+
+    return result
 }
 
 function update(newHtml: string) {
     html.value = newHtml
 
-    const tokens = parser.toTokens(newHtml)
+    const markdown = htmlToMarkdown(newHtml)
+
+    const tokens = parser.toTokens(markdown)
 
     const lastIndex = tokens.length - 1
     const breakLine = Token.breakLine()
 
     tokens.splice(lastIndex, 0, breakLine as any)
 
-    const node = new NodeWithId(
-        {
-            type: MarkdownNodeNodeType.Paragraph,
-            tokens,
-        },
-        model.value.id
-    )
+    model.value.node.tokens = tokens
 
-    model.value = node
+    model.value = model.value
 }
 
 function onBlockSelected() {

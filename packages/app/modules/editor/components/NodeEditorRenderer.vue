@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { delay } from 'lodash'
 import { useNodeEditor } from '../composable/node-editor'
 import { onClickOutside } from '@vueuse/core'
 
@@ -19,6 +20,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const el = ref<HTMLElement>()
 const innerModel = ref('')
+const updating = ref(false)
 const editMode = ref(false)
 
 const textHaveVariable = computed(() => {
@@ -27,25 +29,28 @@ const textHaveVariable = computed(() => {
 })
 
 function setInnerModel() {
-    let text = props.modelValue
+    if (updating.value) return
 
-    // replace whitespace with &nbsp;
-    text = text.replace(/ /g, '&nbsp;')
-
-    innerModel.value = text
+    innerModel.value = props.modelValue
 }
 
 function update() {
     if (!el.value) return
 
+    updating.value = true
+
     const html = (el.value as HTMLElement).innerHTML
 
     // replace &nbsp; with whitespace
-    const text = html.replace(/&nbsp;/g, ' ')
+    const text = html
 
-    if (text === props.modelValue) return
+    if (text !== props.modelValue) {
+        emit('update:modelValue', text)
+    }
 
-    emit('update:modelValue', text)
+    delay(() => {
+        updating.value = false
+    }, 500)
 }
 
 function onFocus() {

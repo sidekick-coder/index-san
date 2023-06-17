@@ -3,7 +3,7 @@ import * as Vue from 'vue'
 
 import { waitFor } from '@composables/utils'
 import { useContext } from '../composable/context'
-import { Node as MarkdownNode, NodeType } from '@language-kit/markdown'
+import { Node as MarkdownNode, MarkdownNodeNodeType, NodeType } from '@language-kit/markdown'
 import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import { createParser } from '@modules/evaluation/parser/parser'
 import { useNodeHelper } from '@modules/evaluation/helpers/node-helper'
@@ -36,11 +36,15 @@ async function load() {
         await editor.onLoadedContext()
     }
 
-    if (!model.value.isComponent()) return
+    const { node } = model.value
+
+    if (!node.is(MarkdownNodeNodeType.Component)) {
+        return
+    }
 
     editor.setupIsLoading = true
 
-    const nodes = parser.toNodes(model.value.body)
+    const nodes = parser.toNodes(node.body)
 
     const toExportNames = [] as string[]
 
