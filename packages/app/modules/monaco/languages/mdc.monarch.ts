@@ -80,6 +80,14 @@ export default defineMonarch({
                     next: 'defaultComponent',
                 },
             ],
+            // text with attrs [text]{attrs}
+            [
+                /^\s*\[[^\]]+\]\s*{/,
+                {
+                    token: 'variable.source',
+                    next: 'componentAttributes',
+                },
+            ],
 
             // markup within lines
             { include: '@linecontent' },
