@@ -164,11 +164,15 @@ watch(isSelected, setToolbar, { immediate: true })
             </v-menu>
         </div>
 
-        <div ref="content" class="flex-1" :class="controlState ? 'pointer-events-none' : ''">
+        <div
+            ref="content"
+            class="flex-1 overflow-auto"
+            :class="controlState ? 'pointer-events-none' : ''"
+        >
             <slot />
         </div>
 
-        <div class="w-[40px] flex justify-center">
+        <div v-if="$slots.after" class="w-[40px] flex justify-center">
             <slot name="after" />
         </div>
     </div>
