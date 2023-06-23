@@ -7,6 +7,8 @@ const model = defineModel({
 
 const editableAreaRef = ref<HTMLElement>()
 
+const focused = ref(false)
+
 function loadEditableArea() {
     if (!editableAreaRef.value) return
 
@@ -44,6 +46,10 @@ const instance = shallowRef(
     })
 )
 
+const showView = computed(() => {
+    return [!loading.value, isDynamicRender.value, !focused.value].every(Boolean)
+})
+
 function loadComponent() {
     if (!isDynamicRender.value) return
 
@@ -62,12 +68,15 @@ watch([model, state], loadComponent, { immediate: true })
 </script>
 <template>
     <div>
-        <component :is="instance" v-if="!loading && isDynamicRender" data-test-id="view-area" />
+        <component :is="instance" v-if="showView" data-test-id="view-area" />
         <div
             ref="editableAreaRef"
             data-test-id="editable-area"
             contenteditable="true"
+            :class="!focused && isDynamicRender ? 'opacity-0' : ''"
             @input="onInput"
+            @focus="focused = true"
+            @blur="focused = false"
         />
     </div>
 </template>
