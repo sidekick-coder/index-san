@@ -1,8 +1,8 @@
 import { useMountWrapper } from '__tests__/fixtures/component'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import Block from './Block.vue'
-import { create, provideEditor, key } from '../composables/editor'
+import { create, key } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'
 import uniqueId from 'lodash/uniqueId'
 import VIcon from '@components/VIcon.vue'
@@ -108,7 +108,7 @@ describe('Block (unit)', () => {
         expect(editor.selected).toEqual([node])
     })
 
-    it('should use teleport to render toolbar slot and only if is selected', async () => {
+    it('should use teleport to render toolbar slot', async () => {
         const node = createNode()
 
         component.mount({
@@ -119,12 +119,6 @@ describe('Block (unit)', () => {
                 toolbar: `<div class="block-toolbar"></div>`,
             },
         })
-
-        expect(toolbarContainer.innerHTML).not.toContain('<div class="block-toolbar"></div>')
-
-        editor.select(node)
-
-        await nextTick()
 
         expect(toolbarContainer.innerHTML).toContain('<div class="block-toolbar"></div>')
     })

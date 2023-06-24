@@ -44,7 +44,7 @@ const icon = defineProp<string>('icon', {
 </script>
 <template>
     <div>
-        <Teleport v-if="selected" :to="`#${node.meta.toolbarId}`">
+        <Teleport :to="`#${node.meta.toolbarId}`">
             <slot name="toolbar" />
         </Teleport>
 

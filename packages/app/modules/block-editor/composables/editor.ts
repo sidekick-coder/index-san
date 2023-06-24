@@ -23,7 +23,19 @@ export function create() {
 
     function clear() {
         nodes.value = new MarkdownNodeArray()
+
         selected.value = []
+    }
+
+    // create a new node but don't add it to the editor
+    function make() {
+        const node = new MarkdownNode()
+
+        node.meta.id = uniqueId('node-')
+
+        node.meta.toolbarId = `${id}-toolbar-${node.meta.id}`
+
+        return node
     }
 
     return reactive({
@@ -33,6 +45,7 @@ export function create() {
         select,
         unselect,
         clear,
+        make,
     })
 }
 
