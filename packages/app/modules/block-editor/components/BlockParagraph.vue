@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { MarkdownNodeParagraph } from '@language-kit/markdown'
+import Block from './Block.vue'
 import HTMLContentEditable from './HTMLContentEditable.vue'
 import { createNodeParagraphFromHtml } from '../composables/helpers'
+import { TokenType } from '@language-kit/lexer'
+
+defineOptions({
+    inheritAttrs: false,
+})
 
 const model = defineModel({
     type: MarkdownNodeParagraph,
@@ -10,22 +16,39 @@ const model = defineModel({
 
 const html = ref('')
 
+const isEmpty = computed(() => {
+    if (model.value.tokens.length > 3) return
+
+    return model.value.tokens.every((token) =>
+        [TokenType.BreakLine, TokenType.EndOfFile].includes(token.type as any)
+    )
+})
+
 function load() {
-    html.value = model.value.toHtml()
+    html.value = model.value.toHtml().replaceAll(' ', '&nbsp;')
 }
 
-function onHtmlUpdate(payload: string) {
-    html.value = payload
+function update() {
+    const node = createNodeParagraphFromHtml(html.value)
 
-    const node = createNodeParagraphFromHtml(payload)
+    node.meta = model.value.meta
 
     model.value = node
+}
+
+function onBlur() {
+    update()
 }
 
 watch(model, load, { immediate: true })
 </script>
 <template>
-    <div>
-        <HTMLContentEditable :model-value="html" @update:model-value="onHtmlUpdate" />
-    </div>
+    <block v-model="model" :class="isEmpty ? 'hidden' : ''">
+        <HTMLContentEditable
+            v-model="html"
+            @blur="onBlur"
+            @keydown.enter.prevent="update"
+            @keydown.ctrl.s="update"
+        />
+    </block>
 </template>

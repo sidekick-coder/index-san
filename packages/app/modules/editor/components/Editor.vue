@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { MarkdownParser } from '@language-kit/markdown'
-import { NodeWithId } from '../types/node'
+// import { NodeWithId } from '../types/node'
 
-import MonacoEditor from '../../monaco/components/MEditor.vue'
-import NodeEditor from './NodeEditor.vue'
+// import NodeEditor from './NodeEditor.vue'
+import BlockEditor from '@modules/block-editor/components/Editor.vue'
 import MDCEditor from './MDCEditor.vue'
 import { useLocalStorage, useMagicKeys, whenever } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { findCircularItem } from '@composables/utils'
+import { provideEditor } from '@modules/block-editor/composables/editor'
 
 const model = defineModel({
     type: String,
@@ -17,16 +18,13 @@ const model = defineModel({
 const parser = new MarkdownParser()
 
 const text = ref('')
-const nodes = ref<NodeWithId[]>([])
 
-function mountNodes(value: string) {
-    const newText = value.replace(/\r\n/g, '\n')
-
-    return parser.toNodes(newText).map((n) => new NodeWithId(n))
-}
+const editor = provideEditor()
 
 function load() {
-    nodes.value = mountNodes(model.value)
+    const nodes = parser.toNodes(model.value.replace(/\r\n/g, '\n'))
+
+    editor.createAll(nodes)
 
     text.value = model.value
 }
@@ -34,18 +32,25 @@ function load() {
 function updateText(value: string) {
     text.value = value
 
-    nodes.value = mountNodes(value)
-
     model.value = value
+
+    editor.clear()
+
+    const nodes = parser.toNodes(value.replace(/\r\n/g, '\n'))
+
+    editor.createAll(nodes)
 }
 
-function onChangeNodes() {
-    text.value = nodes.value.map((n) => n.toText()).join('')
+function onUpdateNodes() {
+    text.value = editor.nodes.map((n) => n.toText()).join('')
 
     model.value = text.value
 }
 
 onMounted(load)
+
+editor.on('update', onUpdateNodes)
+editor.on('move', onUpdateNodes)
 
 // mode
 const tm = useI18n()
@@ -96,11 +101,12 @@ whenever(keys.Alt_m, () => {
                     </div>
 
                     <div class="h-full w-6/12 border-l border-b-secondary/25">
-                        <NodeEditor v-model="nodes" @change="onChangeNodes" />
+                        <BlockEditor v-model="editor.nodes" />
+                        <!-- <NodeEditor v-model="nodes" @change="onChangeNodes" /> -->
                     </div>
                 </div>
 
-                <NodeEditor v-else-if="mode === 'block'" v-model="nodes" @change="onChangeNodes" />
+                <!-- <NodeEditor v-else-if="mode === 'block'" v-model="nodes" @change="onChangeNodes" /> -->
 
                 <MDCEditor v-else v-model="text" @keydown.ctrl.s="updateText(text)" />
             </transition>

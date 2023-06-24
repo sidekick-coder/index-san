@@ -5,12 +5,16 @@ const model = defineModel({
     default: '',
 })
 
+const emit = defineEmits(['blur'])
+
 const editableAreaRef = ref<HTMLElement>()
 
 const focused = ref(false)
 
 function loadEditableArea() {
     if (!editableAreaRef.value) return
+
+    if (model.value === editableAreaRef.value.innerHTML) return
 
     editableAreaRef.value.innerHTML = model.value
 }
@@ -19,6 +23,12 @@ function onInput() {
     if (!editableAreaRef.value) return
 
     model.value = editableAreaRef.value?.innerHTML ?? ''
+}
+
+function onBlur() {
+    focused.value = false
+
+    emit('blur')
 }
 
 watch(model, loadEditableArea)
@@ -67,16 +77,17 @@ function loadComponent() {
 watch([model, state], loadComponent, { immediate: true })
 </script>
 <template>
-    <div>
+    <div class="flex w-full">
         <component :is="instance" v-if="showView" data-test-id="view-area" />
         <div
             ref="editableAreaRef"
+            :class="!focused && isDynamicRender ? 'opacity-0' : ''"
+            class="outline-none transition-opacity min-h-[20px] w-full"
             data-test-id="editable-area"
             contenteditable="true"
-            :class="!focused && isDynamicRender ? 'opacity-0' : ''"
             @input="onInput"
             @focus="focused = true"
-            @blur="focused = false"
+            @blur="onBlur"
         />
     </div>
 </template>

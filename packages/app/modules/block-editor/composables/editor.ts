@@ -14,8 +14,13 @@ export function create() {
     const nodes = ref(new MarkdownNodeArray())
     const selected = ref<MarkdownNode[]>([])
     const observers = [] as Observer[]
+    const toolbars = ref(new Map<string, HTMLElement>())
 
-    function select(node: MarkdownNode) {
+    function select(node: MarkdownNode, clear = false) {
+        if (clear) {
+            selected.value = []
+        }
+
         if (selected.value.includes(node)) {
             return
         }
@@ -42,6 +47,17 @@ export function create() {
         return node
     }
 
+    function createAll(payload: MarkdownNode[]) {
+        payload.forEach((node) => {
+            node.meta.id = uniqueId('node-')
+            node.meta.toolbarId = `${id}-toolbar-${node.meta.id}`
+        })
+
+        nodes.value.push(...payload)
+
+        return payload
+    }
+
     function update(node: MarkdownNode) {
         const index = nodes.value.findIndex((n) => n.meta.id === node.meta.id)
 
@@ -52,6 +68,70 @@ export function create() {
         nodes.value[index] = node
 
         emit('update', { node })
+    }
+
+    function move(node: MarkdownNode, toIndex: number) {
+        const index = nodes.value.findIndex((n) => n.meta.id === node.meta.id)
+
+        if (index === -1) {
+            return
+        }
+
+        nodes.value.splice(index, 1)
+
+        nodes.value.splice(toIndex, 0, node)
+    }
+
+    function moveUp(node: MarkdownNode) {
+        const index = nodes.value.findIndex((n) => n.meta.id === node.meta.id)
+        const toIndex = index - 1
+
+        if (index === -1 || toIndex < 0) {
+            return
+        }
+
+        move(node, toIndex)
+
+        emit('move')
+    }
+
+    function moveDown(node: MarkdownNode) {
+        const index = nodes.value.findIndex((n) => n.meta.id === node.meta.id)
+        const toIndex = index + 1
+
+        if (index === -1) {
+            return
+        }
+
+        move(node, toIndex)
+    }
+
+    function moveSelectedToUp() {
+        const first = selected.value[0]
+
+        if (!first) return
+
+        const firstIndex = nodes.value.findIndex((n) => n.meta.id === first.meta.id)
+
+        if (firstIndex === -1 || firstIndex === 0) {
+            return
+        }
+
+        selected.value.forEach((node) => moveUp(node))
+    }
+
+    function moveSelectedToDown() {
+        const last = selected.value.at(-1)
+
+        if (!last) return
+
+        const lastIndex = nodes.value.findIndex((n) => n.meta.id === last.meta.id)
+
+        if (lastIndex === -1 || lastIndex === nodes.value.length - 1) {
+            return
+        }
+
+        selected.value.forEach((node) => moveDown(node))
     }
 
     function on(event: string, callback: (args: any) => void) {
@@ -66,13 +146,24 @@ export function create() {
         id,
         nodes,
         selected,
+        toolbars,
+
+        move,
+        moveUp,
+        moveDown,
+        moveSelectedToUp,
+        moveSelectedToDown,
         select,
         unselect,
-        clear,
+
         create,
+        createAll,
         update,
+
         on,
         emit,
+
+        clear,
     })
 }
 

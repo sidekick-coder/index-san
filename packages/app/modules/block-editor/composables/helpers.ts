@@ -1,8 +1,5 @@
-import {
-    MarkdownNodeParagraph,
-    MarkdownParser,
-    MarkdownProcessorParagraph,
-} from '@language-kit/markdown'
+import { Token } from '@language-kit/lexer'
+import { MarkdownNodeParagraph, MarkdownParser, Processors } from '@language-kit/markdown'
 
 const parser = new MarkdownParser()
 
@@ -11,10 +8,14 @@ export function createNodeParagraphFromHtml(payload: string) {
 
     let text = payload
 
-    if (text.startsWith('<p>')) {
-        // replace <p>{content}</p> > {content}
-        text = payload.replace(/^<p>(.*)<\/p>$/, '$1')
-    }
+    // replace <p>{content}</p> > {content}
+    text = text.replaceAll(/^<p>(.*)<\/p>$/g, '$1')
+
+    // remove <br>
+    text = text.replaceAll(/<br\s*\/?>/g, '')
+
+    // replace whitespace to space
+    text = text.replaceAll(/&nbsp;/g, ' ')
 
     // replace <strong>Text</strong> to **Text**
     text = text.replaceAll(/<strong>([^<]+)<\/strong>/g, '**$1**')
@@ -28,12 +29,20 @@ export function createNodeParagraphFromHtml(payload: string) {
     // replace <span {attrs}>Text</span> to [Text]{attrs}
     text = text.replaceAll(/<span\s+([^>]+)>([^<]+)<\/span>/g, '[$2]{ $1 }')
 
+    node.body = text.trim()
+
+    node.tokens = parser.toTokens(text, {
+        includeEndOfFileToken: false,
+    })
+
+    node.tokens.push(Token.breakLine())
+
     node.children = parser.toNodes(text, {
         lexer: {
             includeEndOfFileToken: false,
         },
         processors: {
-            exclude: [MarkdownProcessorParagraph],
+            only: [Processors.Text, Processors.TextBold, Processors.TextWithAttrs],
         },
     })
 

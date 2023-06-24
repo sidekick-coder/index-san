@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MarkdownNode } from '@language-kit/markdown'
 import { useEditor } from '../composables/editor'
+import { syncRef, useFocusWithin, useKeyModifier } from '@vueuse/core'
 
 // node model
 const node = defineModel({
@@ -9,6 +10,12 @@ const node = defineModel({
 })
 
 // selected
+
+const root = ref<HTMLElement | null>(null)
+
+const { focused } = useFocusWithin(root)
+const isControlPressed = useKeyModifier('Control')
+
 const editor = useEditor()
 
 const selected = defineModel('selected', {
@@ -17,22 +24,33 @@ const selected = defineModel('selected', {
     local: true,
 })
 
-watch(
-    editor.selected,
-    (value) => {
-        selected.value = value.includes(node.value)
+const isSelectedInEditor = computed({
+    get() {
+        return editor.selected.some((n) => n.meta.id === node.value.meta.id)
     },
-    { immediate: true }
-)
+    set(value) {
+        if (value) return editor.select(node.value)
 
-watch(selected, (value) => {
-    if (value === null) return
+        editor.unselect(node.value)
+    },
+})
 
-    if (value) {
-        return editor.select(node.value)
+syncRef(selected, isSelectedInEditor)
+
+function onMousedown(e: MouseEvent) {
+    if (e.ctrlKey) {
+        editor.select(node.value)
+
+        return
     }
 
-    editor.unselect(node.value)
+    editor.select(node.value, true)
+}
+
+watch(focused, (value) => {
+    if (value && !isControlPressed.value) {
+        isSelectedInEditor.value = true
+    }
 })
 
 // menu
@@ -43,7 +61,12 @@ const icon = defineProp<string>('icon', {
 })
 </script>
 <template>
-    <div>
+    <div
+        ref="root"
+        class="flex min-h-[48px] items-center group hover:bg-b-secondary/50"
+        :class="isSelectedInEditor ? 'bg-b-secondary/50' : ''"
+        @mousedown="onMousedown"
+    >
         <Teleport :to="`#${node.meta.toolbarId}`">
             <slot name="toolbar" />
         </Teleport>
@@ -59,7 +82,7 @@ const icon = defineProp<string>('icon', {
             </v-btn>
         </div>
 
-        <div class="flex-1">
+        <div class="flex-1" :class="isControlPressed ? 'pointer-events-none' : ''">
             <slot />
         </div>
     </div>
