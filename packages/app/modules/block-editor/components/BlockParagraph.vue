@@ -25,7 +25,10 @@ const isEmpty = computed(() => {
 })
 
 function load() {
-    html.value = model.value.toHtml().replaceAll(' ', '&nbsp;')
+    html.value = model.value.children
+        .map((c) => c.toHtml())
+        .join('')
+        .replaceAll(' ', '&nbsp;')
 }
 
 function update() {

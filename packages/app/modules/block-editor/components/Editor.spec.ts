@@ -1,5 +1,5 @@
 import { useMountWrapper } from '__tests__/fixtures/component'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { create, key } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'
@@ -10,6 +10,7 @@ import { createManyParagraphs, createParagraph } from '../__tests__/fixtures/blo
 
 describe('Editor (unit)', () => {
     const editor = create()
+    const toolbars = [] as HTMLElement[]
 
     const component = useMountWrapper(Editor, {
         shallow: true,
@@ -23,8 +24,20 @@ describe('Editor (unit)', () => {
     afterEach(() => {
         component.unmount()
 
+        toolbars.forEach((toolbar) => toolbar.remove())
+
         editor.clear()
     })
+
+    function createBlock(node: MarkdownNode) {
+        editor.create(node)
+
+        const toolbar = document.createElement('div')
+
+        editor.toolbars.set(node.meta.id, toolbar)
+
+        return node
+    }
 
     function findToolbar() {
         return component.wrapper!.findComponent(ToolbarVue)
@@ -51,7 +64,7 @@ describe('Editor (unit)', () => {
             body: `Paragraph ${i}`,
         }))
 
-        editor.nodes.push(...nodes)
+        nodes.forEach(createBlock)
 
         component.mount()
 
@@ -65,7 +78,7 @@ describe('Editor (unit)', () => {
 
         node.type = 'invalid'
 
-        editor.create(node)
+        createBlock(node)
 
         component.mount()
 
@@ -77,7 +90,7 @@ describe('Editor (unit)', () => {
 
         const node = createParagraph()
 
-        editor.create(node)
+        createBlock(node)
 
         editor.on('update', spy)
 

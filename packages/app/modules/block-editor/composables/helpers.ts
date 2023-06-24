@@ -3,13 +3,8 @@ import { MarkdownNodeParagraph, MarkdownParser, Processors } from '@language-kit
 
 const parser = new MarkdownParser()
 
-export function createNodeParagraphFromHtml(payload: string) {
-    const node = new MarkdownNodeParagraph()
-
-    let text = payload
-
-    // replace <p>{content}</p> > {content}
-    text = text.replaceAll(/^<p>(.*)<\/p>$/g, '$1')
+export function convertHtmlToMarkdown(html: string) {
+    let text = html
 
     // remove <br>
     text = text.replaceAll(/<br\s*\/?>/g, '')
@@ -28,6 +23,14 @@ export function createNodeParagraphFromHtml(payload: string) {
 
     // replace <span {attrs}>Text</span> to [Text]{attrs}
     text = text.replaceAll(/<span\s+([^>]+)>([^<]+)<\/span>/g, '[$2]{ $1 }')
+
+    return text
+}
+
+export function createNodeParagraphFromHtml(payload: string) {
+    const node = new MarkdownNodeParagraph()
+
+    const text = convertHtmlToMarkdown(payload)
 
     node.body = text.trim()
 
