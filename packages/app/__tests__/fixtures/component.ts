@@ -9,7 +9,7 @@ export function useMountWrapper<T extends DefineComponent<any, any, any, any, an
     const state = {
         wrapper: null as VueWrapper<InstanceType<T>> | null,
         mount: (options?: ComponentMountingOptions<T>) => {
-            state.wrapper = mount(component, merge(options, defaultOptions))
+            state.wrapper = mount(component, merge(defaultOptions, options))
 
             return state.wrapper!
         },

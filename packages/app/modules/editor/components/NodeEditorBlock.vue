@@ -88,34 +88,6 @@ const options = [
         handler: () => editor.addNodeAfter(props.node),
     },
 ]
-
-// toolbar
-
-const slots = useSlots()
-
-function onToolsRef(el: any) {
-    editor.toolbar.tools = el
-}
-
-function setToolbar() {
-    // if (!isSelected.value && editor.toolbar.nodeId === props.node.id) {
-    //     editor.toolbar.tools = null
-    //     return
-    // }
-    // if (!isSelected.value) return
-    // editor.toolbar.nodeId = props.node.id
-    // if (slots['toolbar-tools']) {
-    //     editor.toolbar.tools = slots['toolbar-tools']({
-    //         attrs: {
-    //             ref: (el) => {
-    //                 editor.toolbar.tools = el
-    //             },
-    //         },
-    //     })
-    // }
-}
-
-watch(isSelected, setToolbar, { immediate: true })
 </script>
 
 <template>
