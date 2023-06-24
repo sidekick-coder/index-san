@@ -3,11 +3,17 @@ import uniqueId from 'lodash/uniqueId'
 
 export const key = Symbol('editor')
 
+interface Observer {
+    event: string
+    callback: (args: any) => void
+}
+
 export function create() {
     const id = uniqueId('editor-')
 
     const nodes = ref(new MarkdownNodeArray())
     const selected = ref<MarkdownNode[]>([])
+    const observers = [] as Observer[]
 
     function select(node: MarkdownNode) {
         if (selected.value.includes(node)) {
@@ -27,15 +33,33 @@ export function create() {
         selected.value = []
     }
 
-    // create a new node but don't add it to the editor
-    function make() {
-        const node = new MarkdownNode()
-
+    function create(node: MarkdownNode) {
         node.meta.id = uniqueId('node-')
-
         node.meta.toolbarId = `${id}-toolbar-${node.meta.id}`
 
+        nodes.value.push(node)
+
         return node
+    }
+
+    function update(node: MarkdownNode) {
+        const index = nodes.value.findIndex((n) => n.meta.id === node.meta.id)
+
+        if (index === -1) {
+            return
+        }
+
+        nodes.value[index] = node
+
+        emit('update', { node })
+    }
+
+    function on(event: string, callback: (args: any) => void) {
+        observers.push({ event, callback })
+    }
+
+    function emit(event: string, args = {}) {
+        observers.filter((o) => o.event === event).forEach((o) => o.callback(args))
     }
 
     return reactive({
@@ -45,7 +69,10 @@ export function create() {
         select,
         unselect,
         clear,
-        make,
+        create,
+        update,
+        on,
+        emit,
     })
 }
 
@@ -55,6 +82,16 @@ export function provideEditor() {
     provide(key, editor)
 
     return editor
+}
+
+export function useEditorOrCreate() {
+    const editor = inject(key)
+
+    if (editor) {
+        return editor as ReturnType<typeof create>
+    }
+
+    return provideEditor()
 }
 
 export function useEditor() {

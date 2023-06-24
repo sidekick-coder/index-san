@@ -1,12 +1,9 @@
 import { useMountWrapper } from '__tests__/fixtures/component'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 
-import Block from './Block.vue'
-import { create, provideEditor, key } from '../composables/editor'
-import { MarkdownNode } from '@language-kit/markdown'
-import uniqueId from 'lodash/uniqueId'
-import VIcon from '@components/VIcon.vue'
+import { create, key } from '../composables/editor'
 import Toolbar from './Toolbar.vue'
+import { createManyParagraphs } from '../__tests__/fixtures/blocks'
 
 describe('Toolbar (unit)', () => {
     const editor = create()
@@ -25,7 +22,7 @@ describe('Toolbar (unit)', () => {
     })
 
     function createManyNodes(length = 5) {
-        const nodes = Array.from({ length }, () => editor.make())
+        const nodes = createManyParagraphs(length)
 
         editor.nodes.push(...nodes)
 
