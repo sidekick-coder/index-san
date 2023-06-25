@@ -6,7 +6,7 @@ import { MarkdownNode } from '@language-kit/markdown'
 import Editor from './Editor.vue'
 import ToolbarVue from './Toolbar.vue'
 import BlockParagraph from './BlockParagraph.vue'
-import { createManyParagraphs, createParagraph } from '../__tests__/fixtures/blocks'
+import { createManyParagraphs, createParagraph } from '../__tests__/factories'
 
 describe('Editor (unit)', () => {
     const editor = create()

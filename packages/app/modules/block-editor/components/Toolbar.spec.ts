@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { create, key } from '../composables/editor'
 import Toolbar from './Toolbar.vue'
-import { createManyParagraphs } from '../__tests__/fixtures/blocks'
+import { createManyParagraphs } from '../__tests__/factories'
 
 describe('Toolbar (unit)', () => {
     const editor = create()

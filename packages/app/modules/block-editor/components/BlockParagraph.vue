@@ -15,6 +15,8 @@ const model = defineModel({
 })
 
 const html = ref('')
+const contentEditableRef = ref<InstanceType<typeof HTMLContentEditable>>()
+const selected = ref(false)
 
 const isEmpty = computed(() => {
     if (model.value.tokens.length > 3) return
@@ -39,17 +41,22 @@ function update() {
     model.value = node
 }
 
-function onBlur() {
-    update()
-}
-
 watch(model, load, { immediate: true })
+
+watch(selected, (value) => {
+    if (!contentEditableRef.value) return
+
+    if (!value) return
+
+    contentEditableRef.value.focus()
+})
 </script>
 <template>
-    <block v-model="model" :class="isEmpty ? 'hidden' : ''">
+    <block v-model="model" v-model:selected="selected" :class="isEmpty ? 'hidden' : ''">
         <HTMLContentEditable
+            ref="contentEditableRef"
             v-model="html"
-            @blur="onBlur"
+            @blur="update"
             @keydown.enter.prevent="update"
             @keydown.ctrl.s="update"
         />

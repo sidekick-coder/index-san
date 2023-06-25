@@ -36,6 +36,7 @@ watch(model, loadEditableArea)
 onMounted(loadEditableArea)
 
 // view
+
 const state = defineProp<Record<string, string>>('state', {
     type: Object,
     default: () => ({}),
@@ -75,6 +76,25 @@ function loadComponent() {
 }
 
 watch([model, state], loadComponent, { immediate: true })
+
+// expose
+
+function focus() {
+    if (!editableAreaRef.value) return
+
+    editableAreaRef.value.focus()
+}
+
+function blur() {
+    if (!editableAreaRef.value) return
+
+    editableAreaRef.value.blur()
+}
+
+defineExpose({
+    focus,
+    blur,
+})
 </script>
 <template>
     <div class="flex w-full">

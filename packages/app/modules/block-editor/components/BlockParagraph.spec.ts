@@ -5,23 +5,31 @@ import BlockParagraph from './BlockParagraph.vue'
 import HTMLContentEditable from './HTMLContentEditable.vue'
 import { createNodeParagraphFromHtml } from '../composables/helpers'
 import { Token } from '@language-kit/lexer'
+import Block from './Block.vue'
+import { useBlockStub } from '../__tests__/stubs'
 
 describe('BlockParagraph', () => {
     const component = useMountWrapper(BlockParagraph, {
         shallow: true,
         global: {
             stubs: {
-                Block: {
-                    template: '<div><slot /></div>',
-                },
+                Block: useBlockStub(),
             },
         },
     })
 
-    afterEach(component.unmount)
+    afterEach(() => {
+        component.unmount()
+
+        vi.resetAllMocks()
+    })
 
     function findHTMLContentEditable() {
         return component.wrapper!.findComponent(HTMLContentEditable)
+    }
+
+    function findBlock() {
+        return component.wrapper!.findComponent(Block)
     }
 
     it('should pass node html to mode prop of HTMLContentEditable component', () => {
@@ -43,27 +51,22 @@ describe('BlockParagraph', () => {
     it.each([
         ['Hello word', 'Hello&nbsp;word'],
         ['Hello <strong>bold</strong>', 'Hello&nbsp;<strong>bold</strong>'],
-    ])(
-        'should transform spaces %s before pass the prop of HTMLContentEditable',
-        (input, expected) => {
-            const node = createNodeParagraphFromHtml(input)
+    ])('should transform white-spaces %s before use the html', (input, expected) => {
+        const node = createNodeParagraphFromHtml(input)
 
-            component.mount({
-                props: {
-                    modelValue: node,
-                },
-            })
+        component.mount({
+            props: {
+                modelValue: node,
+            },
+        })
 
-            const editable = findHTMLContentEditable()
+        const editable = findHTMLContentEditable()
 
-            expect(editable.exists()).toBe(true)
-
-            expect(editable.props('modelValue')).toBe(expected)
-        }
-    )
+        expect(editable.props('modelValue')).toBe(expected)
+    })
 
     it.each(['blur', 'keydown.enter', 'keydown.ctrl.s'])(
-        'should when %s event happen emit update event with correct format',
+        'should %s event trigger node update with correct format',
         async (event) => {
             const spy = vi.fn()
 
@@ -94,7 +97,7 @@ describe('BlockParagraph', () => {
         }
     )
 
-    it('should updated node always end block with a break line', async () => {
+    it('should updated node always end with a break line', async () => {
         const node = ref(createNodeParagraphFromHtml('Test <strong>bold</strong>'))
 
         node.value.meta = { id: 'test', toolbarId: 'test-toolbar' }
@@ -115,7 +118,28 @@ describe('BlockParagraph', () => {
         expect(lastToken).toEqual(Token.breakLine())
     })
 
-    it.todo('should focus HTMLContentEditable when block is selected')
+    it('should call focus() method of HTMLContentEditable when block is selected', async () => {
+        const node = createNodeParagraphFromHtml('Hello word')
+
+        component.mount({
+            props: {
+                modelValue: node,
+            },
+        })
+
+        const editable = findHTMLContentEditable()
+        const block = findBlock()
+
+        const focus = vi.fn()
+
+        editable.vm.focus = focus
+
+        block.vm.$emit('update:selected', true)
+
+        await nextTick()
+
+        expect(focus).toHaveBeenCalledOnce()
+    })
 
     it.todo('should emit update event when ToolbarTextFormat modifies the content')
 })
