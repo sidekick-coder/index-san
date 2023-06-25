@@ -24,7 +24,7 @@ describe('Toolbar (unit)', () => {
     function createManyNodes(length = 5) {
         const nodes = createManyParagraphs(length)
 
-        editor.nodes.push(...nodes)
+        editor.createAll(nodes)
 
         return nodes
     }
@@ -54,8 +54,8 @@ describe('Toolbar (unit)', () => {
 
         const selected = toolbars[0]
 
-        expect(selected.classes()).toContain('opacity-100')
+        expect(selected.isVisible()).toBe(true)
 
-        toolbars.slice(1).forEach((t) => expect(t.classes()).toContain('opacity-0'))
+        toolbars.slice(1).forEach((t) => expect(t.isVisible()).toBe(false))
     })
 })

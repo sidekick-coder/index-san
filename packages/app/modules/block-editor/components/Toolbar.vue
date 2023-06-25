@@ -15,6 +15,14 @@ function onLoadedToolbar(node: MarkdownNode, el: HTMLElement | null) {
     editor.toolbars.set(node.meta.id, el)
 }
 
+function canShowToolbar(node: MarkdownNode) {
+    if (!editor.selected.length) return false
+
+    if (editor.selected.length > 1) return false
+
+    return editor.selected.some((n) => n.meta.id === node.meta.id)
+}
+
 // move nodes
 
 function moveUp() {
@@ -41,7 +49,7 @@ function deleteNodes() {
         >
             <div
                 v-for="node in editor.nodes"
-                v-show="editor.selected.some((n) => n.meta.id === node.meta.id)"
+                v-show="canShowToolbar(node)"
                 :id="node.meta.toolbarId"
                 :ref="(el: HTMLElement) => onLoadedToolbar(node, el)"
                 :key="node.meta.id"
