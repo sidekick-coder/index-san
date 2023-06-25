@@ -21,7 +21,9 @@ export function create() {
             selected.value = []
         }
 
-        if (selected.value.includes(node)) {
+        const isSelected = selected.value.some((n) => n.meta.id === node.meta.id)
+
+        if (isSelected) {
             return
         }
 
@@ -29,7 +31,11 @@ export function create() {
     }
 
     function unselect(node: MarkdownNode) {
-        selected.value = selected.value.filter((n) => n !== node)
+        selected.value = selected.value.filter((n) => n.meta.id !== node.meta.id)
+    }
+
+    function unselectAll() {
+        selected.value = []
     }
 
     function clear() {
@@ -155,6 +161,7 @@ export function create() {
         moveSelectedToDown,
         select,
         unselect,
+        unselectAll,
 
         create,
         createAll,

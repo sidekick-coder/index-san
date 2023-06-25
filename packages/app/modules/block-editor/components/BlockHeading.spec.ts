@@ -5,9 +5,11 @@ import { create, key } from '../composables/editor'
 import BlockHeading from './BlockHeading.vue'
 import HTMLContentEditable from './HTMLContentEditable.vue'
 import { createHeadingFactory } from '../__tests__/factories'
-import { useBlockStub } from '../__tests__/stubs'
+import { useBlockStub, useVBtnStub } from '../__tests__/stubs'
 import { MarkdownNodeHeading } from '@language-kit/markdown'
 import Block from './Block.vue'
+import VIcon from '@components/VIcon.vue'
+import VBtn from '@components/VBtn.vue'
 
 describe('BlockHeading (unit)', () => {
     const editor = create()
@@ -20,6 +22,7 @@ describe('BlockHeading (unit)', () => {
             },
             stubs: {
                 Block: useBlockStub(),
+                VBtn: useVBtnStub(),
             },
         },
     })
@@ -36,6 +39,14 @@ describe('BlockHeading (unit)', () => {
 
     function findBlock() {
         return component.wrapper!.findComponent(Block)
+    }
+
+    function findDragIcon() {
+        return component.wrapper!.findComponent<typeof VIcon>('[data-test-id=dragger-icon]')
+    }
+
+    function findToggleLevelButtons() {
+        return component.wrapper!.findAllComponents<typeof VBtn>('[data-test-id=toggle-level-btn]')
     }
 
     it('should render HTMLContentEditable component', () => {
@@ -148,12 +159,6 @@ describe('BlockHeading (unit)', () => {
             },
         })
 
-        component.mount({
-            props: {
-                modelValue: node,
-            },
-        })
-
         const editable = findEditable()
         const block = findBlock()
 
@@ -167,4 +172,47 @@ describe('BlockHeading (unit)', () => {
 
         expect(focus).toHaveBeenCalledOnce()
     })
+
+    it.each([1, 2, 3, 4, 5, 6])('should show icon based on header level %d', async (level) => {
+        const node = factory.make({ level })
+
+        component.mount({
+            props: {
+                modelValue: node,
+            },
+        })
+
+        const dragIcon = findDragIcon()
+
+        expect(dragIcon.exists()).toBe(true)
+
+        expect(dragIcon.props('name')).toBe(`lucide:heading-${level}`)
+    })
+
+    it.each([1, 2, 3, 4, 5, 6])(
+        'should when click on button h%d update header level',
+        async (level) => {
+            const node = factory.make({ level: 1 })
+
+            component.mount({
+                props: {
+                    'modelValue': node,
+                    'onUpdate:modelValue': (n: MarkdownNodeHeading) => {
+                        node.body = n.body
+                        node.level = n.level
+                    },
+                },
+            })
+
+            const buttons = findToggleLevelButtons()
+
+            const button = buttons[level - 1]
+
+            expect(button.exists()).toBe(true)
+
+            await button.trigger('click')
+
+            expect(node.level).toBe(level)
+        }
+    )
 })

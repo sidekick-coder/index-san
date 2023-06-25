@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { useEditorOrCreate } from '../composables/editor'
-import Toolbar from './Toolbar.vue'
-import BlockParagraph from './BlockParagraph.vue'
-import Block from './Block.vue'
 import { MarkdownNode } from '@language-kit/markdown'
 
+import Toolbar from './Toolbar.vue'
+import BlockParagraph from './BlockParagraph.vue'
+import BlockHeading from './BlockHeading.vue'
+import Block from './Block.vue'
+import { onClickOutside } from '@vueuse/core'
+
+const root = ref<HTMLElement | null>(null)
 const editor = useEditorOrCreate()
 
 const nodesReady = computed(() => {
@@ -14,12 +18,14 @@ const nodesReady = computed(() => {
 function onNodeUpdate(node: MarkdownNode) {
     editor.update(node)
 }
+
+onClickOutside(root, editor.unselectAll)
 </script>
 <template>
-    <div>
+    <div ref="root" class="h-full">
         <Toolbar />
 
-        <div class="h-[calc(100%-48px)] w-full overflow-auto pb-80">
+        <div class="h-[calc(100%-48px)] w-full overflow-auto flex flex-col overflow-auto">
             <transition-group
                 move-class="transition duration-200"
                 enter-active-class="transition duration-200"
@@ -34,13 +40,27 @@ function onNodeUpdate(node: MarkdownNode) {
                         @update:model-value="onNodeUpdate"
                     />
 
-                    <Block v-else :model-value="n" data-test-id="invalid-block">
+                    <BlockHeading
+                        v-else-if="n.is('Heading')"
+                        :model-value="n"
+                        @update:model-value="onNodeUpdate"
+                    />
+
+                    <Block
+                        v-else
+                        :model-value="n"
+                        data-test-id="invalid-block"
+                        class="border-l-4 border-danger"
+                    >
                         <div class="text-danger">
                             {{ $t('errors.errorRenderingBlock', [n.type]) }}
                         </div>
                     </Block>
                 </template>
             </transition-group>
+
+            <!-- Element to prevent focus when clicking on empty space -->
+            <div class="flex-1" @click="editor.unselectAll"></div>
         </div>
     </div>
 </template>

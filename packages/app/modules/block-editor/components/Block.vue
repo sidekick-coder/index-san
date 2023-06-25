@@ -37,7 +37,7 @@ const isSelectedInEditor = computed({
 
 syncRef(selected, isSelectedInEditor)
 
-function onMousedown(e: MouseEvent) {
+function onClick(e: MouseEvent) {
     if (e.ctrlKey) {
         editor.select(node.value)
 
@@ -65,24 +65,30 @@ const icon = defineProp<string>('icon', {
         ref="root"
         class="flex min-h-[48px] items-center group hover:bg-b-secondary/50"
         :class="isSelectedInEditor ? 'bg-b-secondary/50' : ''"
-        @mousedown="onMousedown"
+        @click="onClick"
     >
         <Teleport :to="`#${node.meta.toolbarId}`">
             <slot name="toolbar" />
         </Teleport>
 
         <div class="w-[40px] flex justify-center self-start">
-            <v-btn
-                mode="text"
-                size="none"
-                color="b-primary"
-                class="h-12 text-sm opacity-0 group-hover:opacity-100"
-            >
-                <v-icon data-test-id="icon" :name="icon" />
-            </v-btn>
+            <slot name="dragger">
+                <v-btn
+                    mode="text"
+                    size="none"
+                    color="b-primary"
+                    class="h-12 text-sm opacity-0 group-hover:opacity-100"
+                >
+                    <v-icon data-test-id="icon" :name="icon" />
+                </v-btn>
+            </slot>
         </div>
 
-        <div class="flex-1" :class="isControlPressed ? 'pointer-events-none' : ''">
+        <div
+            class="flex-1 overflow-auto"
+            :class="isControlPressed ? 'pointer-events-none opacity-75' : ''"
+            :inert="isControlPressed"
+        >
             <slot />
         </div>
     </div>

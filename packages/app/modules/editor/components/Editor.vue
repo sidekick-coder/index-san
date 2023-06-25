@@ -101,7 +101,7 @@ whenever(keys.Alt_m, () => {
                     </div>
 
                     <div class="h-full w-6/12 border-l border-b-secondary/25">
-                        <BlockEditor v-model="editor.nodes" />
+                        <BlockEditor />
                         <!-- <NodeEditor v-model="nodes" @change="onChangeNodes" /> -->
                     </div>
                 </div>
