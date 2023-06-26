@@ -1,21 +1,34 @@
 <script setup lang="ts">
-import { useTextSelection } from '@vueuse/core'
+import { useEventListener, useTextSelection } from '@vueuse/core'
 import ToolbarBtn from './ToolbarBtn.vue'
 
 const emit = defineEmits(['change'])
 
-const state = useTextSelection()
+function findSelection() {
+    return window.getSelection()
+}
 
-const selectionStates = ref([] as string[])
+function findRanges() {
+    const selection = findSelection()
+
+    if (!selection || selection.rangeCount === 0) return []
+
+    const ranges: Range[] = []
+
+    for (let i = 0; i < selection.rangeCount; i++) {
+        ranges.push(selection.getRangeAt(i))
+    }
+
+    return ranges
+}
 
 function findSelectionAncestorByTag(tag: string) {
-    const selection = state.selection.value
+    const [range] = findRanges()
 
-    if (!selection || selection.rangeCount === 0) return false
+    if (!range) return null
 
     const TAG_UPPERCASE = tag.toUpperCase()
 
-    const range = selection?.getRangeAt(0)
     const text = range?.toString()
 
     if (!range || !text) return null
@@ -31,16 +44,14 @@ function findSelectionAncestorByTag(tag: string) {
 
 function wrapOrUnwrapSelection(tag: string) {
     const selection = window.getSelection()
+    const [range] = findRanges()
 
-    if (!selection || selection.rangeCount === 0) return
+    const text = range?.toString()
+
+    if (!range || !text || !selection) return
 
     const TAG_UPPERCASE = tag.toUpperCase()
     const TAG_LOWERCASE = tag.toLowerCase()
-
-    const range = selection?.getRangeAt(0)
-    const text = range?.toString()
-
-    if (!range || !text) return
 
     let ancestor = findSelectionAncestorByTag(tag) as HTMLElement
 
@@ -75,13 +86,13 @@ function wrapOrUnwrapSelection(tag: string) {
     // Wrap the selection with tag
     if (!isWrapped) {
         // Wrap the selection with tag
-        const strongElement = document.createElement(TAG_LOWERCASE)
+        const wrapElement = document.createElement(TAG_LOWERCASE)
 
-        strongElement.innerText = text
+        wrapElement.appendChild(range.extractContents())
 
         range.deleteContents()
-        range.insertNode(strongElement)
-        range.selectNodeContents(strongElement)
+        range.insertNode(wrapElement)
+        range.selectNodeContents(wrapElement)
     }
 
     emit('change')
@@ -116,7 +127,7 @@ const actions = ref([
     },
 ])
 
-function setSelectionActiveStates() {
+function onSelectionChange() {
     actions.value.forEach((action) => {
         const ancestor = findSelectionAncestorByTag(action.tag)
 
@@ -124,13 +135,14 @@ function setSelectionActiveStates() {
     })
 }
 
-watch(state.ranges, setSelectionActiveStates)
+useEventListener(document, 'selectionchange', onSelectionChange)
 </script>
 <template>
     <toolbar-btn
         v-for="action in actions"
         :key="action.tag"
         :active="action.active"
+        :data-test-id="action.icon"
         @click="action.onClick"
     >
         <v-icon :name="action.icon" />
