@@ -7,6 +7,8 @@ import { createNodeParagraphFromHtml } from '../composables/helpers'
 import { Token } from '@language-kit/lexer'
 import Block from './Block.vue'
 import { useBlockStub } from '../__tests__/stubs'
+import ToolbarTextFormat from './ToolbarTextFormat.vue'
+import { MarkdownNodeParagraph } from '@language-kit/markdown'
 
 describe('BlockParagraph', () => {
     const component = useMountWrapper(BlockParagraph, {
@@ -32,6 +34,10 @@ describe('BlockParagraph', () => {
         return component.wrapper!.findComponent(Block)
     }
 
+    function findToolbarTextFormat() {
+        return component.wrapper!.findComponent(ToolbarTextFormat)
+    }
+
     it('should pass node html to mode prop of HTMLContentEditable component', () => {
         const node = createNodeParagraphFromHtml('Hello word')
 
@@ -45,13 +51,13 @@ describe('BlockParagraph', () => {
 
         expect(editable.exists()).toBe(true)
 
-        expect(editable.props('modelValue')).toBe('Hello&nbsp;word')
+        expect(editable.props('modelValue')).toBe('Hello word')
     })
 
     it.each([
-        ['Hello word', 'Hello&nbsp;word'],
-        ['Hello <strong>bold</strong>', 'Hello&nbsp;<strong>bold</strong>'],
-    ])('should transform white-spaces %s before use the html', (input, expected) => {
+        [' ', '&nbsp;'],
+        ['Hello <strong>bold</strong> ', 'Hello <strong>bold</strong>&nbsp;'],
+    ])('should transform endline white-spaces before use the html: %#', (input, expected) => {
         const node = createNodeParagraphFromHtml(input)
 
         component.mount({
@@ -141,5 +147,33 @@ describe('BlockParagraph', () => {
         expect(focus).toHaveBeenCalledOnce()
     })
 
-    it.todo('should emit update event when ToolbarTextFormat modifies the content')
+    it('should update node when ToolbarTextFormat emit change event', async () => {
+        const node = createNodeParagraphFromHtml('Hello word')
+
+        component.mount({
+            props: {
+                'modelValue': node,
+                'onUpdate:model-value': (n: MarkdownNodeParagraph) => {
+                    node.body = n.body
+                },
+            },
+        })
+
+        const editable = findHTMLContentEditable()
+        const toolbar = findToolbarTextFormat()
+
+        const input = vi.fn()
+
+        editable.vm.input = input
+
+        await editable.setValue('Updated')
+
+        toolbar.trigger('change')
+
+        await nextTick()
+
+        expect(input).toHaveBeenCalledOnce()
+
+        expect(node.body).toBe('Updated')
+    })
 })
