@@ -2,7 +2,8 @@
 import { MarkdownNodeParagraph } from '@language-kit/markdown'
 import Block from './Block.vue'
 import HTMLContentEditable from './HTMLContentEditable.vue'
-import { createNodeParagraphFromHtml } from '../composables/helpers'
+import ToolbarTextFormat from './ToolbarTextFormat.vue'
+import { convertMarkdownToHtml, createNodeParagraphFromHtml } from '../composables/helpers'
 import { TokenType } from '@language-kit/lexer'
 
 defineOptions({
@@ -27,10 +28,13 @@ const isEmpty = computed(() => {
 })
 
 function load() {
-    html.value = model.value.children
-        .map((c) => c.toHtml())
-        .join('')
-        .replaceAll(' ', '&nbsp;')
+    let text = convertMarkdownToHtml(model.value.children.map((c) => c.toText()).join(''))
+
+    if (text.endsWith(' ')) {
+        text = text.slice(0, -1) + '&nbsp;'
+    }
+
+    html.value = text
 }
 
 function update() {
@@ -39,6 +43,14 @@ function update() {
     node.meta = model.value.meta
 
     model.value = node
+}
+
+function onToolbarTextFormat() {
+    if (!contentEditableRef.value) return
+
+    contentEditableRef.value.input()
+
+    update()
 }
 
 watch(model, load, { immediate: true })
@@ -53,6 +65,10 @@ watch(selected, (value) => {
 </script>
 <template>
     <block v-model="model" v-model:selected="selected" :class="isEmpty ? 'hidden' : ''">
+        <template #toolbar>
+            <ToolbarTextFormat @change="onToolbarTextFormat" />
+        </template>
+
         <HTMLContentEditable
             ref="contentEditableRef"
             v-model="html"

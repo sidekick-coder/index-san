@@ -94,6 +94,7 @@ function blur() {
 defineExpose({
     focus,
     blur,
+    input: onInput,
 })
 </script>
 <template>
