@@ -15,13 +15,7 @@ const lines = computed(() => {
 })
 </script>
 <template>
-    <div class="bg-b-03 flex py-2 px-4 rounded flex-wrap transition-all overflow-auto h-full">
-        <slot />
-
-        <div v-if="lines.length" class="w-full text-sm whitespace-pre-wrap mt-4">
-            <div v-for="line in lines" :key="line" v-html="line" />
-        </div>
-
-        <slot name="empty" />
+    <div v-if="lines.length" class="w-full text-sm whitespace-pre-wrap">
+        <div v-for="line in lines" :key="line" v-html="line" />
     </div>
 </template>

@@ -45,7 +45,9 @@ const colorVariation = useVariant(props, 'color', {
 // class & styles
 const css = useCss()
 
-const classes = computed(() => ['transition-all'].concat(colorVariation.classes))
+const classes = computed(() =>
+    ['transition-all', 'flex', 'flex-col'].concat(colorVariation.classes)
+)
 
 const style = computed(() => {
     let result = ''

@@ -123,6 +123,7 @@ export default {
     run: 'Run',
     height: 'Height',
     showEditor: 'Show editor',
+    code: 'Code',
     errors: {
         unknown: 'Unknown error',
         workspaceNotFound: '@:workspace not found: {0}',

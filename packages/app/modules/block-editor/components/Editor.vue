@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useEditorOrCreate } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'
+import { onClickOutside } from '@vueuse/core'
 
 import Toolbar from './Toolbar.vue'
+import Block from './Block.vue'
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
-import Block from './Block.vue'
-import { onClickOutside } from '@vueuse/core'
+import BlockScript from './BlockScript.vue'
 
 const root = ref<HTMLElement | null>(null)
 const editor = useEditorOrCreate()
@@ -19,7 +20,7 @@ function onNodeUpdate(node: MarkdownNode) {
     editor.update(node)
 }
 
-onClickOutside(root, editor.unselectAll)
+// onClickOutside(root, editor.unselectAll)
 </script>
 <template>
     <div ref="root" class="h-full">
@@ -42,6 +43,12 @@ onClickOutside(root, editor.unselectAll)
 
                     <BlockHeading
                         v-else-if="n.is('Heading')"
+                        :model-value="n"
+                        @update:model-value="onNodeUpdate"
+                    />
+
+                    <BlockScript
+                        v-else-if="n.is('Component') && n.name === 'script'"
                         :model-value="n"
                         @update:model-value="onNodeUpdate"
                     />

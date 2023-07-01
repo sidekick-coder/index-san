@@ -11,10 +11,15 @@ const props = defineProps({
         default: null,
     },
 })
+
+const style = computed(() => ({
+    width: props.size,
+    height: props.size,
+}))
 </script>
 <template>
     <div class="inline-flex items-center">
-        <Icon v-if="name.includes(':')" :icon="name" />
+        <Icon v-if="name.includes(':')" :icon="name" :style="style" />
         <fa-icon v-else :icon="name" :size="size" />
     </div>
 </template>
