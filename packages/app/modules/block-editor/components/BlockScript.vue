@@ -29,9 +29,6 @@ async function run() {
 
     output.value = []
 
-    // output.value.push('🔥 Running code...')
-    // output.value.push('')
-
     const runtime = await evaluation.run(code.value, {
         immediate: false,
         timeout: 10000,

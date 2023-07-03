@@ -5,6 +5,9 @@ config.global.stubs['router-link'] = true
 
 config.global.config.warnHandler = () => true
 
+config.global.renderStubDefaultSlot = true
+config.global.mocks.$t = (key: string) => key
+
 window.clientConfig = {
     useCase: () => Promise.reject('Not implemented'),
     open: {
