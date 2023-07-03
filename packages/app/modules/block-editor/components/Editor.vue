@@ -8,6 +8,7 @@ import Block from './Block.vue'
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
 import BlockScript from './BlockScript.vue'
+import BlockChart from './BlockChart.vue'
 
 const root = ref<HTMLElement | null>(null)
 const editor = useEditorOrCreate()
@@ -49,6 +50,12 @@ function onNodeUpdate(node: MarkdownNode) {
 
                     <BlockScript
                         v-else-if="n.is('Component') && n.name === 'script'"
+                        :model-value="n"
+                        @update:model-value="onNodeUpdate"
+                    />
+
+                    <BlockChart
+                        v-else-if="n.is('Component') && n.name === 'chart'"
                         :model-value="n"
                         @update:model-value="onNodeUpdate"
                     />

@@ -8,6 +8,7 @@ import ANSICard from '@modules/evaluation/components/ANSICard.vue'
 import ToolbarBtn from './ToolbarBtn.vue'
 import Block from './Block.vue'
 import ToolbarAlignment from './ToolbarAlignment.vue'
+import { useCss } from '@composables/css'
 
 const MonacoEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
 
@@ -64,7 +65,7 @@ async function setChart() {
     setTimeout(() => (chartLoading.value = false), 300)
 }
 
-watch(() => model.value.body, setChart, { immediate: true })
+watch([() => model.value.body, () => model.value.attrs], setChart, { immediate: true, deep: true })
 
 // edit
 
@@ -76,15 +77,19 @@ const parser = new MarkdownParser()
 async function update() {
     const node = new MarkdownNodeComponent()
 
-    node.name = 'script'
+    node.name = 'chart'
     node.body = code.value
     node.attrs = config.value
 
-    const attrsAsString = Object.entries(node.attrs)
+    let attrsAsString = Object.entries(node.attrs)
         .map(([key, value]) => `${key}="${value}"`)
         .join(' ')
 
-    const markdown = `:: script ${attrsAsString}\n ${node.body}\n::\n`
+    if (attrsAsString) {
+        attrsAsString = ` { ${attrsAsString} }`
+    }
+
+    const markdown = `:: chart${attrsAsString}\n\n${node.body}\n::\n`
 
     node.tokens = parser.toTokens(markdown, {
         includeEndOfFileToken: false,
@@ -117,12 +122,22 @@ const mode = ref<'chart' | 'debug' | 'dataset'>('chart')
 
 // attrs
 
+const css = useCss()
 const loadingAttrs = ref(false)
 
 const config = ref({
     height: '500',
     width: '500',
     align: 'left',
+})
+
+const style = computed(() => {
+    return {
+        height: css.toMeasurement(config.value.height),
+        width: css.toMeasurement(config.value.width),
+        marginLeft: ['right', 'center'].includes(config.value.align) ? 'auto' : undefined,
+        marginRight: ['left', 'center'].includes(config.value.align) ? 'auto' : undefined,
+    }
 })
 
 watch(
@@ -219,7 +234,7 @@ watch(
 
             <div class="w-28 flex items-center">
                 <v-input
-                    v-model.lazy.number="config.height"
+                    v-model.lazy="config.height"
                     flat
                     size="sm"
                     data-test-id="toolbar-input-height"
@@ -231,7 +246,7 @@ watch(
             </div>
             <div class="w-28 flex items-center">
                 <v-input
-                    v-model.lazy.number="config.width"
+                    v-model.lazy="config.width"
                     flat
                     size="sm"
                     data-test-id="toolbar-input-width"
@@ -247,16 +262,16 @@ watch(
             <v-icon name="chart-pie" class="text-[10rem] text-t-secondary" />
         </div>
 
-        <v-chart v-else-if="mode === 'chart'" :options="chartOptions" />
+        <v-chart v-else-if="mode === 'chart'" :style="style" :options="chartOptions" />
 
-        <ANSICard
-            v-else-if="mode === 'debug'"
-            :model-value="evaluationOutput"
-            :empty-message="$t('noEntity', [$t('log', 2)])"
-            data-test-id="debug-view"
-        >
-            <template #empty>
-                <div class="h-full w-full flex items-center justify-center text-t-secondary">
+        <template v-else-if="mode === 'debug'">
+            <div :style="style" class="bg-b-03 p-4">
+                <ANSICard :model-value="evaluationOutput" data-test-id="debug-view" />
+
+                <div
+                    v-if="!evaluationOutput.length"
+                    class="h-full w-full flex items-center justify-center text-t-secondary"
+                >
                     <div class="flex flex-col items-center space-y-2">
                         <v-icon name="bug" class="text-4xl" />
 
@@ -265,8 +280,8 @@ watch(
                         </div>
                     </div>
                 </div>
-            </template>
-        </ANSICard>
+            </div>
+        </template>
 
         <MonacoEditor
             v-else-if="mode === 'dataset'"
