@@ -74,9 +74,9 @@ describe('useEvaluation', () => {
             export default { foo, bar }
         `)
 
-        expect(result.default).toBeDefined()
+        expect(result.exports.default).toBeDefined()
 
-        expect(result.default.foo).toBe('FOO')
-        expect(result.default.bar).toBe('ref(bar)')
+        expect(result.exports.default.foo).toBe('FOO')
+        expect(result.exports.default.bar).toBe('ref(bar)')
     })
 })

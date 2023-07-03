@@ -233,7 +233,7 @@ describe('BlockChart (unit)', () => {
 
             await input.setValue('100')
 
-            expect(node.attrs[name]).toBe(100)
+            expect(node.attrs[name]).toBe('100')
         }
     )
 

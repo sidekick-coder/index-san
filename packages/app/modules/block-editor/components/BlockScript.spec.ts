@@ -1,5 +1,5 @@
 import { useMountWrapper } from '__tests__/fixtures/component'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MarkdownNodeComponent } from '@language-kit/markdown'
 import { useBlockStub } from '../__tests__/stubs'
 
@@ -7,8 +7,8 @@ import BlockScript from './BlockScript.vue'
 import VBtn from '@components/VBtn.vue'
 import ANSICard from '@modules/evaluation/components/ANSICard.vue'
 import { waitFor } from '@composables/utils'
-import * as Evaluation from '@modules/evaluation/composables/use-evaluation'
 import MonacoEditor from '@components/MonacoEditor.vue'
+import { flushPromises } from '@vue/test-utils'
 
 describe('BlockScript (unit)', () => {
     const component = useMountWrapper(BlockScript, {
@@ -36,135 +36,56 @@ describe('BlockScript (unit)', () => {
         return node
     }
 
-    function createRuntimeMock() {
-        const callbacks = {
-            stdout: [] as Function[],
-            stderr: [] as Function[],
-        }
-
-        return {
-            run: vi.fn(),
-            onDone: vi.fn().mockResolvedValue(undefined),
-            on: (event: keyof typeof callbacks, callback: any) => callbacks[event]?.push(callback),
-            emit: (event: keyof typeof callbacks, ...args: any[]) => {
-                callbacks[event].forEach((cb) => cb(...args))
-            },
-        }
-    }
-
-    function createEvaluationMock() {
-        const spy = vi.fn()
-
-        const runtime = createRuntimeMock()
-
-        spy.mockReturnValue(runtime as any)
-
-        vi.spyOn(Evaluation, 'useEvaluation').mockReturnValue({
-            run: spy,
-        } as any)
-
-        return { spy, runtime }
-    }
-
-    function findRunButton() {
-        return component.wrapper!.findComponent<typeof VBtn>('[data-test-id="run-button"]')
-    }
-
-    function findClearButton() {
-        return component.wrapper!.findComponent('[data-test-id="clear-button"]')
+    function findButton(id: 'run' | 'clear' | 'edit' | 'save') {
+        return component.wrapper!.findComponent(`[data-test-id="${id}-btn"]`)
     }
 
     function findEditor() {
         return component.wrapper!.findComponent<typeof MonacoEditor>('[data-test-id="editor"]')
     }
 
-    function findANSIComponent() {
+    function findANSICard() {
         return component.wrapper!.findComponent(ANSICard)
     }
 
-    it('should render run button', () => {
-        component.mount({
-            props: {
-                modelValue: createNode(),
-            },
-        })
-
-        expect(findRunButton().exists()).toBe(true)
-    })
-
-    it('should mount runtime with node body run button', async () => {
+    it('should execute script on run-btn click', async () => {
         const node = createNode({
             body: 'console.log("Hello world!")',
         })
 
-        const running = ref(false)
-
-        const { spy } = createEvaluationMock()
-
         component.mount({
             props: {
-                'modelValue': node,
-                'running': running.value,
-                'onUpdate:running': (v: boolean) => (running.value = v),
+                modelValue: node,
             },
         })
 
-        await findRunButton().trigger('click')
+        findButton('run').trigger('click')
 
-        await waitFor(() => !running.value)
+        await flushPromises()
 
-        expect(spy).toHaveBeenCalledWith(node.body, { immediate: false, timeout: 10000 })
+        expect(findANSICard().props('modelValue')).toEqual(['Hello world!\n'])
     })
 
-    it('should execute script on button click', async () => {
+    it('should show editor when click on edit-btn', async () => {
         const node = createNode({
             body: 'console.log("Hello world!")',
         })
 
-        const running = ref(false)
-
-        const { runtime } = createEvaluationMock()
-
         component.mount({
             props: {
-                'modelValue': node,
-                'running': running.value,
-                'onUpdate:running': (v: boolean) => (running.value = v),
+                modelValue: node,
             },
         })
 
-        let done = false
+        await findButton('edit').trigger('click')
 
-        const runButton = findRunButton()
-        const ANSIComponent = findANSIComponent()
-
-        runtime.onDone.mockImplementation(() => waitFor(() => done))
-
-        await runButton.trigger('click')
-
-        runtime.emit('stdout', 'Hello world!')
-
-        done = true
-
-        await waitFor(() => !running.value)
-
-        expect(ANSIComponent.exists()).toBe(true)
-
-        expect(ANSIComponent.props('modelValue')).toEqual([
-            '🔥 Running code...',
-            '',
-            'Hello world!',
-            '',
-            '🎉 Code executed successfully!',
-        ])
+        expect(findEditor().exists()).toBe(true)
     })
 
-    it('should update node when edit script', async () => {
+    it('should update node when click on save-btn', async () => {
         const node = createNode({
             body: 'console.log("Hello world!")',
         })
-
-        createEvaluationMock()
 
         component.mount({
             props: {
@@ -175,23 +96,21 @@ describe('BlockScript (unit)', () => {
             },
         })
 
-        const editor = findEditor()
+        await findButton('edit').trigger('click')
 
-        expect(editor.exists()).toBe(true)
+        const editor = findEditor()
 
         await editor.setValue('console.log("Update!")')
 
-        await editor.trigger('keydown.ctrl.s')
+        await findButton('save').trigger('click')
 
         expect(node.body).toBe('console.log("Update!")')
     })
 
-    it('should clear output on clean-button click', async () => {
+    it('should clear output on clean-btn click', async () => {
         const node = createNode({
             body: 'console.log("Hello world!")',
         })
-
-        createEvaluationMock()
 
         component.mount({
             props: {
@@ -199,15 +118,14 @@ describe('BlockScript (unit)', () => {
             },
         })
 
-        const ANSIComponent = findANSIComponent()
-        const clearButton = findClearButton()
+        await findButton('run').trigger('click')
 
-        await ANSIComponent.setValue(['Hello world!'])
+        await flushPromises()
 
-        expect(ANSIComponent.props('modelValue')).toEqual(['Hello world!'])
+        expect(findANSICard().props('modelValue')).toEqual(['Hello world!\n'])
 
-        await clearButton.trigger('click')
+        await findButton('clear').trigger('click')
 
-        expect(ANSIComponent.props('modelValue')).toEqual([])
+        expect(findANSICard().props('modelValue')).toEqual([])
     })
 })

@@ -20,7 +20,27 @@ describe('ToolbarBtn (unit)', () => {
         editor.clear()
     })
 
-    it.todo('should render button')
+    it('should render button', () => {
+        component.mount({
+            slots: {
+                default: 'Test',
+            },
+        })
 
-    it.todo('should change active styles based on prop')
+        expect(component.wrapper!.text()).toBe('Test')
+    })
+
+    it('should change active styles based on prop', async () => {
+        const wrapper = component.mount({
+            props: {
+                active: true,
+            },
+        })
+
+        expect(wrapper.classes()).toContain('text-t-primary')
+
+        await wrapper.setProps({ active: false })
+
+        expect(wrapper.classes()).toContain('text-t-secondary')
+    })
 })

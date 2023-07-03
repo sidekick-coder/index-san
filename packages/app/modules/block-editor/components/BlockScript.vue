@@ -14,12 +14,7 @@ const model = defineModel({
     validator: (n: MarkdownNodeComponent) => n.name === 'script',
 })
 
-const running = defineModel('running', {
-    type: Boolean,
-    default: false,
-    local: true,
-})
-
+const running = ref(false)
 const code = ref(model.value.body)
 const evaluation = useEvaluation()
 const output = ref<string[]>([])
@@ -40,14 +35,9 @@ async function run() {
 
     runtime.run()
 
-    runtime
-        .onDone()
-        .then(() => {
-            running.value = false
-        })
-        .catch(() => {
-            running.value = false
-        })
+    await runtime.onDone()
+
+    running.value = false
 }
 
 // edit
@@ -85,13 +75,7 @@ function onSave() {
 <template>
     <block v-model="model" class="pr-10">
         <template #toolbar>
-            <ToolbarBtn @click="run">
-                <v-icon name="play" />
-            </ToolbarBtn>
-            <ToolbarBtn @click="output = []">
-                <v-icon name="mdi:broom" size="18" />
-            </ToolbarBtn>
-            <ToolbarBtn @click="edit = true">
+            <ToolbarBtn data-test-id="edit-btn" @click="edit = true">
                 <v-icon name="pen" />
             </ToolbarBtn>
         </template>
@@ -102,7 +86,7 @@ function onSave() {
                     {{ running ? 'Running...' : $t('clickToEvaluate') }}
                 </div>
 
-                <v-btn data-test-id="run-button" :disabled="running" @click="run">
+                <v-btn data-test-id="run-btn" :disabled="running" @click="run">
                     <v-icon
                         :name="running ? 'spinner' : 'play'"
                         :class="running ? 'animate-spin' : ''"
@@ -111,12 +95,12 @@ function onSave() {
                     {{ $t('run') }}
                 </v-btn>
 
-                <v-btn data-test-id="clear-button" :disabled="running" @click="output = []">
+                <v-btn data-test-id="clear-btn" :disabled="running" @click="output = []">
                     {{ $t('clear') }}
                 </v-btn>
             </div>
 
-            <div v-if="output.length" class="w-full">
+            <div v-show="output.length" class="w-full">
                 <ANSICard v-model="output" />
             </div>
         </div>
@@ -132,7 +116,7 @@ function onSave() {
                         {{ $t('cancel') }}
                     </v-btn>
 
-                    <v-btn @click="onSave">
+                    <v-btn data-test-id="save-btn" @click="onSave">
                         {{ $t('save') }}
                     </v-btn>
                 </v-card-head>
