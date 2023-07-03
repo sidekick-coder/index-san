@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useEditorOrCreate } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'
-import { onClickOutside } from '@vueuse/core'
 
 import Toolbar from './Toolbar.vue'
 import Block from './Block.vue'
@@ -20,14 +19,14 @@ const nodesReady = computed(() => {
 function onNodeUpdate(node: MarkdownNode) {
     editor.update(node)
 }
-
-// onClickOutside(root, editor.unselectAll)
 </script>
 <template>
     <div ref="root" class="h-full">
         <Toolbar />
 
-        <div class="h-[calc(100%-48px)] w-full overflow-auto flex flex-col overflow-auto">
+        <div
+            class="h-[calc(100%-48px)] w-full overflow-auto flex flex-wrap items-start overflow-auto"
+        >
             <transition-group
                 move-class="transition duration-200"
                 enter-active-class="transition duration-200"

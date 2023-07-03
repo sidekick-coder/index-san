@@ -258,7 +258,11 @@ watch(
             </div>
         </template>
 
-        <div v-if="chartLoading" class="flex items-center justify-center animate-pulse h-full">
+        <div
+            v-if="chartLoading"
+            :style="{ height: style.height }"
+            class="flex items-center justify-center animate-pulse w-full"
+        >
             <v-icon name="chart-pie" class="text-[10rem] text-t-secondary" />
         </div>
 

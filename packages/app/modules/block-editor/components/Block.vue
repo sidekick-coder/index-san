@@ -63,7 +63,7 @@ const icon = defineProp<string>('icon', {
 <template>
     <div
         ref="root"
-        class="flex min-h-[48px] items-center group hover:bg-b-secondary/50 pr-10"
+        class="flex w-full min-h-[48px] items-center group hover:bg-b-secondary/50 pr-10"
         :class="isSelectedInEditor ? 'bg-b-secondary/50' : ''"
         @click="onClick"
     >
