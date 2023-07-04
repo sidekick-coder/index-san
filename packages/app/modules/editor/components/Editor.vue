@@ -51,6 +51,7 @@ onMounted(load)
 
 editor.on('update', onUpdateNodes)
 editor.on('move', onUpdateNodes)
+editor.on('destroy', onUpdateNodes)
 
 // mode
 const tm = useI18n()
@@ -102,11 +103,10 @@ whenever(keys.Alt_m, () => {
 
                     <div class="h-full w-6/12 border-l border-b-secondary/25">
                         <BlockEditor />
-                        <!-- <NodeEditor v-model="nodes" @change="onChangeNodes" /> -->
                     </div>
                 </div>
 
-                <!-- <NodeEditor v-else-if="mode === 'block'" v-model="nodes" @change="onChangeNodes" /> -->
+                <BlockEditor v-else-if="mode === 'block'" />
 
                 <MDCEditor v-else v-model="text" @keydown.ctrl.s="updateText(text)" />
             </transition>

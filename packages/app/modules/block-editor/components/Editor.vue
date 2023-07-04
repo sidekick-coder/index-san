@@ -19,20 +19,44 @@ const nodesReady = computed(() => {
 function onNodeUpdate(node: MarkdownNode) {
     editor.update(node)
 }
+
+// error
+const error = ref()
+
+onErrorCaptured((err) => {
+    error.value = err
+
+    return false
+})
 </script>
 <template>
     <div ref="root" class="h-full">
         <Toolbar />
 
         <div
-            class="h-[calc(100%-48px)] w-full overflow-auto flex flex-wrap items-start overflow-auto"
+            class="max-h-[calc(100%-48px)] w-full overflow-auto flex flex-wrap items-start overflow-auto pb-80"
         >
+            <div v-if="error" class="h-full w-full flex items-center justify-center">
+                <div class="text-center">
+                    <div class="text-6xl text-danger mb-4">
+                        <v-icon name="mdi:alert-circle-outline" class="mx-auto" />
+                    </div>
+                    <div class="text-2xl font-bold">
+                        {{ $t('errors.errorRenderingBlocks') }}
+                    </div>
+                    <div class="text-1xl text-danger">
+                        {{ error.message }}
+                    </div>
+                </div>
+            </div>
+
             <transition-group
+                v-else
                 move-class="transition duration-200"
                 enter-active-class="transition duration-200"
-                leave-active-class="transition duration-200 absolute"
+                leave-active-class="transition duration-200"
                 enter-from-class="opacity-0"
-                leave-to-class="opacity-0 translate-x-[-50%]"
+                leave-to-class="opacity-0"
             >
                 <template v-for="n in nodesReady" :key="n.meta.id">
                     <BlockParagraph

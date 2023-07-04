@@ -53,6 +53,26 @@ export function create() {
         return node
     }
 
+    function destroy(node: MarkdownNode) {
+        const index = nodes.value.findIndex((n) => n.meta.id === node.meta.id)
+
+        if (index === -1) return
+
+        nodes.value.splice(index, 1)
+
+        emit('destroy', { node })
+    }
+
+    function destroySelected() {
+        const ids = selected.value.map((n) => n.meta.id)
+
+        const newNodes = nodes.value.filter((n) => !ids.includes(n.meta.id))
+
+        nodes.value = new MarkdownNodeArray(...newNodes)
+
+        emit('destroy', { nodes: selected.value })
+    }
+
     function createAll(payload: MarkdownNode[]) {
         payload.forEach((node) => {
             node.meta.id = uniqueId('node-')
@@ -166,6 +186,8 @@ export function create() {
         create,
         createAll,
         update,
+        destroy,
+        destroySelected,
 
         on,
         emit,

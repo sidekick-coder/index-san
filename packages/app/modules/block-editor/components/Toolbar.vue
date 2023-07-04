@@ -36,7 +36,7 @@ function moveDown() {
 // crud
 
 function deleteNodes() {
-    // editor.deleteNodes()
+    editor.destroySelected()
 }
 </script>
 <template>
