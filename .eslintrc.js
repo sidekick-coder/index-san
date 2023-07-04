@@ -43,6 +43,7 @@ module.exports = {
         'no-console': ['warn', { allow: ['warn', 'error', 'debug'] }],
         'no-debugger': 'warn',
         'semi': ['error', 'never'],
+        'no-useless-escape': 'off',
         'prettier/prettier': [
             'error',
             {
@@ -68,6 +69,8 @@ module.exports = {
         'vue/no-setup-props-destructure': 'off',
         'vue/one-component-per-file': 'off',
         'vue/no-v-html': 'off',
+        'vue/no-v-text-v-html-on-component': 'off',
         'no-undef': 'off',
+        'no-self-assign': 'off',
     },
 }

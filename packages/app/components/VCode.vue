@@ -34,7 +34,7 @@ function setHTML() {
 watch(props, setHTML, { deep: true, immediate: true })
 </script>
 <template>
-    <pre>
+    <pre class="flex">
         <code :class="`language-${language}`" v-html="content" />
     </pre>
 </template>

@@ -48,6 +48,13 @@ const defaultItems: Menu[] = [
         id: 'options',
         icon: 'fa:cog',
     },
+    {
+        label: tm.t('cheatSheet', 2),
+        to: '/cheat-sheet',
+        children: [],
+        id: 'cheat-sheet',
+        icon: 'fa-brands:markdown',
+    },
 ]
 
 // title

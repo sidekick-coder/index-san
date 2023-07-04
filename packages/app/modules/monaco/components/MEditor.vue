@@ -3,8 +3,14 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'
 import { createMonaco, loadLibs, MonacoLibs } from '../services/monaco'
 
-// Props & Emits
+import { editor as monacoEditor } from 'monaco-editor'
 
+// Props & Emits
+interface LeftLineOptions {
+    show: 'on' | 'off' | 'relative' | 'interval'
+    decorationsWidth?: number | string
+    numbersMinChars?: number
+}
 const props = defineProps({
     modelValue: {
         type: String,
@@ -22,13 +28,41 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    glyphMargin: {
+        type: Boolean,
+        default: false,
+    },
+    folding: {
+        type: Boolean,
+        default: false,
+    },
     padding: {
-        type: Object,
+        type: Object as () => monacoEditor.IEditorOptions['padding'],
         default: undefined,
     },
-    lineNumbers: {
-        type: String,
-        default: 'on',
+    renderLineHighlight: {
+        type: String as () => monacoEditor.IEditorOptions['renderLineHighlight'],
+        default: undefined,
+    },
+    trimAutoWhitespace: {
+        type: Boolean,
+        default: false,
+    },
+    scrollbar: {
+        type: Object as () => monacoEditor.IEditorScrollbarOptions,
+        default: () => ({
+            verticalScrollbarSize: 10,
+            horizontalScrollbarSize: 10,
+            useShadows: false,
+            horizontal: 'visible',
+            vertical: 'visible',
+        }),
+    },
+    lineOptions: {
+        type: Object as () => LeftLineOptions,
+        default: () => ({
+            show: 'on',
+        }),
     },
     libs: {
         type: Array as () => MonacoLibs[],
@@ -66,15 +100,15 @@ onMounted(() => {
         minimap: { enabled: props.minimap },
         padding: props.padding,
         overviewRulerBorder: false,
-        lineNumbers: props.lineNumbers as any,
+        lineNumbers: props.lineOptions.show,
+        lineDecorationsWidth: props.lineOptions.decorationsWidth,
+        lineNumbersMinChars: props.lineOptions.numbersMinChars,
+        glyphMargin: props.glyphMargin,
+        folding: props.folding,
         wordWrap: 'on',
-        scrollbar: {
-            verticalScrollbarSize: 10,
-            horizontalScrollbarSize: 10,
-            useShadows: false,
-            horizontal: 'visible',
-            vertical: 'visible',
-        },
+        scrollbar: props.scrollbar,
+        renderLineHighlight: props.renderLineHighlight,
+        trimAutoWhitespace: props.trimAutoWhitespace,
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))

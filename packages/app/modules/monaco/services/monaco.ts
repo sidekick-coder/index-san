@@ -2,10 +2,11 @@ import '../services/worker'
 
 import * as monaco from 'monaco-editor'
 
-import defaultTheme from '../themes/default.json'
+import mainTheme from '../themes/main'
+import { RegisterThemeOptions } from '../composable/define-theme'
 
 // define theme
-monaco.editor.defineTheme('app-theme', defaultTheme as any)
+monaco.editor.defineTheme(mainTheme.name, mainTheme)
 
 // setting interfaces
 monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
@@ -23,14 +24,18 @@ monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
     diagnosticCodesToIgnore: [1375, 1378, 1431, 1432, 7044],
 })
 
+export function registerTheme(options: RegisterThemeOptions) {
+    monaco.editor.defineTheme(options.name, options)
+}
+
 // create editor
 export function createMonaco(
     el: HTMLElement,
     options: monaco.editor.IStandaloneEditorConstructionOptions
 ) {
     return monaco.editor.create(el!, {
+        theme: 'main',
         ...options,
-        theme: 'app-theme',
         automaticLayout: true,
     })
 }

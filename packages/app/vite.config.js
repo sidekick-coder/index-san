@@ -6,6 +6,7 @@ const { defineConfig } = require('vite')
 const vue = require('@vitejs/plugin-vue')
 const Components = require('unplugin-vue-components/vite')
 const AutoImport = require('unplugin-auto-import/vite')
+const DefineProp = require('@vue-macros/define-prop/vite')
 
 const root = path.resolve(__dirname, '..', '..')
 
@@ -28,7 +29,12 @@ module.exports = defineConfig({
         },
     },
     plugins: [
-        vue(),
+        vue({
+            script: {
+                defineModel: true,
+            },
+        }),
+        DefineProp(),
         AutoImport({
             dts: path.resolve(__dirname, 'auto-import.d.ts'),
             imports: ['vue'],

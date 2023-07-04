@@ -36,6 +36,10 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    delay: {
+        type: Number,
+        default: 0,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -68,11 +72,30 @@ function toggle() {
 }
 
 // track mouse position
+const activatorRef = ref<HTMLElement | null>(null)
 
 const mouse = ref({
     x: 0,
     y: 0,
 })
+
+function onRef(elOrComponent: null | HTMLElement | ComponentPublicInstance) {
+    if (activatorRef.value) {
+        return
+    }
+
+    if (!elOrComponent) {
+        activatorRef.value = null
+        return
+    }
+
+    if (elOrComponent instanceof HTMLElement) {
+        activatorRef.value = elOrComponent
+        return
+    }
+
+    activatorRef.value = elOrComponent.$el
+}
 
 const onMouseover = debounce((event: MouseEvent) => {
     const el = event.target as HTMLElement
@@ -82,11 +105,21 @@ const onMouseover = debounce((event: MouseEvent) => {
         return
     }
 
-    mouse.value.y = event.clientY + 20
-    mouse.value.x = event.clientX
+    let x = event.clientX
+    let y = event.clientY
+
+    const [rects] = activatorRef.value?.getClientRects() ?? []
+
+    if (rects) {
+        x = rects.x
+        y = rects.y + rects.height
+    }
+
+    mouse.value.y = y
+    mouse.value.x = x
 
     show.value = true
-}, 500)
+}, props.delay)
 
 function onMouseleave() {
     show.value = false
@@ -107,18 +140,25 @@ const style = computed(() => {
 </script>
 
 <template>
-    <slot name="activator" :attrs="{ onMouseover, onMouseleave }" :toggle="toggle" />
+    <slot name="activator" :attrs="{ ref: onRef, onMouseover, onMouseleave }" :toggle="toggle" />
 
     <teleport to="body">
-        <div
-            v-show="show"
-            :style="style"
-            class="v-tooltip z-20 fixed transition-all overflow-auto max-h-screen"
-            v-bind="$attrs"
+        <transition
+            enter-active-class="transition duration-200"
+            leave-active-class="transition duration-200"
+            enter-from-class="opacity-0 translate-y-2"
+            leave-to-class="opacity-0 translate-y-2"
         >
-            <v-card :color="color" class="text-xs p-2">
-                <slot />
-            </v-card>
-        </div>
+            <div
+                v-show="show"
+                :style="style"
+                class="v-tooltip z-20 fixed transition-all overflow-auto max-h-screen"
+                v-bind="$attrs"
+            >
+                <v-card :color="color" class="text-xs px-3 py-2 rounded">
+                    <slot />
+                </v-card>
+            </div>
+        </transition>
     </teleport>
 </template>

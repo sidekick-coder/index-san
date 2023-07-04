@@ -23,6 +23,7 @@ module.exports = {
 
             'b-primary': 'rgb(var(--b-primary))',
             'b-secondary': 'rgb(var(--b-secondary))',
+            'b-03': 'rgb(var(--b-03))',
 
             't-primary': 'rgb(var(--t-primary))',
             't-secondary': 'rgb(var(--t-secondary))',
@@ -42,6 +43,9 @@ module.exports = {
         },
         data: {
             disabled: 'ui~="disabled"',
+        },
+        fontFamily: {
+            roboto: ['Roboto', 'sans-serif'],
         },
     },
     plugins: [],

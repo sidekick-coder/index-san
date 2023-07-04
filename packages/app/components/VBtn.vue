@@ -62,7 +62,9 @@ function setColorOptions() {
             'danger': 'hover:border-danger/5 hover:bg-danger/5 hover:text-danger',
             'warn': 'hover:border-warn/5 hover:bg-warn/5 hover:text-warn',
             'info': 'hover:border-info/5 hover:bg-info/5 hover:text-info',
-            'b-primary': 'hover:border-b-primary/5 hover:bg-b-primary/5 hover:text-t-primary',
+            'b-primary':
+                'hover:border-b-primary/5 text-t-secondary hover:bg-b-primary/5 hover:text-t-primary',
+            'b-secondary': 'hover:border-b-secondary/5 hover:bg-b-secondary/5 hover:text-t-primary',
 
             '_shared': 'border border-transparent',
             '_empty': (v) => {
@@ -147,7 +149,7 @@ const styles = computed(() => colorVariation.styles)
             <v-icon name="spinner" class="animate-spin" />
         </div>
 
-        <div :class="[loading ? 'opacity-0' : '']">
+        <div :class="[loading ? 'opacity-0' : '']" class="flex">
             <slot />
         </div>
     </component>

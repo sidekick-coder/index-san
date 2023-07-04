@@ -25,6 +25,8 @@ export const useStore = defineStore('menu', () => {
     }
 
     async function save() {
+        if (!workspace.currentId) return
+
         await useCase('update-menu', {
             workspaceId: workspace.currentId!,
             data: menu.value,

@@ -12,6 +12,8 @@ interface Message {
     timeout?: number
 }
 
+export const useNotify = () => useStore()
+
 export const useStore = defineStore('notify', () => {
     const messages = ref<Message[]>([])
 
@@ -37,10 +39,18 @@ export const useStore = defineStore('notify', () => {
         })
     }
 
+    function warn(content: string) {
+        notify({
+            content,
+            color: 'warn',
+        })
+    }
+
     return {
         messages,
 
         notify,
         error,
+        warn,
     }
 })

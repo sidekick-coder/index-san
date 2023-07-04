@@ -24,6 +24,8 @@ window.clientConfig = {
 export async function createApp(config: ClientAppConfig) {
     const app = baseCreateApp(App)
 
+    app.config.compilerOptions.whitespace = 'preserve'
+
     window.clientConfig = config
 
     const plugins = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
