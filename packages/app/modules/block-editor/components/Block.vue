@@ -86,7 +86,7 @@ const icon = defineProp<string>('icon', {
 
         <div
             class="flex-1 overflow-auto"
-            :class="isControlPressed ? 'pointer-events-none opacity-75' : ''"
+            :class="isControlPressed ? 'pointer-events-none' : ''"
             :inert="isControlPressed"
         >
             <slot />

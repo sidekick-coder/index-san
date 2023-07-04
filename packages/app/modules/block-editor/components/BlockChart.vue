@@ -9,6 +9,7 @@ import ToolbarBtn from './ToolbarBtn.vue'
 import Block from './Block.vue'
 import ToolbarAlignment from './ToolbarAlignment.vue'
 import { useCss } from '@composables/css'
+import { resolvers } from '@modules/block-editor/composables/resolvers'
 
 const MonacoEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
 
@@ -24,6 +25,8 @@ const chartLoading = ref(true)
 
 const evaluation = useEvaluation()
 const evaluationOutput = ref<string[]>([])
+
+evaluation.addResolver(...resolvers)
 
 evaluation.addResolver(
     defineResolver({
@@ -58,8 +61,10 @@ async function setChart() {
 
     await runtime.onDone()
 
+    console.log(chartOptions)
+
     if (runtime.evaluation.stderr) {
-        mode.value = 'debug'
+        config.value.mode = 'debug'
     }
 
     setTimeout(() => (chartLoading.value = false), 300)
@@ -80,6 +85,7 @@ async function update() {
     node.name = 'chart'
     node.body = code.value
     node.attrs = config.value
+    node.meta = model.value.meta
 
     let attrsAsString = Object.entries(node.attrs)
         .map(([key, value]) => `${key}="${value}"`)
@@ -94,8 +100,6 @@ async function update() {
     node.tokens = parser.toTokens(markdown, {
         includeEndOfFileToken: false,
     })
-
-    node.meta = model.value.meta
 
     model.value = node
 }
@@ -117,9 +121,6 @@ watch(
     }
 )
 
-// modes
-const mode = ref<'chart' | 'debug' | 'dataset'>('chart')
-
 // attrs
 
 const css = useCss()
@@ -127,8 +128,9 @@ const loadingAttrs = ref(false)
 
 const config = ref({
     height: '500',
-    width: '500',
+    width: '100%',
     align: 'left',
+    mode: 'chart' as 'chart' | 'debug' | 'dataset',
 })
 
 const style = computed(() => {
@@ -147,9 +149,10 @@ watch(
 
         const { attrs } = model.value
 
-        config.value.height = attrs.height || '500'
-        config.value.width = attrs.width || '500'
-        config.value.align = attrs.align || 'left'
+        config.value.height = attrs.height || config.value.height
+        config.value.width = attrs.width || config.value.width
+        config.value.align = attrs.align || config.value.align
+        config.value.mode = (attrs.mode as any) || config.value.mode
 
         loadingAttrs.value = false
     },
@@ -185,9 +188,9 @@ watch(
                 <template #activator="{ attrs }">
                     <ToolbarBtn
                         v-bind="attrs"
-                        :active="mode === 'chart'"
+                        :active="config.mode === 'chart'"
                         data-test-id="toolbar-chart-btn"
-                        @click="mode = 'chart'"
+                        @click="config.mode = 'chart'"
                     >
                         <v-icon name="chart-pie" />
                     </ToolbarBtn>
@@ -208,9 +211,9 @@ watch(
                 <template #activator="{ attrs }">
                     <ToolbarBtn
                         v-bind="attrs"
-                        :active="mode === 'debug'"
+                        :active="config.mode === 'debug'"
                         data-test-id="toolbar-debug-btn"
-                        @click="mode = 'debug'"
+                        @click="config.mode = 'debug'"
                     >
                         <v-icon name="bug" />
                     </ToolbarBtn>
@@ -222,9 +225,9 @@ watch(
                 <template #activator="{ attrs }">
                     <ToolbarBtn
                         v-bind="attrs"
-                        :active="mode === 'dataset'"
+                        :active="config.mode === 'dataset'"
                         data-test-id="toolbar-dataset-btn"
-                        @click="mode = 'dataset'"
+                        @click="config.mode = 'dataset'"
                     >
                         <v-icon name="mdi:code-json" />
                     </ToolbarBtn>
@@ -266,10 +269,10 @@ watch(
             <v-icon name="chart-pie" class="text-[10rem] text-t-secondary" />
         </div>
 
-        <v-chart v-else-if="mode === 'chart'" :style="style" :options="chartOptions" />
+        <v-chart v-else-if="config.mode === 'chart'" :style="style" :options="chartOptions" />
 
-        <template v-else-if="mode === 'debug'">
-            <div :style="style" class="bg-b-03 p-4">
+        <template v-else-if="config.mode === 'debug'">
+            <div :style="{ height: style.height }" class="bg-b-03 p-4 w-full">
                 <ANSICard :model-value="evaluationOutput" data-test-id="debug-view" />
 
                 <div
@@ -288,12 +291,13 @@ watch(
         </template>
 
         <MonacoEditor
-            v-else-if="mode === 'dataset'"
+            v-else-if="config.mode === 'dataset'"
             data-test-id="dataset-view"
             :model-value="inspect(chartOptions)"
             language="json"
             folding
             readonly
+            :style="{ height: style.height }"
             :padding="{
                 top: 8,
                 bottom: 8,
