@@ -44,13 +44,32 @@ export function create() {
         selected.value = []
     }
 
-    function create(node: MarkdownNode) {
+    function add(node: MarkdownNode, silent = false) {
         node.meta.id = uniqueId('node-')
         node.meta.toolbarId = `${id}-toolbar-${node.meta.id}`
 
         nodes.value.push(node)
 
+        if (!silent) {
+            emit('add', { node })
+        }
+
         return node
+    }
+
+    function addAll(payload: MarkdownNode[], silent = false) {
+        payload.forEach((node) => {
+            node.meta.id = uniqueId('node-')
+            node.meta.toolbarId = `${id}-toolbar-${node.meta.id}`
+        })
+
+        nodes.value.push(...payload)
+
+        if (!silent) {
+            emit('add', { nodes: payload })
+        }
+
+        return payload
     }
 
     function destroy(node: MarkdownNode) {
@@ -71,17 +90,6 @@ export function create() {
         nodes.value = new MarkdownNodeArray(...newNodes)
 
         emit('destroy', { nodes: selected.value })
-    }
-
-    function createAll(payload: MarkdownNode[]) {
-        payload.forEach((node) => {
-            node.meta.id = uniqueId('node-')
-            node.meta.toolbarId = `${id}-toolbar-${node.meta.id}`
-        })
-
-        nodes.value.push(...payload)
-
-        return payload
     }
 
     function update(node: MarkdownNode) {
@@ -183,8 +191,8 @@ export function create() {
         unselect,
         unselectAll,
 
-        create,
-        createAll,
+        add,
+        addAll,
         update,
         destroy,
         destroySelected,

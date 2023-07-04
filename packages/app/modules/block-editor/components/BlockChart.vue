@@ -61,8 +61,6 @@ async function setChart() {
 
     await runtime.onDone()
 
-    console.log(chartOptions)
-
     if (runtime.evaluation.stderr) {
         config.value.mode = 'debug'
     }

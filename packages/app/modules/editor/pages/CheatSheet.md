@@ -1,20 +1,3 @@
-## Setup code
-
-Time {{ time }}
-
-:: setup { lazy="true" }
-import { ref } from 'vue'
-import moment from "npm:moment"
-
-const time = ref(moment().format('YYYY-MM-DD HH:mm:ss'))
-
-function setTime(){
-    time.value = moment().format('YYYY-MM-DD HH:mm:ss')
-}
-
-setInterval(setTime, 1000)
-::
-
 # Heading 1
 
 ## Heading 2
@@ -65,20 +48,6 @@ for await (const i of [...Array(5).keys()]) {
 }
 ::
  
-## Buttons
-
-:: button
-    Default
-::
-
-:: button { color="warn" }
-    Warning
-::
-
-:: button { color="danger" }
-    Danger
-::
- 
 ## Charts
 
 :: chart
@@ -114,6 +83,7 @@ chart.data = {
 
 :: chart {
     align="center"
+    width="300"
 }
 import { useChart } from 'app:chart'
 

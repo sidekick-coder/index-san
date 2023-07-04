@@ -8,6 +8,7 @@ export default {
 import { TransitionProps } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useDefinedRef } from '@composables/utils'
+import delay from 'lodash/delay'
 
 // Props & Emits
 const props = defineProps({
@@ -23,8 +24,12 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    maxHeight: {
-        type: String,
+    width: {
+        type: Number,
+        default: null,
+    },
+    height: {
+        type: Number,
         default: null,
     },
     closeOnContentClick: {
@@ -54,8 +59,6 @@ const props = defineProps({
     },
 })
 
-// Show
-
 // Position
 
 const activatorRef = ref(null as null | HTMLElement)
@@ -65,6 +68,26 @@ const show = useDefinedRef(model, ref(false))
 const position = ref({
     x: 0,
     y: 0,
+})
+
+const maxPosition = ref({
+    x: window.innerWidth,
+    y: window.innerHeight,
+})
+
+const style = computed(() => {
+    let x = props.x ?? position.value.x
+    let y = props.y ?? position.value.y
+
+    x = Math.min(x, maxPosition.value.x)
+    y = Math.min(y, maxPosition.value.y)
+
+    const result = {
+        top: `${y}px`,
+        left: `${x}px`,
+    }
+
+    return result
 })
 
 function onActivatorRef(el: HTMLElement | ComponentPublicInstance | null) {
@@ -83,10 +106,36 @@ function onActivatorRef(el: HTMLElement | ComponentPublicInstance | null) {
     }
 }
 
+function setMaxPosition() {
+    const rects = contentRef.value?.getBoundingClientRect()
+
+    if (!rects) return
+
+    if (!rects.width || !rects.height) return
+
+    if (!props.width) {
+        maxPosition.value.x = window.innerWidth - rects.width
+        return
+    }
+
+    if (!props.height) {
+        maxPosition.value.y = window.innerHeight - rects.height
+        return
+    }
+}
+
 function toggle() {
     if (show.value) {
         show.value = false
         return
+    }
+
+    if (props.width) {
+        maxPosition.value.x = window.innerWidth - props.width
+    }
+
+    if (props.height) {
+        maxPosition.value.y = window.innerHeight - props.height
     }
 
     const rects = activatorRef.value?.getBoundingClientRect()
@@ -116,11 +165,15 @@ function onClick() {
     }
 }
 
+function onContentClick() {
+    if (!props.closeOnContentClick) return
+
+    show.value = false
+}
+
 onClickOutside(
     contentRef,
     () => {
-        if (!props.closeOnContentClick) return
-
         show.value = false
     },
     {
@@ -128,19 +181,7 @@ onClickOutside(
     }
 )
 
-// style
-const style = computed(() => {
-    const result = {
-        top: `${position.value.y}px`,
-        left: `${position.value.x}px`,
-    }
-
-    if (props.maxHeight) {
-        result['max-height'] = `${props.maxHeight}px`
-    }
-
-    return result
-})
+watch(show, () => delay(setMaxPosition, 100))
 </script>
 
 <template>
@@ -154,6 +195,7 @@ const style = computed(() => {
                 :style="style"
                 class="v-menu z-20 fixed transition-all overflow-auto max-h-screen"
                 v-bind="$attrs"
+                @click="onContentClick"
             >
                 <slot />
             </div>

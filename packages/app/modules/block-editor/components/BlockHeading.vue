@@ -21,7 +21,13 @@ const selected = ref(false)
 const parser = new MarkdownParser()
 
 function load() {
-    html.value = model.value.toHtml().replaceAll(' ', '&nbsp;')
+    let text = model.value.toText().replaceAll('#', '').replaceAll('\n', '')
+
+    if (text.endsWith(' ')) {
+        text = text.slice(0, -1) + '&nbsp;'
+    }
+
+    html.value = text
 }
 
 function update(level?: number) {
@@ -29,7 +35,7 @@ function update(level?: number) {
 
     let markdown = convertHtmlToMarkdown(html.value)
 
-    markdown = markdown.replace(/^<h\d>(.*)<\/h\d>$/, '$1')
+    markdown = markdown.replace(/^<h\d>(.*)<\/h\d>$/, '$1').trim()
 
     markdown = '#'.repeat(headingLevel) + ' ' + markdown
 
@@ -43,6 +49,7 @@ function update(level?: number) {
         includeEndOfFileToken: false,
     })
 
+    node.tokens.unshift(Token.breakLine())
     node.tokens.push(Token.breakLine())
 
     model.value = node
@@ -81,13 +88,15 @@ watch(selected, (value) => {
             </ToolbarBtn>
         </template>
 
-        <HTMLContentEditable
-            ref="contentEditableRef"
-            v-model="html"
-            @blur="update"
-            @keydown.enter.prevent="update"
-            @keydown.ctrl.s="update"
-        />
+        <component :is="`h${model.level}`">
+            <HTMLContentEditable
+                ref="contentEditableRef"
+                v-model="html"
+                @blur="update()"
+                @keydown.enter.prevent="update()"
+                @keydown.ctrl.s="update()"
+            />
+        </component>
     </block>
 </template>
 

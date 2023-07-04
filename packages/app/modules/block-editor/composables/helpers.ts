@@ -53,7 +53,7 @@ export function createNodeParagraphFromHtml(payload: string) {
 
     const text = convertHtmlToMarkdown(payload)
 
-    node.body = text.trim()
+    node.body = text.trim() + '\n'
 
     node.tokens = parser.toTokens(text, {
         includeEndOfFileToken: false,

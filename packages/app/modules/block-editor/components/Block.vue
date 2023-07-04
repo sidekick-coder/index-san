@@ -15,6 +15,11 @@ const root = ref<HTMLElement | null>(null)
 
 const { focused } = useFocusWithin(root)
 const isControlPressed = useKeyModifier('Control')
+const isShiftPressed = useKeyModifier('Shift')
+
+const isMultiSelectMode = computed(() => {
+    return isControlPressed.value && isShiftPressed.value
+})
 
 const editor = useEditor()
 
@@ -37,8 +42,8 @@ const isSelectedInEditor = computed({
 
 syncRef(selected, isSelectedInEditor)
 
-function onClick(e: MouseEvent) {
-    if (e.ctrlKey) {
+function onClick() {
+    if (isMultiSelectMode.value) {
         editor.select(node.value)
 
         return
@@ -48,7 +53,7 @@ function onClick(e: MouseEvent) {
 }
 
 watch(focused, (value) => {
-    if (value && !isControlPressed.value) {
+    if (value && !isMultiSelectMode.value) {
         isSelectedInEditor.value = true
     }
 })
@@ -78,6 +83,7 @@ const icon = defineProp<string>('icon', {
                     size="none"
                     color="b-primary"
                     class="h-12 text-sm opacity-0 group-hover:opacity-100"
+                    :class="isSelectedInEditor ? 'opacity-100' : ''"
                 >
                     <v-icon data-test-id="icon" :name="icon" />
                 </v-btn>
@@ -86,8 +92,8 @@ const icon = defineProp<string>('icon', {
 
         <div
             class="flex-1 overflow-auto"
-            :class="isControlPressed ? 'pointer-events-none' : ''"
-            :inert="isControlPressed"
+            :class="isMultiSelectMode ? 'pointer-events-none' : ''"
+            :inert="isMultiSelectMode"
         >
             <slot />
         </div>

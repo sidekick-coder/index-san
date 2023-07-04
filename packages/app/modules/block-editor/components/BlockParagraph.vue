@@ -27,6 +27,14 @@ const isEmpty = computed(() => {
     )
 })
 
+const showPlaceholder = computed(() => {
+    if (!selected.value) return false
+
+    if (isEmpty.value) return true
+
+    return html.value === '&nbsp;'
+})
+
 function load() {
     let text = convertMarkdownToHtml(model.value.children.map((c) => c.toText()).join(''))
 
@@ -64,10 +72,22 @@ watch(selected, (value) => {
 })
 </script>
 <template>
-    <block v-model="model" v-model:selected="selected" :class="isEmpty ? 'hidden' : ''">
+    <block
+        v-model="model"
+        v-model:selected="selected"
+        :class="isEmpty ? 'hidden' : ''"
+        class="relative"
+    >
         <template #toolbar>
             <ToolbarTextFormat @change="onToolbarTextFormat" />
         </template>
+
+        <div
+            v-if="showPlaceholder"
+            class="text-t-secondary absolute top-0 h-full flex items-center pointer-events-none pl-2"
+        >
+            {{ $t('blockParagraphPlaceholder') }}
+        </div>
 
         <HTMLContentEditable
             ref="contentEditableRef"

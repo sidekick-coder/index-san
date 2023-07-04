@@ -2,7 +2,10 @@
 import { useEditor } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'
 
+import delay from 'lodash/delay'
+
 import ToolbarBtn from './ToolbarBtn.vue'
+import NewBlockMenu from './NewBlockMenu.vue'
 
 const editor = useEditor()
 
@@ -34,6 +37,12 @@ function moveDown() {
 }
 
 // crud
+
+function onNewNode(node: MarkdownNode) {
+    editor.add(node)
+
+    delay(() => editor.select(node, true), 100)
+}
 
 function deleteNodes() {
     editor.destroySelected()
@@ -83,8 +92,12 @@ function deleteNodes() {
             <v-icon name="trash" />
         </toolbar-btn>
 
-        <toolbar-btn size="sm" color="text-t-secondary hover:text-t-primary">
-            <v-icon name="plus" />
-        </toolbar-btn>
+        <new-block-menu @select="onNewNode">
+            <template #activator="{ attrs }">
+                <toolbar-btn v-bind="attrs" size="sm" color="text-t-secondary hover:text-t-primary">
+                    <v-icon name="plus" />
+                </toolbar-btn>
+            </template>
+        </new-block-menu>
     </div>
 </template>

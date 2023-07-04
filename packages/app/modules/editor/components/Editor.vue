@@ -24,7 +24,7 @@ const editor = provideEditor()
 function load() {
     const nodes = parser.toNodes(model.value.replace(/\r\n/g, '\n'))
 
-    editor.createAll(nodes)
+    editor.addAll(nodes, true)
 
     text.value = model.value
 }
@@ -38,7 +38,7 @@ function updateText(value: string) {
 
     const nodes = parser.toNodes(value.replace(/\r\n/g, '\n'))
 
-    editor.createAll(nodes)
+    editor.addAll(nodes, true)
 }
 
 function onUpdateNodes() {
@@ -49,6 +49,7 @@ function onUpdateNodes() {
 
 onMounted(load)
 
+editor.on('add', onUpdateNodes)
 editor.on('update', onUpdateNodes)
 editor.on('move', onUpdateNodes)
 editor.on('destroy', onUpdateNodes)
