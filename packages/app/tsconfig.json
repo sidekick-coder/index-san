@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
+    "target": "ESNext",
+    "module": "ESNext",
     "jsx": "preserve",
+    "lib": ["esnext", "dom", "dom.iterable"],
     "esModuleInterop": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "Node16",
     "resolveJsonModule": true,
     "allowJs": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": false,
     "outDir": "dist",
     "baseUrl": ".",
+    "types": ["vite/client"],
     "paths": {
       "@root/*": ["../../*"],
       "@core/*": ["../core/*"],
@@ -21,6 +24,5 @@
       "@modules/*": ["./modules/*"],
       "@store/*": ["./store/*"]
     }
-  },
-  "exclude": ["out", "dist", "scripts"],
+  }
 }

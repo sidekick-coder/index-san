@@ -20,6 +20,7 @@ export function mount(columns: Column[], name = 'ItemPayload') {
         createdAt: 'string',
         link: 'string',
         updatedAt: 'string',
+        checkbox: 'boolean',
     }
 
     columns.forEach((c) => {

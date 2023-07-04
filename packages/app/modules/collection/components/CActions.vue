@@ -12,8 +12,8 @@ import CActionsOrder from './CActionsOrder.vue'
 import CActionsFilters from './CActionsFilters.vue'
 import { useItemStore } from '@modules/item/store'
 
-const CActionsGallery = defineAsyncComponent(() => import('./CActionsGallery.vue'))
-const CActionsTable = defineAsyncComponent(() => import('./CActionsTable.vue'))
+const CActionsGallery = defineAsyncComponent(() => import('./CActionsGallery.vue') as any)
+const CActionsTable = defineAsyncComponent(() => import('./CActionsTable.vue') as any)
 
 // Props & emit
 const props = defineProps({

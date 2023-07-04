@@ -1,20 +1,11 @@
-<script lang="ts">
-export default { name: 'IsChartBar' }
-</script>
-
 <script setup lang="ts">
 import set from 'lodash/set'
 import get from 'lodash/get'
 
 import { isJSON } from '@composables/utils'
 
-import { Chart, registerables } from 'chart.js'
-import { onMounted, onUnmounted, ref, useSlots } from 'vue'
-import annotationPlugin from 'chartjs-plugin-annotation'
-
-Chart.register(...registerables)
-
-Chart.register(annotationPlugin)
+// import { Chart, registerables } from 'chart.js'
+// import annotationPlugin from 'chartjs-plugin-annotation'
 
 const props = defineProps({
     options: {
@@ -49,7 +40,7 @@ if (options) {
 }
 
 // set options using props
-let chart: Chart
+let chart: any
 
 if (props.options) {
     options = { ...props.options }
@@ -74,9 +65,14 @@ onMounted(() => {
 // set chart
 const root = ref()
 
-onMounted(() => {
+onMounted(async () => {
+    const annotationPlugin = await import('chartjs-plugin-annotation')
+    const { Chart: ChartJS } = await import('chart.js/auto')
+
+    ChartJS.register(annotationPlugin)
+
     if (options && root.value) {
-        chart = new Chart(root.value, options)
+        chart = new ChartJS(root.value, options)
     }
 })
 

@@ -4,25 +4,15 @@ import type { VueWrapper, MountingOptions } from '@vue/test-utils'
 
 import VCard from './VCard.vue'
 import VIcon from './VIcon.vue'
+import { useMountWrapper } from '__tests__/fixtures/component'
 
 describe('VCard.vue', () => {
-    let wrapper: VueWrapper<InstanceType<typeof VCard>>
+    const component = useMountWrapper(VCard)
 
-    function createComponent(options?: MountingOptions<InstanceType<typeof VCard>['$props']>) {
-        wrapper = mount(VCard, {
-            ...options,
-            global: {
-                components: {
-                    VIcon,
-                },
-            },
-        })
-    }
-
-    beforeEach(() => wrapper?.unmount())
+    beforeEach(component.unmount)
 
     test('should set card width without unit', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 width: 100,
             },
@@ -34,7 +24,7 @@ describe('VCard.vue', () => {
     })
 
     test('should set card width with special unit', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 width: '100em',
             },
@@ -46,7 +36,7 @@ describe('VCard.vue', () => {
     })
 
     test('should set card height without unit', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 height: 100,
             },
@@ -58,7 +48,7 @@ describe('VCard.vue', () => {
     })
 
     test('should set card height with special unit', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 height: '100em',
             },
@@ -70,7 +60,7 @@ describe('VCard.vue', () => {
     })
 
     test('should set card color with app colors', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 color: 'accent',
             },
@@ -82,7 +72,7 @@ describe('VCard.vue', () => {
     })
 
     test('should set card color with css hex color', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 color: '#eee',
             },
@@ -96,7 +86,7 @@ describe('VCard.vue', () => {
     })
 
     test('should render router-link when to prop is defined', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 to: '/test',
             },

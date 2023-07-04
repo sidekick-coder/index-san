@@ -1,4 +1,4 @@
-import Collection from '../../entities/collection'
+import Collection, { RepositoryType } from '../../entities/collection'
 import uuid from 'uuid-random'
 import { Factory } from './base'
 
@@ -10,7 +10,7 @@ const CollectionFactory = new Factory<Collection>((data) => {
             id,
             name: id,
             path: id,
-            crudName: 'memory',
+            repositoryType: RepositoryType.Entry,
             columns: [],
             ...data,
         },

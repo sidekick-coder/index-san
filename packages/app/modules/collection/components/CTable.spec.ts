@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
 import i18n from '@plugins/i18n'
 
-import type { VueWrapper, MountingOptions } from '@vue/test-utils'
+import type { VueWrapper, MountingOptions, ComponentMountingOptions } from '@vue/test-utils'
 
 import ViewTable from '@core/entities/view-table'
 import Collection from '@core/entities/collection'
@@ -34,11 +34,10 @@ describe('CTable.vue', () => {
 
     let workspace: Workspace
 
-    function createComponent(options?: MountingOptions<InstanceType<typeof CTable>['$props']>) {
+    function createComponent(options?: ComponentMountingOptions<typeof CTable>) {
         wrapper = mount(CTable, {
             ...options,
             global: {
-                plugins: [i18n],
                 stubs: {
                     IValue: true,
                     CcColumn: true,

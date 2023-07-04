@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import Menu from '@core/entities/menu'
@@ -11,7 +11,7 @@ import { useToggleDrawer } from '../composables/drawer'
 
 import VDraggable from 'vuedraggable'
 
-const LDrawerItem = defineAsyncComponent(() => import('./LDrawerItem.vue'))
+import LDrawerItem from './LDrawerItem.vue'
 
 const drawer = useToggleDrawer()
 

@@ -1,34 +1,22 @@
-import { test, expect, describe, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
-import type { VueWrapper, MountingOptions } from '@vue/test-utils'
+import { test, expect, describe, afterEach } from 'vitest'
 
 import VBtn from './VBtn.vue'
 import VIcon from './VIcon.vue'
+import { useMountWrapper } from '__tests__/fixtures/component'
 
 describe('VBtn.vue', () => {
-    let wrapper: VueWrapper<InstanceType<typeof VBtn>>
+    const component = useMountWrapper(VBtn)
 
-    function createComponent(options?: MountingOptions<InstanceType<typeof VBtn>['$props']>) {
-        wrapper = mount(VBtn, {
-            ...options,
-            global: {
-                components: {
-                    VIcon,
-                },
-            },
-        })
-    }
-
-    beforeEach(() => wrapper?.unmount())
+    afterEach(component.unmount)
 
     test('should render a <button>', () => {
-        createComponent()
+        const wrapper = component.mount()
 
         expect(wrapper.find('button').exists()).toBe(true)
     })
 
     test('should render a <router-link> when to prop is defined', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 to: '/',
             },
@@ -38,7 +26,7 @@ describe('VBtn.vue', () => {
     })
 
     test('should show a <a> element when href props is defined', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 href: 'https://google.com',
             },
@@ -48,7 +36,7 @@ describe('VBtn.vue', () => {
     })
 
     test('should show loading icon when loading props is defined', () => {
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 loading: true,
             },
@@ -60,7 +48,7 @@ describe('VBtn.vue', () => {
     test.each(['accent', 'info', 'warn', 'danger'])(
         'should render default mode with %s color classes',
         (color) => {
-            createComponent({ props: { color } })
+            const wrapper = component.mount({ props: { color } })
 
             expect(wrapper.classes()).to.include(`bg-${color}`)
             expect(wrapper.classes()).to.include(`hover:bg-${color}/75`)
@@ -68,7 +56,7 @@ describe('VBtn.vue', () => {
     )
 
     test('should render default mode with custom color class', () => {
-        createComponent({ props: { color: 'bg-[#eee]' } })
+        const wrapper = component.mount({ props: { color: 'bg-[#eee]' } })
 
         expect(wrapper.classes()).to.include(`bg-[#eee]`)
     })
@@ -76,7 +64,7 @@ describe('VBtn.vue', () => {
     test.each(['#eee', 'rgb(238, 238, 238)', 'hsl(0, 100%, 50%)'])(
         'should render default mode with custom css color %s',
         (color) => {
-            createComponent({ props: { color } })
+            const wrapper = component.mount({ props: { color } })
 
             expect(wrapper.attributes('style')).toBe(`--color: ${color};`)
             expect(wrapper.classes()).to.include('bg-[var(--color)]')
@@ -86,7 +74,7 @@ describe('VBtn.vue', () => {
     test.each(['accent', 'info', 'warn', 'danger'])(
         'should render text mode with %s color classes',
         (color) => {
-            createComponent({ props: { color, mode: 'text' } })
+            const wrapper = component.mount({ props: { color, mode: 'text' } })
 
             expect(wrapper.classes()).to.include(`hover:border-${color}/5`)
             expect(wrapper.classes()).to.include(`hover:bg-${color}/5`)
@@ -95,7 +83,7 @@ describe('VBtn.vue', () => {
     )
 
     test('should render text mode with custom color class', () => {
-        createComponent({ props: { color: 'text-[#eee]', mode: 'text' } })
+        const wrapper = component.mount({ props: { color: 'text-[#eee]', mode: 'text' } })
 
         expect(wrapper.classes()).to.include(`text-[#eee]`)
     })
@@ -103,7 +91,7 @@ describe('VBtn.vue', () => {
     test.each(['#eee', 'rgb(238, 238, 238)', 'hsl(0, 100%, 50%)'])(
         'should render text mode with custom css color %s',
         (color) => {
-            createComponent({ props: { color, mode: 'text' } })
+            const wrapper = component.mount({ props: { color, mode: 'text' } })
 
             expect(wrapper.attributes('style')).toBe(`--color: ${color};`)
             expect(wrapper.classes()).to.include('hover:border-[var(--color)]')

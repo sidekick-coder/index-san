@@ -8,7 +8,9 @@ import ToolbarBtn from './ToolbarBtn.vue'
 import { useStore } from '@modules/entry/store'
 import { resolvers } from '@modules/block-editor/composables/resolvers'
 
-const MonacoEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
+const MonacoEditor = defineAsyncComponent(
+    () => import('@modules/monaco/components/MEditor.vue') as any
+)
 
 const model = defineModel({
     type: MarkdownNodeComponent,

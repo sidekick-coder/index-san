@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, watch, defineAsyncComponent } from 'vue'
-
 import DirectoryEntry from '@core/entities/directory-entry'
 
 import { useMeta } from '@composables/metas'
@@ -8,12 +6,12 @@ import { useMeta } from '@composables/metas'
 import { useStore } from '../store'
 import { useRouter } from 'vue-router'
 
-const EFolder = defineAsyncComponent(() => import('./EFolder.vue'))
-const EInfo = defineAsyncComponent(() => import('./EInfo.vue'))
-const EMarkdown = defineAsyncComponent(() => import('./EMarkdown.vue'))
-const EImage = defineAsyncComponent(() => import('./EImage.vue'))
-const ECodeEditor = defineAsyncComponent(() => import('./ECodeEditor.vue'))
-const ESimpleEditor = defineAsyncComponent(() => import('./ESimpleEditor.vue'))
+const EFolder = defineAsyncComponent(() => import('./EFolder.vue') as any)
+const EInfo = defineAsyncComponent(() => import('./EInfo.vue') as any)
+const EMarkdown = defineAsyncComponent(() => import('./EMarkdown.vue') as any)
+const EImage = defineAsyncComponent(() => import('./EImage.vue') as any)
+const ECodeEditor = defineAsyncComponent(() => import('./ECodeEditor.vue') as any)
+const ESimpleEditor = defineAsyncComponent(() => import('./ESimpleEditor.vue') as any)
 
 const props = defineProps({
     entryId: {

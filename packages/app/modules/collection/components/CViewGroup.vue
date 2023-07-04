@@ -12,10 +12,10 @@ import { createBindings } from '@composables/binding'
 import { useState } from '@composables/state'
 import { useI18n } from 'vue-i18n'
 
-const CGallery = defineAsyncComponent(() => import('./CGallery.vue'))
-const CTable = defineAsyncComponent(() => import('./CTable.vue'))
-const CActions = defineAsyncComponent(() => import('./CActions.vue'))
-const CActionsViewGroup = defineAsyncComponent(() => import('./CActionsViewGroup.vue'))
+const CGallery = defineAsyncComponent(() => import('./CGallery.vue') as any)
+const CTable = defineAsyncComponent(() => import('./CTable.vue') as any)
+const CActions = defineAsyncComponent(() => import('./CActions.vue') as any)
+const CActionsViewGroup = defineAsyncComponent(() => import('./CActionsViewGroup.vue') as any)
 
 // Props & emit
 

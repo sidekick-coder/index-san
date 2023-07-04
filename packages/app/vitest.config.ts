@@ -1,7 +1,7 @@
-import { mergeConfig } from 'vite'
-import { resolve } from 'path'
-import { defineConfig, configDefaults } from 'vitest/config'
-import viteConfig from './vite.config'
+const { mergeConfig } = require('vite')
+const { resolve } = require('path')
+const { defineConfig, configDefaults } = require('vitest/config')
+const viteConfig = require('./vite.config')
 
 const root = resolve(__dirname, '..', '..')
 

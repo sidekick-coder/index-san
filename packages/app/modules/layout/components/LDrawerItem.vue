@@ -1,8 +1,3 @@
-<script lang="ts">
-export default {
-    inheritAttrs: false,
-}
-</script>
 <script setup lang="ts">
 import Menu from '@core/entities/menu'
 
@@ -11,10 +6,14 @@ import VDraggable from 'vuedraggable'
 import { useState } from '@composables/state'
 import { createBindings } from '@composables/binding'
 
-import { Icon } from '@iconify/vue'
 import { useNonReactive } from '@composables/utils'
 import { useVModel } from '@vueuse/core'
-const IIconPicker = defineAsyncComponent(() => import('@modules/icon/components/IIconPicker.vue'))
+import IIconPicker from '@modules/icon/components/IIconPicker.vue'
+
+defineOptions({
+    name: 'LDrawerItem',
+    inheritAttrs: false,
+})
 
 // Props & Emits
 const props = defineProps({

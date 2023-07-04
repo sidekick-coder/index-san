@@ -1,5 +1,3 @@
-import { computed, ref } from 'vue'
-
 import View from '@core/entities/view'
 
 import { useViewStore } from '../store'
@@ -13,17 +11,17 @@ export function useView<T extends View>(collectionId: string, viewId: string, pa
     const view = computed<T>({
         get() {
             if (storeView.value) {
-                return storeView.value
+                return storeView.value as T
             }
 
-            return innerView.value
+            return innerView.value as T
         },
         set(value) {
             if (storeView.value) {
                 return store.set(viewId, value)
             }
 
-            innerView.value = value
+            innerView.value = value as any
         },
     })
 

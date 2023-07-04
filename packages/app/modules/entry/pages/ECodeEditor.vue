@@ -31,7 +31,7 @@ async function execute() {
         .execute({
             content: content.value,
         })
-        .then((r) => (output.value = r))
+        .then((r) => (output.value = r as any))
         .catch(() => (output.value = undefined))
         .finally(() => setTimeout(() => (loading.value = false), 500))
 }

@@ -2,7 +2,7 @@ import MarkdownIt from 'markdown-it'
 
 import hljs from 'highlight.js'
 
-import { componentPlugin } from '@mdit-vue/plugin-component'
+// import { componentPlugin } from '@mdit-vue/plugin-component'
 
 interface Options {
     basePath?: string
@@ -56,7 +56,7 @@ export function parse(source: string, options?: Options) {
         return slf.renderToken(tokens, idx, tokenOptions)
     }
 
-    md.use(componentPlugin)
+    // md.use(componentPlugin)
 
     return md.render(source)
 }

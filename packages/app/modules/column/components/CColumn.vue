@@ -11,7 +11,7 @@ import { useI18n } from 'vue-i18n'
 import { lib as libScriptColumn } from '@modules/monaco/libs/column-script'
 import { useColumnStore } from '../store'
 
-const MEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue'))
+const MEditor = defineAsyncComponent(() => import('@modules/monaco/components/MEditor.vue') as any)
 
 // Props & emits
 const props = defineProps({
