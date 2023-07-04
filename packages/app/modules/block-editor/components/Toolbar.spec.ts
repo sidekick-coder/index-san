@@ -24,7 +24,7 @@ describe('Toolbar (unit)', () => {
     function createManyNodes(length = 5) {
         const nodes = createManyParagraphs(length)
 
-        editor.createAll(nodes)
+        editor.addAll(nodes)
 
         return nodes
     }

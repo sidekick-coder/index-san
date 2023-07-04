@@ -174,6 +174,6 @@ describe('BlockParagraph', () => {
 
         expect(input).toHaveBeenCalledOnce()
 
-        expect(node.body).toBe('Updated')
+        expect(node.body).toBe('Updated\n')
     })
 })

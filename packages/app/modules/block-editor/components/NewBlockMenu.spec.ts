@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import NewBlockMenu from './NewBlockMenu.vue'
 
 import { useMountWrapper } from '__tests__/fixtures/component'
-import i18n from '@plugins/i18n'
+
 import {
     MarkdownNode,
     MarkdownNodeComponent,
@@ -13,9 +13,7 @@ import {
 
 describe('NewBlockMenu', () => {
     const component = useMountWrapper(NewBlockMenu, {
-        global: {
-            plugins: [i18n],
-        },
+        shallow: true,
     })
 
     afterEach(component.unmount)

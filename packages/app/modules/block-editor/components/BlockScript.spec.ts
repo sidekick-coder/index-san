@@ -4,16 +4,16 @@ import { MarkdownNodeComponent } from '@language-kit/markdown'
 import { useBlockStub } from '../__tests__/stubs'
 
 import BlockScript from './BlockScript.vue'
-import VBtn from '@components/VBtn.vue'
 import ANSICard from '@modules/evaluation/components/ANSICard.vue'
-import { waitFor } from '@composables/utils'
 import MonacoEditor from '@components/MonacoEditor.vue'
 import { flushPromises } from '@vue/test-utils'
+import pinia from '@plugins/pinia'
 
 describe('BlockScript (unit)', () => {
     const component = useMountWrapper(BlockScript, {
         shallow: true,
         global: {
+            plugins: [pinia],
             stubs: {
                 Block: useBlockStub(),
             },

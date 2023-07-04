@@ -30,7 +30,7 @@ describe('Editor (unit)', () => {
     })
 
     function createBlock(node: MarkdownNode) {
-        editor.create(node)
+        editor.add(node)
 
         const toolbar = document.createElement('div')
 

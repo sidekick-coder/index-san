@@ -52,7 +52,7 @@ describe('BlockHeading (unit)', () => {
     it('should render HTMLContentEditable component', () => {
         const node = factory.make({ level: 1 })
 
-        editor.create(node)
+        editor.add(node)
 
         component.mount({
             props: {
@@ -66,7 +66,7 @@ describe('BlockHeading (unit)', () => {
     it('should use h1 element as  v-model', () => {
         const node = factory.make({ level: 1 })
 
-        editor.create(node)
+        editor.add(node)
 
         component.mount({
             props: {
@@ -76,35 +76,38 @@ describe('BlockHeading (unit)', () => {
 
         const editable = findEditable()
 
-        expect(editable.props('modelValue')).toBe('<h1>Heading</h1>')
+        expect(editable.props('modelValue')).toBe('Heading')
     })
 
     it.each([
-        ['Hello word', 'Hello&nbsp;word'],
-        ['Hello <strong>bold</strong>', 'Hello&nbsp;<strong>bold</strong>'],
-    ])('should transform white-spaces %s before use the html', (input, expected) => {
-        const node = factory.make({
-            level: 1,
-            body: input,
-        })
+        ['Hello word ', 'Hello word&nbsp;'],
+        ['Hello <strong>bold</strong> ', 'Hello <strong>bold</strong>&nbsp;'],
+    ])(
+        'should transform white-spaces at end of string %s before use the html',
+        (input, expected) => {
+            const node = factory.make({
+                level: 1,
+                body: input,
+            })
 
-        component.mount({
-            props: {
-                modelValue: node,
-            },
-        })
+            component.mount({
+                props: {
+                    modelValue: node,
+                },
+            })
 
-        const editable = findEditable()
+            const editable = findEditable()
 
-        expect(editable.props('modelValue')).toBe(`<h1>${expected}</h1>`)
-    })
+            expect(editable.props('modelValue')).toBe(`${expected}`)
+        }
+    )
 
     it('should change heading element based on node level', async () => {
         const node = ref(factory.make({ level: 3 }))
 
-        editor.create(node.value)
+        editor.add(node.value)
 
-        component.mount({
+        const wrapper = component.mount({
             props: {
                 modelValue: node.value,
             },
@@ -112,13 +115,15 @@ describe('BlockHeading (unit)', () => {
 
         const editable = findEditable()
 
-        expect(editable.props('modelValue')).toBe('<h3>Heading</h3>')
+        expect(editable.props('modelValue')).toBe('Heading')
+
+        expect(wrapper.html()).toContain('<h3>')
 
         node.value.level = 2
 
         await nextTick()
 
-        expect(editable.props('modelValue')).toBe('<h2>Heading</h2>')
+        expect(wrapper.html()).toContain('<h2>')
     })
 
     it.each(['blur', 'keydown.enter', 'keydown.ctrl.s'])(
@@ -126,7 +131,7 @@ describe('BlockHeading (unit)', () => {
         async (event) => {
             const node = factory.make()
 
-            editor.create(node)
+            editor.add(node)
 
             component.mount({
                 props: {
@@ -140,18 +145,18 @@ describe('BlockHeading (unit)', () => {
 
             const editable = findEditable()
 
-            await editable.setValue('<h1>Updated</h1>')
+            await editable.setValue('Updated')
 
             await editable.trigger(event)
 
-            expect(node.body).toBe('Updated')
+            expect(node.body).toBe('# Updated')
         }
     )
 
     it('should focus HTMLContentEditable when block is selected', async () => {
         const node = factory.make()
 
-        editor.create(node)
+        editor.add(node)
 
         component.mount({
             props: {

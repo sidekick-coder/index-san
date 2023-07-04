@@ -1,4 +1,11 @@
-import { MarkdownNode, MarkdownNodeHeading, MarkdownNodeParagraph } from '@language-kit/markdown'
+import {
+    MarkdownNode,
+    MarkdownNodeHeading,
+    MarkdownNodeParagraph,
+    MarkdownParser,
+} from '@language-kit/markdown'
+
+const parser = new MarkdownParser()
 
 export function createParagraph(data: Partial<MarkdownNodeParagraph> = {}) {
     const node = new MarkdownNodeParagraph()
@@ -36,6 +43,10 @@ export function createHeadingFactory() {
         node.body = 'Heading'
 
         Object.assign(node, data)
+
+        node.tokens = parser.toTokens(node.body, {
+            includeEndOfFileToken: false,
+        })
 
         return node
     })
