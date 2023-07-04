@@ -1,6 +1,6 @@
 <div align="center">
 
-# Index-san (beta)
+# Index-san (alpha)
 
 <img src="./logo.ico" height="200" />
 
@@ -11,6 +11,12 @@ Notes app & files management app (under development)
 [Docs](https://index-san.sidekick-coder.com/)
 
 </div>
+
+##  Development status
+
+The current status is an alpha version
+
+So the current features can have huge changes in implementation or be removed later.
 
 ## About
 
