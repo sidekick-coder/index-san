@@ -1,8 +1,8 @@
-import AppConfig from '@core/config/app'
-import App from '@core/app'
+import AppConfig from '@index-san/core/config/app'
+import App from '@index-san/core/app'
 
 import WorkspaceRepository from './workspace-repository'
-import ServiceEvaluation from '@core/gateways/evaluation/implementations/default-evaluation'
+import ServiceEvaluation from '@index-san/core/gateways/evaluation/implementations/default-evaluation'
 
 import FSDrive from './drive'
 

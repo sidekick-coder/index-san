@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { PropType, computed } from 'vue'
 
 const props = defineProps({

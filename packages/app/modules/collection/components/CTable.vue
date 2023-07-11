@@ -4,8 +4,8 @@ export default { inheritAttrs: false }
 <script setup lang="ts">
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 
-import ViewTable from '@core/entities/view-table'
-import Item from '@core/entities/item'
+import ViewTable from '@index-san/core/entities/view-table'
+import Item from '@index-san/core/entities/item'
 
 import { createBindings } from '@composables/binding'
 

@@ -1,7 +1,7 @@
 import { useStore } from '@modules/notify/store'
 import { i18n } from '@plugins/i18n'
 
-import type { CasesKeys, CasesMethod, CasesParams } from '@core/app'
+import type { CasesKeys, CasesMethod, CasesParams } from '@index-san/core/app'
 
 export interface DataResponse<T> {
     data: T

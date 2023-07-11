@@ -4,7 +4,7 @@ import { ref, watch } from 'vue'
 import { useStore as useWorkspace } from '@modules/workspace/store'
 
 import { useCase } from '@composables/use-case'
-import Menu from '@core/entities/menu'
+import Menu from '@index-san/core/entities/menu'
 
 export const useStore = defineStore('menu', () => {
     const menu = ref<Menu[]>([])

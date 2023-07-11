@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import Collection from '@core/entities/collection'
+import Collection from '@index-san/core/entities/collection'
 
 import { useMeta } from '@composables/metas'
 import { useStore } from '@store/global'

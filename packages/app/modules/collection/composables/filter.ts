@@ -1,9 +1,9 @@
-import Item from '@core/entities/item'
+import Item from '@index-san/core/entities/item'
 
-import type { ViewFilter } from '@core/entities/view-common'
-import Column, { ColumnType } from '@core/entities/column'
+import type { ViewFilter } from '@index-san/core/entities/view-common'
+import Column, { ColumnType } from '@index-san/core/entities/column'
 import moment, { Moment } from 'moment'
-import EvaluationOutput from '@core/entities/evaluation-output'
+import EvaluationOutput from '@index-san/core/entities/evaluation-output'
 
 export const operations = {
     text: {

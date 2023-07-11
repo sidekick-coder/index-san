@@ -1,15 +1,15 @@
 import path from 'path'
 import DirectoryEntry from '../../entities/directory-entry'
 import Item from '../../entities/item'
-import { Crud } from '../../gateways/crud-manager'
-import { Drive } from '../../gateways/drive-manager'
+// import { Crud } from '../../gateways/crud-manager'
+import Drive from '../../gateways/drive/drive'
 
 interface Meta {
     id: string
     [key: string]: string
 }
 
-export default class InMemoryCrud implements Crud {
+export default class InMemoryCrud {
     public drive: Drive
     public metas: Meta[] = []
 

@@ -20,8 +20,8 @@
     "make": "electron-forge make"
   },
   "dependencies": {
+    "@index-san/core": "^0.9.8",
     "@is/app": "^0.9.7",
-    "@is/core": "^0.9.7",
     "node-fetch": "^3.3.1"
   },
   "devDependencies": {

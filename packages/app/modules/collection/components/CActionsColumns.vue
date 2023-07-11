@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 
 import VDraggable from 'vuedraggable'
 import { useStore } from '@store/global'
-import ViewCommon from '@core/entities/view-common'
+import ViewCommon from '@index-san/core/entities/view-common'
 import { useView } from '@modules/view/composables/use-view'
 import { convertToViewColumns, mergeWithViewColumns } from '@modules/view/composables'
 

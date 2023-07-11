@@ -1,5 +1,5 @@
-import InMemoryApp from '@core/__tests__/in-memory-config'
-import IndexSan from '@core/app'
+import InMemoryApp from '@index-san/core/__tests__/in-memory-config'
+import IndexSan from '@index-san/core/app'
 
 import sinon from 'sinon'
 

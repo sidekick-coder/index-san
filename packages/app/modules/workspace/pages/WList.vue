@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import Workspace from '@core/entities/workspace'
+import Workspace from '@index-san/core/entities/workspace'
 
 import { useStore } from '@store/global'
 import { useMeta } from '@composables/metas'

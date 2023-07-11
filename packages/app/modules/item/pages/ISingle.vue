@@ -7,8 +7,8 @@ import { useStore } from '@store/global'
 import EMarkdown from '@modules/entry/pages/EMarkdown.vue'
 
 import IValue from '../components/IValue.vue'
-import Item from '@core/entities/item'
-import DirectoryEntry from '@core/entities/directory-entry'
+import Item from '@index-san/core/entities/item'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { useColumnStore } from '@modules/column/store'
 import { useLocalStorage } from '@vueuse/core'
 

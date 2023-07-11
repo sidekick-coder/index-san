@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 
 import { useNonReactive } from '@composables/utils'
-import Column from '@core/entities/column'
+import Column from '@index-san/core/entities/column'
 
 import { useStore as useCollection } from '@modules/collection/store'
 import { defineStore } from 'pinia'

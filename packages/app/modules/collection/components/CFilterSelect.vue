@@ -2,8 +2,8 @@
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-import Column from '@core/entities/column'
-import { ViewFilter } from '@core/entities/view-common'
+import Column from '@index-san/core/entities/column'
+import { ViewFilter } from '@index-san/core/entities/view-common'
 
 import { computed } from 'vue'
 import { useVModel } from 'vue-wind/composables/v-model'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import EvaluationOutput from '@core/entities/evaluation-output'
+import EvaluationOutput from '@index-san/core/entities/evaluation-output'
 
 import { createValue } from '@modules/item/composables/value'
 import { useStore } from '@store/global'

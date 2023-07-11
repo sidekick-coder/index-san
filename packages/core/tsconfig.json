@@ -2,12 +2,13 @@
   "exclude": ["dist"],
   "include": ["tsup.config.ts" , "src/**/*"],
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,                  
-    "forceConsistentCasingInFileNames": true, 
+    "forceConsistentCasingInFileNames": true,
     "strict": true,                           
     "skipLibCheck": true,
-    "strictPropertyInitialization": false                      
+    "strictPropertyInitialization": false,
   },
 }

@@ -6,7 +6,7 @@ export default {
 <script setup lang="ts">
 import { useAttrs, defineAsyncComponent } from 'vue'
 
-import { ColumnType } from '@core/entities/column'
+import { ColumnType } from '@index-san/core/entities/column'
 import { createBindings } from '@composables/binding'
 
 const IValueText = defineAsyncComponent(() => import('./IValueText.vue'))

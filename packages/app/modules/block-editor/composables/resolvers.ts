@@ -1,4 +1,4 @@
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { useStore } from '@modules/entry/store'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import { useItemStore } from '@modules/item/store'

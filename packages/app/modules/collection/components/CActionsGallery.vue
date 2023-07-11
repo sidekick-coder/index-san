@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ViewGallery from '@core/entities/view-gallery'
+import ViewGallery from '@index-san/core/entities/view-gallery'
 
 import { computed, watch } from 'vue'
 import { useStore } from '@store/global'

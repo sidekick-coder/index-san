@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useCase } from '@composables/use-case'
 
-import Workspace from '@core/entities/workspace'
+import Workspace from '@index-san/core/entities/workspace'
 import { computed, ref } from 'vue'
 import { useState } from '@composables/state'
 

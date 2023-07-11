@@ -5,10 +5,10 @@ import debounce from 'lodash/debounce'
 
 import { useStore as useWorkspace } from '@modules/workspace/store'
 
-import View from '@core/entities/view'
-import ViewTable from '@core/entities/view-table'
-import ViewGallery from '@core/entities/view-gallery'
-import ViewGroup from '@core/entities/view-group'
+import View from '@index-san/core/entities/view'
+import ViewTable from '@index-san/core/entities/view-table'
+import ViewGallery from '@index-san/core/entities/view-gallery'
+import ViewGroup from '@index-san/core/entities/view-group'
 
 import { useCase } from '@composables/use-case'
 import { useHooks } from '@plugins/hooks'

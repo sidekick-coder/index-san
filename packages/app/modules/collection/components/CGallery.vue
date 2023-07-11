@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, useAttrs, watch } from 'vue'
 
-import ViewGallery from '@core/entities/view-gallery'
+import ViewGallery from '@index-san/core/entities/view-gallery'
 
 import { createBindings } from '@composables/binding'
 import { useStore } from '@store/global'
 
-import Item from '@core/entities/item'
+import Item from '@index-san/core/entities/item'
 
 import CActions from './CActions.vue'
 import IValue from '@modules/item/components/IValue.vue'

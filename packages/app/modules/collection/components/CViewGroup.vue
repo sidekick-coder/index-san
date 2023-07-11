@@ -2,9 +2,9 @@
 import { ref, computed, useAttrs, watch, defineAsyncComponent } from 'vue'
 import VDraggable from 'vuedraggable'
 
-import ViewGroup from '@core/entities/view-group'
-import ViewTable from '@core/entities/view-table'
-import ViewGallery from '@core/entities/view-gallery'
+import ViewGroup from '@index-san/core/entities/view-group'
+import ViewTable from '@index-san/core/entities/view-table'
+import ViewGallery from '@index-san/core/entities/view-gallery'
 
 import { useViewStore } from '@modules/view/store'
 import { useView } from '@modules/view/composables/use-view'

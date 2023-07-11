@@ -1,12 +1,12 @@
 import orderBy from 'lodash/orderBy'
 
-import Item from '@core/entities/item'
-import View from '@core/entities/view'
-import ViewCommon, { ViewColumn } from '@core/entities/view-common'
+import Item from '@index-san/core/entities/item'
+import View from '@index-san/core/entities/view'
+import ViewCommon, { ViewColumn } from '@index-san/core/entities/view-common'
 
 import { filter } from '@modules/collection/composables/filter'
 import { useNonReactive } from '@composables/utils'
-import Column from '@core/entities/column'
+import Column from '@index-san/core/entities/column'
 
 /**
  * Merge collection columns with view columns properties

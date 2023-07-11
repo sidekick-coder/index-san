@@ -1,4 +1,4 @@
-import Column, { ColumnType } from '@core/entities/column'
+import Column, { ColumnType } from '@index-san/core/entities/column'
 
 import { lib as script } from './script'
 

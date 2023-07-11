@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import Column from '@core/entities/column'
-import ViewCommon from '@core/entities/view-common'
+import Column from '@index-san/core/entities/column'
+import ViewCommon from '@index-san/core/entities/view-common'
 
 import CFilter from './CFilter.vue'
 import { useView } from '@modules/view/composables/use-view'

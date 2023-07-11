@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Menu from '@core/entities/menu'
+import Menu from '@index-san/core/entities/menu'
 import { useMeta } from '@composables/metas'
 import { useStore } from '@modules/menu/store'
 

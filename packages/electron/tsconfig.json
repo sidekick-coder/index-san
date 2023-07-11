@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@client/*": ["../app/*"],
-      "@core/*": ["../core/*"],
+      "@index-san/core/*": ["../core/*"],
       "@composables/*": [ "../app/composables/*" ],
       "@plugins/*": [ "../app/plugins/*" ],
       "@modules/*": [ "../app/modules/*" ],

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNonReactive } from '@composables/utils'
-import Collection, { RepositoryType } from '@core/entities/collection'
+import Collection, { RepositoryType } from '@index-san/core/entities/collection'
 import { useStore } from '@store/global'
 
 // Props & emits

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '../store'
 

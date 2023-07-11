@@ -3,6 +3,5 @@ artifacts
 CHANGELOG.md
 
 dist
-dist-types
 
 packages/examples/workspace/collections

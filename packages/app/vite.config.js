@@ -13,8 +13,6 @@ const root = path.resolve(__dirname, '..', '..')
 module.exports = defineConfig({
     resolve: {
         alias: {
-            // root
-            '@core': path.resolve(__dirname, '..', 'core'),
             '@root': root,
 
             // app

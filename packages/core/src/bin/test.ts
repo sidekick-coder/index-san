@@ -6,17 +6,27 @@ configure({
     ...processCliArgs(process.argv.slice(2)),
     ...{
         files: [
-            './app.spec.ts',
-            './gateways/*/*.spec.ts',
-            './entities/*.spec.ts',
-            './services/*.spec.ts',
-            './exceptions/*.spec.ts',
-            './repositories/**/**/*.spec.ts',
-            './use-cases/**/*.spec.ts',
+            'src/app.spec.ts',
+            'src/gateways/*/*.spec.ts',
+            'src/entities/*.spec.ts',
+            'src/services/*.spec.ts',
+            'src/exceptions/*.spec.ts',
+            'src/repositories/**/**/*.spec.ts',
+            'src/use-cases/**/*.spec.ts',
         ],
         plugins: [expect()],
         reporters: [specReporter()],
-        importer: (filePath) => import(filePath),
+        importer: (filePath) => {
+            let filename = filePath
+
+            const isWindows = process.platform === 'win32'
+
+            if (isWindows) {
+                filename = 'file:///' + filePath
+            }
+
+            return import(filename)
+        },
     },
 })
 

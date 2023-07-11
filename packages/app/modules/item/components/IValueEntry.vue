@@ -7,7 +7,7 @@ export default {
 import template from 'lodash/template'
 import uuid from 'uuid-random'
 
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 
 import { createValue } from '@modules/item/composables/value'
 import { useStore } from '@store/global'

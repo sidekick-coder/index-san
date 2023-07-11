@@ -1,4 +1,4 @@
-import type IFetchService from '@is/core/gateways/fetch/fetch'
+import type IFetchService from '@index-san/core/gateways/fetch/fetch'
 
 import * as nodeFetch from 'node-fetch'
 

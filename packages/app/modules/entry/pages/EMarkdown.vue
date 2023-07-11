@@ -8,7 +8,7 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import debounce from 'lodash/debounce'
 
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 
 import { useStore } from '@modules/entry/store'
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ViewTable from '@core/entities/view-gallery'
+import ViewTable from '@index-san/core/entities/view-gallery'
 import { useView } from '@modules/view/composables/use-view'
 import { watch } from 'vue'
 

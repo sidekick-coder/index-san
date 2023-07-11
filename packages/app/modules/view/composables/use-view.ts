@@ -1,4 +1,4 @@
-import View from '@core/entities/view'
+import View from '@index-san/core/entities/view'
 
 import { useViewStore } from '../store'
 

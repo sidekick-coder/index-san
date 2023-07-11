@@ -9,7 +9,7 @@ import { ref, computed, watch, useAttrs } from 'vue'
 
 import { useStore } from '../store'
 import { toCssMeasurement } from '@composables/utils'
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { createBindings } from '@composables/binding'
 
 const props = defineProps({

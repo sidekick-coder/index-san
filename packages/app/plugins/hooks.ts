@@ -1,6 +1,6 @@
 import type { Plugin } from 'vue'
 import type { AnyView } from '@modules/view/store'
-import Item from '@core/entities/item'
+import Item from '@index-san/core/entities/item'
 
 export interface Events {
     'view:created': { collectionId: string; payload: AnyView }

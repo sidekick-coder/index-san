@@ -12,12 +12,12 @@
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": false,
+    "isolatedModules": true,
     "outDir": "dist",
     "baseUrl": ".",
     "types": ["vite/client"],
     "paths": {
       "@root/*": ["../../*"],
-      "@core/*": ["../core/*"],
       "@components/*": ["./components/*"],
       "@composables/*": ["./composables/*"],
       "@plugins/*": ["./plugins/*"],

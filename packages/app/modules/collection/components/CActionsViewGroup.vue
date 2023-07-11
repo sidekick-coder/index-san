@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watch, ref, computed } from 'vue'
-import ViewGroup from '@core/entities/view-group'
+import ViewGroup from '@index-san/core/entities/view-group'
 
 import { useView } from '@modules/view/composables/use-view'
 import { useViewStore } from '@modules/view/store'

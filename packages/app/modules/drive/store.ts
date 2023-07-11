@@ -1,7 +1,7 @@
 import { useCase } from '@composables/use-case'
 import { defineStore } from 'pinia'
 
-import DriveInfo from '@core/entities/drive-info'
+import DriveInfo from '@index-san/core/entities/drive-info'
 
 export const useStore = defineStore('drive', () => {
     const drives = ref<DriveInfo[]>([])

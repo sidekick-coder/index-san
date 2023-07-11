@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import Menu from '@core/entities/menu'
+import Menu from '@index-san/core/entities/menu'
 import packageJSON from '@root/package.json'
 
 import { useStore } from '@store/global'

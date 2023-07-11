@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStore } from '@modules/script/store'
 
-import EvaluationOutput from '@core/entities/evaluation-output'
+import EvaluationOutput from '@index-san/core/entities/evaluation-output'
 
 import VChart from '@components/VChart.vue'
 import MEditor from '@modules/monaco/components/MEditor.vue'

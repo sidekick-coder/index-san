@@ -3,8 +3,8 @@
   "version": "0.9.8",
   "private": true,
   "scripts": {
-    "test": "node -r ts-node/register/transpile-only bin/test.ts",
-    "test:watch": "nodemon --quiet -r ts-node/register/transpile-only bin/test.ts",
+    "test": "tsx src/bin/test.ts",
+    "test:watch": "nodemon --quiet -r ts-node/register/transpile-only src/bin/test.ts",
     "make:types": "npm run clean && tsc -p tsconfig.types.json",
     "build": "tsup"
   },
@@ -18,9 +18,10 @@
     "url": "https://github.com/sidekick-coder/index-san/issues"
   },
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+    "./*": {
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js",
+      "types": "./dist/*.d.ts"
     }
   },
   "homepage": "https://github.com/sidekick-coder/index-san#readme",

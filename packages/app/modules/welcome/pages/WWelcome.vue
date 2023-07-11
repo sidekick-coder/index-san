@@ -6,7 +6,7 @@ import { useStore } from '@store/global'
 import { useRouter } from 'vue-router'
 
 import WForm from '@modules/workspace/components/WForm.vue'
-import Workspace from '@core/entities/workspace'
+import Workspace from '@index-san/core/entities/workspace'
 
 // check if have workspaces
 const store = useStore()

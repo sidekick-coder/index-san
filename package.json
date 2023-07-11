@@ -41,6 +41,7 @@
     "dependencies": {
         "changelogen": "^0.5.3",
         "tsup": "^7.1.0",
+        "tsx": "^3.12.7",
         "vue": "^3.3.4"
     }
 }

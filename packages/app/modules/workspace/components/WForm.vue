@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Workspace from '@core/entities/workspace'
+import Workspace from '@index-san/core/entities/workspace'
 
 import { useStore } from '@store/global'
 import { createBindings } from '@composables/binding'

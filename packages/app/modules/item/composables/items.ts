@@ -1,4 +1,4 @@
-import Item from '@core/entities/item'
+import Item from '@index-san/core/entities/item'
 import { withViewIterations } from '@modules/view/composables'
 
 import { Events, useHooks } from '@plugins/hooks'

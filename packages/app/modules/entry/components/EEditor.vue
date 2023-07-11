@@ -3,7 +3,7 @@ import { ref, watch, computed } from 'vue'
 import { useStore } from '@modules/entry/store'
 
 import MEditor from '@modules/monaco/components/MEditor.vue'
-import DirectoryEntry from '@core/entities/directory-entry'
+import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { useVModel } from 'vue-wind/composables/v-model'
 
 const props = defineProps({

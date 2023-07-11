@@ -1,5 +1,5 @@
 {
-  "name": "@is/app",
+  "name": "@index-san/app",
   "version": "0.9.8",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@iconify/vue": "^4.1.1",
+    "@index-san/core": "^0.9.8",
     "@language-kit/lexer": "^1.1.5",
     "@language-kit/markdown": "^1.5.2",
     "@mdit-vue/plugin-component": "^0.12.0",

@@ -56,7 +56,7 @@ export default defineNuxtConfig({
         ],
     },
     alias: {
-        '@core': path.resolve(__dirname, '..', 'core'),
+        '@index-san/core': path.resolve(__dirname, '..', 'core'),
         // app
         '@components': path.resolve(appPath, 'components'),
         '@composables': path.resolve(appPath, 'composables'),

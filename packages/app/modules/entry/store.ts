@@ -3,14 +3,14 @@ import { defineStore } from 'pinia'
 import { useCase } from '@composables/use-case'
 import { useStore as useWorkspace } from '@modules/workspace/store'
 
-import type ListDirectoryEntryDTO from '@core/use-cases/list-directory-entry/list-directory.dto'
-import type ShowDirectoryEntryDTO from '@core/use-cases/show-directory-entry/show-directory-entry.dto'
-import type CreateDirectoryEntryDTO from '@core/use-cases/create-directory-entry/create-directory-entry.dto'
-import type UpdateDirectionEntryDTO from '@core/use-cases/update-directory-entry/update-directory-entry.dto'
-import type DeleteDirectoryEntryDTO from '@core/use-cases/delete-directory-entry/delete-directory-entry.dto'
+import type ListDirectoryEntryDTO from '@index-san/core/use-cases/list-directory-entry/list-directory.dto'
+import type ShowDirectoryEntryDTO from '@index-san/core/use-cases/show-directory-entry/show-directory-entry.dto'
+import type CreateDirectoryEntryDTO from '@index-san/core/use-cases/create-directory-entry/create-directory-entry.dto'
+import type UpdateDirectionEntryDTO from '@index-san/core/use-cases/update-directory-entry/update-directory-entry.dto'
+import type DeleteDirectoryEntryDTO from '@index-san/core/use-cases/delete-directory-entry/delete-directory-entry.dto'
 
-import type ReadDirectoryEntryDTO from '@core/use-cases/read-directory-entry/read-directory-entry.dto'
-import type WriteDirectoryEntryDTO from '@core/use-cases/write-directory-entry/write-directory-entry.dto'
+import type ReadDirectoryEntryDTO from '@index-san/core/use-cases/read-directory-entry/read-directory-entry.dto'
+import type WriteDirectoryEntryDTO from '@index-san/core/use-cases/write-directory-entry/write-directory-entry.dto'
 
 export const useStore = defineStore('entry', () => {
     const workspace = useWorkspace()

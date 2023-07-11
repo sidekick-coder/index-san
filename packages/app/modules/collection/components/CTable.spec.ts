@@ -6,12 +6,12 @@ import i18n from '@plugins/i18n'
 
 import type { VueWrapper, MountingOptions, ComponentMountingOptions } from '@vue/test-utils'
 
-import ViewTable from '@core/entities/view-table'
-import Collection from '@core/entities/collection'
-import ItemFactory from '@core/__tests__/factories/item'
-import CollectionFactory from '@core/__tests__/factories/collections'
-import ColumnFactory from '@core/__tests__/factories/column'
-import { ViewTableFactory } from '@core/__tests__/factories/view'
+import ViewTable from '@index-san/core/entities/view-table'
+import Collection from '@index-san/core/entities/collection'
+import ItemFactory from '@index-san/core/__tests__/factories/item'
+import CollectionFactory from '@index-san/core/__tests__/factories/collections'
+import ColumnFactory from '@index-san/core/__tests__/factories/column'
+import { ViewTableFactory } from '@index-san/core/__tests__/factories/view'
 
 import VResizeLine from '@components/VResizeLine.vue'
 import VMenu from '@components/VMenu.vue'
@@ -24,7 +24,7 @@ import { useStore } from '@store/global'
 import { useItemStore } from '@modules/item/store'
 import { useViewStore } from '@modules/view/store'
 import { useApp } from '__tests__/fixtures/app'
-import Workspace from '@core/entities/workspace'
+import Workspace from '@index-san/core/entities/workspace'
 
 describe('CTable.vue', () => {
     let wrapper: VueWrapper<InstanceType<typeof CTable>>

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import { useStore as useWorkspace } from '@modules/workspace/store'
 
-import Item from '@core/entities/item'
+import Item from '@index-san/core/entities/item'
 
 import { useCase } from '@composables/use-case'
 import { useHooks } from '@plugins/hooks'

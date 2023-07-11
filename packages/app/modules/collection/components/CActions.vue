@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ViewCommon from '@core/entities/view-common'
+import ViewCommon from '@index-san/core/entities/view-common'
 
 import { debounce } from 'lodash'
 import { ref, computed, watch, defineAsyncComponent } from 'vue'
 
-import View from '@core/entities/view'
+import View from '@index-san/core/entities/view'
 import { useView } from '@modules/view/composables/use-view'
 
 import CActionsColumns from './CActionsColumns.vue'

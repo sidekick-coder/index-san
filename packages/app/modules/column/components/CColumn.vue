@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, defineAsyncComponent } from 'vue'
 
-import Column, { ColumnType } from '@core/entities/column'
+import Column, { ColumnType } from '@index-san/core/entities/column'
 
 import { useStore as useCollectionStore } from '@modules/collection/store'
 

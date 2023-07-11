@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import ViewCommon from '@core/entities/view-common'
+import ViewCommon from '@index-san/core/entities/view-common'
 
 import { useView } from '@modules/view/composables/use-view'
 import { useStore } from '@store/global'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import EvaluationOutput from '@core/entities/evaluation-output'
+import EvaluationOutput from '@index-san/core/entities/evaluation-output'
 
 import EEditor from '../components/EEditor.vue'
 import MEditor from '@modules/monaco/components/MEditor.vue'
