@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "@tsconfig/node18/tsconfig.json",
+    "@vue/tsconfig/tsconfig.json"
+  ],
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue"
+  ],
+  "compilerOptions": {
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["../app/*"],
+      "@index-san/core/*": ["../core/*"],
+      "@composables/*": [ "../app/composables/*" ],
+      "@plugins/*": [ "../app/plugins/*" ],
+      "@modules/*": [ "../app/modules/*" ],
+      "@store/*": [ "../app/store/*"]
+    }
+  }
+}

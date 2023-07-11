@@ -1,27 +1,7 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": [
-    "env.d.ts",
-    "src/**/*",
-    "src-electron/*",
-    "src/**/*.vue", 
-    "../app/auto-import.d.ts"
-  ],
-  "compilerOptions": {
-    "importsNotUsedAsValues": "preserve",
-    "strictPropertyInitialization": false,
-    "baseUrl": ".",
-    "paths": {
-      "@client/*": ["../app/*"],
-      "@index-san/core/*": ["../core/*"],
-      "@composables/*": [ "../app/composables/*" ],
-      "@plugins/*": [ "../app/plugins/*" ],
-      "@modules/*": [ "../app/modules/*" ],
-      "@store/*": [ "../app/store/*"]
-    }
-  },
-
+  "files": [],
   "references": [
-    { "path": "./tsconfig.config.json" }
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.app.json" }
   ]
 }

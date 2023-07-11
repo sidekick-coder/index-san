@@ -3,7 +3,7 @@ import path from 'path'
 import uniqBy from 'lodash/uniqBy'
 import { app } from 'electron'
 
-// import WorkspaceNotFound from '@index-san/core/exceptions/base'
+import WorkspaceNotFound from '@index-san/core/exceptions/base'
 import { isJSON } from '@index-san/core/services/utils'
 
 import type Workspace from '@index-san/core/entities/workspace'

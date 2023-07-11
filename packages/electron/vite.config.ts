@@ -1,13 +1,10 @@
-import { defineConfig, mergeConfig } from 'vite'
+import { mergeConfig } from 'vite'
 import electron from 'vite-plugin-electron'
 
-// eslint-disable-next-line
 // @ts-ignore
-import viteConfig from '@index-san/app/vite.config'
+import baseConfig from '@index-san/app/vite.base.config'
 
-export default mergeConfig(
-    viteConfig,
-    defineConfig({
+export default mergeConfig(baseConfig, {
         plugins: [
             electron([
                 {
@@ -21,5 +18,5 @@ export default mergeConfig(
                 },
             ]),
         ],
-    })
+    }
 )
