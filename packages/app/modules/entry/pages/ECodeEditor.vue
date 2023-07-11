@@ -6,7 +6,7 @@ import EvaluationOutput from '@index-san/core/entities/evaluation-output'
 import EEditor from '../components/EEditor.vue'
 import MEditor from '@modules/monaco/components/MEditor.vue'
 import SOutput from '@modules/script/components/SOutput.vue'
-import { mount as lib } from '@modules/monaco/libs/script'
+import { mount as lib } from '@modules/monaco/libs/app'
 
 import { useStore } from '@store/global'
 

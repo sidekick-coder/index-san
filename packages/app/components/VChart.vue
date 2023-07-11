@@ -1,11 +1,16 @@
-<script setup lang="ts">
+<script setup lang="ts" type="module">
 import set from 'lodash/set'
 import get from 'lodash/get'
 
 import { isJSON } from '@composables/utils'
 
-// import { Chart, registerables } from 'chart.js'
-// import annotationPlugin from 'chartjs-plugin-annotation'
+// @ts-ignore
+import { Chart } from 'chart.js/auto'
+
+// @ts-ignore
+import annotationPlugin from 'chartjs-plugin-annotation'
+
+Chart.register(annotationPlugin)
 
 const props = defineProps({
     options: {
@@ -14,7 +19,7 @@ const props = defineProps({
     },
 })
 
-let options: any = null
+let chartOptions: any | null = null
 
 // set helper functions
 function tooltipCallback(context: any) {
@@ -35,21 +40,22 @@ function tooltipCallback(context: any) {
     return datasetLabel + ': ' + label
 }
 
-if (options) {
-    set(options, 'options.plugins.tooltip.callbacks.label', tooltipCallback)
+if (chartOptions) {
+    set(chartOptions, 'options.plugins.tooltip.callbacks.label', tooltipCallback)
 }
 
 // set options using props
 let chart: any
 
 if (props.options) {
-    options = { ...props.options }
+    chartOptions = { ...props.options }
 }
 
 // set options using slots
 const slots = useSlots()
+
 onMounted(() => {
-    if (!slots.default || options) return
+    if (!slots.default || chartOptions) return
 
     const [child] = slots.default()
 
@@ -59,20 +65,20 @@ onMounted(() => {
 
     if (!isJSON(content)) return
 
-    options = JSON.parse(content)
+    chartOptions = JSON.parse(content)
 })
 
 // set chart
 const root = ref()
 
 onMounted(async () => {
-    const annotationPlugin = await import('chartjs-plugin-annotation')
-    const { Chart: ChartJS } = await import('chart.js/auto')
+    // const { Chart, registerables } = await import('chart.js')
+    // const annotationPlugin = await import('chartjs-plugin-annotation')
 
-    ChartJS.register(annotationPlugin)
+    // Chart.register(...registerables, annotationPlugin)
 
-    if (options && root.value) {
-        chart = new ChartJS(root.value, options)
+    if (chartOptions && root.value) {
+        chart = new Chart(root.value, chartOptions)
     }
 })
 

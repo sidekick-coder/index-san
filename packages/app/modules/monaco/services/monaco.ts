@@ -21,7 +21,7 @@ monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
 })
 
 monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-    diagnosticCodesToIgnore: [1375, 1378, 1431, 1432, 7044],
+    diagnosticCodesToIgnore: [1375, 1378, 1431, 1432, 7044, 2792],
 })
 
 export function registerTheme(options: RegisterThemeOptions) {

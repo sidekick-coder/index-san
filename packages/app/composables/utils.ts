@@ -77,7 +77,17 @@ export function inspect(value: any) {
     }
 
     if (typeof result === 'object') {
-        result = JSON.stringify(result, null, 4)
+        result = JSON.stringify(
+            result,
+            (key, value) => {
+                if (typeof value === 'function') {
+                    return value.toString()
+                }
+
+                return value
+            },
+            4
+        )
     }
 
     return result

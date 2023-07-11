@@ -1,6 +1,5 @@
-import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { NodeExport, NodeImport, NodeType, NodeVariable } from '../types/node'
+import { NodeExport, NodeType } from '../types/node'
 import { ParserToken } from '../types/token'
 import { useTokenHelper } from '../helpers/token-helper'
 import { findVariableEndIndex, findVariableName, findVariableValue } from './processor.variable'
@@ -10,10 +9,26 @@ const helper = useTokenHelper()
 function findExportEndIndex(tokens: ParserToken[]) {
     const [declaration] = helper.withoutWhiteSpace(tokens.slice(1))
 
-    const endWithBraces = ['default', 'function'].includes(declaration.value)
+    const endWithBraces = ['default', 'function', 'async'].includes(declaration.value)
 
     if (endWithBraces) {
-        return tokens.findIndex((t) => t.value === '}')
+        let innerOpenLength = 0
+
+        const startIndex = tokens.findIndex((t) => t.value === '{')
+
+        return tokens.findIndex((t, i) => {
+            if (i < startIndex) return false
+
+            if (t.value === '{') {
+                innerOpenLength++
+            }
+
+            if (t.value === '}') {
+                innerOpenLength--
+            }
+
+            return innerOpenLength === 0
+        })
     }
 
     if (declaration.value === 'const') {
@@ -37,6 +52,16 @@ function findExportKey(tokens: ParserToken[]) {
     // export function name() {}
     if (declaration.value === 'function') {
         return identifier?.value
+    }
+
+    if (declaration.value === 'async') {
+        const [asyncDeclaration, asyncIdentifier] = helper.withoutWhiteSpace(tokens.slice(3))
+
+        if (asyncDeclaration?.value === 'function') {
+            return asyncIdentifier?.value
+        }
+
+        return ''
     }
 
     // export const name = 123
@@ -68,6 +93,17 @@ function findExportStatements(tokens: ParserToken[]) {
     // export function name() {}
     if (declaration.value === 'function') {
         const start = tokens.findIndex((t) => t === declaration)
+
+        if (start === -1) return ''
+
+        return helper.toString(tokens.slice(start, end + 1))
+    }
+
+    // export async function name() {}
+    if (declaration.value === 'async') {
+        const [asyncDeclaration] = helper.withoutWhiteSpace(tokens.slice(2))
+
+        const start = tokens.findIndex((t) => t === asyncDeclaration)
 
         if (start === -1) return ''
 

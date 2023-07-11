@@ -30,6 +30,14 @@ function createStore(collectionId: string) {
         setTimeout(() => (loading.value = false), 500)
     }
 
+    async function list() {
+        if (!items.value.length) {
+            await load()
+        }
+
+        return items.value
+    }
+
     function get(id: string) {
         const item = items.value.find((i) => i.id === id)
 
@@ -79,6 +87,7 @@ function createStore(collectionId: string) {
         items,
         loading,
 
+        list,
         load,
         get,
         create,

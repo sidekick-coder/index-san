@@ -1,14 +1,17 @@
 import DirectoryEntry from '@index-san/core/entities/directory-entry'
 import { useStore } from '@modules/entry/store'
+import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import { useItemStore } from '@modules/item/store'
+
+const drive = useStore()
 
 export const resolvers = [
     defineResolver({
         test: (id) => id === 'app:drive',
         resolve: async () => {
             return {
-                useDrive: () => useStore(),
+                useDrive: () => drive,
                 decode: DirectoryEntry.decode,
                 encode: DirectoryEntry.encode,
             }
@@ -30,6 +33,28 @@ export const resolvers = [
             const url = `https://unpkg.com/${name}?module`
 
             return import(/* @vite-ignore */ url)
+        },
+    }),
+    defineResolver({
+        test: (id) => id.startsWith('/'),
+        resolve: async (id) => {
+            const bytes = await drive.read({
+                path: id,
+            })
+
+            if (!bytes) {
+                throw new Error(`Module not found: ${id}`)
+            }
+
+            const content = DirectoryEntry.decode(bytes)
+
+            const evaluation = useEvaluation()
+
+            evaluation.setResolvers(resolvers)
+
+            const { exports } = await evaluation.run(content)
+
+            return exports
         },
     }),
 ]

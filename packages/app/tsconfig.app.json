@@ -1,0 +1,42 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.dom.json",
+    "include": [
+      "__tests__/**/*.spec.ts",
+      "components/**/*.vue",
+      "composables/**/*.ts",
+      "i18n/**/*.ts",
+      "modules/**/*.ts",
+      "plugins/**/*.ts",
+      "store/**/*.ts",
+      "app.ts",
+      "App.vue",
+      "auto-imports.d.ts",
+      "types/components.d.ts",
+      "config.ts",
+      "types/**/*.ts"
+    ],
+    "compilerOptions": {
+      "moduleResolution": "nodenext",
+      "lib": [
+        "ES2016",
+        "ES2017",
+  
+        "DOM",
+        "DOM.Iterable"
+      ],
+      "composite": true,
+      "strictPropertyInitialization": false,
+      "esModuleInterop": true,
+      "verbatimModuleSyntax": false,
+      "outDir": "dist",
+      "baseUrl": ".",
+      "paths": {
+        "@root/*": ["../../*"],
+        "@components/*": ["./components/*"],
+        "@composables/*": ["./composables/*"],
+        "@plugins/*": ["./plugins/*"],
+        "@modules/*": ["./modules/*"],
+        "@store/*": ["./store/*"]
+      }
+    },
+}
