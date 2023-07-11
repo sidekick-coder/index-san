@@ -2,5 +2,7 @@ node_modules
 artifacts
 CHANGELOG.md
 
-packages/core/dist-types
+dist
+dist-types
+
 packages/examples/workspace/collections

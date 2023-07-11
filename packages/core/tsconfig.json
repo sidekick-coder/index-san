@@ -1,5 +1,6 @@
 {
-  "exclude": ["dist-types"],
+  "exclude": ["dist"],
+  "include": ["tsup.config.ts" , "src/**/*"],
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
