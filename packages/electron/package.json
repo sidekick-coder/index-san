@@ -1,5 +1,5 @@
 {
-  "name": "@is/electron",
+  "name": "@index-san/electron",
   "version": "0.9.8",
   "private": true,
   "main": "dist-electron/main.js",
@@ -20,8 +20,8 @@
     "make": "electron-forge make"
   },
   "dependencies": {
+    "@index-san/app": "^0.9.8",
     "@index-san/core": "^0.9.8",
-    "@is/app": "^0.9.7",
     "node-fetch": "^3.3.1"
   },
   "devDependencies": {

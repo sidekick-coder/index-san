@@ -3,5 +3,6 @@ artifacts
 CHANGELOG.md
 
 dist
+coverage
 
 packages/examples/workspace/collections

@@ -21,7 +21,7 @@ jobs:
         run: |
           npm install
           npm -w @is/core install
-          npm -w @is/app install
+          npm -w @index-san/app install
       
       - name: lint
         run: npm run lint
@@ -48,7 +48,7 @@ jobs:
         run: |
           npm install
           npm -w @is/core install
-          npm -w @is/app install
+          npm -w @index-san/app install
       
       - name: build
         run: npm run build

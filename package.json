@@ -4,7 +4,7 @@
     "description": "A CRUD maker based in filesystem",
     "scripts": {
         "lint": "eslint . --ext .vue,.ts,.js --max-warnings 0",
-        "dev": "npm -w @is/electron run dev",
+        "dev": "npm -w @index-san/electron run dev",
         "test": "npm -ws test --if-present",
         "build": "node scripts/build.js",
         "make:version": "node scripts/version.js",

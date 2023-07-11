@@ -19,11 +19,11 @@ async function main() {
 
     // build app
 
-    await command('npm -w @is/electron run build')
+    await command('npm -w @index-san/electron run build')
 
     // make app artifacts
 
-    await command('npm -w @is/electron run make')
+    await command('npm -w @index-san/electron run make')
 
     // moving artifacts
 

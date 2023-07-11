@@ -1,4 +1,4 @@
-import type { ClientAppConfig } from '@is/app/config'
+import type { ClientAppConfig } from '@index-san/app/config'
 import { contextBridge, ipcRenderer, shell, type OpenDialogReturnValue } from 'electron'
 
 async function useCase(name: string, args?: any) {

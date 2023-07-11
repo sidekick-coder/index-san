@@ -8,7 +8,13 @@ if (!versionName) {
 }
 
 async function main() {
-    const packages = ['@index-san/core', '@is/app', '@is/docs', '@is/electron', '@is/tauri']
+    const packages = [
+        '@index-san/core',
+        '@index-san/app',
+        '@is/docs',
+        '@index-san/electron',
+        '@is/tauri',
+    ]
 
     // test
     await command('npm test')

@@ -11,6 +11,12 @@ const DefineProp = require('@vue-macros/define-prop/vite')
 const root = path.resolve(__dirname, '..', '..')
 
 module.exports = defineConfig({
+    build: {
+        lib: {
+            entry: path.resolve(__dirname, 'app.ts'),
+            name: 'App',
+        },
+    },
     resolve: {
         alias: {
             '@root': root,

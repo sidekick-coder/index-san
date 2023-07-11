@@ -3,7 +3,7 @@ import electron from 'vite-plugin-electron'
 
 // eslint-disable-next-line
 // @ts-ignore
-import viteConfig from '@is/app/vite.config'
+import viteConfig from '@index-san/app/vite.config'
 
 export default mergeConfig(
     viteConfig,
