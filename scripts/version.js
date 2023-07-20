@@ -17,6 +17,9 @@ async function main() {
     ]
 
     // test
+    await command('npm run lint')
+
+    // test
     await command('npm test')
 
     // build docs
