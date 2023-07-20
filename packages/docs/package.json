@@ -1,6 +1,6 @@
 {
   "name": "@index-san/docs",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "private": true,
   "scripts": {
     "dev": "nuxi dev",
