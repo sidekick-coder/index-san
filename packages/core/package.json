@@ -1,6 +1,6 @@
 {
   "name": "@index-san/core",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "private": true,
   "scripts": {
     "test": "tsx src/bin/test.ts",
