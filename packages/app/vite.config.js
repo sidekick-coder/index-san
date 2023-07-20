@@ -1,15 +1,13 @@
-const path = require('path')
-const tailwindcss = require('tailwindcss')
+const { resolve } = require('path')
+const { mergeConfig } = require('vite')
 
-const { defineConfig, mergeConfig } = require('vite')
-
-const baseConfig = require('../vite.base.config')
+const baseConfig = require('./vite.base.config')
 
 
 module.exports = mergeConfig(baseConfig, {
     build: {
         lib: {
-            entry: path.resolve(__dirname, 'app.ts'),
+            entry: resolve(__dirname, 'app.ts'),
             name: 'App',
         },
     },
