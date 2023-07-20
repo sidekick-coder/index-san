@@ -11,7 +11,7 @@ async function main() {
     const packages = [
         '@index-san/core',
         '@index-san/app',
-        '@is/docs',
+        '@index-san/docs',
         '@index-san/electron',
         '@is/tauri',
     ]
@@ -20,7 +20,7 @@ async function main() {
     await command('npm test')
 
     // build docs
-    await command('npm -w @is/docs run generate')
+    await command('npm -w @index-san/docs run generate')
 
     // build app
     await command('npm run build')
