@@ -2,9 +2,8 @@ import { faker } from '@faker-js/faker'
 import { test, expect, describe, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
-import i18n from '@plugins/i18n'
 
-import type { VueWrapper, MountingOptions, ComponentMountingOptions } from '@vue/test-utils'
+import type { VueWrapper, ComponentMountingOptions } from '@vue/test-utils'
 
 import ViewTable from '@index-san/core/entities/view-table'
 import Collection from '@index-san/core/entities/collection'

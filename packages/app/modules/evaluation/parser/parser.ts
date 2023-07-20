@@ -1,4 +1,4 @@
-import { Lexer, TokenType } from '@language-kit/lexer'
+import { Lexer } from '@language-kit/lexer'
 import { Node } from '../types/node'
 import { Processor } from '../types/processor'
 import { ParserToken } from '../types/token'

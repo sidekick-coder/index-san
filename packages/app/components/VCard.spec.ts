@@ -1,9 +1,6 @@
 import { test, expect, describe, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
-import type { VueWrapper, MountingOptions } from '@vue/test-utils'
 
 import VCard from './VCard.vue'
-import VIcon from './VIcon.vue'
 import { useMountWrapper } from '__tests__/fixtures/component'
 
 describe('VCard.vue', () => {

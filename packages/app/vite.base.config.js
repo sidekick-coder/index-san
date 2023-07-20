@@ -1,7 +1,7 @@
 const path = require('path')
 const tailwindcss = require('tailwindcss')
 
-const { defineConfig, mergeConfig } = require('vite')
+const { defineConfig } = require('vite')
 
 const vue = require('@vitejs/plugin-vue')
 const Components = require('unplugin-vue-components/vite')

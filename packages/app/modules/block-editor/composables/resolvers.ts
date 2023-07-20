@@ -4,7 +4,6 @@ import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import { defineResolver } from '@modules/evaluation/helpers/define-resolver'
 import { useItemStore } from '@modules/item/store'
 
-
 export const resolvers = [
     defineResolver({
         test: (id) => id === 'app:drive',
@@ -40,7 +39,7 @@ export const resolvers = [
         test: (id) => id.startsWith('/'),
         resolve: async (id) => {
             const drive = useStore()
-            
+
             const bytes = await drive.read({
                 path: id,
             })

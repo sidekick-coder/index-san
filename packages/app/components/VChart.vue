@@ -4,9 +4,11 @@ import get from 'lodash/get'
 
 import { isJSON } from '@composables/utils'
 
+// eslint-disable-next-line
 // @ts-ignore
 import { Chart } from 'chart.js/auto'
 
+// eslint-disable-next-line
 // @ts-ignore
 import annotationPlugin from 'chartjs-plugin-annotation'
 

@@ -3,7 +3,6 @@ const { mergeConfig } = require('vite')
 
 const baseConfig = require('./vite.base.config')
 
-
 module.exports = mergeConfig(baseConfig, {
     build: {
         lib: {
@@ -12,4 +11,3 @@ module.exports = mergeConfig(baseConfig, {
         },
     },
 })
-

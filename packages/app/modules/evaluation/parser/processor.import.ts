@@ -1,6 +1,6 @@
 import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { NodeImport, NodeType, NodeVariable } from '../types/node'
+import { NodeImport, NodeType } from '../types/node'
 import { ParserToken } from '../types/token'
 
 const quotes = [`'`, `"`, '`']

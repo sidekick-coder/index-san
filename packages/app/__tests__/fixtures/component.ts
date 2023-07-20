@@ -1,4 +1,4 @@
-import { ComponentMountingOptions, VueWrapper, mount } from '@vue/test-utils'
+import { ComponentMountingOptions, mount } from '@vue/test-utils'
 import { DefineComponent } from 'vue'
 import merge from 'lodash/merge'
 

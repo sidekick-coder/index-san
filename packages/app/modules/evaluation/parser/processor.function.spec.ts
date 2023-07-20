@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
 import { createParser } from './parser'
-import { NodeFunction, NodeType, NodeVariable } from '../types/node'
+import { NodeFunction, NodeType } from '../types/node'
 
 describe('Processor Function', () => {
     const parser = createParser()

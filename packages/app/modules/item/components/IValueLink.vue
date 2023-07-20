@@ -29,7 +29,7 @@ const { payload, onLoaded, save } = createValue(props)
 
 await new Promise<void>((resolve) => onLoaded(resolve))
 
-const edit = ref(false)
+const innerEdit = ref(false)
 
 function isValid(url: any) {
     try {
@@ -101,7 +101,7 @@ const editValue = ref(false)
             size="sm"
             class="group-hover/input:opacity-100 opacity-0 ml-auto"
             color="b-secondary"
-            @click.stop="edit = true"
+            @click.stop="innerEdit = true"
         >
             <v-icon name="pen" />
         </v-btn>

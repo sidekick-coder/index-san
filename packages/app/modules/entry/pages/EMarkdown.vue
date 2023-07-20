@@ -5,7 +5,6 @@ export default {
 </script>
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import debounce from 'lodash/debounce'
 
 import DirectoryEntry from '@index-san/core/entities/directory-entry'
@@ -59,19 +58,6 @@ watch(() => props.path, setContent, {
 })
 
 watch(content, save)
-
-// save
-
-// mode
-const tm = useI18n()
-
-const mode = ref('edit')
-
-const modeLabels: Record<typeof mode.value, string> = {
-    'edit': tm.t('editMode'),
-    'side-by-side': tm.t('sideBySide'),
-    'view': tm.t('view'),
-}
 </script>
 <template>
     <m-editor v-if="!loading" v-model="content" />

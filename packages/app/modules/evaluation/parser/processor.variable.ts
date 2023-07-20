@@ -1,6 +1,6 @@
 import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { Node, NodeType, NodeVariable } from '../types/node'
+import { NodeType, NodeVariable } from '../types/node'
 import { ParserToken } from '../types/token'
 import { useTokenHelper } from '../helpers/token-helper'
 

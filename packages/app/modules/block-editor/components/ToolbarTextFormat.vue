@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useEventListener, useTextSelection } from '@vueuse/core'
+import { useEventListener } from '@vueuse/core'
 import ToolbarBtn from './ToolbarBtn.vue'
 
 const emit = defineEmits(['change'])

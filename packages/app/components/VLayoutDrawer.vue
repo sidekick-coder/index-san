@@ -84,7 +84,7 @@ const style = computed(() => {
         ref="root"
         class="absolute overflow-hidden top-0 h-full transition-transform duration-300 ease-in-out"
         :class="[right ? 'right-0' : 'left-0']"
-        :style="(style as any)"
+        :style="style as any"
     >
         <div
             class="w-full overflow-auto"

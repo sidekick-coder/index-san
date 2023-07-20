@@ -1,6 +1,6 @@
 import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { Node, NodeFunction, NodeType } from '../types/node'
+import { NodeFunction, NodeType } from '../types/node'
 import { ParserToken } from '../types/token'
 
 function findName(tokens: ParserToken[]) {

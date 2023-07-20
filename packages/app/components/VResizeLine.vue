@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import debounce from 'lodash/debounce'
+import lodashDebounce from 'lodash/debounce'
 
 import { useVModel } from 'vue-wind/composables/v-model'
 
@@ -31,7 +31,7 @@ const model = useVModel(props, 'modelValue', emit)
 
 const startWidth = ref(props.modelValue)
 
-const drag = debounce((event: MouseEvent) => {
+const drag = lodashDebounce((event: MouseEvent) => {
     const width = Math.abs(startWidth.value + event.clientX - state.value.x)
 
     if (width % 4 !== 0) {
@@ -45,7 +45,7 @@ const drag = debounce((event: MouseEvent) => {
     model.value = width
 }, props.debounce)
 
-const stop = debounce(() => {
+const stop = lodashDebounce(() => {
     startWidth.value = model.value
     moving.value = false
 
@@ -53,7 +53,7 @@ const stop = debounce(() => {
     window.removeEventListener('mouseup', stop, false)
 }, 50)
 
-const start = debounce((event: MouseEvent) => {
+const start = lodashDebounce((event: MouseEvent) => {
     moving.value = true
 
     state.value.x = event.clientX

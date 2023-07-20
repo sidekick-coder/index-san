@@ -1,5 +1,5 @@
 import { useMountWrapper } from '__tests__/fixtures/component'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { create, key } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'

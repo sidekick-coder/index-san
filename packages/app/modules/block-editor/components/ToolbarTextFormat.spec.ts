@@ -122,13 +122,15 @@ describe('ToolbarTextFormat (unit)', () => {
                 //
             }
 
-            vi.spyOn(document, 'addEventListener').mockImplementation((name, cb: () => void) => {
+            const implementation = (name: string, cb: () => void) => {
                 if (name === 'selectionchange') {
                     onSelectionChange = cb
                 }
-            })
+            }
 
-            const wrapper = component.mount({
+            vi.spyOn(document, 'addEventListener').mockImplementation(implementation as any)
+
+            component.mount({
                 attachTo: document.body,
             })
 

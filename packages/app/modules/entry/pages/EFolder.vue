@@ -519,7 +519,7 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                 >
                     <template #item="{ item, index, select }">
                         <v-tr
-                            :ref="(el: any) => trRef[index] = el"
+                            :ref="(el: any) => (trRef[index] = el)"
                             class="cursor-pointer hover:bg-b-secondary focus:outline-0"
                             :class="[selected.includes(index) ? 'bg-b-secondary' : '']"
                             tabindex="0"

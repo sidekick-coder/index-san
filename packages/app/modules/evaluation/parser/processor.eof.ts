@@ -1,6 +1,5 @@
 import { TokenType } from '@language-kit/lexer'
 import { defineProcessor } from '../helpers/define-processor'
-import { Node, NodeType } from '../types/node'
 
 export default defineProcessor({
     order: 98,

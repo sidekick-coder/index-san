@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import BlockHeading from './BlockHeading.vue'
-import BlockParagraph from './BlockParagraph.vue'
-import BlockScript from './BlockScript.vue'
-import BlockChart from './BlockChart.vue'
 import {
     MarkdownNode,
     MarkdownNodeComponent,

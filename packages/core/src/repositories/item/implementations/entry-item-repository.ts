@@ -13,7 +13,10 @@ interface ItemMeta {
 }
 
 export default class EntryItemRepository implements IItemRepository {
-    constructor(public collection: Collection, public readonly drive: Drive) {}
+    constructor(
+        public collection: Collection,
+        public readonly drive: Drive
+    ) {}
 
     public async listMetas(): Promise<ItemMeta[]> {
         const filename = DirectoryEntry.normalize(this.collection.path, '.is', 'metas.json')

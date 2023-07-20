@@ -5,7 +5,6 @@ import { useEvaluation } from '@modules/evaluation/composables/use-evaluation'
 import Block from './Block.vue'
 import ANSICard from '@modules/evaluation/components/ANSICard.vue'
 import ToolbarBtn from './ToolbarBtn.vue'
-import { useStore } from '@modules/entry/store'
 import { resolvers } from '@modules/block-editor/composables/resolvers'
 
 const MonacoEditor = defineAsyncComponent(
@@ -22,8 +21,6 @@ const running = ref(false)
 const code = ref(model.value.body)
 const evaluation = useEvaluation()
 const output = ref<string[]>([])
-
-const drive = useStore()
 
 evaluation.setResolvers(resolvers)
 
