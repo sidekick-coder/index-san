@@ -17,7 +17,11 @@ async function main() {
 
     fs.mkdirSync(outputFolder, { recursive: true })
 
-    // build app
+    // build core
+
+    await command('npm -w @index-san/core run build')
+
+    // build electron
 
     await command('npm -w @index-san/electron run build')
 
