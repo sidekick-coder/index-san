@@ -6,32 +6,8 @@ on:
     - '*'
 
 jobs:
-  ci:
-    name: ci
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20.4.0
-          cache: 'npm'
-
-      - name: install dependence 
-        run: npm install
-      
-      - name: lint
-        run: npm run lint
-
-      - name: build core
-        run: npm -w @index-san/core run build
-      
-      - name: test
-        run: npm test
-  
   build:
     name: build
-    needs: [ci]
     runs-on: windows-2022
     permissions:
       contents: write
@@ -43,14 +19,17 @@ jobs:
           node-version: 16
           cache: 'npm'
 
-      
-      - name: install dependence 
+      - name: install 
         run: npm install
       
       - name: build
         run: npm run build
+      
+      - name: changelog
+        run: npm run make:changelog
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      - uses: ncipollo/release-action@v1
         with:
-          path: artifacts/*
+          artifacts: "artifacts/*"
+          bodyFile: "CHANGELOG.md"
+          draft: true
