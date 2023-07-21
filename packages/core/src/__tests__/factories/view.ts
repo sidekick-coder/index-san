@@ -9,7 +9,7 @@ export const ViewFactory = new Factory<View>((data) => {
 
     return new View(
         {
-            label: faker.name.firstName(),
+            label: faker.person.firstName(),
             ...data,
         },
         id
@@ -21,7 +21,7 @@ export const ViewTableFactory = new Factory<ViewTable>((data) => {
 
     return new ViewTable(
         {
-            label: faker.name.firstName(),
+            label: faker.person.firstName(),
             ...data,
         },
         id

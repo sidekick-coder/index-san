@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { test, expect, describe, beforeEach, afterEach } from 'vitest'
+import { test, expect, describe, beforeAll, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
 
@@ -24,36 +24,54 @@ import { useItemStore } from '@modules/item/store'
 import { useViewStore } from '@modules/view/store'
 import { useApp } from '__tests__/fixtures/app'
 import Workspace from '@index-san/core/entities/workspace'
+import { waitFor } from '@composables/utils'
+import pinia from '@plugins/pinia'
+import { useMountWrapper } from '__tests__/fixtures/component'
 
 describe('CTable.vue', () => {
-    let wrapper: VueWrapper<InstanceType<typeof CTable>>
     let globalStore: ReturnType<typeof useStore>
+
+    const component = useMountWrapper(CTable, {
+        global: {
+            stubs: {
+                IValue: true,
+                CcColumn: true,
+                CActions: true,
+                WForm: true,
+                VMenu: {
+                    render() {
+                        return this.$slots.default?.()
+                    },
+                },
+            },
+        },
+    })
 
     const app = useApp()
 
     let workspace: Workspace
 
-    function createComponent(options?: ComponentMountingOptions<typeof CTable>) {
-        wrapper = mount(CTable, {
-            ...options,
-            global: {
-                stubs: {
-                    IValue: true,
-                    CcColumn: true,
-                    CActions: true,
-                    WForm: true,
-                    VMenu: {
-                        render() {
-                            return this.$slots.default?.()
-                        },
-                    },
-                },
-            },
-        })
-    }
+    beforeAll(async () => {
+        workspace = app.config.workspaceRepository.createFakeSync()
+
+        setActivePinia(createPinia())
+
+        globalStore = useStore()
+
+        globalStore.workspace.workspaces = [workspace]
+        globalStore.workspace.currentId = workspace.id
+
+        await globalStore.collection.setCollections()
+    })
+
+    afterEach(() => {
+        component.unmount()
+    })
 
     async function createCollection(data?: Partial<Collection>) {
         const collection = CollectionFactory.create(data)
+
+        await waitFor(() => !!globalStore.workspace.current)
 
         await globalStore.collection.create(collection)
 
@@ -71,66 +89,45 @@ describe('CTable.vue', () => {
     }
 
     function findActions() {
-        return wrapper.findComponent(CActions)
+        return component.wrapper!.findComponent(CActions)
     }
 
     function findColumns() {
-        return wrapper.findAllComponents(CColumn)
+        return component.wrapper!.findAllComponents(CColumn)
     }
 
     function findColumnResizeLines() {
-        return wrapper.findAllComponents(VResizeLine)
+        return component.wrapper!.findAllComponents(VResizeLine)
     }
 
     function findColumnsEmpty() {
-        return wrapper.find('[data-test-id=no-columns]')
+        return component.wrapper!.find('[data-test-id=no-columns]')
     }
 
     function findTableWrapper() {
-        return wrapper.find('[data-test-id=table-wrapper]')
+        return component.wrapper!.find('[data-test-id=table-wrapper]')
     }
 
     function findRowElements() {
-        return wrapper.findAll('[data-test-id=item-row]')
+        return component.wrapper!.findAll('[data-test-id=item-row]')
     }
 
     function findViewButton() {
-        return wrapper.find('[data-test-id=view-item]')
+        return component.wrapper!.find('[data-test-id=view-item]')
     }
 
     function findActionMenu() {
-        return wrapper.findComponent(VMenu)
+        return component.wrapper!.findComponent(VMenu)
     }
 
     function findValues() {
-        return wrapper.findAllComponents(IValue)
+        return component.wrapper!.findAllComponents(IValue)
     }
-
-    beforeEach(async () => {
-        workspace = app.config.workspaceRepository.createFakeSync()
-
-        setActivePinia(createPinia())
-
-        globalStore = useStore()
-
-        globalStore.workspace.workspaces = [workspace]
-        globalStore.workspace.currentId = workspace.id
-
-        await globalStore.collection.setCollections()
-
-        wrapper?.unmount()
-    })
-
-    afterEach(() => {
-        wrapper?.unmount()
-
-        app.config.clear()
-    })
 
     test('should set component height and width', async () => {
         const collection = await createCollection()
 
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 collectionId: collection.id,
                 height: 500,
@@ -146,7 +143,7 @@ describe('CTable.vue', () => {
     test('should show c-actions by default', async () => {
         const collection = await createCollection()
 
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 collectionId: collection.id,
             },
@@ -155,10 +152,26 @@ describe('CTable.vue', () => {
         expect(findActions().exists()).toBe(true)
     })
 
+    test('should table wrapper element have dynamic height if actions is showed', async () => {
+        const collection = await createCollection()
+
+        component.mount({
+            props: {
+                collectionId: collection.id,
+            },
+        })
+
+        await nextTick()
+
+        const classes = findTableWrapper().attributes('class') || ''
+
+        expect(classes.includes('h-[calc(100%_-_53px)]')).toBe(true)
+    })
+
     test('should hide c-actions when props hideActions is true', async () => {
         const collection = await createCollection()
 
-        createComponent({
+        component.mount({
             props: {
                 collectionId: collection.id,
                 hideActions: true,
@@ -168,26 +181,12 @@ describe('CTable.vue', () => {
         expect(findActions().exists()).toBe(false)
     })
 
-    test('should table wrapper element have dynamic height if actions is showed', async () => {
-        const collection = await createCollection()
-
-        createComponent({
-            props: {
-                collectionId: collection.id,
-            },
-        })
-
-        const classes = findTableWrapper().attributes('class') || ''
-
-        expect(classes.includes('h-[calc(100%_-_53px)]')).toBe(true)
-    })
-
     test('should render a c-column for each collection column', async () => {
         const collection = await createCollection({
             columns: ColumnFactory.createMany(20),
         })
 
-        createComponent({
+        component.mount({
             props: {
                 collectionId: collection.id,
             },
@@ -201,7 +200,7 @@ describe('CTable.vue', () => {
             columns: [],
         })
 
-        createComponent({
+        component.mount({
             props: {
                 collectionId: collection.id,
             },
@@ -223,7 +222,7 @@ describe('CTable.vue', () => {
             })),
         })
 
-        createComponent({
+        const wrapper = component.mount({
             props: {
                 collectionId: collection.id,
                 viewId: view.id,
@@ -240,7 +239,7 @@ describe('CTable.vue', () => {
             columns: ColumnFactory.createMany(20),
         })
 
-        createComponent({
+        component.mount({
             props: {
                 collectionId: collection.id,
             },
@@ -255,14 +254,14 @@ describe('CTable.vue', () => {
         })
 
         const items = ItemFactory.createMany(5, {
-            name: faker.name.firstName(),
+            name: faker.person.firstName(),
         })
 
         const store = useItemStore(collection.id)
 
         store.items = items
 
-        createComponent({
+        component.mount({
             props: {
                 collectionId: collection.id,
             },
@@ -288,14 +287,14 @@ describe('CTable.vue', () => {
         })
 
         const items = ItemFactory.createMany(5, {
-            name: faker.name.firstName(),
+            name: faker.person.firstName(),
         })
 
         const store = useItemStore(collection.id)
 
         store.items = items
 
-        createComponent({
+        component.mount({
             props: {
                 collectionId: collection.id,
             },

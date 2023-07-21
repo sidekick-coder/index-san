@@ -32,7 +32,7 @@ test.group('entry-item-repository (repository)', (group) => {
             .map(({ name }) => {
                 const item = new Item({}, name)
 
-                item.gender = faker.name.gender()
+                item.gender = faker.person.gender()
                 item.age = faker.datatype.number({ min: 1, max: 99 })
 
                 item._path = DirectoryEntry.normalize(collection.path, name)
