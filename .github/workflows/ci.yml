@@ -45,6 +45,11 @@ jobs:
 
       - name: install
         run: npm install
+
+      - name: build core
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: npm -w @index-san/core run build
       
       - name: lint
         run: npm -w @index-san/app run lint
