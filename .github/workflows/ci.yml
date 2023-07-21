@@ -31,3 +31,26 @@ jobs:
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: npm -w @index-san/core run build
+  
+  app:
+    name: app
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20.4.0
+          cache: 'npm'
+
+      - name: install
+        run: npm install
+      
+      - name: lint
+        run: npm -w @index-san/app run lint
+      
+      - name: test
+        run: npm -w @index-san/app run test
+      
+      - name: build
+        run: npm -w @index-san/app run build
