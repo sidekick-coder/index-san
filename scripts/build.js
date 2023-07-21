@@ -6,6 +6,7 @@ const fs = require('fs')
 const { command } = require('./utils')
 
 const BASE_PATH = path.resolve(__dirname, '..')
+const packageJSON = require(path.resolve(BASE_PATH, 'package.json'))
 
 async function main() {
     const appPath = path.resolve(BASE_PATH, 'packages', 'electron')
@@ -35,11 +36,15 @@ async function main() {
 
     const files = await fg(pattern)
 
-    await Promise.all(
-        files
-            .map((f) => f.split('/').join(path.sep))
-            .map((f) => fs.promises.rename(f, path.resolve(outputFolder, path.basename(f))))
-    )
+    const entries = files.map((f) => ({
+        source: f.split('/').join(path.sep),
+        destination: path.resolve(outputFolder, path.basename(f).replace('1.0.0', packageJSON.version)),
+    }))
+
+
+    for await (const entry of entries) {
+        await fs.promises.rename(entry.source, entry.destination)
+    }
 }
 
 main().catch((err) => {

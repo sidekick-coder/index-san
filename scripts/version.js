@@ -8,14 +8,6 @@ if (!versionName) {
 }
 
 async function main() {
-    const packages = [
-        '@index-san/core',
-        '@index-san/app',
-        '@index-san/docs',
-        '@index-san/electron',
-        '@is/tauri',
-    ]
-
     // test
     await command('npm run lint')
 
@@ -27,10 +19,6 @@ async function main() {
 
     // build app
     await command('npm run build')
-
-    for await (const name of packages) {
-        await command(`npm -w ${name} version ${versionName}`)
-    }
 
     await command(`npm version ${versionName} --git-tag-version false `)
 

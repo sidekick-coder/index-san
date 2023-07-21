@@ -1,6 +1,6 @@
 {
     "name": "@index-san/eslint-config",
-    "version": "0.9.12",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {},
     "devDependencies": {}
