@@ -1,9 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { test, expect, describe, beforeAll, afterEach } from 'vitest'
-import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
-
-import type { VueWrapper, ComponentMountingOptions } from '@vue/test-utils'
 
 import ViewTable from '@index-san/core/entities/view-table'
 import Collection from '@index-san/core/entities/collection'
@@ -25,7 +22,6 @@ import { useViewStore } from '@modules/view/store'
 import { useApp } from '__tests__/fixtures/app'
 import Workspace from '@index-san/core/entities/workspace'
 import { waitFor } from '@composables/utils'
-import pinia from '@plugins/pinia'
 import { useMountWrapper } from '__tests__/fixtures/component'
 
 describe('CTable.vue', () => {
@@ -143,7 +139,7 @@ describe('CTable.vue', () => {
     test('should show c-actions by default', async () => {
         const collection = await createCollection()
 
-        const wrapper = component.mount({
+        component.mount({
             props: {
                 collectionId: collection.id,
             },
@@ -222,7 +218,7 @@ describe('CTable.vue', () => {
             })),
         })
 
-        const wrapper = component.mount({
+        component.mount({
             props: {
                 collectionId: collection.id,
                 viewId: view.id,
