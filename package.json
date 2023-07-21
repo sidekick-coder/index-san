@@ -10,7 +10,8 @@
         "make:version": "node scripts/version.js",
         "make:use-case": "node scripts/new-use-case",
         "make:changelog": "node scripts/changelog",
-        "changelogen": "changelogen"
+        "changelogen": "changelogen",
+        "prepare": "husky install"
     },
     "author": "Henrique Oliveira",
     "license": "MIT",
@@ -39,7 +40,8 @@
         "typescript": "^4.9.5",
         "vite": "^4.2.1",
         "vitest": "^0.31.1",
-        "vue-tsc": "^1.2.0"
+        "vue-tsc": "^1.2.0",
+        "husky": "^8.0.0"
     },
     "dependencies": {
         "@vue/tsconfig": "^0.4.0",
