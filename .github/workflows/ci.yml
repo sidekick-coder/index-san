@@ -28,4 +28,6 @@ jobs:
         run: npm -w @index-san/core run test
       
       - name: build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: npm -w @index-san/core run build
