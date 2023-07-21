@@ -1,0 +1,16 @@
+{
+    "root": true,
+    "extends": [
+        "plugin:vue/vue3-recommended",
+        "@index-san/eslint-config/ts"
+    ],
+    "parser": "vue-eslint-parser",
+    "plugins": ["vue"],
+    "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "sourceType": "module"
+    },
+    "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+    }
+}

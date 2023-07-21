@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "vitest",
+    "lint": "eslint . --ext .vue,.ts,.js --max-warnings 0",
     "coverage": "vitest run --coverage",
     "build": "vue-tsc --noEmit && vite build",
     "tsc": "vue-tsc --noEmit"
@@ -37,6 +38,7 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@index-san/eslint-config": "^0.9.12",
     "@types/lodash": "^4.14.195",
     "@types/mime": "^3.0.1",
     "@vitejs/plugin-vue": "^4.2.3",
