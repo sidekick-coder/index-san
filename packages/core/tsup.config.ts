@@ -6,11 +6,12 @@ const files = fg.sync(['src/**/*.ts']).filter((f) => !/(spec)/.test(f))
 
 export default defineConfig({
     entry: files,
-    splitting: false,
-    sourcemap: true,
     clean: true,
     dts: true,
+    splitting: false,
+    sourcemap: false,
     bundle: false,
+    minify: false,
     format: ['esm', 'cjs'],
     tsconfig: path.resolve(__dirname, 'tsconfig.json'),
 })
