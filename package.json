@@ -1,6 +1,6 @@
 {
     "name": "index-san",
-    "version": "0.9.12",
+    "version": "0.9.12-alpha",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
         "lint": "npm -ws --if-present run lint",
