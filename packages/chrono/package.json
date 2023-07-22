@@ -1,0 +1,14 @@
+{
+  "name": "@index-san/chrono",
+  "version": "1.0.0",
+  "description": "Crono file version",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "vitest",
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
