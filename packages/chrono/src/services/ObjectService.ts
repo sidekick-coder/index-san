@@ -1,4 +1,5 @@
 import ChronoObject from "../entities/ChronoObject"
+import BaseException from "../exceptions/BaseException"
 import IDrive from "../gateways/IDrive"
 import IHash from "../gateways/IHash"
 
@@ -25,5 +26,28 @@ export default class ObjectService {
             hash,
             path
         }
+    }
+
+    public async hashAndSaveFile(path: string) {
+        // read file
+        const fileBytes = await this.drive.read(path)
+        
+        if (!fileBytes) throw new BaseException('File not found')
+
+        // create blob from file content
+        const blobHash = await this.hashService.hash(fileBytes)
+
+        // save blob to .chrono/blobs
+        await this.drive.write(this.drive.resolve('.chrono', 'blobs', blobHash), fileBytes)
+
+        // create object with link to blob
+        const object = new ChronoObject({
+            type: 'blob',
+            blobHash
+        })
+
+        await this.writeObject(object)        
+        
+        return object
     }
 }
