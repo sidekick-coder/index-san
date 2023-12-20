@@ -1,4 +1,4 @@
-import { IDrive } from "../gateways/IDrive";
+import IDrive from "../gateways/IDrive";
 
 interface InMemoryEntry {
     type: 'file' | 'directory'
@@ -13,7 +13,11 @@ export default class InMemoryDrive implements IDrive {
     public resolve(...args: string[]) {
         return args.join('/')
     }
-    
+
+    public clear() {
+        this.entries = []
+    }
+
     public async read(path: string): Promise<Uint8Array | null> {
         const entry = this.entries.find(entry => entry.path === path)
 

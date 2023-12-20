@@ -1,4 +1,4 @@
-import { IDrive } from "../gateways/IDrive";
+import IDrive from "../gateways/IDrive";
 
 export interface InitUseCaseParams {
     path: string    
