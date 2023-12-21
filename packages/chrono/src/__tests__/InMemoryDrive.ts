@@ -18,6 +18,10 @@ export default class InMemoryDrive implements IDrive {
         this.entries = []
     }
 
+    public async exists(path: string): Promise<boolean> {
+        return !!this.entries.find(entry => entry.path === path)
+    }
+
     public async read(path: string): Promise<Uint8Array | null> {
         const entry = this.entries.find(entry => entry.path === path)
 

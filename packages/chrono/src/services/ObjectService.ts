@@ -36,9 +36,18 @@ export default class ObjectService {
 
         // create blob from file content
         const blobHash = await this.hashService.hash(fileBytes)
+        const startHash = blobHash.slice(0, 2)
+        const endHash = blobHash.slice(2)
+        
+        const folderPath = this.drive.resolve('.chrono', 'blobs', startHash)
+        const filePath = this.drive.resolve(folderPath, endHash)
+
+        if (!await this.drive.exists(folderPath)) {
+            await this.drive.mkdir(folderPath)
+        }
 
         // save blob to .chrono/blobs
-        await this.drive.write(this.drive.resolve('.chrono', 'blobs', blobHash), fileBytes)
+        await this.drive.write(filePath, fileBytes)
 
         // create object with link to blob
         const object = new ChronoObject({
