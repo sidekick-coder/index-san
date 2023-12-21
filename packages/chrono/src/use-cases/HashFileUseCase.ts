@@ -16,10 +16,14 @@ export default class HashFileUseCase {
     ) {}
 
     public async execute({ path }: Params) {
+        if (!(await this.drive.exists(path))) {
+            throw new BaseException('File not found')
+        }
+
         const content = await this.drive.read(path)
 
         if (!content) {
-            throw new BaseException('File not found or can not be read')
+            throw new BaseException('File can not be read')
         }
 
         const { blobHash } = await this.blobRepository.save(content)

@@ -1,19 +1,23 @@
 import IDrive from './gateways/IDrive'
 import IHash from './gateways/IHash'
+import BlobRepositoryImpl from './repositories/BlobRepositoryImpl'
+import IBlobRepository from './repositories/IBlobRepository'
+import IObjectRepository from './repositories/IObjectRepository'
 import ObjectRepositoryImpl from './repositories/ObjectRepositoryImpl'
-import ObjectService from './services/ObjectService'
 import HashFileUseCase from './use-cases/HashFileUseCase'
 import InitUseCase from './use-cases/InitUseCase'
 
 export default class ChronoApp {
+    private readonly objectRepository: IObjectRepository
+    private readonly blobRepository: IBlobRepository
+
     constructor(
         private readonly drive: IDrive,
         private readonly hash: IHash
     ) {
-        this.objectService = new ObjectService(drive, hash)
+        this.objectRepository = new ObjectRepositoryImpl(drive, hash)
+        this.blobRepository = new BlobRepositoryImpl(drive, hash)
     }
-
-    public objectService: ObjectService
 
     public async init() {
         const useCase = new InitUseCase(this.drive)
@@ -22,9 +26,7 @@ export default class ChronoApp {
     }
 
     public async hashFile(path: string) {
-        const repository = new ObjectRepositoryImpl(this.drive, this.hash)
-
-        const useCase = new HashFileUseCase(this.drive, repository)
+        const useCase = new HashFileUseCase(this.drive, this.objectRepository, this.blobRepository)
 
         await useCase.execute({ path })
     }

@@ -9,4 +9,4 @@ const app = new ChronoApp(drive, hash)
 
 // app.init()
 
-app.objectService.hashAndSaveFile('message.md')
+app.hashFile('message.md')
