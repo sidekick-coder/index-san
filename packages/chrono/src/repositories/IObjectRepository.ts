@@ -1,4 +1,4 @@
-import ChronoObject from "../entities/ChronoObject"
+import ChronoObject from '../entities/ChronoObject'
 
 export default interface IObjectRepository {
     // exists(objectHash: string): Promise<boolean>

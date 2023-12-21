@@ -1,7 +1,7 @@
-import ChronoObject from "../entities/ChronoObject";
-import IDrive from "../gateways/IDrive";
-import IHash from "../gateways/IHash";
-import IObjectRepository from "./IObjectRepository";
+import ChronoObject from '../entities/ChronoObject'
+import IDrive from '../gateways/IDrive'
+import IHash from '../gateways/IHash'
+import IObjectRepository from './IObjectRepository'
 
 export default class ObjectRepositoryImpl implements IObjectRepository {
     constructor(
@@ -11,14 +11,14 @@ export default class ObjectRepositoryImpl implements IObjectRepository {
 
     public async save(chronoObject: ChronoObject) {
         const objectHash = await this.hash.hash(chronoObject.toBytes())
-        
+
         const startHash = objectHash.slice(0, 2)
         const endHash = objectHash.slice(2)
 
         const folderPath = this.drive.resolve('.chrono', 'objects', startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
-        if (!await this.drive.exists(folderPath)) {
+        if (!(await this.drive.exists(folderPath))) {
             await this.drive.mkdir(folderPath)
         }
 
@@ -36,7 +36,7 @@ export default class ObjectRepositoryImpl implements IObjectRepository {
         const folderPath = this.drive.resolve('.chrono', 'objects', startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
-        if (!await this.drive.exists(filePath)) {
+        if (!(await this.drive.exists(filePath))) {
             return null
         }
 

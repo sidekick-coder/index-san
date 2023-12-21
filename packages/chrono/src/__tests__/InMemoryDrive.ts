@@ -1,4 +1,4 @@
-import IDrive from "../gateways/IDrive";
+import IDrive from '../gateways/IDrive'
 
 interface InMemoryEntry {
     type: 'file' | 'directory'
@@ -7,7 +7,6 @@ interface InMemoryEntry {
 }
 
 export default class InMemoryDrive implements IDrive {
-
     public entries: InMemoryEntry[] = []
 
     public resolve(...args: string[]) {
@@ -19,11 +18,11 @@ export default class InMemoryDrive implements IDrive {
     }
 
     public async exists(path: string): Promise<boolean> {
-        return !!this.entries.find(entry => entry.path === path)
+        return !!this.entries.find((entry) => entry.path === path)
     }
 
     public async read(path: string): Promise<Uint8Array | null> {
-        const entry = this.entries.find(entry => entry.path === path)
+        const entry = this.entries.find((entry) => entry.path === path)
 
         if (!entry) {
             return null
@@ -33,25 +32,24 @@ export default class InMemoryDrive implements IDrive {
     }
 
     public async write(path: string, content: Uint8Array): Promise<void> {
-        const entry = this.entries.find(entry => entry.path === path)
+        const entry = this.entries.find((entry) => entry.path === path)
 
         if (entry) {
             entry.content = content
             return
         }
-        
+
         this.entries.push({
             type: 'file',
             path,
-            content
+            content,
         })
     }
 
     public async mkdir(path: string): Promise<void> {
         this.entries.push({
             type: 'directory',
-            path
+            path,
         })
     }
-
 }

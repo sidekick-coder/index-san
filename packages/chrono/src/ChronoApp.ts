@@ -1,9 +1,9 @@
-import IDrive from "./gateways/IDrive";
-import IHash from "./gateways/IHash";
-import ObjectRepositoryImpl from "./repositories/ObjectRepositoryImpl";
-import ObjectService from "./services/ObjectService";
-import HashFileUseCase from "./use-cases/HashFileUseCase";
-import InitUseCase from "./use-cases/InitUseCase";
+import IDrive from './gateways/IDrive'
+import IHash from './gateways/IHash'
+import ObjectRepositoryImpl from './repositories/ObjectRepositoryImpl'
+import ObjectService from './services/ObjectService'
+import HashFileUseCase from './use-cases/HashFileUseCase'
+import InitUseCase from './use-cases/InitUseCase'
 
 export default class ChronoApp {
     constructor(

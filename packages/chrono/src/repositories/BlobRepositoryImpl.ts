@@ -1,6 +1,6 @@
-import IDrive from "../gateways/IDrive";
-import IHash from "../gateways/IHash";
-import IBlobRepository from "./IBlobRepository";
+import IDrive from '../gateways/IDrive'
+import IHash from '../gateways/IHash'
+import IBlobRepository from './IBlobRepository'
 
 export default class BlobRepositoryImpl implements IBlobRepository {
     constructor(
@@ -17,7 +17,7 @@ export default class BlobRepositoryImpl implements IBlobRepository {
         const folderPath = this.drive.resolve('.chrono', 'blobs', startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
-        if (!await this.drive.exists(folderPath)) {
+        if (!(await this.drive.exists(folderPath))) {
             await this.drive.mkdir(folderPath)
         }
 
@@ -33,7 +33,7 @@ export default class BlobRepositoryImpl implements IBlobRepository {
         const folderPath = this.drive.resolve('.chrono', 'blobs', startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
-        if (!await this.drive.exists(filePath)) {
+        if (!(await this.drive.exists(filePath))) {
             return null
         }
 

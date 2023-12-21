@@ -1,23 +1,21 @@
-import ChronoObject from "../entities/ChronoObject";
-import BaseException from "../exceptions/BaseException";
-import IDrive from "../gateways/IDrive";
-import IHash from "../gateways/IHash";
-import IBlobRepository from "../repositories/IBlobRepository";
-import IObjectRepository from "../repositories/IObjectRepository";
+import ChronoObject from '../entities/ChronoObject'
+import BaseException from '../exceptions/BaseException'
+import IDrive from '../gateways/IDrive'
+import IBlobRepository from '../repositories/IBlobRepository'
+import IObjectRepository from '../repositories/IObjectRepository'
 
 interface Params {
     path: string
 }
 
 export default class HashFileUseCase {
-
     constructor(
         private readonly drive: IDrive,
         private readonly objectRepository: IObjectRepository,
-        private readonly blobRepository: IBlobRepository,
-    ){}
+        private readonly blobRepository: IBlobRepository
+    ) {}
 
-    public async execute({ path }: Params){        
+    public async execute({ path }: Params) {
         const content = await this.drive.read(path)
 
         if (!content) {
@@ -28,14 +26,14 @@ export default class HashFileUseCase {
 
         const blobObject = new ChronoObject({
             type: 'blob',
-            blobHash
+            blobHash,
         })
 
         const { objectHash } = await this.objectRepository.save(blobObject)
-        
+
         return {
             objectHash,
-            blobHash
+            blobHash,
         }
     }
 }
