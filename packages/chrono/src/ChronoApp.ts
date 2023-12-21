@@ -4,6 +4,7 @@ import BlobRepositoryImpl from './repositories/BlobRepositoryImpl'
 import IBlobRepository from './repositories/IBlobRepository'
 import IObjectRepository from './repositories/IObjectRepository'
 import ObjectRepositoryImpl from './repositories/ObjectRepositoryImpl'
+import CatFileUseCase from './use-cases/CatFileUseCase'
 import HashFileUseCase from './use-cases/HashFileUseCase'
 import InitUseCase from './use-cases/InitUseCase'
 
@@ -29,5 +30,11 @@ export default class ChronoApp {
         const useCase = new HashFileUseCase(this.drive, this.objectRepository, this.blobRepository)
 
         await useCase.execute({ path })
+    }
+
+    public async catFile(objectHash: string) {
+        const useCase = new CatFileUseCase(this.objectRepository)
+
+        return await useCase.execute({ objectHash })
     }
 }

@@ -1,4 +1,12 @@
 {
     "root": true,
-    "extends": "@index-san/eslint-config/ts"
+    "extends": "@index-san/eslint-config/ts",
+    "overrides": [
+        {
+            "files": ["playground/*.ts"],
+            "rules": {
+                "no-console": "off"
+            }
+        }
+    ]
 }
