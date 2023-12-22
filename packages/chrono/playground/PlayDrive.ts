@@ -23,6 +23,18 @@ export default class PlayDrive implements IDrive {
         })
     }
 
+    public async readdir(path: string) {
+        return fs.readdir(this.resolve(path))
+    }
+
+    public async isFile(path: string) {
+        return (await fs.stat(this.resolve(path))).isFile()
+    }
+
+    public async isDirectory(path: string) {
+        return (await fs.stat(this.resolve(path))).isDirectory()
+    }
+
     public async exists(path: string) {
         return fs
             .stat(this.resolve(path))

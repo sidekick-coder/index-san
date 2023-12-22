@@ -1,4 +1,5 @@
 import ChronoObject from '../entities/ChronoObject'
+import ChronoObjectTree, { ChronoObjectTreeEntry } from '../entities/ChronoObjectTree'
 import BaseException from '../exceptions/BaseException'
 import IDrive from '../gateways/IDrive'
 import IBlobRepository from '../repositories/IBlobRepository'
@@ -15,11 +16,7 @@ export default class HashFileUseCase {
         private readonly blobRepository: IBlobRepository
     ) {}
 
-    public async execute({ path }: Params) {
-        if (!(await this.drive.exists(path))) {
-            throw new BaseException('File not found')
-        }
-
+    public async hashFile(path: string) {
         const content = await this.drive.read(path)
 
         if (!content) {
@@ -28,16 +25,47 @@ export default class HashFileUseCase {
 
         const { blobHash } = await this.blobRepository.save(content)
 
-        const blobObject = new ChronoObject({
+        const blobObject = ChronoObject.from({
             type: 'blob',
             blobHash,
         })
 
-        const { objectHash } = await this.objectRepository.save(blobObject)
+        return await this.objectRepository.save(blobObject)
+    }
 
-        return {
-            objectHash,
-            blobHash,
+    public async hashDirectory(path: string) {
+        const entries = await this.drive.readdir(path)
+
+        const treeEntries = [] as ChronoObjectTreeEntry[]
+
+        for await (const entry of entries) {
+            const entryPath = this.drive.resolve(path, entry)
+
+            const isFile = await this.drive.isFile(entryPath)
+
+            const result = await this.execute({ path: entryPath })
+
+            treeEntries.push({
+                name: entry,
+                hash: result.objectHash,
+                type: isFile ? 'blob' : 'tree',
+            })
         }
+
+        const tree = ChronoObjectTree.fromEntries(treeEntries)
+
+        return await this.objectRepository.save(tree)
+    }
+
+    public async execute({ path }: Params) {
+        if (!(await this.drive.exists(path))) {
+            throw new BaseException('File not found')
+        }
+
+        if (await this.drive.isFile(path)) {
+            return this.hashFile(path)
+        }
+
+        return this.hashDirectory(path)
     }
 }

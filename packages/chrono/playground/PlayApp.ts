@@ -8,11 +8,19 @@ const hash = new PlayHash()
 const app = new ChronoApp(drive, hash)
 
 async function run() {
-    // app.init()
+    const command = process.argv[2]
 
-    // app.hashFile('message.md')
+    if (command === 'init') {
+        await app.init()
+    }
 
-    console.log(await app.catFile('1cd0ff195e53a0a31601aae77b23e20e63f6d244'))
+    if (command === 'hash') {
+        console.log(await app.hashFile(process.argv[3]))
+    }
+
+    if (command === 'cat') {
+        console.log(await app.catFile(process.argv[3]))
+    }
 }
 
 run()

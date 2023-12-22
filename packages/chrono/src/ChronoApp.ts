@@ -29,12 +29,12 @@ export default class ChronoApp {
     public async hashFile(path: string) {
         const useCase = new HashFileUseCase(this.drive, this.objectRepository, this.blobRepository)
 
-        await useCase.execute({ path })
+        return useCase.execute({ path })
     }
 
     public async catFile(objectHash: string) {
         const useCase = new CatFileUseCase(this.objectRepository)
 
-        return await useCase.execute({ objectHash })
+        return useCase.execute({ objectHash })
     }
 }

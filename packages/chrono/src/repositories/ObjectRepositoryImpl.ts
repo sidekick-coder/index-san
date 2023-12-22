@@ -1,4 +1,5 @@
 import ChronoObject from '../entities/ChronoObject'
+import ChronoObjectTree from '../entities/ChronoObjectTree'
 import IDrive from '../gateways/IDrive'
 import IHash from '../gateways/IHash'
 import IObjectRepository from './IObjectRepository'
@@ -34,7 +35,16 @@ export default class ObjectRepositoryImpl implements IObjectRepository {
         const endHash = objectHash.slice(2)
 
         const folderPath = this.drive.resolve('.chrono', 'objects', startHash)
-        const filePath = this.drive.resolve(folderPath, endHash)
+
+        const files = await this.drive.readdir(folderPath)
+
+        const search = files.find((file) => file.startsWith(endHash))
+
+        if (!search) {
+            return null
+        }
+
+        const filePath = this.drive.resolve(folderPath, search)
 
         if (!(await this.drive.exists(filePath))) {
             return null
@@ -46,6 +56,12 @@ export default class ObjectRepositoryImpl implements IObjectRepository {
             return null
         }
 
-        return ChronoObject.fromBytes(bytes)
+        const chronoObject = new ChronoObject(bytes)
+
+        if (chronoObject.type === 'tree') {
+            return new ChronoObjectTree(bytes)
+        }
+
+        return chronoObject
     }
 }

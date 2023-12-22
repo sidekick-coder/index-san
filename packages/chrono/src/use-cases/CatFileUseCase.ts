@@ -15,6 +15,6 @@ export default class CatFileUseCase {
             throw new BaseException(`Object ${objectHash} not found`)
         }
 
-        return object
+        return object.serialize()
     }
 }
