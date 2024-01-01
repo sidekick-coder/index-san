@@ -3,7 +3,7 @@ import InMemoryDrive from '../__tests__/InMemoryDrive'
 import HelperService from '../services/HelperService'
 import CatFileUseCase from './CatFileUseCase'
 import InMemoryHash from '../__tests__/InMemoryHash'
-import ObjectRepositoryImpl from '../repositories/ObjectRepositoryImpl'
+import ObjectRepositoryImpl from '../repositories/implementations/LocalObjectRepository'
 import ChronoObject from '../entities/ChronoObject'
 
 const drive = new InMemoryDrive()
@@ -17,7 +17,7 @@ describe('CatFileUseCase', () => {
         await drive.write('message.md', HelperService.encode('Hello World!'))
 
         const { objectHash } = await objectRepository.save(
-            new ChronoObject({
+            ChronoObject.from({
                 type: 'blob',
                 blobHash: '123',
             })
@@ -25,9 +25,7 @@ describe('CatFileUseCase', () => {
 
         const result = await useCase.execute({ objectHash })
 
-        expect(result).toEqual({
-            type: 'blob',
-            blobHash: '123',
-        })
+        expect(result.type).toEqual('blob')
+        expect(result.head.blobHash).toEqual('123')
     })
 })

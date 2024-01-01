@@ -3,28 +3,28 @@ import InMemoryDrive from '../__tests__/InMemoryDrive'
 import HelperService from '../services/HelperService'
 import HashFileUseCase from './HashFileUseCase'
 import InMemoryHash from '../__tests__/InMemoryHash'
-import ObjectRepositoryImpl from '../repositories/ObjectRepositoryImpl'
-import BlobRepositoryImpl from '../repositories/BlobRepositoryImpl'
+import LocalObjectRepository from '../repositories/implementations/LocalObjectRepository'
+import LocalBlobRepository from '../repositories/implementations/LocalBlobRepository'
 
 const drive = new InMemoryDrive()
 const hash = new InMemoryHash()
-const objectRepository = new ObjectRepositoryImpl(drive, hash)
-const blobRepository = new BlobRepositoryImpl(drive, hash)
+const objectRepository = new LocalObjectRepository(drive, hash)
+const blobRepository = new LocalBlobRepository(drive, hash)
 
 const useCase = new HashFileUseCase(drive, objectRepository, blobRepository)
 
 describe('HashFileUseCase', () => {
     test('should save a file object', async () => {
-        await drive.write('message.md', HelperService.encode('Hello World!'))
+        const messageContent = HelperService.encode('Hello World!')
 
-        const { objectHash, blobHash } = await useCase.execute({ path: 'message.md' })
+        await drive.write('message.md', messageContent)
+
+        const { objectHash } = await useCase.execute({ path: 'message.md' })
 
         const chronoObject = await objectRepository.find(objectHash)
 
-        expect(chronoObject).toEqual({
-            type: 'blob',
-            blobHash,
-        })
+        expect(chronoObject!.type).toEqual('blob')
+        expect(chronoObject!.head.blobHash).toEqual(await hash.hash(messageContent))
     })
 
     test('should save a file blob', async () => {
@@ -32,9 +32,11 @@ describe('HashFileUseCase', () => {
 
         await drive.write('message.md', messageContent)
 
-        const { blobHash } = await useCase.execute({ path: 'message.md' })
+        const { objectHash } = await useCase.execute({ path: 'message.md' })
 
-        const blobContests = await blobRepository.find(blobHash)
+        const chronoObject = await objectRepository.find(objectHash)
+
+        const blobContests = await blobRepository.find(chronoObject!.head.blobHash)
 
         expect(blobContests).toEqual(messageContent)
     })

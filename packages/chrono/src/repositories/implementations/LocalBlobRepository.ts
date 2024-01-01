@@ -1,8 +1,8 @@
-import IDrive from '../gateways/IDrive'
-import IHash from '../gateways/IHash'
-import IBlobRepository from './IBlobRepository'
+import IDrive from '../../gateways/IDrive'
+import IHash from '../../gateways/IHash'
+import IBlobRepository from '../IBlobRepository'
 
-export default class BlobRepositoryImpl implements IBlobRepository {
+export default class LocalBlobRepository implements IBlobRepository {
     constructor(
         private readonly drive: IDrive,
         private readonly hash: IHash

@@ -54,7 +54,7 @@ export default class HashFileUseCase {
 
         const tree = ChronoObjectTree.fromEntries(treeEntries)
 
-        return await this.objectRepository.save(tree)
+        return this.objectRepository.save(tree)
     }
 
     public async execute({ path }: Params) {

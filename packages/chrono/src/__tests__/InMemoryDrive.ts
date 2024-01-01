@@ -52,4 +52,31 @@ export default class InMemoryDrive implements IDrive {
             path,
         })
     }
+
+    public async readdir(path: string): Promise<string[]> {
+        return this.entries
+            .filter((entry) => entry.path.startsWith(path))
+            .map((entry) => entry.path.replace(path, '').slice(1))
+            .filter(Boolean)
+    }
+
+    public async isFile(path: string): Promise<boolean> {
+        const entry = this.entries.find((entry) => entry.path === path)
+
+        if (!entry) {
+            return false
+        }
+
+        return entry.type === 'file'
+    }
+
+    public async isDirectory(path: string): Promise<boolean> {
+        const entry = this.entries.find((entry) => entry.path === path)
+
+        if (!entry) {
+            return false
+        }
+
+        return entry.type === 'directory'
+    }
 }

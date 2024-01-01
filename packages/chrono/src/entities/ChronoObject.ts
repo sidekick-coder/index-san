@@ -52,7 +52,7 @@ export default class ChronoObject {
             content += `${snakeCase(key)}: ${value}\n`
         })
 
-        content += '\0'
+        content += ChronoObject.HEAD_SEPARATOR
 
         return new ChronoObject(content)
     }
