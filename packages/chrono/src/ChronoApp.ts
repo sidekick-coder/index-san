@@ -14,6 +14,7 @@ import CatFileUseCase from './use-cases/CatFileUseCase'
 import HashFileUseCase from './use-cases/HashFileUseCase'
 import RemoveStageItemUseCase from './use-cases/RemoveStageItemUseCase'
 import AddStateItemUseCase from './use-cases/AddStageItemUseCase'
+import CommitUseCase from './use-cases/CommitUseCase'
 
 export default class ChronoApp {
     private readonly objectRepository: IObjectRepository
@@ -59,7 +60,7 @@ export default class ChronoApp {
     }
 
     public async catEntry(objectHash: string) {
-        const useCase = new CatFileUseCase(this.objectTemporaryRepository)
+        const useCase = new CatFileUseCase(this.objectRepository, this.objectTemporaryRepository)
 
         return useCase.execute({ objectHash })
     }
@@ -79,5 +80,17 @@ export default class ChronoApp {
         const useCase = new RemoveStageItemUseCase(this.stageItemRepository)
 
         return useCase.execute({ path })
+    }
+
+    public async commit(message: string, body?: string) {
+        const useCase = new CommitUseCase(
+            this.objectRepository,
+            this.objectTemporaryRepository,
+            this.blobRepository,
+            this.blobTemporaryRepository,
+            this.stageItemRepository
+        )
+
+        return useCase.execute({ message, body })
     }
 }

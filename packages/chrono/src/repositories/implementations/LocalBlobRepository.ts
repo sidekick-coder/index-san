@@ -46,4 +46,20 @@ export default class LocalBlobRepository implements IBlobRepository {
 
         return bytes
     }
+
+    public findOrFail: IBlobRepository['findOrFail'] = async (blobHash) => {
+        const bytes = await this.find(blobHash)
+
+        if (!bytes) {
+            throw new Error(`Blob ${blobHash} not found`)
+        }
+
+        return bytes
+    }
+
+    public copyFrom: IBlobRepository['copyFrom'] = async (repository, blobHash) => {
+        const bytes = await repository.findOrFail(blobHash)
+
+        await this.save(bytes)
+    }
 }

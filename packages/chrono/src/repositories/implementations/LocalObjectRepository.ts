@@ -36,6 +36,10 @@ export default class LocalObjectRepository implements IObjectRepository {
 
         const folderPath = this.drive.resolve(this.directory, startHash)
 
+        if (!(await this.drive.exists(folderPath))) {
+            return null
+        }
+
         const files = await this.drive.readdir(folderPath)
 
         const search = files.find((file) => file.startsWith(endHash))
@@ -59,5 +63,21 @@ export default class LocalObjectRepository implements IObjectRepository {
         const chronoObject = new ChronoObject(bytes)
 
         return chronoObject
+    }
+
+    public findOrFail: IObjectRepository['findOrFail'] = async (objectHash) => {
+        const chronoObject = await this.find(objectHash)
+
+        if (!chronoObject) {
+            throw new Error(`Object ${objectHash} not found`)
+        }
+
+        return chronoObject
+    }
+
+    public copyFrom: IObjectRepository['copyFrom'] = async (repository, objectHash) => {
+        const chronoObject = await repository.findOrFail(objectHash)
+
+        await this.save(chronoObject)
     }
 }

@@ -45,7 +45,7 @@ export default class ChronoObject {
         }
     }
 
-    public static from(object: Record<string, any>) {
+    public static from(object: Record<string, any>, body?: string) {
         let content = ''
 
         Object.entries(object).forEach(([key, value]) => {
@@ -53,6 +53,10 @@ export default class ChronoObject {
         })
 
         content += ChronoObject.HEAD_SEPARATOR
+
+        if (body) {
+            content += body
+        }
 
         return new ChronoObject(content)
     }

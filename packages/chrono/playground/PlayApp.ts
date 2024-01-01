@@ -32,6 +32,10 @@ async function run() {
             name: 'remove',
             method: 'removeEntry',
         },
+        {
+            name: 'commit',
+            method: 'commit',
+        },
     ]
 
     const command = options.find((o) => o.name === commandName)

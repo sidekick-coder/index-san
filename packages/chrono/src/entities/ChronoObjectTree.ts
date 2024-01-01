@@ -1,9 +1,9 @@
 import ChronoObject from './ChronoObject'
 
 export interface ChronoObjectTreeEntry {
-    name: string
+    path: string
     hash: string
-    type: 'blob' | 'tree'
+    type: string
 }
 
 export default class ChronoObjectTree extends ChronoObject {
@@ -11,12 +11,12 @@ export default class ChronoObjectTree extends ChronoObject {
         const lines = this.body.split('\n').filter(Boolean)
 
         return lines.map((line) => {
-            const [type, hash, name] = line.split(' ')
+            const [type, hash, path] = line.split(' ')
 
             return {
                 type,
                 hash,
-                name,
+                path,
             }
         })
     }
@@ -32,7 +32,7 @@ export default class ChronoObjectTree extends ChronoObject {
         let content = 'type: tree' + ChronoObject.HEAD_SEPARATOR
 
         entries.forEach((entry) => {
-            content += `${entry.type} ${entry.hash} ${entry.name}\n`
+            content += `${entry.type} ${entry.hash} ${entry.path}\n`
         })
 
         return new ChronoObjectTree(content)

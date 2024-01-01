@@ -1,4 +1,3 @@
-import BaseException from '../exceptions/BaseException'
 import IObjectRepository from '../repositories/IObjectRepository'
 
 interface CatUseCaseParams {
@@ -6,15 +5,23 @@ interface CatUseCaseParams {
 }
 
 export default class CatFileUseCase {
-    constructor(private readonly objectRepository: IObjectRepository) {}
+    constructor(
+        private readonly objectRepository: IObjectRepository,
+        private readonly objectTemporaryRepository: IObjectRepository
+    ) {}
 
     async execute({ objectHash }: CatUseCaseParams) {
-        const object = await this.objectRepository.find(objectHash)
+        let result = await this.objectRepository.find(objectHash)
+        let isTemporary = false
 
-        if (!object) {
-            throw new BaseException(`Object ${objectHash} not found`)
+        if (!result) {
+            result = await this.objectTemporaryRepository.find(objectHash)
+            isTemporary = !!result
         }
 
-        return object.serialize()
+        return {
+            isTemporary,
+            object: result?.serialize() ?? null,
+        }
     }
 }
