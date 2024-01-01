@@ -10,6 +10,7 @@ import InitUseCase from './use-cases/InitUseCase'
 import AddFileToStagedUseCase from './use-cases/AddFileToStagedUseCase'
 import LocalStageItemRepository from './repositories/implementations/LocalStageItemRepository'
 import IStageItemRepository from './repositories/IStageItemRepository'
+import RemoveUseCase from './use-cases/RemoveUseCase'
 
 export default class ChronoApp {
     private readonly objectRepository: IObjectRepository
@@ -44,7 +45,7 @@ export default class ChronoApp {
         await useCase.execute()
     }
 
-    public async hashFile(path: string) {
+    public async hashEntry(path: string) {
         const useCase = new HashFileUseCase(
             this.drive,
             this.objectTemporaryRepository,
@@ -54,19 +55,25 @@ export default class ChronoApp {
         return useCase.execute({ path })
     }
 
-    public async catFile(objectHash: string) {
+    public async catEntry(objectHash: string) {
         const useCase = new CatFileUseCase(this.objectTemporaryRepository)
 
         return useCase.execute({ objectHash })
     }
 
-    public async add(path: string) {
+    public async addEntry(path: string) {
         const useCase = new AddFileToStagedUseCase(
             this.drive,
             this.stageItemRepository,
             this.objectTemporaryRepository,
             this.blobTemporaryRepository
         )
+
+        return useCase.execute({ path })
+    }
+
+    public async removeEntry(path: string) {
+        const useCase = new RemoveUseCase(this.stageItemRepository)
 
         return useCase.execute({ path })
     }

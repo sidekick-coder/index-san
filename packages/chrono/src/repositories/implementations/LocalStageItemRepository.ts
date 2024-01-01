@@ -9,6 +9,15 @@ export default class LocalStageItemRepository implements IStageItemRepository {
         private readonly filename = '.chrono/tmp/stage'
     ) {}
 
+    public async saveAll(items: ChronoStageItem[]) {
+        const content = items
+            .toSorted((a, b) => a.path.localeCompare(b.path))
+            .map((i) => `${i.type} ${i.hash} ${i.path}`)
+            .join('\n')
+
+        await this.drive.write(this.filename, HelperService.encode(content))
+    }
+
     public save: IStageItemRepository['save'] = async (item) => {
         const all = await this.findAll()
 
@@ -22,9 +31,7 @@ export default class LocalStageItemRepository implements IStageItemRepository {
             search.hash = item.hash
         }
 
-        const content = all.map((i) => `${i.type} ${i.hash} ${i.path}`).join('\n')
-
-        await this.drive.write(this.filename, HelperService.encode(content))
+        await this.saveAll(all)
     }
 
     public findAll: IStageItemRepository['findAll'] = async () => {
@@ -34,8 +41,9 @@ export default class LocalStageItemRepository implements IStageItemRepository {
 
         if (bytes) {
             const content = HelperService.decode(bytes)
+            const lines = content.split('\n').filter(Boolean)
 
-            for (const line of content.split('\n')) {
+            for (const line of lines) {
                 const [type, hash, path] = line.split(' ')
 
                 items.push(
@@ -48,6 +56,14 @@ export default class LocalStageItemRepository implements IStageItemRepository {
             }
         }
 
-        return items
+        return items.toSorted((a, b) => a.path.localeCompare(b.path))
+    }
+
+    public removeByPath: IStageItemRepository['removeByPath'] = async (path) => {
+        const all = await this.findAll()
+
+        const filtered = all.filter((i) => i.path !== path).filter((i) => !i.path.startsWith(path))
+
+        await this.saveAll(filtered)
     }
 }

@@ -8,23 +8,41 @@ const hash = new PlayHash()
 const app = new ChronoApp(drive, hash)
 
 async function run() {
-    const command = process.argv[2]
+    const commandName = process.argv[2]
+    const commandArgs = process.argv.slice(3)
 
-    if (command === 'init') {
-        await app.init()
+    const options = [
+        {
+            name: 'init',
+            method: 'init',
+        },
+        {
+            name: 'hash',
+            method: 'hashEntry',
+        },
+        {
+            name: 'cat',
+            method: 'catEntry',
+        },
+        {
+            name: 'add',
+            method: 'addEntry',
+        },
+        {
+            name: 'remove',
+            method: 'removeEntry',
+        },
+    ]
+
+    const command = options.find((o) => o.name === commandName)
+
+    if (!command) {
+        console.log('Invalid command')
+
+        return
     }
 
-    if (command === 'hash') {
-        console.log(await app.hashFile(process.argv[3]))
-    }
-
-    if (command === 'cat') {
-        console.log(await app.catFile(process.argv[3]))
-    }
-
-    if (command === 'add') {
-        console.log(await app.add(process.argv[3]))
-    }
+    console.log(await app[command.method](...commandArgs))
 }
 
 run()

@@ -28,11 +28,13 @@ export default class AddFileToStagedUseCase {
 
         const { objectHash: rootHash } = await this.hashFileUseCase.execute({ path: rootPath })
 
-        const tree = (await this.objectRepository.find(rootHash)) as ChronoObjectTree
+        const chronoObject = await this.objectRepository.find(rootHash)
 
-        if (!tree || tree.type !== 'tree') {
+        if (!chronoObject || chronoObject.type !== 'tree') {
             throw new BaseException()
         }
+
+        const tree = new ChronoObjectTree(chronoObject.content)
 
         items.push(ChronoStageItem.from({ type: 'tree', hash: rootHash, path: rootPath }))
 
