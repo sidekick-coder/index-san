@@ -5,7 +5,8 @@ import IBlobRepository from '../IBlobRepository'
 export default class LocalBlobRepository implements IBlobRepository {
     constructor(
         private readonly drive: IDrive,
-        private readonly hash: IHash
+        private readonly hash: IHash,
+        private readonly directory = '.chrono/blobs'
     ) {}
 
     public save: IBlobRepository['save'] = async (content) => {
@@ -14,7 +15,7 @@ export default class LocalBlobRepository implements IBlobRepository {
         const startHash = blobHash.slice(0, 2)
         const endHash = blobHash.slice(2)
 
-        const folderPath = this.drive.resolve('.chrono', 'blobs', startHash)
+        const folderPath = this.drive.resolve(this.directory, startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
         if (!(await this.drive.exists(folderPath))) {
@@ -30,7 +31,7 @@ export default class LocalBlobRepository implements IBlobRepository {
         const startHash = blobHash.slice(0, 2)
         const endHash = blobHash.slice(2)
 
-        const folderPath = this.drive.resolve('.chrono', 'blobs', startHash)
+        const folderPath = this.drive.resolve(this.directory, startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
         if (!(await this.drive.exists(filePath))) {
