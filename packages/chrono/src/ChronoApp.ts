@@ -1,16 +1,19 @@
 import IDrive from './gateways/IDrive'
 import IHash from './gateways/IHash'
-import LocalBlobRepository from './repositories/implementations/LocalBlobRepository'
+
 import IBlobRepository from './repositories/IBlobRepository'
 import IObjectRepository from './repositories/IObjectRepository'
+import IStageItemRepository from './repositories/IStageItemRepository'
+
 import LocalObjectRepository from './repositories/implementations/LocalObjectRepository'
+import LocalBlobRepository from './repositories/implementations/LocalBlobRepository'
+import LocalStageItemRepository from './repositories/implementations/LocalStageItemRepository'
+
+import InitUseCase from './use-cases/InitUseCase'
 import CatFileUseCase from './use-cases/CatFileUseCase'
 import HashFileUseCase from './use-cases/HashFileUseCase'
-import InitUseCase from './use-cases/InitUseCase'
-import AddFileToStagedUseCase from './use-cases/AddFileToStagedUseCase'
-import LocalStageItemRepository from './repositories/implementations/LocalStageItemRepository'
-import IStageItemRepository from './repositories/IStageItemRepository'
-import RemoveUseCase from './use-cases/RemoveUseCase'
+import RemoveStageItemUseCase from './use-cases/RemoveStageItemUseCase'
+import AddStateItemUseCase from './use-cases/AddStageItemUseCase'
 
 export default class ChronoApp {
     private readonly objectRepository: IObjectRepository
@@ -62,7 +65,7 @@ export default class ChronoApp {
     }
 
     public async addEntry(path: string) {
-        const useCase = new AddFileToStagedUseCase(
+        const useCase = new AddStateItemUseCase(
             this.drive,
             this.stageItemRepository,
             this.objectTemporaryRepository,
@@ -73,7 +76,7 @@ export default class ChronoApp {
     }
 
     public async removeEntry(path: string) {
-        const useCase = new RemoveUseCase(this.stageItemRepository)
+        const useCase = new RemoveStageItemUseCase(this.stageItemRepository)
 
         return useCase.execute({ path })
     }

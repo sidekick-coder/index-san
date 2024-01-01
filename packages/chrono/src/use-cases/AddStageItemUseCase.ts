@@ -11,7 +11,7 @@ interface Params {
     path: string
 }
 
-export default class AddFileToStagedUseCase {
+export default class AddStateItemUseCase {
     private hashFileUseCase: HashFileUseCase
 
     constructor(

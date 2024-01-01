@@ -4,7 +4,7 @@ interface Params {
     path: string
 }
 
-export default class RemoveUseCase {
+export default class RemoveStageItemUseCase {
     constructor(private readonly stageItemRepository: IStageItemRepository) {}
 
     async execute({ path }: Params) {
