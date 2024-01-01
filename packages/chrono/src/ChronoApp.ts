@@ -7,6 +7,9 @@ import LocalObjectRepository from './repositories/implementations/LocalObjectRep
 import CatFileUseCase from './use-cases/CatFileUseCase'
 import HashFileUseCase from './use-cases/HashFileUseCase'
 import InitUseCase from './use-cases/InitUseCase'
+import AddFileToStagedUseCase from './use-cases/AddFileToStagedUseCase'
+import LocalStageItemRepository from './repositories/implementations/LocalStageItemRepository'
+import IStageItemRepository from './repositories/IStageItemRepository'
 
 export default class ChronoApp {
     private readonly objectRepository: IObjectRepository
@@ -14,6 +17,8 @@ export default class ChronoApp {
 
     private readonly objectTemporaryRepository: IObjectRepository
     private readonly blobTemporaryRepository: IBlobRepository
+
+    private readonly stageItemRepository: IStageItemRepository
 
     constructor(
         private readonly drive: IDrive,
@@ -29,6 +34,8 @@ export default class ChronoApp {
         )
 
         this.blobTemporaryRepository = new LocalBlobRepository(drive, hash, '.chrono/tmp/blobs')
+
+        this.stageItemRepository = new LocalStageItemRepository(drive)
     }
 
     public async init() {
@@ -51,5 +58,16 @@ export default class ChronoApp {
         const useCase = new CatFileUseCase(this.objectTemporaryRepository)
 
         return useCase.execute({ objectHash })
+    }
+
+    public async add(path: string) {
+        const useCase = new AddFileToStagedUseCase(
+            this.drive,
+            this.stageItemRepository,
+            this.objectTemporaryRepository,
+            this.blobTemporaryRepository
+        )
+
+        return useCase.execute({ path })
     }
 }

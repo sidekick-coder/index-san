@@ -21,6 +21,10 @@ async function run() {
     if (command === 'cat') {
         console.log(await app.catFile(process.argv[3]))
     }
+
+    if (command === 'add') {
+        console.log(await app.add(process.argv[3]))
+    }
 }
 
 run()

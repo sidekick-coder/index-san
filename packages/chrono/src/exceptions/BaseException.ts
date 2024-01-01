@@ -1,5 +1,5 @@
 export default class BaseException extends Error {
-    constructor(message: string, data?: any) {
+    constructor(message = 'Some error happen', data?: any) {
         super(message)
 
         this.message = message

@@ -1,5 +1,4 @@
 import ChronoObject from '../../entities/ChronoObject'
-import ChronoObjectTree from '../../entities/ChronoObjectTree'
 import IDrive from '../../gateways/IDrive'
 import IHash from '../../gateways/IHash'
 import IObjectRepository from '../IObjectRepository'
@@ -11,7 +10,7 @@ export default class LocalObjectRepository implements IObjectRepository {
         private readonly directory = '.chrono/objects'
     ) {}
 
-    public async save(chronoObject: ChronoObject) {
+    public save: IObjectRepository['save'] = async (chronoObject) => {
         const objectHash = await this.hash.hash(chronoObject.toBytes())
 
         const startHash = objectHash.slice(0, 2)
@@ -31,7 +30,7 @@ export default class LocalObjectRepository implements IObjectRepository {
         }
     }
 
-    public async find(objectHash: string) {
+    public find: IObjectRepository['find'] = async (objectHash) => {
         const startHash = objectHash.slice(0, 2)
         const endHash = objectHash.slice(2)
 
@@ -58,10 +57,6 @@ export default class LocalObjectRepository implements IObjectRepository {
         }
 
         const chronoObject = new ChronoObject(bytes)
-
-        if (chronoObject.type === 'tree') {
-            return new ChronoObjectTree(bytes)
-        }
 
         return chronoObject
     }
