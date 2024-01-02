@@ -11,7 +11,7 @@ interface Params {
     path: string
 }
 
-export default class AddStateItemUseCase {
+export default class AddStageItemUseCase {
     private hashFileUseCase: HashFileUseCase
 
     constructor(
@@ -39,7 +39,7 @@ export default class AddStateItemUseCase {
         items.push(ChronoStageItem.from({ type: 'tree', hash: rootHash, path: rootPath }))
 
         for (const entry of tree.entries) {
-            const entryPath = `${rootPath}/${entry.name}`
+            const entryPath = `${rootPath}/${entry.path}`
 
             if (entry.type === 'blob') {
                 const { objectHash } = await this.hashFileUseCase.execute({ path: entryPath })
