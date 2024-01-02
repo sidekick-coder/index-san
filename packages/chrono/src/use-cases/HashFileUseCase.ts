@@ -46,7 +46,7 @@ export default class HashFileUseCase {
             const result = await this.execute({ path: entryPath })
 
             treeEntries.push({
-                name: entry,
+                path: entry,
                 hash: result.objectHash,
                 type: isFile ? 'blob' : 'tree',
             })

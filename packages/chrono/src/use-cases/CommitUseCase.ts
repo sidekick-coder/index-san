@@ -1,8 +1,10 @@
 import ChronoObject from '../entities/ChronoObject'
 import ChronoObjectTree from '../entities/ChronoObjectTree'
+import IDrive from '../gateways/IDrive'
 import IBlobRepository from '../repositories/IBlobRepository'
 import IObjectRepository from '../repositories/IObjectRepository'
 import IStageItemRepository from '../repositories/IStageItemRepository'
+import HelperService from '../services/HelperService'
 import HashFileUseCase from './HashFileUseCase'
 
 interface Params {
@@ -14,10 +16,9 @@ export default class CommitUseCase {
     public hashFileUseCase: HashFileUseCase
 
     constructor(
+        private readonly drive: IDrive,
         private readonly objectRepository: IObjectRepository,
-        private readonly objectTemporaryRepository: IObjectRepository,
         private readonly blobRepository: IBlobRepository,
-        private readonly blobTemporaryRepository: IBlobRepository,
         private readonly stageItemRepository: IStageItemRepository
     ) {}
 
@@ -25,25 +26,12 @@ export default class CommitUseCase {
         // get stage
         const items = await this.stageItemRepository.findAll()
 
-        // copy objects & blobs from .chrono/tmp to .chrono/objects & .chrono/blobs
-        for await (const item of items) {
-            const object = await this.objectTemporaryRepository.findOrFail(item.hash)
-            await this.objectRepository.copyFrom(this.objectTemporaryRepository, item.hash)
-
-            if (object.type === 'blob') {
-                await this.blobRepository.copyFrom(
-                    this.blobTemporaryRepository,
-                    object.head.blobHash
-                )
-            }
-        }
-
-        // create tree
+        // create & save tree
         const tree = ChronoObjectTree.fromEntries(items)
 
         const { objectHash: treeHash } = await this.objectRepository.save(tree)
-        // create commit
 
+        // create commit
         const commit = ChronoObject.from(
             {
                 type: 'commit',
@@ -54,6 +42,14 @@ export default class CommitUseCase {
             body
         )
 
-        return this.objectRepository.save(commit)
+        const result = await this.objectRepository.save(commit)
+
+        // update HEAD
+        await this.drive.write('.chrono/HEAD', HelperService.encode(result.objectHash))
+
+        // clear stage
+        await this.stageItemRepository.saveAll([])
+
+        return commit
     }
 }

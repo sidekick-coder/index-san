@@ -1,5 +1,6 @@
 import BaseException from '../exceptions/BaseException'
 import IDrive from '../gateways/IDrive'
+import HelperService from '../services/HelperService'
 
 export default class InitUseCase {
     constructor(private readonly drive: IDrive) {}
@@ -11,10 +12,12 @@ export default class InitUseCase {
             throw new BaseException('Chrono already initialized')
         }
 
-        const folders = ['.chrono', '.chrono/objects', '.chrono/blobs']
+        await this.drive.mkdir('.chrono')
+        await this.drive.mkdir('.chrono/objects')
+        await this.drive.mkdir('.chrono/blobs')
+        await this.drive.mkdir('.chrono/stage')
 
-        for (const folder of folders) {
-            await this.drive.mkdir(folder)
-        }
+        await this.drive.write('.chrono/head', HelperService.encode(''))
+        await this.drive.write('.chrono/stage/index', HelperService.encode(''))
     }
 }

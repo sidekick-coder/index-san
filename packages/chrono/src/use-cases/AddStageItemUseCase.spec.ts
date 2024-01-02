@@ -4,7 +4,6 @@ import HelperService from '../services/HelperService'
 import AddStageItemUseCase from './AddStageItemUseCase'
 import InMemoryHash from '../__tests__/InMemoryHash'
 import LocalObjectRepository from '../repositories/implementations/LocalObjectRepository'
-import ChronoObject from '../entities/ChronoObject'
 import LocalStageItemRepository from '../repositories/implementations/LocalStageItemRepository'
 import LocalBlobRepository from '../repositories/implementations/LocalBlobRepository'
 

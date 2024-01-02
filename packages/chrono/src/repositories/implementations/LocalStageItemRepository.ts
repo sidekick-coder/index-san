@@ -6,10 +6,10 @@ import IStageItemRepository from '../IStageItemRepository'
 export default class LocalStageItemRepository implements IStageItemRepository {
     constructor(
         private readonly drive: IDrive,
-        private readonly filename = '.chrono/tmp/stage'
+        private readonly filename = '.chrono/stage/index'
     ) {}
 
-    public async saveAll(items: ChronoStageItem[]) {
+    public saveAll: IStageItemRepository['saveAll'] = async (items) => {
         const content = items
             .toSorted((a, b) => a.path.localeCompare(b.path))
             .map((i) => `${i.type} ${i.hash} ${i.path}`)
