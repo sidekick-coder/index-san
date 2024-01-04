@@ -1,6 +1,7 @@
 import IDrive from '../src/gateways/IDrive'
 import path from 'path'
 import fs from 'fs/promises'
+import fg from 'fast-glob'
 
 export default class PlayDrive implements IDrive {
     public basePath = path.resolve(__dirname, '.data')
@@ -23,7 +24,17 @@ export default class PlayDrive implements IDrive {
         })
     }
 
-    public async readdir(path: string) {
+    public readdir: IDrive['readdir'] = async (path, options) => {
+        if (options?.recursive) {
+            return fg('**/*', {
+                cwd: this.resolve(path),
+                onlyFiles: options.onlyFiles,
+                onlyDirectories: options.onlyDirectories,
+                dot: true,
+                ignore: options.exclude,
+            })
+        }
+
         return fs.readdir(this.resolve(path))
     }
 

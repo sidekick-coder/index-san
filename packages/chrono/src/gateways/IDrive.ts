@@ -1,3 +1,10 @@
+interface ReadDirOptions {
+    recursive?: boolean
+    exclude?: string[]
+    onlyFiles?: boolean
+    onlyDirectories?: boolean
+}
+
 export default interface IDrive {
     resolve: (...args: string[]) => string
 
@@ -5,7 +12,7 @@ export default interface IDrive {
     write: (path: string, content: Uint8Array) => Promise<void>
 
     mkdir: (path: string) => Promise<void>
-    readdir: (path: string) => Promise<string[]>
+    readdir: (path: string, options?: ReadDirOptions) => Promise<string[]>
     exists: (path: string) => Promise<boolean>
 
     isFile: (path: string) => Promise<boolean>
