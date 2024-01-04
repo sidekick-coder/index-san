@@ -11,16 +11,24 @@ import LocalStageItemRepository from './repositories/implementations/LocalStageI
 
 import InitUseCase from './use-cases/InitUseCase'
 import CatFileUseCase from './use-cases/CatFileUseCase'
-import HashFileUseCase from './use-cases/HashFileUseCase'
-import RemoveStageItemUseCase from './use-cases/RemoveStageItemUseCase'
-import AddStageItemUseCase from './use-cases/AddStageItemUseCase'
+import HashFileUseCase from './use-cases/HashEntryUseCase'
+import RemoveUseCase from './use-cases/RemoveUseCase'
 import CommitUseCase from './use-cases/CommitUseCase'
+import StatusUseCase from './use-cases/StatusUseCase'
+import IEntryRepository from './repositories/IEntryRepository'
+import LocalEntryRepository from './repositories/implementations/LocalEntryRepository'
+import AddUseCase from './use-cases/AddUseCase'
+import ListFilesUseCase from './use-cases/ListFilesUseCase'
+import HashEntryService from './services/HashEntryService'
 
 export default class ChronoApp {
     private readonly objectRepository: IObjectRepository
     private readonly blobRepository: IBlobRepository
 
     private readonly stageItemRepository: IStageItemRepository
+    private readonly entryRepository: IEntryRepository
+
+    private readonly hashEntryService: HashEntryService
 
     constructor(
         private readonly drive: IDrive,
@@ -30,6 +38,13 @@ export default class ChronoApp {
         this.blobRepository = new LocalBlobRepository(drive, hash)
 
         this.stageItemRepository = new LocalStageItemRepository(drive)
+        this.entryRepository = new LocalEntryRepository(drive, hash)
+
+        this.hashEntryService = new HashEntryService(
+            drive,
+            this.objectRepository,
+            this.blobRepository
+        )
     }
 
     public async init() {
@@ -51,20 +66,26 @@ export default class ChronoApp {
     }
 
     public async addEntry(path: string) {
-        const useCase = new AddStageItemUseCase(
+        const useCase = new AddUseCase(
             this.drive,
-            this.stageItemRepository,
             this.objectRepository,
-            this.blobRepository
+            this.blobRepository,
+            this.entryRepository
         )
 
         return useCase.execute({ path })
     }
 
     public async removeEntry(path: string) {
-        const useCase = new RemoveStageItemUseCase(this.stageItemRepository)
+        const useCase = new RemoveUseCase(this.drive, this.entryRepository)
 
         return useCase.execute({ path })
+    }
+
+    public async list() {
+        const useCase = new ListFilesUseCase(this.entryRepository)
+
+        return useCase.execute()
     }
 
     public async commit(message: string, body?: string) {
@@ -72,9 +93,15 @@ export default class ChronoApp {
             this.drive,
             this.objectRepository,
             this.blobRepository,
-            this.stageItemRepository
+            this.entryRepository
         )
 
         return useCase.execute({ message, body })
+    }
+
+    public async status() {
+        const useCase = new StatusUseCase(this.drive, this.entryRepository)
+
+        return useCase.execute()
     }
 }

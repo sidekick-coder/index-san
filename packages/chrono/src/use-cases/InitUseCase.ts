@@ -18,6 +18,6 @@ export default class InitUseCase {
         await this.drive.mkdir('.chrono/stage')
 
         await this.drive.write('.chrono/head', HelperService.encode(''))
-        await this.drive.write('.chrono/stage/index', HelperService.encode(''))
+        await this.drive.write('.chrono/index', HelperService.encode('[]'))
     }
 }
