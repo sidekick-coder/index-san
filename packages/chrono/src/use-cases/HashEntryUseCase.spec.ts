@@ -1,7 +1,7 @@
 import { test, expect, describe } from 'vitest'
 import InMemoryDrive from '../__tests__/InMemoryDrive'
 import HelperService from '../services/HelperService'
-import HashFileUseCase from './HashFileUseCase'
+import HashEntryUseCase from './HashEntryUseCase'
 import InMemoryHash from '../__tests__/InMemoryHash'
 import LocalObjectRepository from '../repositories/implementations/LocalObjectRepository'
 import LocalBlobRepository from '../repositories/implementations/LocalBlobRepository'
@@ -11,9 +11,9 @@ const hash = new InMemoryHash()
 const objectRepository = new LocalObjectRepository(drive, hash)
 const blobRepository = new LocalBlobRepository(drive, hash)
 
-const useCase = new HashFileUseCase(drive, objectRepository, blobRepository)
+const useCase = new HashEntryUseCase(drive, objectRepository, blobRepository)
 
-describe('HashFileUseCase', () => {
+describe('HashEntryUseCase', () => {
     test('should save a file object', async () => {
         const messageContent = HelperService.encode('Hello World!')
 

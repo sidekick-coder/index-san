@@ -5,11 +5,7 @@ import IDrive from '../gateways/IDrive'
 import IBlobRepository from '../repositories/IBlobRepository'
 import IObjectRepository from '../repositories/IObjectRepository'
 
-interface Params {
-    path: string
-}
-
-export default class HashFileUseCase {
+export default class HashEntryService {
     constructor(
         private readonly drive: IDrive,
         private readonly objectRepository: IObjectRepository,
@@ -43,7 +39,7 @@ export default class HashFileUseCase {
 
             const isFile = await this.drive.isFile(entryPath)
 
-            const result = await this.execute({ path: entryPath })
+            const result = await this.hashEntry(entryPath)
 
             treeEntries.push({
                 path: entry,
@@ -57,7 +53,7 @@ export default class HashFileUseCase {
         return this.objectRepository.save(tree)
     }
 
-    public async execute({ path }: Params) {
+    public async hashEntry(path: string) {
         if (!(await this.drive.exists(path))) {
             throw new BaseException('File not found')
         }
