@@ -27,4 +27,8 @@ export default class IndexEntry {
     public static from({ path, hash, status }: Pick<IndexEntry, 'path' | 'hash' | 'status'>) {
         return new IndexEntry(path, hash, status)
     }
+
+    public isChanged() {
+        return [IndexEntryStatus.Added, IndexEntryStatus.Modified].includes(this.status)
+    }
 }

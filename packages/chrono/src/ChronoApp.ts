@@ -62,14 +62,19 @@ export default class ChronoApp {
             this.drive,
             this.objectRepository,
             this.blobRepository,
-            this.indexEntryRepository
+            this.indexEntryRepository,
+            this.headEntryRepository
         )
 
         return useCase.execute({ path })
     }
 
     public async removeEntry(path: string) {
-        const useCase = new RemoveUseCase(this.drive, this.indexEntryRepository)
+        const useCase = new RemoveUseCase(
+            this.drive,
+            this.indexEntryRepository,
+            this.headEntryRepository
+        )
 
         return useCase.execute({ path })
     }

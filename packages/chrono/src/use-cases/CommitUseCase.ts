@@ -140,17 +140,26 @@ export default class CommitUseCase {
 
         const { objectHash: rooTreeHash } = await this.objectRepository.save(rootTree)
 
-        const commit = ChronoObjectCommit.from({
+        const payload: any = {
             message,
             tree: rooTreeHash,
-        })
+        }
+
+        const headContents = await this.drive.read('.chrono/head')
+        const headHash = HelperService.decode(headContents)
+
+        if (headHash) {
+            payload['parent'] = headHash
+        }
+
+        const commit = ChronoObjectCommit.from(payload)
 
         const { objectHash: commitHash } = await this.objectRepository.save(commit)
 
         await this.drive.write('.chrono/HEAD', HelperService.encode(commitHash))
 
         entries
-            .filter((item) => item.status === IndexEntryStatus.Added)
+            .filter((item) => item.isChanged())
             .forEach((item) => {
                 item.status = IndexEntryStatus.Unmodified
             })

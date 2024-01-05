@@ -24,29 +24,24 @@ export default class StatusUseCase {
 
         const entries = await this.entryRepository.findAll()
 
+        const untracked = allFiles.filter((f) => !entries.some((e) => e.path === f))
+        const added = entries
+            .filter((e) => [IndexEntryStatus.Added, IndexEntryStatus.Modified].includes(e.status))
+            .map((e) => e.path)
+
+        const changed = [] as string[]
+
         for await (const entry of entries) {
             const { objectHash } = await service.hashEntry(entry.path)
 
             if (objectHash !== entry.hash && entry.status === IndexEntryStatus.Unmodified) {
-                entry.status = IndexEntryStatus.Modified
+                changed.push(entry.path)
             }
         }
 
-        const untracked = allFiles.filter((f) => !entries.some((e) => e.path === f))
-        const unmodified = entries
-            .filter((e) => e.status === IndexEntryStatus.Unmodified)
-            .map((e) => e.path)
-
-        const added = entries.filter((e) => e.status === IndexEntryStatus.Added).map((e) => e.path)
-
-        const modified = entries
-            .filter((e) => e.status === IndexEntryStatus.Modified)
-            .map((e) => e.path)
-
         return {
-            unmodified,
             untracked,
-            modified,
+            changed,
             added,
         }
     }

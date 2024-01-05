@@ -2,6 +2,7 @@ import IndexEntry from '../entities/IndexEntry'
 import IDrive from '../gateways/IDrive'
 
 import IBlobRepository from '../repositories/IBlobRepository'
+import IHeadEntryRepository from '../repositories/IHeadEntryRepository'
 import IIndexEntryRepository from '../repositories/IIndexEntryRepository'
 import IObjectRepository from '../repositories/IObjectRepository'
 
@@ -16,7 +17,8 @@ export default class AddUseCase {
         private readonly drive: IDrive,
         private readonly objectRepository: IObjectRepository,
         private readonly blobRepository: IBlobRepository,
-        private readonly entryRepository: IIndexEntryRepository
+        private readonly indexEntryRepository: IIndexEntryRepository,
+        private readonly headEntryRepository: IHeadEntryRepository
     ) {}
 
     public async addFileEntry(path: string) {
@@ -26,36 +28,37 @@ export default class AddUseCase {
             this.blobRepository
         )
 
-        // list all workspace entries
-        const entries = await this.entryRepository.findAll()
+        const indexEntries = await this.indexEntryRepository.findAll()
+        const headEntries = await this.headEntryRepository.findAll()
 
-        const entry = entries.find((entry) => entry.path === path)
+        const indexEntry = indexEntries.find((entry) => entry.path === path)
+        const headEntry = headEntries.find((entry) => entry.path === path)
 
         const { objectHash } = await hashService.hashEntry(path)
 
-        if (entry && entry.hash === objectHash) {
-            entry.status = IndexEntry.STATUS.Unmodified
+        // untracked
+        if (!indexEntry) {
+            const newEntry = new IndexEntry(path, objectHash, IndexEntry.STATUS.Added)
 
-            await this.entryRepository.saveAll(entries)
+            indexEntries.push(newEntry)
 
-            return entry
+            await this.indexEntryRepository.saveAll(indexEntries)
+
+            return newEntry
         }
 
-        if (entry) {
-            entry.status = IndexEntry.STATUS.Added
+        // modified
+        if (headEntry && headEntry.hash !== objectHash) {
+            indexEntry.status = IndexEntry.STATUS.Modified
+            indexEntry.hash = objectHash
 
-            await this.entryRepository.saveAll(entries)
+            await this.indexEntryRepository.saveAll(indexEntries)
 
-            return entry
+            return indexEntry
         }
 
-        const newEntry = new IndexEntry(path, objectHash, IndexEntry.STATUS.Added)
-
-        entries.push(newEntry)
-
-        await this.entryRepository.saveAll(entries)
-
-        return newEntry
+        // unmodified
+        return indexEntry
     }
 
     public async addDirectoryEntry(path: string) {
