@@ -1,5 +1,5 @@
 import IDrive from '../gateways/IDrive'
-import IEntryRepository from '../repositories/IEntryRepository'
+import IIndexEntryRepository from '../repositories/IIndexEntryRepository'
 
 interface Params {
     path: string
@@ -8,7 +8,7 @@ interface Params {
 export default class RemoveUseCase {
     constructor(
         private readonly drive: IDrive,
-        private readonly entryRepository: IEntryRepository
+        private readonly entryRepository: IIndexEntryRepository
     ) {}
 
     public async removeEntry(path: string) {

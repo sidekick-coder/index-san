@@ -17,7 +17,7 @@ describe('CatFileUseCase', () => {
         await drive.write('message.md', HelperService.encode('Hello World!'))
 
         const { objectHash } = await objectRepository.save(
-            ChronoObject.from({
+            ChronoObject.fromObject({
                 type: 'blob',
                 blobHash: '123',
             })

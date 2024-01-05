@@ -3,11 +3,9 @@ import IHash from './gateways/IHash'
 
 import IBlobRepository from './repositories/IBlobRepository'
 import IObjectRepository from './repositories/IObjectRepository'
-import IStageItemRepository from './repositories/IStageItemRepository'
 
 import LocalObjectRepository from './repositories/implementations/LocalObjectRepository'
 import LocalBlobRepository from './repositories/implementations/LocalBlobRepository'
-import LocalStageItemRepository from './repositories/implementations/LocalStageItemRepository'
 
 import InitUseCase from './use-cases/InitUseCase'
 import CatFileUseCase from './use-cases/CatFileUseCase'
@@ -15,20 +13,15 @@ import HashFileUseCase from './use-cases/HashEntryUseCase'
 import RemoveUseCase from './use-cases/RemoveUseCase'
 import CommitUseCase from './use-cases/CommitUseCase'
 import StatusUseCase from './use-cases/StatusUseCase'
-import IEntryRepository from './repositories/IEntryRepository'
+import IIndexEntryRepository from './repositories/IIndexEntryRepository'
 import LocalEntryRepository from './repositories/implementations/LocalEntryRepository'
 import AddUseCase from './use-cases/AddUseCase'
 import ListFilesUseCase from './use-cases/ListFilesUseCase'
-import HashEntryService from './services/HashEntryService'
 
 export default class ChronoApp {
     private readonly objectRepository: IObjectRepository
     private readonly blobRepository: IBlobRepository
-
-    private readonly stageItemRepository: IStageItemRepository
-    private readonly entryRepository: IEntryRepository
-
-    private readonly hashEntryService: HashEntryService
+    private readonly entryRepository: IIndexEntryRepository
 
     constructor(
         private readonly drive: IDrive,
@@ -36,15 +29,7 @@ export default class ChronoApp {
     ) {
         this.objectRepository = new LocalObjectRepository(drive, hash)
         this.blobRepository = new LocalBlobRepository(drive, hash)
-
-        this.stageItemRepository = new LocalStageItemRepository(drive)
-        this.entryRepository = new LocalEntryRepository(drive, hash)
-
-        this.hashEntryService = new HashEntryService(
-            drive,
-            this.objectRepository,
-            this.blobRepository
-        )
+        this.entryRepository = new LocalEntryRepository(drive)
     }
 
     public async init() {
@@ -100,7 +85,12 @@ export default class ChronoApp {
     }
 
     public async status() {
-        const useCase = new StatusUseCase(this.drive, this.entryRepository)
+        const useCase = new StatusUseCase(
+            this.drive,
+            this.objectRepository,
+            this.blobRepository,
+            this.entryRepository
+        )
 
         return useCase.execute()
     }

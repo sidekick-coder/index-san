@@ -45,7 +45,7 @@ export default class ChronoObject {
         }
     }
 
-    public static from(object: Record<string, any>, body?: string) {
+    public static fromObject(object: Record<string, any>, body?: string) {
         let content = ''
 
         Object.entries(object).forEach(([key, value]) => {

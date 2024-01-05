@@ -1,14 +1,21 @@
-import { ChronoEntryStatus } from '../entities/ChronoEntry'
+import { IndexEntryStatus } from '../entities/IndexEntry'
 import IDrive from '../gateways/IDrive'
-import IEntryRepository from '../repositories/IEntryRepository'
+import IBlobRepository from '../repositories/IBlobRepository'
+import IIndexEntryRepository from '../repositories/IIndexEntryRepository'
+import IObjectRepository from '../repositories/IObjectRepository'
+import HashEntryService from '../services/HashEntryService'
 
 export default class StatusUseCase {
     constructor(
         private readonly drive: IDrive,
-        private readonly entryRepository: IEntryRepository
+        private readonly objectRepository: IObjectRepository,
+        private readonly blobRepository: IBlobRepository,
+        private readonly entryRepository: IIndexEntryRepository
     ) {}
 
     public async execute() {
+        const service = new HashEntryService(this.drive, this.objectRepository, this.blobRepository)
+
         const allFiles = await this.drive.readdir('.', {
             recursive: true,
             exclude: ['.chrono'],
@@ -17,16 +24,27 @@ export default class StatusUseCase {
 
         const entries = await this.entryRepository.findAll()
 
-        const untracked = allFiles.filter((f) => {
-            return !entries.some((e) => e.path === f)
-        })
+        for await (const entry of entries) {
+            const { objectHash } = await service.hashEntry(entry.path)
 
-        const added = entries.filter((e) => e.status === ChronoEntryStatus.Added).map((e) => e.path)
+            if (objectHash !== entry.hash && entry.status === IndexEntryStatus.Unmodified) {
+                entry.status = IndexEntryStatus.Modified
+            }
+        }
+
+        const untracked = allFiles.filter((f) => !entries.some((e) => e.path === f))
+        const unmodified = entries
+            .filter((e) => e.status === IndexEntryStatus.Unmodified)
+            .map((e) => e.path)
+
+        const added = entries.filter((e) => e.status === IndexEntryStatus.Added).map((e) => e.path)
+
         const modified = entries
-            .filter((e) => e.status === ChronoEntryStatus.Modified)
+            .filter((e) => e.status === IndexEntryStatus.Modified)
             .map((e) => e.path)
 
         return {
+            unmodified,
             untracked,
             modified,
             added,

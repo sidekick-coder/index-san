@@ -1,8 +1,8 @@
-import ChronoEntry from '../entities/ChronoEntry'
+import IndexEntry from '../entities/IndexEntry'
 import IDrive from '../gateways/IDrive'
 
 import IBlobRepository from '../repositories/IBlobRepository'
-import IEntryRepository from '../repositories/IEntryRepository'
+import IIndexEntryRepository from '../repositories/IIndexEntryRepository'
 import IObjectRepository from '../repositories/IObjectRepository'
 
 import HashEntryService from '../services/HashEntryService'
@@ -16,7 +16,7 @@ export default class AddUseCase {
         private readonly drive: IDrive,
         private readonly objectRepository: IObjectRepository,
         private readonly blobRepository: IBlobRepository,
-        private readonly entryRepository: IEntryRepository
+        private readonly entryRepository: IIndexEntryRepository
     ) {}
 
     public async addEntry(path: string) {
@@ -31,11 +31,25 @@ export default class AddUseCase {
 
         const entry = entries.find((entry) => entry.path === path)
 
-        if (entry) return entry
-
         const { objectHash } = await hashService.hashEntry(path)
 
-        const newEntry = new ChronoEntry(path, objectHash, ChronoEntry.STATUS.Added)
+        if (entry && entry.hash === objectHash) {
+            entry.status = IndexEntry.STATUS.Unmodified
+
+            await this.entryRepository.saveAll(entries)
+
+            return entry
+        }
+
+        if (entry) {
+            entry.status = IndexEntry.STATUS.Added
+
+            await this.entryRepository.saveAll(entries)
+
+            return entry
+        }
+
+        const newEntry = new IndexEntry(path, objectHash, IndexEntry.STATUS.Added)
 
         entries.push(newEntry)
 
@@ -45,7 +59,7 @@ export default class AddUseCase {
     }
 
     public async execute({ path }: Params) {
-        const result = [] as ChronoEntry[]
+        const result = [] as IndexEntry[]
 
         if (await this.drive.isFile(path)) {
             const entry = await this.addEntry(path)

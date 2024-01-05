@@ -1,24 +1,22 @@
-import ChronoEntry from '../../entities/ChronoEntry'
+import IndexEntry from '../../entities/IndexEntry'
 import IDrive from '../../gateways/IDrive'
-import IHash from '../../gateways/IHash'
 import HelperService from '../../services/HelperService'
-import IEntryRepository from '../IEntryRepository'
+import IIndexEntryRepository from '../IIndexEntryRepository'
 
-export default class LocalEntryRepository implements IEntryRepository {
-    constructor(
-        private readonly drive: IDrive,
-        private readonly hash: IHash
-    ) {}
+export default class LocalEntryRepository implements IIndexEntryRepository {
+    constructor(private readonly drive: IDrive) {}
 
-    public findAll: IEntryRepository['findAll'] = async () => {
+    public findAll: IIndexEntryRepository['findAll'] = async () => {
         const contents = await this.drive.read('.chrono/index')
 
         const json = JSON.parse(contents ? HelperService.decode(contents) : '[]')
 
-        return json.map((i: any) => new ChronoEntry(i.path, i.hash, i.status))
+        const entries = json.map((i: any) => new IndexEntry(i.path, i.hash, i.status))
+
+        return entries
     }
 
-    public saveAll: IEntryRepository['saveAll'] = async (entries) => {
+    public saveAll: IIndexEntryRepository['saveAll'] = async (entries) => {
         await this.drive.write(
             '.chrono/index',
             HelperService.encode(JSON.stringify(entries, null, 4))

@@ -21,7 +21,7 @@ export default class HashEntryService {
 
         const { blobHash } = await this.blobRepository.save(content)
 
-        const blobObject = ChronoObject.from({
+        const blobObject = ChronoObject.fromObject({
             type: 'blob',
             blobHash,
         })
