@@ -3,7 +3,7 @@ import IDrive from '../../gateways/IDrive'
 import HelperService from '../../services/HelperService'
 import IIndexEntryRepository from '../IIndexEntryRepository'
 
-export default class LocalEntryRepository implements IIndexEntryRepository {
+export default class LocalIndexEntryRepository implements IIndexEntryRepository {
     constructor(private readonly drive: IDrive) {}
 
     public findAll: IIndexEntryRepository['findAll'] = async () => {

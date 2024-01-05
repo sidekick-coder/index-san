@@ -3,7 +3,7 @@ import ChronoObject from './ChronoObject'
 export interface ChronoObjectTreeEntry {
     path: string
     hash: string
-    type: string
+    type: 'blob' | 'tree'
 }
 
 export default class ChronoObjectTree extends ChronoObject {
@@ -17,7 +17,7 @@ export default class ChronoObjectTree extends ChronoObject {
                 type,
                 hash,
                 path,
-            }
+            } as ChronoObjectTreeEntry
         })
     }
 
