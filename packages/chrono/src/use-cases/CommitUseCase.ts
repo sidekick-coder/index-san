@@ -84,6 +84,7 @@ export default class CommitUseCase {
 
         for await (const directory of directories) {
             const treeEntries = await this.findTreeEntries(entries, directory)
+
             const tree = ChronoObjectTree.fromEntries(treeEntries)
             const { objectHash } = await this.objectRepository.save(tree)
 
@@ -94,7 +95,11 @@ export default class CommitUseCase {
             })
         }
 
-        return result
+        return result.map((item) => {
+            item.path = HelperService.basename(item.path)
+
+            return item
+        })
     }
 
     async execute({ message }: Params) {
@@ -105,9 +110,7 @@ export default class CommitUseCase {
         // get stage
         const entries = await this.entryRepository.findAll()
 
-        // const entriesAdded = entries.filter((item) => item.status === IndexEntryStatus.Added)
-
-        const rootEntries = entries
+        const rootEntries: ChronoObjectTree['entries'] = entries
             .filter((item) => !item.path.includes('/'))
             .map((i) => ({
                 path: i.path,
