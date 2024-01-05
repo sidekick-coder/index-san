@@ -8,7 +8,7 @@ import IObjectRepository from '../repositories/IObjectRepository'
 import HashEntryService from '../services/HashEntryService'
 
 interface Params {
-    path: string
+    path: string | string[]
 }
 
 export default class AddUseCase {
@@ -19,7 +19,7 @@ export default class AddUseCase {
         private readonly entryRepository: IIndexEntryRepository
     ) {}
 
-    public async addEntry(path: string) {
+    public async addFileEntry(path: string) {
         const hashService = new HashEntryService(
             this.drive,
             this.objectRepository,
@@ -58,16 +58,8 @@ export default class AddUseCase {
         return newEntry
     }
 
-    public async execute({ path }: Params) {
+    public async addDirectoryEntry(path: string) {
         const result = [] as IndexEntry[]
-
-        if (await this.drive.isFile(path)) {
-            const entry = await this.addEntry(path)
-
-            result.push(entry)
-
-            return result
-        }
 
         const files = await this.drive.readdir(path, {
             recursive: true,
@@ -75,9 +67,30 @@ export default class AddUseCase {
         })
 
         for await (const file of files) {
-            const entry = await this.addEntry(`${path}/${file}`)
+            const entry = await this.addFileEntry(`${path}/${file}`)
 
             result.push(entry)
+        }
+
+        return result
+    }
+
+    public async execute({ path }: Params) {
+        const result = [] as IndexEntry[]
+        const paths = Array.isArray(path) ? path : [path]
+
+        for await (const p of paths) {
+            if (await this.drive.isFile(p)) {
+                const entry = await this.addFileEntry(p)
+
+                result.push(entry)
+
+                continue
+            }
+
+            const entries = await this.addDirectoryEntry(p)
+
+            result.push(...entries)
         }
 
         return result
