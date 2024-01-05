@@ -6,8 +6,8 @@ import fg from 'fast-glob'
 export default class PlayDrive implements IDrive {
     public basePath = path.resolve(__dirname, '.data')
 
-    public resolve(...paths: string[]) {
-        return path.resolve(this.basePath, ...paths)
+    public resolve(...args: string[]) {
+        return path.resolve(this.basePath, ...args)
     }
 
     public async read(path: string) {
