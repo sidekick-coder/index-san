@@ -19,6 +19,7 @@ import CommitUseCase from './use-cases/CommitUseCase'
 import StatusUseCase from './use-cases/StatusUseCase'
 import AddUseCase from './use-cases/AddUseCase'
 import ListFilesUseCase from './use-cases/ListFilesUseCase'
+import CheckoutUseCase from './use-cases/CheckoutUseCase'
 
 export default class ChronoApp {
     private readonly drive: IDrive
@@ -105,5 +106,11 @@ export default class ChronoApp {
         )
 
         return useCase.execute()
+    }
+
+    public async checkout(path: string, hash: string) {
+        const useCase = new CheckoutUseCase(this.drive, this.objectRepository, this.blobRepository)
+
+        return useCase.execute({ hash, path })
     }
 }

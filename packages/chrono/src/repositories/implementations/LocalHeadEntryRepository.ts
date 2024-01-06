@@ -1,40 +1,19 @@
-import ChronoObjectTree from '../../entities/ChronoObjectTree'
 import HeadEntry from '../../entities/HeadEntry'
 import IDrive from '../../gateways/IDrive'
 import HelperService from '../../services/HelperService'
+import TreeService from '../../services/TreeService'
 import IHeadEntryRepository from '../IHeadEntryRepository'
 import IObjectRepository from '../IObjectRepository'
 
 export default class LocalHeadEntryRepository implements IHeadEntryRepository {
-    constructor(
-        private readonly drive: IDrive,
-        private readonly objectRepository: IObjectRepository
-    ) {}
+    private readonly drive: IDrive
+    private readonly objectRepository: IObjectRepository
+    private readonly treeService: TreeService
 
-    public async findEntriesFromTree(treeHash: string, basePath = '') {
-        const entries = [] as HeadEntry[]
-
-        const object = await this.objectRepository.findOrFail(treeHash)
-
-        const tree = new ChronoObjectTree(object.content)
-
-        for await (const e of tree.entries) {
-            const headEntry = HeadEntry.from({
-                path: `${basePath}${e.path}`,
-                hash: e.hash,
-                type: e.type,
-            })
-
-            entries.push(headEntry)
-
-            if (e.type === 'tree') {
-                const childEntries = await this.findEntriesFromTree(e.hash, `${headEntry.path}/`)
-
-                entries.push(...childEntries)
-            }
-        }
-
-        return entries
+    constructor(drive: IDrive, objectRepository: IObjectRepository) {
+        this.drive = drive
+        this.objectRepository = objectRepository
+        this.treeService = new TreeService(objectRepository)
     }
 
     public findAll: IHeadEntryRepository['findAll'] = async () => {
@@ -49,7 +28,15 @@ export default class LocalHeadEntryRepository implements IHeadEntryRepository {
         const object = await this.objectRepository.findOrFail(hash)
 
         if (object.type === 'commit') {
-            return this.findEntriesFromTree(object.head.tree)
+            const entries = await this.treeService.findTreeIndex(object.head.tree)
+
+            return entries.map((entry) =>
+                HeadEntry.from({
+                    path: entry.fullPath,
+                    hash: entry.hash,
+                    type: entry.type as any,
+                })
+            )
         }
 
         return []
