@@ -25,9 +25,26 @@ export default class LocalObjectRepository implements IObjectRepository {
 
         await this.drive.write(filePath, chronoObject.toBytes())
 
+        chronoObject.hash = objectHash
+
         return {
             objectHash,
         }
+    }
+
+    public findAll: IObjectRepository['findAll'] = async () => {
+        const files = await this.drive.readdir(this.directory, {
+            recursive: true,
+            onlyFiles: true,
+        })
+
+        const result: ChronoObject[] = []
+
+        for await (const file of files) {
+            result.push(await this.findOrFail(file.replace('/', '')))
+        }
+
+        return result
     }
 
     public find: IObjectRepository['find'] = async (objectHash) => {
@@ -60,7 +77,7 @@ export default class LocalObjectRepository implements IObjectRepository {
             return null
         }
 
-        const chronoObject = new ChronoObject(bytes)
+        const chronoObject = new ChronoObject(bytes, objectHash)
 
         return chronoObject
     }

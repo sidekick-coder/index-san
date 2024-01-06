@@ -143,6 +143,7 @@ export default class CommitUseCase {
         const payload: any = {
             message,
             tree: rooTreeHash,
+            date: new Date().toISOString(),
         }
 
         const headContents = await this.drive.read('.chrono/head')
@@ -166,9 +167,6 @@ export default class CommitUseCase {
 
         await this.entryRepository.saveAll(entries)
 
-        return {
-            commitHash,
-            commit: commit.serialize(),
-        }
+        return commit.serialize()
     }
 }

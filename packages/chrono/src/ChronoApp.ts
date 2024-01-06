@@ -13,13 +13,14 @@ import LocalHeadEntryRepository from './repositories/implementations/LocalHeadEn
 
 import InitUseCase from './use-cases/InitUseCase'
 import CatFileUseCase from './use-cases/CatFileUseCase'
-import HashFileUseCase from './use-cases/HashEntryUseCase'
+import HashEntryUseCase from './use-cases/HashEntryUseCase'
 import RemoveUseCase from './use-cases/RemoveUseCase'
 import CommitUseCase from './use-cases/CommitUseCase'
 import StatusUseCase from './use-cases/StatusUseCase'
 import AddUseCase from './use-cases/AddUseCase'
 import ListFilesUseCase from './use-cases/ListFilesUseCase'
 import CheckoutUseCase from './use-cases/CheckoutUseCase'
+import LogUseCase from './use-cases/LogUseCase'
 
 export default class ChronoApp {
     private readonly drive: IDrive
@@ -47,7 +48,7 @@ export default class ChronoApp {
     }
 
     public async hashEntry(path: string) {
-        const useCase = new HashFileUseCase(this.drive, this.objectRepository, this.blobRepository)
+        const useCase = new HashEntryUseCase(this.drive, this.objectRepository, this.blobRepository)
 
         return useCase.execute({ path })
     }
@@ -112,5 +113,11 @@ export default class ChronoApp {
         const useCase = new CheckoutUseCase(this.drive, this.objectRepository, this.blobRepository)
 
         return useCase.execute({ hash, path })
+    }
+
+    public async log() {
+        const useCase = new LogUseCase(this.objectRepository)
+
+        return useCase.execute()
     }
 }

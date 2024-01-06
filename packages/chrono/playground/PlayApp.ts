@@ -48,6 +48,10 @@ async function run() {
             name: 'checkout',
             method: 'checkout',
         },
+        {
+            name: 'log',
+            method: 'log',
+        },
     ]
 
     const command = options.find((o) => o.name === commandName)

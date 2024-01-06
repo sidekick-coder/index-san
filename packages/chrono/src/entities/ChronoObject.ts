@@ -6,6 +6,7 @@ export default class ChronoObject {
     public static readonly HEAD_SEPARATOR = '\n\0\n'
 
     public content = ''
+    public hash = ''
 
     public get headText() {
         const [head] = this.content.split(ChronoObject.HEAD_SEPARATOR)
@@ -35,7 +36,11 @@ export default class ChronoObject {
         return this.head.type
     }
 
-    constructor(content: string | Uint8Array) {
+    constructor(content: string | Uint8Array, hash?: string) {
+        if (hash) {
+            this.hash = hash
+        }
+
         if (typeof content === 'string') {
             this.content = content
         }

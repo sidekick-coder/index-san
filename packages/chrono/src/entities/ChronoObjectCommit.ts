@@ -20,6 +20,10 @@ export default class ChronoObjectCommit extends ChronoObject {
         return this.head.parent
     }
 
+    public get date() {
+        return this.head.date
+    }
+
     public static from(payload: Payload) {
         const object = ChronoObject.fromObject({ ...payload, type: 'commit' }, payload.body)
 
@@ -28,8 +32,12 @@ export default class ChronoObjectCommit extends ChronoObject {
 
     public serialize() {
         return {
-            ...super.serialize(),
+            hash: this.hash,
+            type: this.type,
             message: this.message,
+            tree: this.tree,
+            parent: this.parent,
+            date: this.date,
         }
     }
 }
