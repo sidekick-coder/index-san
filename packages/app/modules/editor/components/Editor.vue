@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { MarkdownParser } from '@language-kit/markdown'
-// import { NodeWithId } from '../types/node'
-
-// import NodeEditor from './NodeEditor.vue'
 import BlockEditor from '@modules/block-editor/components/Editor.vue'
 import MDCEditor from './MDCEditor.vue'
 import { useLocalStorage, useMagicKeys, whenever } from '@vueuse/core'

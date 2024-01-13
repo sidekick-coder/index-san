@@ -114,7 +114,7 @@ onKeyStroke(['ArrowRight'], (e) => {
 <template>
     <v-layout-toolbar class="px-7 border-b border-lines text-sm" :height="45">
         <slot :links="links" :drawer="drawer" :navigation="navigation" :menu="menu">
-            <v-btn v-if="!drawer.show" mode="text" size="sm" @click="drawer.toggle">
+            <v-btn mode="text" size="sm" @click="drawer.toggle">
                 <v-icon name="bars" />
             </v-btn>
 

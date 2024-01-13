@@ -8,9 +8,5 @@ defineProps({
 </script>
 
 <template>
-    <v-layout use-percentage>
-        <v-layout-content>
-            <router-view />
-        </v-layout-content>
-    </v-layout>
+    <router-view />
 </template>

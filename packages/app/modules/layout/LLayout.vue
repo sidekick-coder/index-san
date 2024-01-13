@@ -11,14 +11,14 @@ defineProps({
 </script>
 
 <template>
-    <v-layout>
-        <l-drawer />
+    <div class="h-screen w-screen">
+        <v-layout>
+            <l-drawer />
 
-        <v-layout-content class="bg-b-primary text-t-primary">
-            <v-layout use-percentage>
+            <v-layout-content class="bg-b-primary text-t-primary">
                 <l-toolbar v-if="!hideToolbar" />
 
-                <v-layout-content>
+                <div class="h-[calc(100%-48px)]">
                     <slot>
                         <router-view v-slot="{ Component }">
                             <transition name="layout">
@@ -26,10 +26,10 @@ defineProps({
                             </transition>
                         </router-view>
                     </slot>
-                </v-layout-content>
-            </v-layout>
-        </v-layout-content>
-    </v-layout>
+                </div>
+            </v-layout-content>
+        </v-layout>
+    </div>
 </template>
 
 <style>

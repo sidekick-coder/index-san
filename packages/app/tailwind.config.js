@@ -18,27 +18,27 @@ module.exports = {
         { pattern: /justify-*/ },
     ],
     theme: {
-        colors: {
-            'transparent': colors.transparent,
-
-            'b-primary': 'rgb(var(--b-primary))',
-            'b-secondary': 'rgb(var(--b-secondary))',
-            'b-03': 'rgb(var(--b-03))',
-
-            't-primary': 'rgb(var(--t-primary))',
-            't-secondary': 'rgb(var(--t-secondary))',
-
-            'lines': 'rgb(var(--lines))',
-
-            'accent': 'rgb(var(--accent) / 1)',
-            'danger': 'rgb(var(--danger))',
-            'warn': 'rgb(var(--warn))',
-            'info': 'rgb(var(--info))',
-        },
         extend: {
             transitionProperty: {
                 height: 'height',
                 width: 'width',
+            },
+            colors: {
+                'transparent': colors.transparent,
+
+                'b-primary': 'rgb(var(--b-primary))',
+                'b-secondary': 'rgb(var(--b-secondary))',
+                'b-03': 'rgb(var(--b-03))',
+
+                't-primary': 'rgb(var(--t-primary))',
+                't-secondary': 'rgb(var(--t-secondary))',
+
+                'lines': 'rgb(var(--lines))',
+
+                'accent': 'rgb(var(--accent) / 1)',
+                'danger': 'rgb(var(--danger))',
+                'warn': 'rgb(var(--warn))',
+                'info': 'rgb(var(--info))',
             },
         },
         data: {

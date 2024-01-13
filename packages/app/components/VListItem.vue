@@ -39,7 +39,7 @@ const defaultColors = {
 const sizes = {
     none: '',
     xs: 'text-xs py-3 px-4',
-    sm: 'text-sm py-3 px-4',
+    sm: 'text-sm h-12 px-4',
 }
 
 const alignments = {

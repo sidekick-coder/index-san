@@ -376,7 +376,7 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
 </script>
 
 <template>
-    <v-layout use-percentage>
+    <div>
         <v-layout-toolbar class="px-7 border-b border-lines">
             <v-btn mode="text" size="sm" @click="setEntries">
                 <v-icon name="rotate" />
@@ -564,5 +564,5 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                 </v-table>
             </div>
         </v-layout-content>
-    </v-layout>
+    </div>
 </template>

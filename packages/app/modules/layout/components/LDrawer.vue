@@ -1,71 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-
 import Menu from '@index-san/core/entities/menu'
-import packageJSON from '@root/package.json'
-
 import { useStore } from '@store/global'
-
 import { useToggleDrawer } from '../composables/drawer'
-
 import VDraggable from 'vuedraggable'
 
 import LDrawerItem from './LDrawerItem.vue'
 
-const drawer = useToggleDrawer()
-
-// menu
-const tm = useI18n()
+// general
 const store = useStore()
-
-const defaultItems: Menu[] = [
-    {
-        label: tm.t('workspace', 2),
-        to: '/workspaces',
-        children: [],
-        id: 'workspaces',
-        icon: 'fa:cubes',
-    },
-    {
-        label: tm.t('collection', 2),
-        to: '/collections',
-        children: [],
-        id: 'collections',
-        icon: 'fa:database',
-    },
-    {
-        label: tm.t('entry', 2),
-        to: '/entries',
-        children: [],
-        id: 'entries',
-        icon: 'fa:folder',
-    },
-    {
-        label: tm.t('option', 2),
-        to: '/options',
-        children: [],
-        id: 'options',
-        icon: 'fa:cog',
-    },
-    {
-        label: tm.t('cheatSheet', 2),
-        to: '/cheat-sheet',
-        children: [],
-        id: 'cheat-sheet',
-        icon: 'fa-brands:markdown',
-    },
-]
-
-// title
-
-const title = computed(() => {
-    if (store.workspace.current) {
-        return store.workspace.current.name
-    }
-
-    return 'Index-san'
-})
+const drawer = useToggleDrawer()
 
 async function onUpdate() {
     await store.menu.save()
@@ -93,98 +36,150 @@ const isDragging = ref(false)
 </script>
 
 <template>
-    <v-layout-drawer
-        v-model="drawer"
-        class="bg-b-secondary text-t-primary border-r border-b-primary group"
-    >
-        <v-menu offset-y>
-            <template #activator="{ attrs }">
-                <v-list-item
-                    class="pl-7 border-b border-lines"
-                    v-bind="attrs"
-                    color="hover:bg-b-primary/40"
-                >
-                    <v-logo class="h-[20px] w-[20px] mr-3" />
-
-                    <h1 class="font-bold">
-                        {{ title }}
-                    </h1>
-
-                    <v-btn
-                        mode="text"
-                        class="opacity-0 group-hover:opacity-100 ml-auto"
-                        size="xs"
-                        @click.prevent.stop="drawer = false"
+    <div class="bg-b-secondary text-t-primary border-r border-b-primary group">
+        <div class="flex h-full">
+            <div class="w-14 h-full bg-zinc-900 border-r border-zinc-800 shadow">
+                <div class="flex flex-col h-full">
+                    <v-list-item
+                        size="h-12"
+                        color="text-t-secondary hover:text-t-primary"
+                        class="flex items-center justify-center"
+                        @click="drawer = !drawer"
                     >
-                        <v-icon name="chevron-left" />
-                    </v-btn>
-                </v-list-item>
-            </template>
+                        <v-logo class="w-5 h-5" />
+                    </v-list-item>
 
-            <v-card color="b-primary">
-                <v-list-item
-                    v-for="workspace in store.workspace.workspaces.filter(
-                        (w) => w.id !== store.workspace.currentId
-                    )"
-                    :key="workspace.id"
-                    class="pl-7"
-                    color="hover:bg-b-secondary/40"
-                    @click="store.workspace.currentId = workspace.id"
-                >
-                    {{ workspace.name }}
-                </v-list-item>
+                    <v-tooltip>
+                        <template #activator="{ attrs }">
+                            <v-list-item
+                                to="/entries"
+                                size="h-12"
+                                color="text-t-secondary hover:text-t-primary"
+                                class="flex items-center justify-center"
+                                v-bind="attrs"
+                            >
+                                <v-icon name="mdi:file-multiple" />
+                            </v-list-item>
+                        </template>
 
-                <v-list-item class="border-t border-lines">
-                    <div class="w-full text-xs text-center">
-                        {{ `Index-san v${packageJSON.version}` }}
-                    </div>
-                </v-list-item>
-            </v-card>
-        </v-menu>
+                        <div>
+                            {{ $t('entry', 2) }}
+                        </div>
+                    </v-tooltip>
 
-        <l-drawer-item
-            v-for="item in defaultItems"
-            :key="item.id"
-            :item="item"
-            icon:class="text-t-secondary"
-            disable-icon-picker
-        />
+                    <v-tooltip>
+                        <template #activator="{ attrs }">
+                            <v-list-item
+                                to="/collections"
+                                size="h-12"
+                                color="text-t-secondary hover:text-t-primary"
+                                class="flex items-center justify-center"
+                                v-bind="attrs"
+                            >
+                                <v-icon name="fa:database" />
+                            </v-list-item>
+                        </template>
 
-        <v-draggable
-            v-model="store.menu.menu"
-            v-bind="dragOptions"
-            @update="onUpdate"
-            @start="isDragging = true"
-            @end="isDragging = false"
-        >
-            <template #item="{ index }">
-                <div>
-                    <l-drawer-item
-                        :item="store.menu.menu[index]"
-                        :drag-options="dragOptions"
-                        :is-dragging="isDragging"
-                        @drag="(v) => (isDragging = v)"
-                        @update="onUpdate"
-                        @update:item="updateItem"
-                        @destroy="store.menu.menu.splice(index, 1)"
-                    />
+                        <div>
+                            {{ $t('collection', 2) }}
+                        </div>
+                    </v-tooltip>
+
+                    <v-tooltip>
+                        <template #activator="{ attrs }">
+                            <v-list-item
+                                to="/cheat-sheet"
+                                size="h-12"
+                                color="text-t-secondary hover:text-t-primary"
+                                class="flex items-center justify-center"
+                                v-bind="attrs"
+                            >
+                                <v-icon name="fa-brands:markdown" />
+                            </v-list-item>
+                        </template>
+
+                        <div>
+                            {{ $t('cheatSheet', 2) }}
+                        </div>
+                    </v-tooltip>
+
+                    <div class="grow" />
+
+                    <v-tooltip>
+                        <template #activator="{ attrs }">
+                            <v-list-item
+                                to="/workspaces"
+                                size="h-12"
+                                color="text-t-secondary hover:text-t-primary"
+                                class="flex items-center justify-center"
+                                v-bind="attrs"
+                            >
+                                <v-icon name="fa:cubes" />
+                            </v-list-item>
+                        </template>
+
+                        <div>
+                            {{ $t('workspace', 2) }}
+                        </div>
+                    </v-tooltip>
+
+                    <v-tooltip>
+                        <template #activator="{ attrs }">
+                            <v-list-item
+                                to="/options"
+                                size="h-12"
+                                color="text-t-secondary hover:text-t-primary"
+                                class="flex items-center justify-center"
+                                v-bind="attrs"
+                            >
+                                <v-icon name="fa:cog" />
+                            </v-list-item>
+                        </template>
+
+                        <div>
+                            {{ $t('option', 2) }}
+                        </div>
+                    </v-tooltip>
                 </div>
-            </template>
-        </v-draggable>
+            </div>
 
-        <template #footer>
-            <v-list-item
-                color="bg-b-secondary hover:bg-b-primary/40 text-t-secondary"
-                size="h-full py-3 px-10 text-xs"
-                class="border-t border-lines justify-between"
-                @click="store.menu.addSection"
-            >
-                {{ $t('addEntity', [$t('section')]) }}
+            <div v-if="drawer" class="w-64 flex flex-col">
+                <v-draggable
+                    v-model="store.menu.menu"
+                    v-bind="dragOptions"
+                    @update="onUpdate"
+                    @start="isDragging = true"
+                    @end="isDragging = false"
+                >
+                    <template #item="{ index }">
+                        <div>
+                            <l-drawer-item
+                                :item="store.menu.menu[index]"
+                                :drag-options="dragOptions"
+                                :is-dragging="isDragging"
+                                @drag="(v) => (isDragging = v)"
+                                @update="onUpdate"
+                                @update:item="updateItem"
+                                @destroy="store.menu.menu.splice(index, 1)"
+                            />
+                        </div>
+                    </template>
+                </v-draggable>
 
-                <v-icon name="plus" />
-            </v-list-item>
-        </template>
-    </v-layout-drawer>
+                <div class="mt-auto" />
+
+                <v-list-item
+                    color="bg-b-secondary hover:bg-b-primary/40 text-t-secondary"
+                    class="border-t border-lines justify-between"
+                    @click="store.menu.addSection"
+                >
+                    {{ $t('addEntity', [$t('section')]) }}
+
+                    <v-icon name="plus" />
+                </v-list-item>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style>

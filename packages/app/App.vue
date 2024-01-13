@@ -44,6 +44,7 @@ watch(
 </script>
 <template>
     <n-notify />
+
     <d-dialog />
 
     <router-view v-if="!loading" />
