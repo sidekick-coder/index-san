@@ -27,6 +27,9 @@ npm run dev
 
 **filename convention:** The filename of the component should be in `PascalCase` and must have the prefix `Is`.
 
+**Rules:**
+- Component should use typescript
+
 **Example:**
 
 ```
@@ -41,6 +44,9 @@ npm run dev
 **Description:** Global composables lives under the `composables` folder. They are automatically registered in the application using auto-import.
 
 **filename convention:** The filename of the composable should be in `camelCase`
+
+**Rules:**
+- Composables should export a function
 
 **Example:**
     
