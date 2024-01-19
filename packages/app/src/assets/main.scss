@@ -32,13 +32,18 @@
     opacity: 0;
 }
 
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 // Scrollbar
 
 
 /* Firefox */
 * {
     scrollbar-width: auto;
-    scrollbar-color: rgb(var(--b-secondary)) rgb(var(--b-primary));
+    // scrollbar-color: rgb(var(--b-secondary)) rgb(var(--b-primary));
 }
 
 /* Chrome, Edge, and Safari */
@@ -48,18 +53,13 @@
 }
 
 *::-webkit-scrollbar-track {
-    background: rgb(var(--b-primary));
+    // background: rgb(var(--b-primary));
 }
 ::-webkit-scrollbar-corner {
-    background: rgb(var(--b-primary));
+    // background: rgb(var(--b-primary));
   }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-lines/60;
+    // @apply bg-lines/60;
 }
 
-
-body {
-    @apply font-roboto;
-    @apply text-t-primary bg-b-primary;
-}

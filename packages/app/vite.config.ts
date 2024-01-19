@@ -6,7 +6,7 @@ import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import DefineProp from '@vue-macros/define-prop/vite'
 
-module.exports = defineConfig({
+export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -16,7 +16,14 @@ module.exports = defineConfig({
     plugins: [
         vue({ script: { defineModel: true } }),
         DefineProp(),
-        AutoImport({ dts: 'runtime/auto-imports.d.ts', imports: ['vue'] }),
-        Components({ dts: 'runtime/components.d.ts', dirs: ['src/components'] }),
+        AutoImport({
+            dts: 'runtime/auto-imports.d.ts',
+            dirs: ['src/composables'],
+            imports: ['vue']
+        }),
+        Components({
+            dts: 'runtime/components.d.ts',
+            dirs: ['src/components']
+        }),
     ],
 })

@@ -1,5 +1,6 @@
 export default {
     option: 'Option | Options',
+    setting: 'Setting | Settings',
     workspace: 'Workspace | Workspaces',
     collection: 'Collection | Collections',
     script: 'Script | Scripts',

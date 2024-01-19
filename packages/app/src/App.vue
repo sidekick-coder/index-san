@@ -4,9 +4,7 @@
 
 </script>
 <template>
-    <!-- <n-notify />
-
-    <d-dialog /> -->
-
-    <router-view />
+    <is-app>
+        <router-view />
+    </is-app>    
 </template>

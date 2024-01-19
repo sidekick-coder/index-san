@@ -6,10 +6,14 @@ import type { Plugin } from '@/composables/definePlugin'
 import App from './App.vue'
 import router from '@/router/router'
 
+import { vVisible } from './directives/vVisible'
+
 async function createApp() {
     const app = createVueApp(App)
 
     app.use(router)
+
+    app.directive('visible', vVisible)
 
     const files = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
     

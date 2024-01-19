@@ -1,0 +1,94 @@
+<script setup lang="ts">
+const drawer = ref()
+</script>
+<template>
+    <div class="w-14 h-full bg-zinc-800 border-r border-zinc-700 shadow">
+        <div class="flex flex-col h-full">
+            <is-list-item @click="drawer = !drawer" justify="center" to="/">
+                <is-logo class="w-5 h-5" />
+            </is-list-item>
+
+            <is-tooltip placement="right">
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        to="/entries"
+                        justify="center"
+                        v-bind="attrs"
+                    >
+                        <is-icon name="mdi:folder" size="xl" />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ $t('entry', 2) }}
+                </div>
+            </is-tooltip>
+<!-- 
+            <is-tooltip placement="right">
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        to="/collections"
+                        justify="center"
+                        v-bind="attrs"
+                    >
+                        <is-icon name="mdi:database" size="xl" />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ $t('collection', 2) }}
+                </div>
+            </is-tooltip> -->
+
+            <is-tooltip placement="right">
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        to="/cheat-sheet"
+                        justify="center"
+                        v-bind="attrs"
+                    >
+                        <is-icon name="mdi:markdown" size="xl" />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ $t('cheatSheet', 2) }}
+                </div>
+            </is-tooltip>
+
+            <div class="grow" />
+
+            <is-tooltip placement="right">
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        to="/workspaces"
+                        justify="center"
+                        v-bind="attrs"
+                    >
+                        <is-icon name="fa:cubes" size="xl" />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ $t('workspace', 2) }}
+                </div>
+            </is-tooltip>
+
+            <is-tooltip placement="right">
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        to="/options"
+                        justify="center"
+                        v-bind="attrs"
+                    >
+                        <is-icon name="mdi:cog" size="xl" />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ $t('setting', 2) }}
+                </div>
+            </is-tooltip>
+        </div>
+    </div>
+</template>
