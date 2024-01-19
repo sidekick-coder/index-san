@@ -1,16 +1,10 @@
 import './assets/tailwind.scss'
 import './assets/main.scss'
 
-import { createApp as createVueApp, type App as VueApp } from 'vue'
+import { createApp as createVueApp } from 'vue'
+import type { Plugin } from '@/composables/definePlugin'
 import App from './App.vue'
 import router from '@/router/router'
-
-
-interface Plugin {
-    name?: string
-    order?: number
-    setup?: (app: VueApp) => Promise<void> | void
-}
 
 async function createApp() {
     const app = createVueApp(App)
