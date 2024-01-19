@@ -1,8 +1,0 @@
-{
-  "extends": "@tsconfig/node18/tsconfig.json",
-  "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*", "src-electron/*.ts"],
-  "compilerOptions": {
-    "composite": true,
-    "types": ["node"]
-  }
-}

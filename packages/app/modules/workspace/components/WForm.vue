@@ -62,9 +62,11 @@ async function submit() {
 const config = useConfig()
 
 async function pickFolder() {
-    const path = await config.open.directory()
+    const result = await config.open.directory()
 
-    payload.value.config.path = path
+    console.log(result)
+
+    payload.value.config = result
 }
 
 // set edited item
@@ -107,10 +109,13 @@ watch(
                     value-key="id"
                     card:color="b-primary"
                     menu:offset-y
-                    disabled
                 />
 
-                <v-input v-model="payload.config.path" :label="$t('path')" :disabled="!!editedItem">
+                <v-input
+                    v-model="payload.config.displayName"
+                    :label="$t('path')"
+                    :disabled="!!editedItem"
+                >
                     <template #append>
                         <v-btn
                             size="sm"
