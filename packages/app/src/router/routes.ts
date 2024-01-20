@@ -3,8 +3,20 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        name: 'Home',
-        component: () => import('@/pages/Home/Home.vue'),
+        redirect: '/workspace-selector',
+    },
+    {
+        path: '/workspace-selector',
+        name: 'WorkspaceSelector',
+        component: () => import('@/pages/WorkspaceSelector/WorkspaceSelector.vue'),
+        meta: {
+            layout: 'empty'
+        },
+    },
+    {
+        path: '/file-explorer',
+        name: 'FileExplorer',
+        component: () => import('@/pages/FileExplorer/FileExplorer.vue'),
     }
 ]
 

@@ -26,6 +26,7 @@
     "chart.js": "^4.3.0",
     "chartjs-plugin-annotation": "^3.0.1",
     "highlight.js": "^11.8.0",
+    "idb-keyval": "^6.2.1",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
     "mime": "^3.0.0",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.195",
     "@types/mime": "^3.0.1",
+    "@types/wicg-file-system-access": "^2023.10.4",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitest/coverage-c8": "^0.31.1",
     "@vue-macros/define-prop": "^0.1.7",

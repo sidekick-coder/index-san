@@ -19,7 +19,7 @@ export default defineConfig({
         AutoImport({
             dts: 'runtime/auto-imports.d.ts',
             dirs: ['src/composables'],
-            imports: ['vue']
+            imports: ['vue', 'vue-router', 'vue-i18n']
         }),
         Components({
             dts: 'runtime/components.d.ts',

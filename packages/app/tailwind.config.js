@@ -10,6 +10,8 @@ module.exports = {
     theme: {
         fontFamily: {
             roboto: ['Roboto', 'sans-serif'],
+            lato: ['Lato', 'sans-serif'],
+            railway: ['Railway', 'sans-serif'],
         },
     },
     plugins: [

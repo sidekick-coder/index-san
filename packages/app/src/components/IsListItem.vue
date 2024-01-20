@@ -9,7 +9,7 @@ const attrs = useAttrs()
 const classMap = ref(new Map<string, string>())
 const classes = computed(() => Array.from(classMap.value.values()).join(' '))
 
-classMap.value.set('base', 'w-full flex items-center')
+classMap.value.set('base', 'w-full flex items-center transition-colors')
 
 // size
 const size = defineProp<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('size', {
@@ -34,13 +34,19 @@ function setSize(){
 watch(size, setSize, { immediate: true })
 
 // color
-const color = defineProp<'zinc'>('color', {
+const variant = defineProp<'text' | 'fill'>('variant', {
+    type: String,
+    default: 'text',
+})
+
+const color = defineProp<'zinc' | 'accent'>('color', {
     type: String,
     default: 'zinc',
 })
 
-function setColor(){
+function setTextColor(){
     const options = {
+        accent: 'text-teal-500 hover-and-clickable:bg-teal-500 hover-and-clickable:text-teal-500 [&.router-link-active]:bg-teal-500/5',
         zinc: 'text-zinc-500 hover-and-clickable:bg-zinc-300/5 hover-and-clickable:text-zinc-300 [&.router-link-active]:bg-zinc-300/5',
     }
 
@@ -49,7 +55,29 @@ function setColor(){
     classMap.value.set('color', option)
 }
 
-watch(color, setColor, { immediate: true })
+function setFillColor(){
+    const options = {
+        accent: 'bg-teal-500 hover-and-clickable:bg-teal-400 [&.router-link-active]:bg-teal-400',
+        zinc: 'bg-zinc-600 hover-and-clickable:bg-zinc-500 [&.router-link-active]:bg-zinc-500',
+    }
+
+    const option = options[color.value]
+
+    classMap.value.set('color', option)
+}
+
+function setVariant(){
+    const options = {
+        text: setTextColor,
+        fill: setFillColor,
+    }
+
+    const option = options[variant.value]
+
+    option()
+}
+
+watch([color, variant], setVariant, { immediate: true })
 
 // clickable
 const clickable = defineProp<boolean>('clickable', {

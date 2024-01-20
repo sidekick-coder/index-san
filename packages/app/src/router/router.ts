@@ -6,5 +6,15 @@ const router = createRouter({
     routes,
 })
 
+router.beforeEach((to, from, next) => {
+    const { isLoaded } = useDrive()
+
+    if (!isLoaded.value && to.name !== 'WorkspaceSelector') {
+        return next({ name: 'WorkspaceSelector' })
+    }
+
+    return next()
+})
+
 export default router
 

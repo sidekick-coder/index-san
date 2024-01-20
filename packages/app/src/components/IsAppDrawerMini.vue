@@ -4,14 +4,14 @@ const drawer = ref()
 <template>
     <div class="w-14 h-full bg-zinc-800 border-r border-zinc-700 shadow">
         <div class="flex flex-col h-full">
-            <is-list-item @click="drawer = !drawer" justify="center" to="/">
+            <is-list-item justify="center" >
                 <is-logo class="w-5 h-5" />
             </is-list-item>
 
             <is-tooltip placement="right">
                 <template #activator="{ attrs }">
                     <is-list-item
-                        to="/entries"
+                        :to="{ name: 'FileExplorer' }"
                         justify="center"
                         v-bind="attrs"
                     >
@@ -20,25 +20,28 @@ const drawer = ref()
                 </template>
 
                 <div>
-                    {{ $t('entry', 2) }}
+                    {{ $t('fileExplorer') }}
                 </div>
             </is-tooltip>
-<!-- 
+            
             <is-tooltip placement="right">
                 <template #activator="{ attrs }">
                     <is-list-item
-                        to="/collections"
+                        :to="{ name: 'WorkspaceSelector' }"
                         justify="center"
                         v-bind="attrs"
                     >
-                        <is-icon name="mdi:database" size="xl" />
+                        <is-icon name="fa:cubes" size="xl" />
                     </is-list-item>
                 </template>
 
                 <div>
-                    {{ $t('collection', 2) }}
+                    {{ $t('workspace', 2) }}
                 </div>
-            </is-tooltip> -->
+            </is-tooltip>
+            
+
+            <!--
 
             <is-tooltip placement="right">
                 <template #activator="{ attrs }">
@@ -88,7 +91,7 @@ const drawer = ref()
                 <div>
                     {{ $t('setting', 2) }}
                 </div>
-            </is-tooltip>
+            </is-tooltip> -->
         </div>
     </div>
 </template>
