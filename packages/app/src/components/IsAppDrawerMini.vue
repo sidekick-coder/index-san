@@ -39,9 +39,6 @@ const drawer = ref()
                     {{ $t('workspace', 2) }}
                 </div>
             </is-tooltip>
-            
-
-            <!--
 
             <is-tooltip placement="right">
                 <template #activator="{ attrs }">
@@ -58,6 +55,11 @@ const drawer = ref()
                     {{ $t('cheatSheet', 2) }}
                 </div>
             </is-tooltip>
+            
+
+            <!--
+
+            
 
             <div class="grow" />
 

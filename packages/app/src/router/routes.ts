@@ -23,6 +23,11 @@ const routes: RouteRecordRaw[] = [
         name: 'FileExplorerFolder',
         props: true,
         component: () => import('@/pages/FileExplorer/FileExplorer.vue'),
+    },
+    {
+        path: '/cheat-sheet',
+        name: 'CheatSheet',
+        component: () => import('@/pages/CheatSheet/CheatSheet.vue'),
     }
 
 ]
