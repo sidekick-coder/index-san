@@ -77,15 +77,15 @@ const icon = defineProp<string>('icon', {
 
         <div class="w-[40px] flex justify-center self-start">
             <slot name="dragger">
-                <v-btn
+                <IsBtn
                     mode="text"
                     size="none"
                     color="b-primary"
                     class="h-12 text-sm opacity-0 group-hover:opacity-100"
                     :class="isSelectedInEditor ? 'opacity-100' : ''"
                 >
-                    <v-icon data-test-id="icon" :name="icon" />
-                </v-btn>
+                    <IsIcon data-test-id="icon" :name="icon" />
+                </IsBtn>
             </slot>
         </div>
 

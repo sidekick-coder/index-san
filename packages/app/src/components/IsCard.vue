@@ -4,17 +4,18 @@
 const classMap = ref(new Map<string, string>())
 const classes = computed(() => Array.from(classMap.value.values()).join(' '))
 
-classMap.value.set('general', 'p-4')
+classMap.value.set('general', '')
 
 // color
-const color = defineProp<'default'>('color',  {
+const color = defineProp<'default' | 'zinc'>('color',  {
     type: String,
     default: 'default',
 })
 
 function setColor(){
     const options = {
-        default: 'bg-white dark:bg-zinc-800',
+        default: 'bg-zinc-100 text-zinc-900',
+        zinc: 'bg-zinc-900 text-zinc-100',
     }
 
     const option = options[color.value]

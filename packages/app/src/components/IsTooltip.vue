@@ -61,7 +61,7 @@ function hide() {
         >
 
             <div
-                class="dark:bg-zinc-200 text-sm py-1 px-2 rounded relative"
+                class="dark:bg-zinc-200 dark:text-zinc-900 text-xs py-1 px-2 rounded relative"
                 v-visible="model"
             >
                 <slot  />

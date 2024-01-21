@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import {
     MarkdownNode,
     MarkdownNodeComponent,
@@ -26,7 +25,7 @@ interface Item {
 const items: Item[] = [
     {
         label: tm.t('heading'),
-        icon: 'heading',
+        icon: 'fa6-solid:heading',
         name: 'heading',
         description: tm.t('headingDescription'),
         make: () => {
@@ -44,7 +43,7 @@ const items: Item[] = [
     },
     {
         label: tm.t('paragraph'),
-        icon: 'paragraph',
+        icon: 'fa6-solid:paragraph',
         name: 'paragraph',
         description: tm.t('paragraphDescription'),
         make: () => {
@@ -66,7 +65,7 @@ const items: Item[] = [
     },
     {
         label: tm.t('script'),
-        icon: 'code',
+        icon: 'fa6-solid:code',
         name: 'script',
         description: tm.t('scriptDescription'),
         make: () => {
@@ -85,7 +84,7 @@ const items: Item[] = [
     },
     {
         label: tm.t('chart'),
-        icon: 'pie-chart',
+        icon: 'fa:pie-chart',
         name: 'chart',
         description: tm.t('chartDescription'),
         make: () => {
@@ -135,33 +134,34 @@ function onSelect(item: Item) {
 }
 </script>
 <template>
-    <v-menu offset-y close-on-content-click :width="200">
+    <IsMenu offset-y close-on-content-click :width="200">
         <template #activator="props">
             <slot name="activator" v-bind="props">
-                <v-icon name="plus" v-bind="props.attrs" />
+                <IsIcon name="mdi:plus" v-bind="props.attrs" />
             </slot>
         </template>
 
-        <v-card color="b-secondary" class="rounded shadow" width="200">
-            <button
+        <IsCard class="w-52">
+            <IsListItem
                 v-for="(item, index) in items"
                 :key="index"
                 :data-test-id="`item-${item.name}`"
                 data-test-item
-                class="flex px-4 py-3 items-center hover:bg-b-primary/50 text-left"
+                size="lg"
                 @click="onSelect(item)"
             >
-                <div
-                    class="w-8 h-8 flex items-center justify-center shadow bg-b-03 text-t-secondary mr-4"
+                <IsCard
+                    class="w-8 h-8 flex items-center justify-center mr-4"
+                    color="zinc"
                 >
-                    <v-icon :name="item.icon" size="14" />
-                </div>
+                    <IsIcon :name="item.icon" size="sm" />
+                </IsCard>
 
                 <div>
                     <div class="text-t-primary text-sm font-bold">{{ item.label }}</div>
                     <div class="text-t-secondary text-xs">{{ item.description }}</div>
                 </div>
-            </button>
-        </v-card>
-    </v-menu>
+            </IsListItem>
+        </IsCard>
+    </IsMenu>
 </template>

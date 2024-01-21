@@ -7,11 +7,7 @@ defineProps({
 })
 </script>
 <template>
-    <v-btn
-        size="sm"
-        color="hover:text-t-primary"
-        :class="active ? 'text-t-primary' : 'text-t-secondary'"
-    >
+    <IsBtn size="sm">
         <slot />
-    </v-btn>
+    </IsBtn>
 </template>

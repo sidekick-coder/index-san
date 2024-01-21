@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useEventListener } from '@vueuse/core'
-import ToolbarBtn from './ToolbarBtn.vue'
 
 const emit = defineEmits(['change'])
 
@@ -138,13 +137,13 @@ function onSelectionChange() {
 useEventListener(document, 'selectionchange', onSelectionChange)
 </script>
 <template>
-    <toolbar-btn
+    <IsBlockEditorToolbarBtn
         v-for="action in actions"
         :key="action.tag"
         :active="action.active"
         :data-test-id="action.icon"
         @click="action.onClick"
     >
-        <v-icon :name="action.icon" />
-    </toolbar-btn>
+        <IsIcon :name="action.icon" />
+    </IsBlockEditorToolbarBtn>
 </template>

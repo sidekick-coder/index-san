@@ -23,7 +23,7 @@ onErrorCaptured((err) => {
 </script>
 <template>
     <div ref="root" class="h-full">
-        <Toolbar />
+        <is-block-editor-toolbar />
 
         <div
             class="max-h-[calc(100%-48px)] w-full overflow-auto flex flex-wrap items-start overflow-auto pb-80"
@@ -31,7 +31,7 @@ onErrorCaptured((err) => {
             <div v-if="error" class="h-full w-full flex items-center justify-center">
                 <div class="text-center">
                     <div class="text-6xl text-danger mb-4">
-                        <v-icon name="mdi:alert-circle-outline" class="mx-auto" />
+                        <is-icon name="mdi:alert-circle-outline" class="mx-auto" />
                     </div>
                     <div class="text-2xl font-bold">
                         {{ $t('errors.errorRenderingBlocks') }}
@@ -51,19 +51,19 @@ onErrorCaptured((err) => {
                 leave-to-class="opacity-0"
             >
                 <template v-for="n in nodesReady" :key="n.meta.id">
-                    <BlockParagraph
+                    <IsBlockEditorBlockParagraph
                         v-if="n.is('Paragraph')"
                         :model-value="n"
                         @update:model-value="onNodeUpdate"
                     />
 
-                    <BlockHeading
+                    <IsBlockEditorBlockHeading
                         v-else-if="n.is('Heading')"
                         :model-value="n"
                         @update:model-value="onNodeUpdate"
                     />
 
-                    <BlockScript
+                    <!-- <BlockScript
                         v-else-if="n.is('Component') && n.name === 'script'"
                         :model-value="n"
                         @update:model-value="onNodeUpdate"
@@ -73,9 +73,9 @@ onErrorCaptured((err) => {
                         v-else-if="n.is('Component') && n.name === 'chart'"
                         :model-value="n"
                         @update:model-value="onNodeUpdate"
-                    />
+                    /> -->
 
-                    <Block
+                    <IsBlockEditorBlock
                         v-else
                         :model-value="n"
                         data-test-id="invalid-block"
@@ -84,7 +84,7 @@ onErrorCaptured((err) => {
                         <div class="text-danger">
                             {{ $t('errors.errorRenderingBlock', [n.type]) }}
                         </div>
-                    </Block>
+                    </IsBlockEditorBlock>
                 </template>
             </transition-group>
 

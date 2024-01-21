@@ -22,7 +22,7 @@ function setSize(){
         xs: 'text-xs py-3 px-4',
         sm: 'text-sm h-12 px-4',
         md: 'text-md h-12 px-4',
-        lg: 'text-lg h-12 px-4',
+        lg: 'text-lg h-14 px-4',
         xl: 'text-xl h-12 px-4',
     }
 

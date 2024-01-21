@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { MarkdownNodeHeading, MarkdownParser } from '@language-kit/markdown'
-import Block from './Block.vue'
-import HTMLContentEditable from './HTMLContentEditable.vue'
-import { convertHtmlToMarkdown } from '../composables/helpers'
 import { Token } from '@language-kit/lexer'
-import ToolbarBtn from './ToolbarBtn.vue'
+import type IsContentEditableVue from './IsContentEditable.vue';
 
 defineOptions({
     inheritAttrs: false,
@@ -15,8 +12,10 @@ const model = defineModel({
     required: true,
 })
 
+const markdownHelper = useMarkdownHelper()
+
 const html = ref('')
-const contentEditableRef = ref<InstanceType<typeof HTMLContentEditable>>()
+const contentEditableRef = ref<InstanceType<typeof IsContentEditableVue>>()
 const selected = ref(false)
 const parser = new MarkdownParser()
 
@@ -33,7 +32,7 @@ function load() {
 function update(level?: number) {
     const headingLevel = level ?? model.value.level
 
-    let markdown = convertHtmlToMarkdown(html.value)
+    let markdown = markdownHelper.convertHtmlToMarkdown(html.value)
 
     markdown = markdown.replace(/^<h\d>(.*)<\/h\d>$/, '$1').trim()
 
@@ -66,15 +65,15 @@ watch(selected, (value) => {
 })
 </script>
 <template>
-    <block v-model="model" v-model:selected="selected" class="block-heading">
+    <IsBlockEditorBlock v-model="model" v-model:selected="selected" class="block-heading">
         <template #dragger>
-            <v-btn mode="text" size="none" class="py-1 text-t-secondary h-12" color="b-primary">
-                <v-icon
+            <IsBtn variant="text" size="none" class="h-12 px-2">
+                <IsIcon
                     data-test-id="dragger-icon"
                     :name="`lucide:heading-${model.level}`"
-                    class="text-lg"
+                    size="lg"
                 />
-            </v-btn>
+            </IsBtn>
         </template>
         <template #toolbar>
             <ToolbarBtn
@@ -89,7 +88,7 @@ watch(selected, (value) => {
         </template>
 
         <component :is="`h${model.level}`">
-            <HTMLContentEditable
+            <IsContentEditable
                 ref="contentEditableRef"
                 v-model="html"
                 @blur="update()"
@@ -97,7 +96,7 @@ watch(selected, (value) => {
                 @keydown.ctrl.s="update()"
             />
         </component>
-    </block>
+    </IsBlockEditorBlock>
 </template>
 
 <style lang="scss">

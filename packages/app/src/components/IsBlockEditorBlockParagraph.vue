@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { MarkdownNodeParagraph } from '@language-kit/markdown'
-import Block from './Block.vue'
-import HTMLContentEditable from './HTMLContentEditable.vue'
-import ToolbarTextFormat from './ToolbarTextFormat.vue'
-import { convertMarkdownToHtml, createNodeParagraphFromHtml } from '../composables/helpers'
 import { TokenType } from '@language-kit/lexer'
+import type IsContentEditableVue from './IsContentEditable.vue';
 
 defineOptions({
     inheritAttrs: false,
@@ -15,8 +12,10 @@ const model = defineModel({
     required: true,
 })
 
+const markdownHelper = useMarkdownHelper()
+
 const html = ref('')
-const contentEditableRef = ref<InstanceType<typeof HTMLContentEditable>>()
+const contentEditableRef = ref<InstanceType<typeof IsContentEditableVue>>()
 const selected = ref(false)
 
 const isEmpty = computed(() => {
@@ -36,7 +35,7 @@ const showPlaceholder = computed(() => {
 })
 
 function load() {
-    let text = convertMarkdownToHtml(model.value.children.map((c) => c.toText()).join(''))
+    let text = markdownHelper.convertMarkdownToHtml(model.value.children.map((c) => c.toText()).join(''))
 
     if (text.endsWith(' ')) {
         text = text.slice(0, -1) + '&nbsp;'
@@ -46,7 +45,7 @@ function load() {
 }
 
 function update() {
-    const node = createNodeParagraphFromHtml(html.value)
+    const node = markdownHelper.createNodeParagraphFromHtml(html.value)
 
     node.meta = model.value.meta
 
@@ -72,14 +71,14 @@ watch(selected, (value) => {
 })
 </script>
 <template>
-    <block
+    <IsBlockEditorBlock
         v-model="model"
         v-model:selected="selected"
         :class="isEmpty ? 'hidden' : ''"
         class="relative"
     >
         <template #toolbar>
-            <ToolbarTextFormat @change="onToolbarTextFormat" />
+            <IsBlockEditorToolbarTextFormat @change="onToolbarTextFormat" />
         </template>
 
         <div
@@ -89,12 +88,12 @@ watch(selected, (value) => {
             {{ $t('blockParagraphPlaceholder') }}
         </div>
 
-        <HTMLContentEditable
+        <IsContentEditable
             ref="contentEditableRef"
             v-model="html"
             @blur="update"
             @keydown.enter.prevent="update"
             @keydown.ctrl.s="update"
         />
-    </block>
+    </IsBlockEditorBlock>
 </template>

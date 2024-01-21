@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { useEditor } from '../composables/editor'
 import { MarkdownNode } from '@language-kit/markdown'
-
 import delay from 'lodash/delay'
 
-import ToolbarBtn from './ToolbarBtn.vue'
-import NewBlockMenu from './NewBlockMenu.vue'
-
-const editor = useEditor()
+const editor = useBlockEditor()
 
 function onLoadedToolbar(node: MarkdownNode, el: HTMLElement | null) {
     if (!el) {
@@ -49,7 +44,7 @@ function deleteNodes() {
 }
 </script>
 <template>
-    <div class="h-12 border-b border-lines px-7 flex items-center relative">
+    <div class="h-12 border-b border-zinc-700 px-7 flex items-center relative">
         <transition-group
             enter-active-class="transition duration-300 absolute"
             leave-active-class="transition duration-300 absolute"
@@ -60,44 +55,44 @@ function deleteNodes() {
                 v-for="node in editor.nodes"
                 v-show="canShowToolbar(node)"
                 :id="node.meta.toolbarId"
-                :ref="(el: HTMLElement) => onLoadedToolbar(node, el)"
+                :ref="(el: any) => onLoadedToolbar(node, el)"
                 :key="node.meta.id"
                 data-test-id="node-toolbar"
                 class="flex-1 overflow-hidden flex items-center h-full bg-b-primary"
             />
         </transition-group>
 
-        <toolbar-btn
+        <IsBlockEditorToolbarBtn
             size="sm"
             color="text-t-secondary hover:text-t-primary"
             class="ml-auto"
             @mousedown.prevent="moveUp"
         >
-            <v-icon name="chevron-up" />
-        </toolbar-btn>
+            <IsIcon name="mdi:chevron-up" />
+        </IsBlockEditorToolbarBtn>
 
-        <toolbar-btn
+        <IsBlockEditorToolbarBtn
             size="sm"
             color="text-t-secondary hover:text-t-primary"
             @mousedown.prevent="moveDown"
         >
-            <v-icon name="chevron-down" />
-        </toolbar-btn>
+            <IsIcon name="mdi:chevron-down" />
+        </IsBlockEditorToolbarBtn>
 
-        <toolbar-btn
+        <IsBlockEditorToolbarBtn
             size="sm"
             color="text-t-secondary hover:text-t-primary"
             @mousedown.prevent="deleteNodes"
         >
-            <v-icon name="trash" />
-        </toolbar-btn>
+            <IsIcon name="mdi:trash" />
+        </IsBlockEditorToolbarBtn>
 
-        <new-block-menu @select="onNewNode">
+        <IsBlockEditorNewBlockMenu @select="onNewNode">
             <template #activator="{ attrs }">
-                <toolbar-btn v-bind="attrs" size="sm" color="text-t-secondary hover:text-t-primary">
-                    <v-icon name="plus" />
-                </toolbar-btn>
+                <IsBlockEditorToolbarBtn v-bind="attrs" size="sm" color="text-t-secondary hover:text-t-primary">
+                    <IsIcon name="mdi:plus" />
+                </IsBlockEditorToolbarBtn>
             </template>
-        </new-block-menu>
+        </IsBlockEditorNewBlockMenu>
     </div>
 </template>

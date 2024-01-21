@@ -56,12 +56,12 @@ const modes = [
     {
         id: 'split' as const,
         label: tm.t('split'),
-        icon: 'table-columns',
+        icon: 'fa6-solid:table-columns',
     },
     {
         id: 'block' as const,
         label: tm.t('block'),
-        icon: 'cube',
+        icon: 'fa:cube',
     },
     {
         id: 'text' as const,
@@ -84,7 +84,7 @@ whenever(keys.Alt_m, () => {
 </script>
 <template>
     <div class="flex flex-wrap h-full w-full">
-        <div class="h-[calc(100%-32px)] w-full">
+        <div class="h-[calc(100%-1.5rem)] w-full">
             <transition
                 enter-active-class="transition duration-200"
                 leave-active-class="transition duration-200"
@@ -96,7 +96,7 @@ whenever(keys.Alt_m, () => {
                         <is-monaco-editor v-model="text" @keydown.ctrl.s="updateText(text)" language="mdc" />
                     </div>
 
-                    <div class="h-full w-6/12 border-l border-b-secondary/25">
+                    <div class="h-full w-6/12 border-l border-zinc-700">
                         <is-block-editor />
                     </div>
                 </div>
@@ -107,17 +107,19 @@ whenever(keys.Alt_m, () => {
             </transition>
         </div>
 
-        <div class="h-8 border-t border-lines w-full flex text-xs">
-            <div
+        <div class="h-6 bg-zinc-900 w-full flex text-xs shadow">
+            <IsBtn
                 v-for="m in modes"
                 :key="m.id"
-                class="px-2 hover:bg-b-secondary cursor-pointer flex items-center"
+                size="xs"
+                class="font-lato"
+                rounded="none"
                 @click="mode = m.id"
             >
-                <is-icon :name="m.icon" class="mr-2" />
+                <is-icon :name="m.icon" class="mr-2" size="xs" />
 
                 {{ m.label }}
-            </div>
+            </IsBtn>
         </div>
     </div>
 </template>
