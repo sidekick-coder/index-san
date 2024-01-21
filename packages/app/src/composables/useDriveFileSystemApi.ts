@@ -12,7 +12,7 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
                     path: entry.name,
                     type: entry.kind === 'file' ? 'file' : 'directory'
                 })
-              }
+            }
 
             return result
         }
@@ -25,12 +25,14 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
             throw new Error('Not a directory')
         }
 
-        const entries = await folder.values()
+        for await (const entry of folder.values()) {
+            result.push({
+                path: entry.name,
+                type: entry.kind === 'file' ? 'file' : 'directory'
+            })
+        }
 
-        return entries.map(entry => ({
-            path: entry.name,
-            type: entry.kind === 'file' ? 'file' : 'directory'
-        }))
+        return result
     }
 
     const read: Drive['read'] = async (path) => {

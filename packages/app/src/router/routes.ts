@@ -17,7 +17,14 @@ const routes: RouteRecordRaw[] = [
         path: '/file-explorer',
         name: 'FileExplorer',
         component: () => import('@/pages/FileExplorer/FileExplorer.vue'),
+    },
+    {
+        path: '/file-explorer/:path(.*)*',
+        name: 'FileExplorerFolder',
+        props: true,
+        component: () => import('@/pages/FileExplorer/FileExplorer.vue'),
     }
+
 ]
 
 export default routes
