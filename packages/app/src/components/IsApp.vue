@@ -1,8 +1,6 @@
 <template>
-    <div>
-        <div class="bg-body-900 text-body-50 font-roboto h-screen w-screen flex">
-            <slot />
+    <div class="bg-body-900 text-body-50 font-roboto min-h-dvh min-w-dvw">
+        <slot />
 
-        </div>
     </div>
 </template>

@@ -4,9 +4,13 @@
 import LayoutDefault from './layouts/LayoutDefault.vue'
 </script>
 <template>
-    <is-app>
-        <layout-default>
+    <div>
+        <is-app v-if="$route.meta.layout === 'empty'">
+            <router-view  />
+        </is-app>
+
+        <layout-default v-else>
             <router-view />
         </layout-default>
-    </is-app>
+    </div>
 </template>

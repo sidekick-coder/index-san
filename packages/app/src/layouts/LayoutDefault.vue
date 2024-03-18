@@ -1,9 +1,17 @@
-<template>
-    <div class="h-screen w-screen flex">
-        <is-app-drawer-mini />
+<script lang="ts" setup>
+const drawer = ref(true)
 
-        <div class="w-72 bg-body-700 border-r border-body-500"  />
+</script>
+
+<template>
+    <is-app class="flex">
+        <is-app-drawer-mini v-model:drawer="drawer" />
+
+        <div 
+            class="bg-body-700  border-body-500 transition-[width] duration-300"
+            :class="drawer ? 'w-72 border-r' : 'w-0'"
+        />
 
         <slot />
-    </div>
+    </is-app>
 </template>

@@ -49,7 +49,7 @@ async function select(workspace: Workspace){
 </script>
 
 <template>
-    <div class="h-full w-full flex items-center justify-center">
+    <div class="min-h-[inherit] w-full flex items-center justify-center">
         <div v-if="loading">
             <div class="text-2xl">{{ $t('loading') }}</div>
         </div>

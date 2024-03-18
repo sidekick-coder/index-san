@@ -94,7 +94,7 @@ function findIconColor(entry: DriveEntry){
             <input v-model="search" class="bg-transparent w-full h-12 px-4 outline-none" placeholder="Search..." />
         </div>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col overflow-y-auto">
             <is-list-item v-for="e in filteredEntries" :key="e.path" @click="onEntryClick(e)">
                 <is-icon
                     :name="findIcon(e)"
