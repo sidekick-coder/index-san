@@ -14,7 +14,7 @@ const links = [
     {
         to: '/app-pages/directory',
         icon: 'mdi:folder',
-        label: 'Explorer'
+        label: 'fileExplorer'
     },
     {
         to: '/workspace-selector',

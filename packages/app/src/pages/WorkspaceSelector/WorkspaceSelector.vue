@@ -43,7 +43,9 @@ async function select(workspace: Workspace){
 
     setDrive(workspaceDrive)
 
-    router.push('/app-pages/directory')
+    setTimeout(() => {
+        router.push('/entries')
+    }, 100)
 }
 
 </script>

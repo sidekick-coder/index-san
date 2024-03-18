@@ -1,21 +1,18 @@
 <script lang="ts" setup>
 
 import type { AppPage } from '@/composables/defineAppPage'
-import Directory from './AppPageDirectory.vue';
+import AppPageDirectory from './AppPageDirectory.vue';
+import AppPageFile from './AppPageFile.vue';
 
 const name = defineProp('name', {
     type: String,
     required: true
 })
 
-const pages = shallowRef<AppPage[]>([])
-
-const directoryPage = defineAppPage({
-    name: 'directory',
-    component: Directory,
-})
-
-pages.value.push(directoryPage)
+const pages = shallowRef<AppPage[]>([
+    defineAppPage({ name: 'directory', component: AppPageDirectory }),
+    defineAppPage({ name: 'file', component: AppPageFile }),
+])
 
 const current = computed(() => pages.value.find(p => p.name === name.value))
 

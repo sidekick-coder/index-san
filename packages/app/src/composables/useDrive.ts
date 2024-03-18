@@ -5,6 +5,7 @@ export interface DriveEntry {
 }
 
 export interface Drive {
+    get: (path: string) => Promise<DriveEntry | null>
     list: (path: string) => Promise<DriveEntry[]>
     read: (path: string) => Promise<string>
     write: (path: string, content: any) => Promise<void>

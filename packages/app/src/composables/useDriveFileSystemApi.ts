@@ -2,6 +2,12 @@ import type { Drive, DriveEntry } from "./useDrive";
 
 export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive {
 
+    const dirname = (path: string) => {
+        const args = path.split('/').slice(0, -1).join('/')
+
+        return args === '' ? '/' : args
+    }
+
     const list: Drive['list'] = async (path) => {
 
         const result = [] as DriveEntry[]
@@ -35,6 +41,24 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         return result
     }
 
+    const get: Drive['get'] = async (path) => {
+
+        if (path === '/') {
+            return {
+                path: '/',
+                type: 'directory'
+            }
+        }
+
+        const directory = dirname(path)
+
+        const allParent = await list(dirname(path))
+
+        const entry = allParent.find(e => e.path === path.split('/').pop())
+
+        return entry || null
+    }
+
     const read: Drive['read'] = async (path) => {
         throw new Error('Not implemented')
     }
@@ -43,5 +67,5 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         throw new Error('Not implemented')
     }
 
-    return { list, read, write }
+    return { list, get, read, write }
 }
