@@ -61,7 +61,7 @@ function hide() {
         >
 
             <div
-                class="dark:bg-zinc-200 dark:text-zinc-900 text-xs py-1 px-2 rounded relative"
+                class="bg-body-500 text-body-0 text-xs py-1 px-2 rounded relative"
                 v-visible="model"
             >
                 <slot  />
@@ -76,7 +76,7 @@ function hide() {
                     ]"
                 >
                     <div
-                        class="w-2 h-2 bg-zinc-200 rotate-45"
+                        class="w-2 h-2 bg-body-500 rotate-45"
                         :class="[
                             placement === 'top' && 'translate-y-1/2',
                             placement === 'bottom' && '-translate-y-1/2',

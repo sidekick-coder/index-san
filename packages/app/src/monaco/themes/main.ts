@@ -198,7 +198,7 @@ export default defineMonacoTheme({
     ],
     colors: {
         'editor.foreground': '#f8f8f2',
-        'editor.background': '#09090B',
+        'editor.background': '#1E1B0D',
         'editor.selectionBackground': '#44475a',
         'editor.lineHighlightBackground': '#44475a',
         'editorCursor.foreground': '#f8f8f0',

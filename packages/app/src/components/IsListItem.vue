@@ -47,7 +47,7 @@ const color = defineProp<'zinc' | 'accent'>('color', {
 function setTextColor(){
     const options = {
         accent: 'text-teal-500 hover-and-clickable:bg-teal-500 hover-and-clickable:text-teal-500 [&.router-link-active]:bg-teal-500/5',
-        zinc: 'text-zinc-500 hover-and-clickable:bg-zinc-300/5 hover-and-clickable:text-zinc-300 [&.router-link-active]:bg-zinc-300/5',
+        zinc: 'text-body-50 hover-and-clickable:bg-body-300/5 hover-and-clickable:text-body-0 [&.router-link-active]:bg-zinc-300/5',
     }
 
     const option = options[color.value]

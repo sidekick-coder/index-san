@@ -76,7 +76,7 @@ function findIcon(entry: DriveEntry){
 
 function findIconColor(entry: DriveEntry){
     if (entry.type === 'directory') {
-        return 'text-blue-500'
+        return 'text-primary-500'
     }
 
     if (entry.path.endsWith('.ts')) {
@@ -90,7 +90,7 @@ function findIconColor(entry: DriveEntry){
 <template>
     <div class="w-full">
 
-        <div class="w-full bg-zinc-700">
+        <div class="w-full bg-body-500">
             <input v-model="search" class="bg-transparent w-full h-12 px-4 outline-none" placeholder="Search..." />
         </div>
 

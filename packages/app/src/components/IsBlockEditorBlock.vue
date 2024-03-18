@@ -61,7 +61,7 @@ watch(focused, (value) => {
 
 const icon = defineProp<string>('icon', {
     type: String,
-    default: 'grip-vertical',
+    default: 'fa-solid:grip-vertical',
 })
 </script>
 <template>
@@ -77,13 +77,7 @@ const icon = defineProp<string>('icon', {
 
         <div class="w-[40px] flex justify-center self-start">
             <slot name="dragger">
-                <IsBtn
-                    mode="text"
-                    size="none"
-                    color="b-primary"
-                    class="h-12 text-sm opacity-0 group-hover:opacity-100"
-                    :class="isSelectedInEditor ? 'opacity-100' : ''"
-                >
+                <IsBtn variant="text" size="none" class="h-12 px-2 group-hover:opacity-100" :class="isSelectedInEditor ? 'opacity-100' : 'opacity-0'">
                     <IsIcon data-test-id="icon" :name="icon" />
                 </IsBtn>
             </slot>

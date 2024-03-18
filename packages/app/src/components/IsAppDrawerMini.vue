@@ -1,8 +1,5 @@
-<script setup lang="ts">
-const drawer = ref()
-</script>
 <template>
-    <div class="w-14 h-full bg-zinc-900 border-r border-zinc-700 shadow">
+    <div class="w-14 h-full bg-body-900 border-r border-body-500 shadow">
         <div class="flex flex-col h-full">
             <is-list-item justify="center" >
                 <is-logo class="w-5 h-5" />
