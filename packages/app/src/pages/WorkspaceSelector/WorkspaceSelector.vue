@@ -43,7 +43,7 @@ async function select(workspace: Workspace){
 
     setDrive(workspaceDrive)
 
-    router.push({ name: 'FileExplorer' })
+    router.push('/app-pages/directory')
 }
 
 </script>

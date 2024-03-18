@@ -14,15 +14,16 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
-        path: '/file-explorer',
-        name: 'FileExplorer',
-        component: () => import('@/pages/FileExplorer/FileExplorer.vue'),
+        path: '/entries/:path(.*)*',
+        name: 'EntryProvider',
+        props: true,
+        component: () => import('@/pages/EntryProvider/EntryProvider.vue'),
     },
     {
-        path: '/file-explorer/:path(.*)*',
-        name: 'FileExplorerFolder',
+        path: '/app-pages/:name',
+        name: 'AppPageProvider',
         props: true,
-        component: () => import('@/pages/FileExplorer/FileExplorer.vue'),
+        component: () => import('@/pages/AppPage/AppPage.vue'),
     },
     {
         path: '/cheat-sheet',

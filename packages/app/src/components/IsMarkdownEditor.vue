@@ -83,7 +83,7 @@ whenever(keys.Alt_m, () => {
 })
 </script>
 <template>
-    <div class="flex flex-wrap min-h-full w-full">
+    <div class="flex flex-wrap h-screen w-full">
         <div class="h-[calc(100%-1.5rem)] w-full">
             <transition
                 enter-active-class="transition duration-200"

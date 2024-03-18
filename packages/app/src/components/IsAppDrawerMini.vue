@@ -12,9 +12,9 @@ const drawer = defineModel('drawer', {
 // links
 const links = [
     {
-        to: '/file-explorer',
+        to: '/app-pages/directory',
         icon: 'mdi:folder',
-        label: 'fileExplorer'
+        label: 'Explorer'
     },
     {
         to: '/workspace-selector',

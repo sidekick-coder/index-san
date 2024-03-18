@@ -2,14 +2,13 @@
 import type { DriveEntry } from '@/composables/useDrive';
 import orderBy from 'lodash/orderBy'
 
-
-const path = defineProp<string>('path', {
-    type: String,
-    default: '/'
-})
-
 const { drive } = useDrive()
 const router = useRouter()
+const route = useRoute()
+
+const path = computed(() => {
+    return route.query.path as string || '/'
+})
 
 const search = ref('')
 const entries = ref<DriveEntry[]>([])
@@ -95,7 +94,11 @@ function findIconColor(entry: DriveEntry){
         </div>
 
         <div class="flex flex-col overflow-y-auto">
-            <is-list-item v-for="e in filteredEntries" :key="e.path" @click="onEntryClick(e)">
+            <is-list-item
+                v-for="e in filteredEntries"
+                :key="e.path"
+                :to="`/entries/${e.path}`"
+            >
                 <is-icon
                     :name="findIcon(e)"
                     size="xl"
