@@ -1,34 +1,19 @@
 <script lang="ts" setup>
-import type { EntryMiddleware } from '@/composables/defineEntryMiddleware'
-import type { RouteLocationRaw } from 'vue-router';
+import type { EntryMiddleware, EntryMiddlewareResult } from '@/composables/defineEntryMiddleware'
+import { directoryEntryMiddleware } from '@/modules/directory/directoryEntryMiddleware';
+import { textEditorEntryMiddleware } from '@/modules/text-editor/textEditorEntryMiddleware';
+import AppPageRender from '@/pages/AppPage/AppPageRender.vue'
+
+import orderBy from 'lodash/orderBy'
 
 // general
-
-const router = useRouter()
 const { drive } = useDrive()
 
 // middlewares
-const middlewares = ref<EntryMiddleware[]>([])
-
-const main = defineEntryMiddleware((ctx) => {
-    if (ctx.entry.type !== 'directory') {
-        return {
-            path: '/app-pages/file',
-            query: {
-                path: ctx.entry.path
-            }
-        }
-    }
-    
-    return {
-        path: '/app-pages/directory',
-        query: {
-            path: ctx.entry.path
-        }
-    }
-})
-
-middlewares.value.push(main)
+const middlewares = ref<EntryMiddleware[]>([
+    directoryEntryMiddleware,
+    textEditorEntryMiddleware
+])
 
 // load
 
@@ -37,7 +22,13 @@ const path = defineProp<string | string[]>('path', {
     default: '/'
 })
 
+const loading = ref(true)
+const error = ref<string>()
+const result = ref<EntryMiddlewareResult>()
+
 async function load(){
+    loading.value = true
+    result.value = undefined
 
     const args = Array.isArray(path.value) ? path.value : [path.value]
 
@@ -46,33 +37,42 @@ async function load(){
     const entry = await drive.value.get(filename)
 
     if (!entry) {
-        alert('Entry not found')
+        error.value = `Can not find entry: ${filename}`
         return
     }
 
-    let result: RouteLocationRaw | undefined
-
-    for await (const middleware of middlewares.value) {
-        const middlewareResult = await middleware({ entry })
+    for await (const middleware of orderBy(middlewares.value, ['order'], ['asc'])) {
+        const middlewareResult = await middleware.handle({ entry })
 
         if (middlewareResult) {
-            result = middlewareResult
+            result.value = middlewareResult
         }
     }
-
-    if (!result) {
-        alert('Route not found')
-        return
-    }
-
-    router.replace(result)
+    
+    setTimeout(() => {
+        loading.value = false
+    }, 500)
 }
 
-onMounted(load)
+watch(path, load, { immediate: true })
 
 
 </script>
 
 <template>
-    <div />
+    <div class="w-full min-h-full">
+        <div v-if="loading" class="w-full flex items-center justify-center min-h-full">
+            Loading...
+        </div>
+        
+        
+        <AppPageRender v-else-if="result" :name="result.page" :page-props="result.props" />
+        
+        <div v-else class="w-full flex items-center justify-center min-h-full">
+            <div>Error loading entry: {{ error }}</div>
+    
+            <div>Path {{ path || '/' }}</div>
+        </div>
+    </div>
+
 </template>

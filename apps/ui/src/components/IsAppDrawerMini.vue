@@ -12,7 +12,7 @@ const drawer = defineModel('drawer', {
 // links
 const links = [
     {
-        to: '/app-pages/directory',
+        to: '/entries',
         icon: 'mdi:folder',
         label: 'fileExplorer'
     },

@@ -1,12 +1,22 @@
 import type { DriveEntry } from "./useDrive";
-import type { RouteLocationRaw, Router  } from 'vue-router'
-
 export interface EntryMiddlewareContext {
     entry: DriveEntry
 }
 
+export interface EntryMiddlewareOptions {
+    order?: number
+}
+
+export interface EntryMiddlewareSuccessResult {
+    page: string
+    props: Record<string, any>
+}
+
+export type EntryMiddlewareResult = EntryMiddlewareSuccessResult | null | undefined
+
 export interface EntryMiddleware {
-    (context: EntryMiddlewareContext): Promise<RouteLocationRaw | null> | RouteLocationRaw | null
+    order?: number
+    handle: (context: EntryMiddlewareContext) => Promise<EntryMiddlewareResult> | EntryMiddlewareResult
 }
 
 export function defineEntryMiddleware(middleware: EntryMiddleware) {
