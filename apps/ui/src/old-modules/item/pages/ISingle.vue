@@ -85,7 +85,11 @@ watch(() => props.itemId, setContentPath, {
 </script>
 <template>
     <v-layout use-percentage>
-        <v-layout-drawer :model-value="drawer" class="border-l border-lines px-4 py-4" right>
+        <v-layout-drawer
+            :model-value="drawer"
+            class="border-l border-lines px-4 py-4"
+            right
+        >
             <div v-if="item">
                 <i-value
                     v-for="c in columnStore.columns"
@@ -109,7 +113,11 @@ watch(() => props.itemId, setContentPath, {
                 :doc:scope="{ item }"
             >
                 <template #append-actions>
-                    <v-btn mode="text" size="sm" @click="drawer = !drawer">
+                    <v-btn
+                        mode="text"
+                        size="sm"
+                        @click="drawer = !drawer"
+                    >
                         <v-icon name="cog" />
                     </v-btn>
                 </template>

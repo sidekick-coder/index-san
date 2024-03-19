@@ -159,8 +159,14 @@ function selectAllVisible() {
         :class="[fixed ? 'table-fixed' : '', loading ? 'animate-pulse' : '']"
     >
         <thead>
-            <slot name="column" :columns="parsedColumns">
-                <v-tr :class="[headerStick ? 'sticky top-0' : '']" class="bg-b-primary">
+            <slot
+                name="column"
+                :columns="parsedColumns"
+            >
+                <v-tr
+                    :class="[headerStick ? 'sticky top-0' : '']"
+                    class="bg-b-primary"
+                >
                     <slot
                         v-for="column in parsedColumns"
                         :key="`column-${column.name}`"
@@ -179,7 +185,11 @@ function selectAllVisible() {
                             />
                         </v-th>
 
-                        <v-th v-else :style="column.style" class="text-t-secondary">
+                        <v-th
+                            v-else
+                            :style="column.style"
+                            class="text-t-secondary"
+                        >
                             {{ column.label }}
                         </v-th>
                     </slot>
@@ -221,7 +231,11 @@ function selectAllVisible() {
                         />
                     </v-td>
 
-                    <v-td v-else :key="`${item.id}-${column.name}`" :style="column.style">
+                    <v-td
+                        v-else
+                        :key="`${item.id}-${column.name}`"
+                        :style="column.style"
+                    >
                         {{ column.field ? item[column.field] : '' }}
                     </v-td>
                 </slot>
@@ -229,7 +243,10 @@ function selectAllVisible() {
         </slot>
 
         <v-tr v-if="!visibleItems.length">
-            <v-td :colspan="parsedColumns.length" class="text-t-secondary text-sm text-center">
+            <v-td
+                :colspan="parsedColumns.length"
+                class="text-t-secondary text-sm text-center"
+            >
                 {{ $t('noEntity', [$t('item', 2)]) }}
             </v-td>
         </v-tr>
@@ -241,19 +258,28 @@ function selectAllVisible() {
             :length="visibleItems.length"
             :columns="parsedColumns"
         >
-            <v-tr v-if="visibleItems.length < items.length" class="border-b border-lines">
+            <v-tr
+                v-if="visibleItems.length < items.length"
+                class="border-b border-lines"
+            >
                 <v-td
                     :colspan="parsedColumns.length"
                     class="cursor-pointer hover:bg-b-secondary text-t-secondary text-sm border-r-0 text-center"
                     @click="pagination.page++"
                 >
-                    <fa-icon icon="arrow-down" class="mr-2" />
+                    <fa-icon
+                        icon="arrow-down"
+                        class="mr-2"
+                    />
 
                     <span>{{ `${$t('loadMore')} (${visibleItems.length}/${items.length})` }}</span>
                 </v-td>
             </v-tr>
         </slot>
 
-        <slot name="append" :columns="parsedColumns" />
+        <slot
+            name="append"
+            :columns="parsedColumns"
+        />
     </table>
 </template>

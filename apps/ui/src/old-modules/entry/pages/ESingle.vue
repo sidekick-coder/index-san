@@ -93,5 +93,9 @@ watch(() => entry.value?.path, setView, { deep: true })
 // check if is item
 </script>
 <template>
-    <component :is="views[current]" v-if="entry" :path="entry.path" />
+    <component
+        :is="views[current]"
+        v-if="entry"
+        :path="entry.path"
+    />
 </template>

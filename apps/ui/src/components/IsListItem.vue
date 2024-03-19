@@ -137,7 +137,10 @@ watch(justify, setJustify, { immediate: true })
         <slot />
     </router-link>
 
-    <div v-else :class="classes">
+    <div
+        v-else
+        :class="classes"
+    >
         <slot />
     </div>
 </template>

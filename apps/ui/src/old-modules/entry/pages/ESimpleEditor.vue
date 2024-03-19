@@ -26,5 +26,8 @@ const language = computed(() => {
 })
 </script>
 <template>
-    <e-editor :path="path" :language="language" />
+    <e-editor
+        :path="path"
+        :language="language"
+    />
 </template>

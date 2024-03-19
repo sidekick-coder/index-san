@@ -35,6 +35,9 @@ watch(props, setHTML, { deep: true, immediate: true })
 </script>
 <template>
     <pre class="flex">
-        <code :class="`language-${language}`" v-html="content" />
+        <code
+:class="`language-${language}`"
+v-html="content"
+/>
     </pre>
 </template>

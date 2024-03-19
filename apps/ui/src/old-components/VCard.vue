@@ -65,7 +65,12 @@ const style = computed(() => {
 </script>
 
 <template>
-    <component :is="to ? 'router-link' : 'div'" :to="to" :class="classes" :style="style">
+    <component
+        :is="to ? 'router-link' : 'div'"
+        :to="to"
+        :class="classes"
+        :style="style"
+    >
         <slot />
     </component>
 </template>

@@ -52,6 +52,11 @@ const options = Object.keys(operations.text).map((key) => ({
             class="mr-4 max-w-[80px]"
         />
 
-        <v-input v-model="model.value" :placeholder="$t('value')" input:autofocus class="grow" />
+        <v-input
+            v-model="model.value"
+            :placeholder="$t('value')"
+            input:autofocus
+            class="grow"
+        />
     </div>
 </template>

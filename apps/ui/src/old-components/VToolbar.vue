@@ -8,7 +8,10 @@ defineProps({
 </script>
 
 <template>
-    <div class="w-full flex items-center flex items-center" :style="{ height: `${height}px` }">
+    <div
+        class="w-full flex items-center flex items-center"
+        :style="{ height: `${height}px` }"
+    >
         <slot />
     </div>
 </template>

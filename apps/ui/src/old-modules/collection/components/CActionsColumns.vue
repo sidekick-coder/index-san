@@ -78,7 +78,12 @@ async function hideAll() {
 <template>
     <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
-            <v-btn mode="text" size="sm" v-bind="attrs" class="relative group/btn">
+            <v-btn
+                mode="text"
+                size="sm"
+                v-bind="attrs"
+                class="relative group/btn"
+            >
                 <v-icon name="columns" />
                 <div
                     v-if="columns.some((c) => c.hide)"
@@ -92,27 +97,55 @@ async function hideAll() {
                 {{ $t('column', 2) }}
             </v-card-title>
 
-            <v-btn color="info" mode="text" size="sm" @click="hideAll">
+            <v-btn
+                color="info"
+                mode="text"
+                size="sm"
+                @click="hideAll"
+            >
                 {{ $t('hideAll') }}
             </v-btn>
 
-            <v-btn color="info" mode="text" size="sm" @click="showAll">
+            <v-btn
+                color="info"
+                mode="text"
+                size="sm"
+                @click="showAll"
+            >
                 {{ $t('showAll') }}
             </v-btn>
 
-            <v-btn color="danger" mode="text" size="sm" @click="drawer = false">
+            <v-btn
+                color="danger"
+                mode="text"
+                size="sm"
+                @click="drawer = false"
+            >
                 <v-icon name="times" />
             </v-btn>
         </v-card-head>
 
-        <v-draggable v-model="columns" item-key="id" handle=".drag">
+        <v-draggable
+            v-model="columns"
+            item-key="id"
+            handle=".drag"
+        >
             <template #item="{ element: column }">
                 <v-list-item class="hover:bg-b-secondary">
-                    <v-btn class="drag mr-2" size="sm" mode="text">
+                    <v-btn
+                        class="drag mr-2"
+                        size="sm"
+                        mode="text"
+                    >
                         <v-icon name="grip-vertical" />
                     </v-btn>
 
-                    <v-btn class="drag mr-2" size="sm" mode="text" @click="toggle(column.id)">
+                    <v-btn
+                        class="drag mr-2"
+                        size="sm"
+                        mode="text"
+                        @click="toggle(column.id)"
+                    >
                         <v-icon :name="column.hide ? 'eye-slash' : 'eye'" />
                     </v-btn>
 

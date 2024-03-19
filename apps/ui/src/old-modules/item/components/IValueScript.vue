@@ -59,7 +59,11 @@ watch([column, item], setResult, {
 </script>
 
 <template>
-    <v-input v-if="edit" :model-value="output?.result" readonly />
+    <v-input
+        v-if="edit"
+        :model-value="output?.result"
+        readonly
+    />
     <div v-else>
         {{ output?.result }}
     </div>

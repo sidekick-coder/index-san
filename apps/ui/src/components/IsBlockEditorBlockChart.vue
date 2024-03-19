@@ -168,7 +168,11 @@ watch(
 
             <v-tooltip color="b-secondary">
                 <template #activator="{ attrs }">
-                    <ToolbarBtn v-bind="attrs" data-test-id="toolbar-reload-btn" @click="setChart">
+                    <ToolbarBtn
+                        v-bind="attrs"
+                        data-test-id="toolbar-reload-btn"
+                        @click="setChart"
+                    >
                         <v-icon name="rotate" />
                     </ToolbarBtn>
                 </template>
@@ -191,7 +195,11 @@ watch(
 
             <v-tooltip color="b-secondary">
                 <template #activator="{ attrs }">
-                    <ToolbarBtn v-bind="attrs" data-test-id="toolbar-edit-btn" @click="edit = true">
+                    <ToolbarBtn
+                        v-bind="attrs"
+                        data-test-id="toolbar-edit-btn"
+                        @click="edit = true"
+                    >
                         <v-icon name="pen" />
                     </ToolbarBtn>
                 </template>
@@ -234,7 +242,9 @@ watch(
                     data-test-id="toolbar-input-height"
                 >
                     <template #prepend>
-                        <div class="text-t-secondary mr-2">H</div>
+                        <div class="text-t-secondary mr-2">
+                            H
+                        </div>
                     </template>
                 </v-input>
             </div>
@@ -246,7 +256,9 @@ watch(
                     data-test-id="toolbar-input-width"
                 >
                     <template #prepend>
-                        <div class="text-t-secondary mr-2">W</div>
+                        <div class="text-t-secondary mr-2">
+                            W
+                        </div>
                     </template>
                 </v-input>
             </div>
@@ -257,21 +269,37 @@ watch(
             :style="{ height: style.height }"
             class="flex items-center justify-center animate-pulse w-full"
         >
-            <v-icon name="chart-pie" class="text-[10rem] text-t-secondary" />
+            <v-icon
+                name="chart-pie"
+                class="text-[10rem] text-t-secondary"
+            />
         </div>
 
-        <v-chart v-else-if="config.mode === 'chart'" :style="style" :options="chartOptions" />
+        <v-chart
+            v-else-if="config.mode === 'chart'"
+            :style="style"
+            :options="chartOptions"
+        />
 
         <template v-else-if="config.mode === 'debug'">
-            <div :style="{ height: style.height }" class="bg-b-03 p-4 w-full">
-                <ANSICard :model-value="evaluationOutput" data-test-id="debug-view" />
+            <div
+                :style="{ height: style.height }"
+                class="bg-b-03 p-4 w-full"
+            >
+                <ANSICard
+                    :model-value="evaluationOutput"
+                    data-test-id="debug-view"
+                />
 
                 <div
                     v-if="!evaluationOutput.length"
                     class="h-full w-full flex items-center justify-center text-t-secondary"
                 >
                     <div class="flex flex-col items-center space-y-2">
-                        <v-icon name="bug" class="text-4xl" />
+                        <v-icon
+                            name="bug"
+                            class="text-4xl"
+                        />
 
                         <div>
                             {{ $t('noEntity', [$t('log', 2)]) }}
@@ -303,13 +331,21 @@ watch(
         />
 
         <v-dialog v-model="edit">
-            <v-card height="500" width="800" color="b-secondary">
+            <v-card
+                height="500"
+                width="800"
+                color="b-secondary"
+            >
                 <v-card-head padding>
                     <v-card-title class="mr-auto">
                         {{ $t('editEntity', [$t('code')]) }}
                     </v-card-title>
 
-                    <v-btn color="danger" class="mr-4" @click="onCancel">
+                    <v-btn
+                        color="danger"
+                        class="mr-4"
+                        @click="onCancel"
+                    >
                         {{ $t('cancel') }}
                     </v-btn>
 

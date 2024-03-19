@@ -43,15 +43,21 @@ onKeyStroke('Escape', () => {
 })
 </script>
 <template>
-    <slot name="activator" :attrs="{ onClick }" />
+    <slot
+        name="activator"
+        :attrs="{ onClick }"
+    />
 
     <teleport to="body">
         <transition name="fade">
-            <div v-if="show" class="fixed inset-0 flex items-center justify-center z-20">
+            <div
+                v-if="show"
+                class="fixed inset-0 flex items-center justify-center z-20"
+            >
                 <div
                     class="absolute z-10 inset-0 flex bg-b-primary/25 backdrop-blur-sm"
                     @click="show = false"
-                ></div>
+                />
 
                 <div class="z-20">
                     <slot />

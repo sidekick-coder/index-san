@@ -66,9 +66,18 @@ watch(selected, (value) => {
 })
 </script>
 <template>
-    <block v-model="model" v-model:selected="selected" class="block-heading">
+    <block
+        v-model="model"
+        v-model:selected="selected"
+        class="block-heading"
+    >
         <template #dragger>
-            <v-btn mode="text" size="none" class="py-1 text-t-secondary h-12" color="b-primary">
+            <v-btn
+                mode="text"
+                size="none"
+                class="py-1 text-t-secondary h-12"
+                color="b-primary"
+            >
                 <v-icon
                     data-test-id="dragger-icon"
                     :name="`lucide:heading-${model.level}`"
@@ -84,7 +93,10 @@ watch(selected, (value) => {
                 data-test-id="toggle-level-btn"
                 @click="update(n)"
             >
-                <v-icon :name="`lucide:heading-${n}`" class="mr-2 text-lg" />
+                <v-icon
+                    :name="`lucide:heading-${n}`"
+                    class="mr-2 text-lg"
+                />
             </ToolbarBtn>
         </template>
 

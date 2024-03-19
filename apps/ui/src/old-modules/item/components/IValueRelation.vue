@@ -68,10 +68,13 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
                 v-bind="attrs"
                 :model-value="displayValue || payload"
                 class="w-full"
-            >
-            </v-input>
+            />
 
-            <div v-else class="w-full min-h-[40px] flex items-center cursor-pointer" v-bind="attrs">
+            <div
+                v-else
+                class="w-full min-h-[40px] flex items-center cursor-pointer"
+                v-bind="attrs"
+            >
                 {{ displayValue || payload }}
             </div>
         </template>

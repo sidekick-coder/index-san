@@ -206,7 +206,12 @@ onKeyStroke('Delete', async () => {
 </script>
 
 <template>
-    <v-card v-if="view" :height="height" :width="width" v-bind="bindings.root">
+    <v-card
+        v-if="view"
+        :height="height"
+        :width="width"
+        v-bind="bindings.root"
+    >
         <c-actions
             v-if="!hideActions"
             v-bind="bindings.head"
@@ -219,7 +224,12 @@ onKeyStroke('Delete', async () => {
             class="overflow-auto w-full"
             :class="!hideActions ? 'h-[calc(100%_-_53px)]' : 'h-full'"
         >
-            <v-menu v-model="actions.menu" :x="actions.x" :y="actions.y" close-on-content-click>
+            <v-menu
+                v-model="actions.menu"
+                :x="actions.x"
+                :y="actions.y"
+                close-on-content-click
+            >
                 <v-card color="b-secondary">
                     <v-list-item
                         size="xs"
@@ -228,7 +238,10 @@ onKeyStroke('Delete', async () => {
                         data-test-id="view-item"
                         :to="`/collections/${collectionId}/items/${actions.id}`"
                     >
-                        <v-icon name="eye" class="mr-2" />
+                        <v-icon
+                            name="eye"
+                            class="mr-2"
+                        />
                         {{ $t('viewEntity', [$t('item')]) }}
                     </v-list-item>
 
@@ -238,7 +251,10 @@ onKeyStroke('Delete', async () => {
                         dark
                         @click="itemsStore.destroy(actions.id!)"
                     >
-                        <v-icon name="trash" class="mr-2" />
+                        <v-icon
+                            name="trash"
+                            class="mr-2"
+                        />
                         {{ $t('deleteEntity', [$t('item')]) }}
                     </v-list-item>
                 </v-card>
@@ -263,7 +279,10 @@ onKeyStroke('Delete', async () => {
                         @update:model-value="columns = $event"
                     >
                         <template #item="{ element: c }">
-                            <v-th v-if="c.name === 'select'" width="40"></v-th>
+                            <v-th
+                                v-if="c.name === 'select'"
+                                width="40"
+                            />
 
                             <v-th
                                 v-else
@@ -359,7 +378,12 @@ onKeyStroke('Delete', async () => {
                                 "
                             />
 
-                            <div v-else-if="c.id === '_actions_no_columns'" class="py-2">-</div>
+                            <div
+                                v-else-if="c.id === '_actions_no_columns'"
+                                class="py-2"
+                            >
+                                -
+                            </div>
 
                             <i-value
                                 v-else-if="!c.id.startsWith('_') && !c.hide"
@@ -379,14 +403,23 @@ onKeyStroke('Delete', async () => {
                 </template>
 
                 <template #append="data">
-                    <v-tr class="cursor-pointer hover:bg-b-secondary" @click="create">
-                        <v-td :colspan="data.columns.length" class="text-t-secondary text-sm">
-                            <fa-icon icon="plus" class="mr-2" />
+                    <v-tr
+                        class="cursor-pointer hover:bg-b-secondary"
+                        @click="create"
+                    >
+                        <v-td
+                            :colspan="data.columns.length"
+                            class="text-t-secondary text-sm"
+                        >
+                            <fa-icon
+                                icon="plus"
+                                class="mr-2"
+                            />
 
                             <span>New</span>
                         </v-td>
 
-                        <v-td class="!border-x-0"></v-td>
+                        <v-td class="!border-x-0" />
                     </v-tr>
                 </template>
             </v-table>

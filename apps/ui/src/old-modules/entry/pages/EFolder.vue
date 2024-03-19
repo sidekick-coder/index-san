@@ -378,13 +378,24 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
 <template>
     <div>
         <v-layout-toolbar class="px-7 border-b border-lines">
-            <v-btn mode="text" size="sm" @click="setEntries">
+            <v-btn
+                mode="text"
+                size="sm"
+                @click="setEntries"
+            >
                 <v-icon name="rotate" />
             </v-btn>
 
-            <v-menu v-model="menu" offset-y>
+            <v-menu
+                v-model="menu"
+                offset-y
+            >
                 <template #activator="{ attrs }">
-                    <v-btn mode="text" size="sm" v-bind="attrs">
+                    <v-btn
+                        mode="text"
+                        size="sm"
+                        v-bind="attrs"
+                    >
                         <v-icon name="plus" />
                     </v-btn>
                 </template>
@@ -408,8 +419,14 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
         </v-layout-toolbar>
 
         <v-layout-content class="overflow-auto h-[calc(100vh_-_45px)]">
-            <div v-if="loading" class="flex w-full h-full items-center justify-center">
-                <v-icon name="folder" class="text-[5rem] text-t-secondary animate-pulse" />
+            <div
+                v-if="loading"
+                class="flex w-full h-full items-center justify-center"
+            >
+                <v-icon
+                    name="folder"
+                    class="text-[5rem] text-t-secondary animate-pulse"
+                />
             </div>
 
             <v-menu
@@ -418,7 +435,11 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                 :y="entryMenu.y"
                 close-on-content-click
             >
-                <v-card ref="menuCardRef" color="b-secondary" width="200">
+                <v-card
+                    ref="menuCardRef"
+                    color="b-secondary"
+                    width="200"
+                >
                     <template v-if="entryMenu.item">
                         <v-list-item
                             v-if="selected.length === 1"
@@ -435,11 +456,17 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                             </div>
 
                             <div class="w-4/12">
-                                <div class="text-t-secondary">Enter</div>
+                                <div class="text-t-secondary">
+                                    Enter
+                                </div>
                             </div>
                         </v-list-item>
 
-                        <v-list-item size="xs" color="info" @click="duplicate">
+                        <v-list-item
+                            size="xs"
+                            color="info"
+                            @click="duplicate"
+                        >
                             <div class="w-2/12">
                                 <v-icon name="clone" />
                             </div>
@@ -448,10 +475,16 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                                 {{ $t('duplicate', selected.length) }}
                             </div>
 
-                            <div class="text-t-secondary">Ctrl + D</div>
+                            <div class="text-t-secondary">
+                                Ctrl + D
+                            </div>
                         </v-list-item>
 
-                        <v-list-item size="xs" color="info" @click="copy">
+                        <v-list-item
+                            size="xs"
+                            color="info"
+                            @click="copy"
+                        >
                             <div class="w-2/12">
                                 <v-icon name="copy" />
                             </div>
@@ -460,10 +493,16 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                                 {{ $t('copy', selected.length) }}
                             </div>
 
-                            <div class="text-t-secondary">Ctrl + C</div>
+                            <div class="text-t-secondary">
+                                Ctrl + C
+                            </div>
                         </v-list-item>
 
-                        <v-list-item size="xs" color="info" @click="cut">
+                        <v-list-item
+                            size="xs"
+                            color="info"
+                            @click="cut"
+                        >
                             <div class="w-2/12">
                                 <v-icon name="copy" />
                             </div>
@@ -472,10 +511,16 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                                 {{ $t('cut', selected.length) }}
                             </div>
 
-                            <div class="text-t-secondary">Ctrl + X</div>
+                            <div class="text-t-secondary">
+                                Ctrl + X
+                            </div>
                         </v-list-item>
 
-                        <v-list-item size="xs" color="danger" @click="deleteAll">
+                        <v-list-item
+                            size="xs"
+                            color="danger"
+                            @click="deleteAll"
+                        >
                             <div class="w-2/12">
                                 <v-icon name="trash" />
                             </div>
@@ -484,30 +529,56 @@ onKeyStroke(['d'], (e) => e.ctrlKey && duplicate())
                                 {{ $t('delete', selected.length) }}
                             </div>
 
-                            <div class="text-t-secondary">Ctrl + C</div>
+                            <div class="text-t-secondary">
+                                Ctrl + C
+                            </div>
                         </v-list-item>
                     </template>
 
                     <template v-else>
-                        <v-list-item size="xs" color="info" @click="addFile">
-                            <v-icon name="plus" class="mr-2" />
+                        <v-list-item
+                            size="xs"
+                            color="info"
+                            @click="addFile"
+                        >
+                            <v-icon
+                                name="plus"
+                                class="mr-2"
+                            />
                             {{ $t('newEntity', [$t('file').toLowerCase()]) }}
                         </v-list-item>
 
-                        <v-list-item size="xs" color="info" @click="addFolder">
-                            <v-icon name="plus" class="mr-2" />
+                        <v-list-item
+                            size="xs"
+                            color="info"
+                            @click="addFolder"
+                        >
+                            <v-icon
+                                name="plus"
+                                class="mr-2"
+                            />
                             {{ $t('newEntity', [$t('folder').toLowerCase()]) }}
                         </v-list-item>
 
-                        <v-list-item size="xs" color="info" @click="paste">
-                            <v-icon name="paste" class="mr-2" />
+                        <v-list-item
+                            size="xs"
+                            color="info"
+                            @click="paste"
+                        >
+                            <v-icon
+                                name="paste"
+                                class="mr-2"
+                            />
                             {{ $t('paste') }}
                         </v-list-item>
                     </template>
                 </v-card>
             </v-menu>
 
-            <div class="h-full overflow-auto" @contextmenu.prevent="showEntryMenu">
+            <div
+                class="h-full overflow-auto"
+                @contextmenu.prevent="showEntryMenu"
+            >
                 <v-table
                     ref="tableRef"
                     v-model="selected"

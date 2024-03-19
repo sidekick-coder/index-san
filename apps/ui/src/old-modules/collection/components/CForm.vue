@@ -90,7 +90,10 @@ watch(
 )
 </script>
 <template>
-    <v-card color="b-secondary" width="500">
+    <v-card
+        color="b-secondary"
+        width="500"
+    >
         <v-card-head class="px-4">
             <v-card-title>
                 {{
@@ -101,9 +104,16 @@ watch(
             </v-card-title>
         </v-card-head>
         <v-card-content>
-            <v-form class="w-full" @submit="submit">
+            <v-form
+                class="w-full"
+                @submit="submit"
+            >
                 <div class="mb-4">
-                    <v-input v-model="payload.id" label="ID" placeholder="collection-01" />
+                    <v-input
+                        v-model="payload.id"
+                        label="ID"
+                        placeholder="collection-01"
+                    />
                 </div>
 
                 <div class="mb-4">
@@ -140,7 +150,11 @@ watch(
                     />
                 </div>
 
-                <v-btn :disabled="!payload.name || !payload.path" class="w-full" type="submit">
+                <v-btn
+                    :disabled="!payload.name || !payload.path"
+                    class="w-full"
+                    type="submit"
+                >
                     {{ $t('create') }}
                 </v-btn>
             </v-form>

@@ -98,8 +98,14 @@ watch(
         </slot>
 
         <v-card-content>
-            <v-form class="flex flex-wrap gap-y-4 w-full" @submit="submit">
-                <v-input v-model="payload.name" :label="$t('name')" />
+            <v-form
+                class="flex flex-wrap gap-y-4 w-full"
+                @submit="submit"
+            >
+                <v-input
+                    v-model="payload.name"
+                    :label="$t('name')"
+                />
 
                 <v-select
                     v-model="payload.driveName"

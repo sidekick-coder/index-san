@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-const drawer = ref(true)
+
+const drawer = useLocalStorage('drawer', true)
 
 </script>
 
@@ -12,6 +13,8 @@ const drawer = ref(true)
             :class="drawer ? 'w-72 border-r' : 'w-0'"
         />
 
-        <slot />
+        <div class="flex-1 min-h-full">
+            <slot />
+        </div>
     </is-app>
 </template>

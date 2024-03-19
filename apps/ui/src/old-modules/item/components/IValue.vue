@@ -54,7 +54,10 @@ const bindings = createBindings(attrs, ['input', 'select', 'checkbox'])
 <template>
     <suspense>
         <template #fallback>
-            <div class="text-t-secondary text-sm py-2" v-bind="bindings.root">
+            <div
+                class="text-t-secondary text-sm py-2"
+                v-bind="bindings.root"
+            >
                 {{ $t('loading') }}
             </div>
         </template>

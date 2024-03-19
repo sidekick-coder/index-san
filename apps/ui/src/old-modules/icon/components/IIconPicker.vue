@@ -132,10 +132,18 @@ watch(
 watch(selectedIconSet, setIcons, { immediate: true })
 </script>
 <template>
-    <v-card width="800" height="500" color="b-secondary" class="flex">
+    <v-card
+        width="800"
+        height="500"
+        color="b-secondary"
+        class="flex"
+    >
         <div class="w-4/12 h-full overflow-y-auto">
             <div class="w-full px-4 py-2">
-                <v-input v-model="searchIconSet" placeholder="Material design">
+                <v-input
+                    v-model="searchIconSet"
+                    placeholder="Material design"
+                >
                     <template #append>
                         <v-btn
                             v-if="searchIconSet"
@@ -162,7 +170,10 @@ watch(selectedIconSet, setIcons, { immediate: true })
 
         <div class="w-8/12 px-4 items-start flex flex-wrap h-full overflow-y-auto">
             <div class="w-full p-2">
-                <v-input v-model="search.input" placeholder="youtube, mdi:user, fa:folder, etc...">
+                <v-input
+                    v-model="search.input"
+                    placeholder="youtube, mdi:user, fa:folder, etc..."
+                >
                     <template #append>
                         <v-btn
                             v-if="search.input"
@@ -180,11 +191,21 @@ watch(selectedIconSet, setIcons, { immediate: true })
                 v-if="loading || search.loading"
                 class="flex justify-center items-center w-full h-[calc(100%_-_56px)]"
             >
-                <v-icon name="spinner" class="animate-spin" />
+                <v-icon
+                    name="spinner"
+                    class="animate-spin"
+                />
             </div>
 
-            <div v-else class="h-[calc(100%_-_56px)] flex flex-wrap w-full items-start pb-4">
-                <div v-for="icon in filteredIcons.slice(0, limit)" :key="icon" class="w-2/12 p-2">
+            <div
+                v-else
+                class="h-[calc(100%_-_56px)] flex flex-wrap w-full items-start pb-4"
+            >
+                <div
+                    v-for="icon in filteredIcons.slice(0, limit)"
+                    :key="icon"
+                    class="w-2/12 p-2"
+                >
                     <v-tooltip>
                         <template #activator="{ attrs }">
                             <v-btn
@@ -194,7 +215,10 @@ watch(selectedIconSet, setIcons, { immediate: true })
                                 class="w-full h-full py-2"
                                 @click="model = icon"
                             >
-                                <Icon :icon="icon" class="h-6 w-6" />
+                                <Icon
+                                    :icon="icon"
+                                    class="h-6 w-6"
+                                />
                             </v-btn>
                         </template>
 

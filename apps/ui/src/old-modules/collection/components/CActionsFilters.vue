@@ -72,7 +72,12 @@ function add(column: Column) {
 <template>
     <v-drawer v-model="drawer">
         <template #activator="{ attrs }">
-            <v-btn mode="text" size="sm" v-bind="attrs" class="relative group/btn">
+            <v-btn
+                mode="text"
+                size="sm"
+                v-bind="attrs"
+                class="relative group/btn"
+            >
                 <v-icon name="filter" />
                 <div
                     v-if="view.filters.length"
@@ -86,11 +91,23 @@ function add(column: Column) {
                 {{ $t('filter', 2) }}
             </v-card-title>
 
-            <v-btn class="mr-4 text-uppercase" text color="warn" @click="clear">
-                <v-icon name="brush" class="rotate-180 block" />
+            <v-btn
+                class="mr-4 text-uppercase"
+                text
+                color="warn"
+                @click="clear"
+            >
+                <v-icon
+                    name="brush"
+                    class="rotate-180 block"
+                />
             </v-btn>
 
-            <v-btn color="danger" text @click="drawer = false">
+            <v-btn
+                color="danger"
+                text
+                @click="drawer = false"
+            >
                 <v-icon name="times" />
             </v-btn>
         </v-card-head>
@@ -105,20 +122,37 @@ function add(column: Column) {
         />
 
         <v-card-content class="flex-wrap">
-            <div v-if="!view.filters.length" class="w-full mb-3 text-t-secondary">
+            <div
+                v-if="!view.filters.length"
+                class="w-full mb-3 text-t-secondary"
+            >
                 {{ $t('noEntity', [$t('filter', 2)]) }}
             </div>
 
-            <v-menu offset-y close-on-content-click>
+            <v-menu
+                offset-y
+                close-on-content-click
+            >
                 <template #activator="{ attrs }">
-                    <v-btn v-bind="attrs" class="w-full" color="info">
-                        <v-icon name="plus" class="mr-4" />
+                    <v-btn
+                        v-bind="attrs"
+                        class="w-full"
+                        color="info"
+                    >
+                        <v-icon
+                            name="plus"
+                            class="mr-4"
+                        />
                         {{ $t('addEntity', [$t('filter')]) }}
                     </v-btn>
                 </template>
 
                 <v-card color="b-secondary">
-                    <v-list-item v-for="c in columnStore.columns" :key="c.id" @click="add(c)">
+                    <v-list-item
+                        v-for="c in columnStore.columns"
+                        :key="c.id"
+                        @click="add(c)"
+                    >
                         {{ c.label }}
                     </v-list-item>
                 </v-card>

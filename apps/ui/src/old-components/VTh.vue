@@ -29,6 +29,6 @@ const style = computed(() => {
         :class="[noPadding ? '' : 'py-2 px-4']"
         :style="style"
     >
-        <slot></slot>
+        <slot />
     </th>
 </template>

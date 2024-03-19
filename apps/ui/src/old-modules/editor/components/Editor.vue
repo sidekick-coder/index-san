@@ -94,9 +94,15 @@ whenever(keys.Alt_m, () => {
                 enter-from-class="opacity-0 translate-x-2 absolute"
                 leave-to-class="opacity-0 translate-x-2 absolute"
             >
-                <div v-if="mode === 'split'" class="w-full h-full flex flex-wrap">
+                <div
+                    v-if="mode === 'split'"
+                    class="w-full h-full flex flex-wrap"
+                >
                     <div class="h-full w-6/12">
-                        <MDCEditor v-model="text" @keydown.ctrl.s="updateText(text)" />
+                        <MDCEditor
+                            v-model="text"
+                            @keydown.ctrl.s="updateText(text)"
+                        />
                     </div>
 
                     <div class="h-full w-6/12 border-l border-b-secondary/25">
@@ -106,7 +112,11 @@ whenever(keys.Alt_m, () => {
 
                 <BlockEditor v-else-if="mode === 'block'" />
 
-                <MDCEditor v-else v-model="text" @keydown.ctrl.s="updateText(text)" />
+                <MDCEditor
+                    v-else
+                    v-model="text"
+                    @keydown.ctrl.s="updateText(text)"
+                />
             </transition>
         </div>
 
@@ -117,7 +127,10 @@ whenever(keys.Alt_m, () => {
                 class="px-2 hover:bg-b-secondary cursor-pointer flex items-center"
                 @click="mode = m.id"
             >
-                <v-icon :name="m.icon" class="mr-2" />
+                <v-icon
+                    :name="m.icon"
+                    class="mr-2"
+                />
 
                 {{ m.label }}
             </div>

@@ -39,7 +39,13 @@ const display = computed(() => {
 </script>
 
 <template>
-    <v-input v-if="edit" :model-value="display" readonly />
+    <v-input
+        v-if="edit"
+        :model-value="display"
+        readonly
+    />
 
-    <div v-else>{{ display }}</div>
+    <div v-else>
+        {{ display }}
+    </div>
 </template>

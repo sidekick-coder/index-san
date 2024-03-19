@@ -55,12 +55,27 @@ function onSelect(option: string) {
 }
 </script>
 <template>
-    <v-menu v-model="menu" offset-y>
+    <v-menu
+        v-model="menu"
+        offset-y
+    >
         <template #activator="{ attrs }">
-            <slot name="activator" :attrs="attrs">
-                <v-btn class="w-[32px] h-[32px]" v-bind="attrs">
-                    <v-icon v-if="model" :name="model"></v-icon>
-                    <v-icon v-else name="dice"></v-icon>
+            <slot
+                name="activator"
+                :attrs="attrs"
+            >
+                <v-btn
+                    class="w-[32px] h-[32px]"
+                    v-bind="attrs"
+                >
+                    <v-icon
+                        v-if="model"
+                        :name="model"
+                    />
+                    <v-icon
+                        v-else
+                        name="dice"
+                    />
                 </v-btn>
             </slot>
         </template>
@@ -83,7 +98,7 @@ function onSelect(option: string) {
                 text
                 @click="onSelect(option)"
             >
-                <v-icon :name="option"></v-icon>
+                <v-icon :name="option" />
             </v-btn>
 
             <v-btn

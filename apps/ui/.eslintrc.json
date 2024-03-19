@@ -1,8 +1,7 @@
 {
     "root": true,
     "extends": [
-        "plugin:vue/vue3-recommended",
-        "@index-san/eslint-config/ts"
+        "plugin:vue/vue3-recommended"
     ],
     "parser": "vue-eslint-parser",
     "plugins": ["vue"],
@@ -16,6 +15,8 @@
         "vue/no-setup-props-destructure": "off",
         "vue/one-component-per-file": "off",
         "vue/no-v-html": "off",
-        "vue/no-v-text-v-html-on-component": "off"
+        "vue/no-v-text-v-html-on-component": "off",
+        "vue/html-indent": ["warn", 4],
+        "vue/require-toggle-inside-transition": "off"
     }
 }

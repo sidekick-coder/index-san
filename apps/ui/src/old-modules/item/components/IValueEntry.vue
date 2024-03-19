@@ -121,7 +121,10 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
-    <v-menu offset-y close-on-content-click>
+    <v-menu
+        offset-y
+        close-on-content-click
+    >
         <template #activator="{ attrs }">
             <v-input
                 v-if="editModel"
@@ -131,26 +134,42 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
                 v-bind="{ ...$attrs, ...attrs }"
             />
 
-            <div v-else class="cursor-pointer truncate" v-bind="{ ...$attrs, ...attrs }">
+            <div
+                v-else
+                class="cursor-pointer truncate"
+                v-bind="{ ...$attrs, ...attrs }"
+            >
                 {{ !payload ? '' : DirectoryEntry.basename(payload) }}
             </div>
         </template>
 
-        <v-card color="b-secondary" class="drop-shadow-xl">
+        <v-card
+            color="b-secondary"
+            class="drop-shadow-xl"
+        >
             <v-list-item @click="pickFile">
-                <v-icon name="upload" class="mr-4" />
+                <v-icon
+                    name="upload"
+                    class="mr-4"
+                />
 
                 {{ $t('upload') }}
             </v-list-item>
 
             <v-list-item @click="uploadByClipboard">
-                <v-icon name="paste" class="mr-4" />
+                <v-icon
+                    name="paste"
+                    class="mr-4"
+                />
 
                 {{ $t('pasteEntity', [$t('image')]) }}
             </v-list-item>
 
             <v-list-item @click="deleteEntry">
-                <v-icon name="trash" class="mr-4" />
+                <v-icon
+                    name="trash"
+                    class="mr-4"
+                />
 
                 {{ $t('deleteEntity', [$t('entry')]) }}
             </v-list-item>

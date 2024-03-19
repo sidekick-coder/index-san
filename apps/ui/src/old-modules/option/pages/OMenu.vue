@@ -49,11 +49,18 @@ const drag = {
 </script>
 <template>
     <v-container class="py-4">
-        <div v-if="!store.menu.length" class="my-4 py-2 w-full text-center border border-lines">
+        <div
+            v-if="!store.menu.length"
+            class="my-4 py-2 w-full text-center border border-lines"
+        >
             {{ $t('noEntity', [$t('item', 2)]) }}
         </div>
 
-        <Draggable :list="store.menu" v-bind="drag.options" class="w-full">
+        <Draggable
+            :list="store.menu"
+            v-bind="drag.options"
+            class="w-full"
+        >
             <template #item="{ index }">
                 <o-menu-item
                     v-model="store.menu[index]"
@@ -64,7 +71,9 @@ const drag = {
             </template>
 
             <template #footer>
-                <v-btn @click="addSection">{{ $t('addEntity', [$t('section')]) }}</v-btn>
+                <v-btn @click="addSection">
+                    {{ $t('addEntity', [$t('section')]) }}
+                </v-btn>
             </template>
         </Draggable>
     </v-container>

@@ -135,14 +135,28 @@ function onSelect(item: Item) {
 }
 </script>
 <template>
-    <v-menu offset-y close-on-content-click :width="200">
+    <v-menu
+        offset-y
+        close-on-content-click
+        :width="200"
+    >
         <template #activator="props">
-            <slot name="activator" v-bind="props">
-                <v-icon name="plus" v-bind="props.attrs" />
+            <slot
+                name="activator"
+                v-bind="props"
+            >
+                <v-icon
+                    name="plus"
+                    v-bind="props.attrs"
+                />
             </slot>
         </template>
 
-        <v-card color="b-secondary" class="rounded shadow" width="200">
+        <v-card
+            color="b-secondary"
+            class="rounded shadow"
+            width="200"
+        >
             <button
                 v-for="(item, index) in items"
                 :key="index"
@@ -154,12 +168,19 @@ function onSelect(item: Item) {
                 <div
                     class="w-8 h-8 flex items-center justify-center shadow bg-b-03 text-t-secondary mr-4"
                 >
-                    <v-icon :name="item.icon" size="14" />
+                    <v-icon
+                        :name="item.icon"
+                        size="14"
+                    />
                 </div>
 
                 <div>
-                    <div class="text-t-primary text-sm font-bold">{{ item.label }}</div>
-                    <div class="text-t-secondary text-xs">{{ item.description }}</div>
+                    <div class="text-t-primary text-sm font-bold">
+                        {{ item.label }}
+                    </div>
+                    <div class="text-t-secondary text-xs">
+                        {{ item.description }}
+                    </div>
                 </div>
             </button>
         </v-card>

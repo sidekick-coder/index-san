@@ -143,7 +143,10 @@ const isDragging = ref(false)
                 </div>
             </div>
 
-            <div v-if="drawer" class="w-64 flex flex-col">
+            <div
+                v-if="drawer"
+                class="w-64 flex flex-col"
+            >
                 <v-draggable
                     v-model="store.menu.menu"
                     v-bind="dragOptions"

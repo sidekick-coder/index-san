@@ -112,9 +112,21 @@ onKeyStroke(['ArrowRight'], (e) => {
 </script>
 
 <template>
-    <v-layout-toolbar class="px-7 border-b border-lines text-sm" :height="45">
-        <slot :links="links" :drawer="drawer" :navigation="navigation" :menu="menu">
-            <v-btn mode="text" size="sm" @click="drawer.toggle">
+    <v-layout-toolbar
+        class="px-7 border-b border-lines text-sm"
+        :height="45"
+    >
+        <slot
+            :links="links"
+            :drawer="drawer"
+            :navigation="navigation"
+            :menu="menu"
+        >
+            <v-btn
+                mode="text"
+                size="sm"
+                @click="drawer.toggle"
+            >
                 <v-icon name="bars" />
             </v-btn>
 
@@ -138,23 +150,43 @@ onKeyStroke(['ArrowRight'], (e) => {
 
             <slot name="append-navigation" />
 
-            <template v-for="(link, index) in links" :key="index">
-                <v-btn v-if="link.to" size="sm" mode="text" :to="link.to">
+            <template
+                v-for="(link, index) in links"
+                :key="index"
+            >
+                <v-btn
+                    v-if="link.to"
+                    size="sm"
+                    mode="text"
+                    :to="link.to"
+                >
                     {{ link.label }}
                 </v-btn>
 
-                <div v-else class="text-xs px-3 py-1">
+                <div
+                    v-else
+                    class="text-xs px-3 py-1"
+                >
                     {{ link.label }}
                 </div>
 
-                <div v-if="links.length >= 2 && index !== links.length - 1" class="px-1">/</div>
+                <div
+                    v-if="links.length >= 2 && index !== links.length - 1"
+                    class="px-1"
+                >
+                    /
+                </div>
             </template>
 
             <slot name="append-links">
-                <div class="grow"></div>
+                <div class="grow" />
             </slot>
 
-            <v-btn mode="text" size="sm" @click="menu.create">
+            <v-btn
+                mode="text"
+                size="sm"
+                @click="menu.create"
+            >
                 <v-icon name="bookmark" />
             </v-btn>
         </slot>

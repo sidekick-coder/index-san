@@ -6,7 +6,7 @@ import LayoutDefault from './layouts/LayoutDefault.vue'
 <template>
     <div>
         <is-app v-if="$route.meta.layout === 'empty'">
-            <router-view  />
+            <router-view />
         </is-app>
 
         <layout-default v-else>

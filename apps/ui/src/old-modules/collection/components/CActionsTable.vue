@@ -27,11 +27,21 @@ watch([() => props.viewId, () => props.collectionId], setView, { immediate: true
 </script>
 
 <template>
-    <v-card color="b-secondary" width="300">
+    <v-card
+        color="b-secondary"
+        width="300"
+    >
         <v-card-content class="flex flex-wrap gap-y-4">
-            <v-input v-model="view.label" :label="$t('label')" />
+            <v-input
+                v-model="view.label"
+                :label="$t('label')"
+            />
 
-            <v-input v-model="view.limit" type="number" :label="$t('limit')" />
+            <v-input
+                v-model="view.limit"
+                type="number"
+                :label="$t('limit')"
+            />
         </v-card-content>
     </v-card>
 </template>

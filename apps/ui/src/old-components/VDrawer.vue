@@ -52,11 +52,18 @@ const style = computed(() => {
 })
 </script>
 <template>
-    <slot name="activator" :attrs="{ onClick }" />
+    <slot
+        name="activator"
+        :attrs="{ onClick }"
+    />
 
     <teleport to="body">
         <transition name="slide-left">
-            <div v-if="show" class="fixed bg-accent/5 inset-0" @click="show = false"></div>
+            <div
+                v-if="show"
+                class="fixed bg-accent/5 inset-0"
+                @click="show = false"
+            />
         </transition>
 
         <transition name="slide-left">

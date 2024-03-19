@@ -177,7 +177,7 @@ defineExpose({ setSrc })
         :class="classes"
         :style="style"
         v-bind="bindings.multiple(['img', 'root'])"
-    />
+    >
 
     <v-card
         v-else
@@ -186,7 +186,10 @@ defineExpose({ setSrc })
         v-bind="bindings.multiple(['card', 'root'])"
     >
         <v-card-content class="items-center justify-center h-full">
-            <v-icon name="image" class="text-2xl" />
+            <v-icon
+                name="image"
+                class="text-2xl"
+            />
         </v-card-content>
     </v-card>
 </template>

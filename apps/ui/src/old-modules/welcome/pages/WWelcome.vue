@@ -32,7 +32,9 @@ async function onCreated(workspace: Workspace) {
             <v-logo class="h-32 mb-4" />
 
             <v-card-content class="flex-wrap">
-                <div class="text-center w-full font-bold mb-2 text-2xl">Index-san</div>
+                <div class="text-center w-full font-bold mb-2 text-2xl">
+                    Index-san
+                </div>
 
                 <div class="text-center w-full text-sm text-t-secondary mb-4">
                     {{ `${$t('version')}: ${packageJSON.version} ` }}

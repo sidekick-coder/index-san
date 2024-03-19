@@ -110,7 +110,11 @@ async function run() {
 </script>
 <template>
     <div class="my-2">
-        <div v-if="showEditor" class="min-h-[100px] mb-2 rounded overflow-hidden" :style="style">
+        <div
+            v-if="showEditor"
+            class="min-h-[100px] mb-2 rounded overflow-hidden"
+            :style="style"
+        >
             <MonacoEditor
                 v-model="code"
                 :line-options="{
@@ -141,7 +145,10 @@ async function run() {
                 </div>
 
                 <div class="flex gap-x-4 ml-auto">
-                    <v-btn :disabled="running" @click="run">
+                    <v-btn
+                        :disabled="running"
+                        @click="run"
+                    >
                         <v-icon
                             :name="running ? 'spinner' : 'play'"
                             :class="running ? 'animate-spin' : ''"

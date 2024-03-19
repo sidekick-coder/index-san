@@ -91,9 +91,16 @@ whenever(keys.Alt_m, () => {
                 enter-from-class="opacity-0 translate-x-2 absolute"
                 leave-to-class="opacity-0 translate-x-2 absolute"
             >
-                <div v-if="mode === 'split'" class="w-full h-full flex flex-wrap">
+                <div
+                    v-if="mode === 'split'"
+                    class="w-full h-full flex flex-wrap"
+                >
                     <div class="h-full w-6/12">
-                        <is-monaco-editor v-model="text" @keydown.ctrl.s="updateText(text)" language="mdc" />
+                        <is-monaco-editor
+                            v-model="text"
+                            language="mdc"
+                            @keydown.ctrl.s="updateText(text)"
+                        />
                     </div>
 
                     <div class="h-full w-6/12 border-l border-zinc-700">
@@ -103,7 +110,12 @@ whenever(keys.Alt_m, () => {
 
                 <is-block-editor v-else-if="mode === 'block'" />
 
-                <is-monaco-editor v-else v-model="text" @keydown.ctrl.s="updateText(text)" language="mdc" />
+                <is-monaco-editor
+                    v-else
+                    v-model="text"
+                    language="mdc"
+                    @keydown.ctrl.s="updateText(text)"
+                />
             </transition>
         </div>
 
@@ -116,7 +128,11 @@ whenever(keys.Alt_m, () => {
                 rounded="none"
                 @click="mode = m.id"
             >
-                <is-icon :name="m.icon" class="mr-2" size="xs" />
+                <is-icon
+                    :name="m.icon"
+                    class="mr-2"
+                    size="xs"
+                />
 
                 {{ m.label }}
             </IsBtn>

@@ -38,9 +38,18 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
 </script>
 
 <template>
-    <div v-if="!editModel" class="cursor-pointer truncate" @click="editModel = true">
+    <div
+        v-if="!editModel"
+        class="cursor-pointer truncate"
+        @click="editModel = true"
+    >
         {{ payload }}
     </div>
 
-    <v-input v-else v-model.lazy="payload" @update:model-value="save" @blur="editModel = false" />
+    <v-input
+        v-else
+        v-model.lazy="payload"
+        @update:model-value="save"
+        @blur="editModel = false"
+    />
 </template>

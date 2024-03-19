@@ -142,14 +142,23 @@ function onShowMenu(value: boolean) {
                     @keydown.enter="toggle"
                     @keydown.esc="menu = false"
                 >
-                    <template v-if="!noChevron" #append>
-                        <v-icon name="chevron-down" class="ml-auto text-t-secondary" />
+                    <template
+                        v-if="!noChevron"
+                        #append
+                    >
+                        <v-icon
+                            name="chevron-down"
+                            class="ml-auto text-t-secondary"
+                        />
                     </template>
                 </v-input>
             </slot>
         </template>
 
-        <v-card color="b-secondary" v-bind="bindings.card">
+        <v-card
+            color="b-secondary"
+            v-bind="bindings.card"
+        >
             <v-list-item
                 v-if="clearable"
                 class="border-b border-lines"
@@ -162,7 +171,10 @@ function onShowMenu(value: boolean) {
                 {{ $t('noEntity', [$t('item', 2)]) }}
             </v-list-item>
 
-            <template v-for="option in options" :key="option">
+            <template
+                v-for="option in options"
+                :key="option"
+            >
                 <slot
                     name="option"
                     :option="option"
@@ -170,7 +182,10 @@ function onShowMenu(value: boolean) {
                         onClick: () => onSelect(option),
                     }"
                 >
-                    <v-list-item dark @click="onSelect(option)">
+                    <v-list-item
+                        dark
+                        @click="onSelect(option)"
+                    >
                         {{ getLabel(option) }}
                     </v-list-item>
                 </slot>

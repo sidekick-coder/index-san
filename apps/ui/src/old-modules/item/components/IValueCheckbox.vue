@@ -26,5 +26,9 @@ await new Promise<void>((resolve) => onLoaded(resolve))
 </script>
 
 <template>
-    <v-checkbox v-model="payload" autofocus @update:model-value="save" />
+    <v-checkbox
+        v-model="payload"
+        autofocus
+        @update:model-value="save"
+    />
 </template>

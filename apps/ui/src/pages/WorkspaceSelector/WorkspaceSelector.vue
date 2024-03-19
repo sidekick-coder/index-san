@@ -39,9 +39,7 @@ async function select(workspace: Workspace){
 
     if (!permission) return
 
-    const workspaceDrive = useDriveFileSystemApi(workspace.handle)
-
-    setDrive(workspaceDrive)
+    loadDrive(workspace.handle)
 
     setTimeout(() => {
         router.push('/entries')
@@ -53,17 +51,22 @@ async function select(workspace: Workspace){
 <template>
     <div class="min-h-[inherit] w-full flex items-center justify-center">
         <div v-if="loading">
-            <div class="text-2xl">{{ $t('loading') }}</div>
+            <div class="text-2xl">
+                {{ $t('loading') }}
+            </div>
         </div>
 
-        <div v-else class="w-full max-w-[20rem]">            
+        <div
+            v-else
+            class="w-full max-w-[20rem]"
+        >            
             <div class="flex flex-col gap-y-4 w-full">
                 <is-list-item
                     justify="center"
-                    @click="addNew"
                     color="accent"
                     variant="fill"
                     class="rounded"
+                    @click="addNew"
                 >
                     {{ $t('addEntity',[$t('workspace')]) }}
                 </is-list-item>
@@ -71,18 +74,20 @@ async function select(workspace: Workspace){
                 <is-list-item
                     v-for="w in workspaces"
                     :key="w.id"
-                    @click="select(w)"
                     variant="fill"
                     class="rounded"
+                    @click="select(w)"
                 > 
                     <div>
                         /{{ w.label }}                    
                     </div>
 
-                    <is-icon name="mdi:chevron-right" class="ml-auto"></is-icon>
+                    <is-icon
+                        name="mdi:chevron-right"
+                        class="ml-auto"
+                    />
                 </is-list-item>
             </div>
         </div>
-
     </div>
 </template>

@@ -22,6 +22,6 @@ const style = computed(() => {
 </script>
 <template>
     <tr :style="style">
-        <slot></slot>
+        <slot />
     </tr>
 </template>

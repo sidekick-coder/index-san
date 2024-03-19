@@ -54,6 +54,6 @@ watch(size, setSize, { immediate: true })
 </script>
 <template>
     <span :class="[classes, parentClasses]">
-        <Icon :icon="name"  />
+        <Icon :icon="name" />
     </span>
 </template>

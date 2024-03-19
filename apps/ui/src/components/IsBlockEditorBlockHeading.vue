@@ -65,9 +65,17 @@ watch(selected, (value) => {
 })
 </script>
 <template>
-    <IsBlockEditorBlock v-model="model" v-model:selected="selected" class="block-heading">
+    <IsBlockEditorBlock
+        v-model="model"
+        v-model:selected="selected"
+        class="block-heading"
+    >
         <template #dragger>
-            <IsBtn variant="text" size="none" class="h-12 px-2">
+            <IsBtn
+                variant="text"
+                size="none"
+                class="h-12 px-2"
+            >
                 <IsIcon
                     data-test-id="dragger-icon"
                     :name="`lucide:heading-${model.level}`"
@@ -83,7 +91,10 @@ watch(selected, (value) => {
                 data-test-id="toggle-level-btn"
                 @click="update(n)"
             >
-                <v-icon :name="`lucide:heading-${n}`" class="mr-2 text-lg" />
+                <v-icon
+                    :name="`lucide:heading-${n}`"
+                    class="mr-2 text-lg"
+                />
             </ToolbarBtn>
         </template>
 

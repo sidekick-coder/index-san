@@ -60,11 +60,29 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const read: Drive['read'] = async (path) => {
-        throw new Error('Not implemented')
+        const fileHandle = await handle.getFileHandle(path, {
+            create: false
+        })
+
+        const file = await fileHandle.getFile()
+
+        const contents = await file.arrayBuffer()
+
+        return new Uint8Array(contents)
+
+        
     }
 
     const write: Drive['write'] = async (path, content) => {
-        throw new Error('Not implemented')
+        const fileHandle = await handle.getFileHandle(path, {
+            create: true
+        })
+
+        const writable = await fileHandle.createWritable()
+
+        await writable.write(content)
+
+        await writable.close()
     }
 
     return { list, get, read, write }

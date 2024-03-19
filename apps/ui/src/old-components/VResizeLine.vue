@@ -68,5 +68,5 @@ const start = lodashDebounce((event: MouseEvent) => {
         class="h-full w-[5px] absolute right-0 top-0 cursor-col-resize"
         :class="moving ? 'bg-accent' : ''"
         @mousedown="start"
-    ></div>
+    />
 </template>

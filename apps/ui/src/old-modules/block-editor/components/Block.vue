@@ -85,7 +85,10 @@ const icon = defineProp<string>('icon', {
                     class="h-12 text-sm opacity-0 group-hover:opacity-100"
                     :class="isSelectedInEditor ? 'opacity-100' : ''"
                 >
-                    <v-icon data-test-id="icon" :name="icon" />
+                    <v-icon
+                        data-test-id="icon"
+                        :name="icon"
+                    />
                 </v-btn>
             </slot>
         </div>

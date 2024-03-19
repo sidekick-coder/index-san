@@ -67,11 +67,18 @@ const classes = computed(() => {
 })
 </script>
 <template>
-    <router-link v-if="to" :to="to" :class="classes">
+    <router-link
+        v-if="to"
+        :to="to"
+        :class="classes"
+    >
         <slot />
     </router-link>
 
-    <div v-else :class="classes">
+    <div
+        v-else
+        :class="classes"
+    >
         <slot />
     </div>
 </template>

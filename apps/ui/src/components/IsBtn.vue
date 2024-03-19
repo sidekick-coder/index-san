@@ -101,6 +101,6 @@ watch(rounded, setRounded, { immediate: true })
 
 <template>
     <button :class="classes">
-        <slot></slot>
+        <slot />
     </button>
 </template>

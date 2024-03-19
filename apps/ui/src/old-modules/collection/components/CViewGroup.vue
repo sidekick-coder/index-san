@@ -173,8 +173,15 @@ function isTable(id: string) {
 }
 </script>
 <template>
-    <v-card v-if="!loading" v-bind="bindings.root">
-        <c-actions v-bind="bindings.head" :collection-id="collectionId" :view-id="selectedView">
+    <v-card
+        v-if="!loading"
+        v-bind="bindings.root"
+    >
+        <c-actions
+            v-bind="bindings.head"
+            :collection-id="collectionId"
+            :view-id="selectedView"
+        >
             <template #left>
                 <div class="flex">
                     <v-draggable
@@ -185,7 +192,11 @@ function isTable(id: string) {
                     >
                         <template #item="{ element: id, index }">
                             <div>
-                                <v-menu offset-y :open-on-click="false" close-on-content-click>
+                                <v-menu
+                                    offset-y
+                                    :open-on-click="false"
+                                    close-on-content-click
+                                >
                                     <template #activator="{ attrs, toggle }">
                                         <v-btn
                                             v-bind="attrs"
@@ -197,20 +208,35 @@ function isTable(id: string) {
                                             ]"
                                             @click="showMenu(id, toggle)"
                                         >
-                                            <v-icon :name="getIcon(id)" class="mr-2" />
+                                            <v-icon
+                                                :name="getIcon(id)"
+                                                class="mr-2"
+                                            />
 
                                             {{ getLabel(id) }}
                                         </v-btn>
                                     </template>
 
                                     <v-card color="b-secondary">
-                                        <v-list-item size="sm" @click="duplicate(id)">
-                                            <v-icon name="clone" class="mr-4" />
+                                        <v-list-item
+                                            size="sm"
+                                            @click="duplicate(id)"
+                                        >
+                                            <v-icon
+                                                name="clone"
+                                                class="mr-4"
+                                            />
                                             {{ $t('duplicateEntity', ['view']) }}
                                         </v-list-item>
 
-                                        <v-list-item size="sm" @click="deleteView(id)">
-                                            <v-icon name="trash" class="mr-4" />
+                                        <v-list-item
+                                            size="sm"
+                                            @click="deleteView(id)"
+                                        >
+                                            <v-icon
+                                                name="trash"
+                                                class="mr-4"
+                                            />
 
                                             {{ $t('deleteEntity', ['view']) }}
                                         </v-list-item>
@@ -220,7 +246,10 @@ function isTable(id: string) {
                         </template>
                     </v-draggable>
 
-                    <v-menu offset-y close-on-content-click>
+                    <v-menu
+                        offset-y
+                        close-on-content-click
+                    >
                         <template #activator="{ attrs }">
                             <v-btn
                                 mode="text"
@@ -251,11 +280,17 @@ function isTable(id: string) {
             </template>
 
             <template #config-card>
-                <c-actions-view-group :collection-id="collectionId" :view-id="view.id" />
+                <c-actions-view-group
+                    :collection-id="collectionId"
+                    :view-id="view.id"
+                />
             </template>
         </c-actions>
 
-        <div v-if="selectedView" class="overflow-auto w-full h-[calc(100%_-_45px)]">
+        <div
+            v-if="selectedView"
+            class="overflow-auto w-full h-[calc(100%_-_45px)]"
+        >
             <c-table
                 v-if="isTable(selectedView)"
                 :collection-id="collectionId"
@@ -273,9 +308,15 @@ function isTable(id: string) {
                 hide-actions
             />
 
-            <div v-if="!view.viewIds.length" class="h-full w-full flex items-center justify-center">
+            <div
+                v-if="!view.viewIds.length"
+                class="h-full w-full flex items-center justify-center"
+            >
                 <div class="text-center mb-2 text-t-secondary">
-                    <v-icon name="box-open" class="text-2xl" />
+                    <v-icon
+                        name="box-open"
+                        class="text-2xl"
+                    />
 
                     <div class="block">
                         {{ $t('noEntity', [$t('view', 2)]) }}

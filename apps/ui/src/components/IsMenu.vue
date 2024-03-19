@@ -16,8 +16,8 @@ const placement = defineProp<Placement>('placement', {
 })
 
 const model = defineModel({
+    type: Boolean,
     default: false,
-    local: true,
 })
 
 const { floatingStyles } = useFloating(root, floating, {
@@ -58,19 +58,19 @@ onClickOutside(floating, () => {
         }" 
     />
 
-    <div ref="floating" :style="floatingStyles">
+    <div
+        ref="floating"
+        :style="floatingStyles"
+    >
         <transition
             enter-active-class="transition ease-out duration-200"
             leave-active-class="transition ease-in duration-200"
             enter-from-class="opacity-0 translate-y-4"
             leave-to-class="opacity-0 translate-y-4"
         >
-
             <div v-visible="model">
-                <slot  />                
-                
+                <slot />
             </div>
-            
         </transition>
     </div>
 </template>

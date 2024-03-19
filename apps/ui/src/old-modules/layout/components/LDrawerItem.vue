@@ -121,13 +121,29 @@ function showMenu(e: MouseEvent) {
 }
 </script>
 <template>
-    <v-menu v-model="menu.show" :x="menu.x" :y="menu.y">
-        <v-card color="b-primary" width="200">
+    <v-menu
+        v-model="menu.show"
+        :x="menu.x"
+        :y="menu.y"
+    >
+        <v-card
+            color="b-primary"
+            width="200"
+        >
             <v-list-item>
-                <v-input v-model="itemModel.label" placeholder="Label..." />
+                <v-input
+                    v-model="itemModel.label"
+                    placeholder="Label..."
+                />
             </v-list-item>
-            <v-list-item color="danger" @click="$emit('destroy')">
-                <v-icon name="trash" class="mr-4" />
+            <v-list-item
+                color="danger"
+                @click="$emit('destroy')"
+            >
+                <v-icon
+                    name="trash"
+                    class="mr-4"
+                />
                 {{ $t('delete') }}
             </v-list-item>
         </v-card>
@@ -141,7 +157,10 @@ function showMenu(e: MouseEvent) {
         class="py-2 text-sm"
         @contextmenu.prevent.stop="showMenu"
     >
-        <v-dialog v-if="!disableIconPicker" v-model="dialog">
+        <v-dialog
+            v-if="!disableIconPicker"
+            v-model="dialog"
+        >
             <i-icon-picker @update:model-value="updateIcon" />
         </v-dialog>
 
@@ -181,11 +200,21 @@ function showMenu(e: MouseEvent) {
                 mode="text"
                 @mousedown.stop="dialog = true"
             >
-                <v-icon v-if="item.icon" :name="item.icon" class="w-3.5 h-3.5" />
-                <v-icon v-else name="fa:bookmark" class="w-3.5 h-3.5" />
+                <v-icon
+                    v-if="item.icon"
+                    :name="item.icon"
+                    class="w-3.5 h-3.5"
+                />
+                <v-icon
+                    v-else
+                    name="fa:bookmark"
+                    class="w-3.5 h-3.5"
+                />
             </v-btn>
 
-            <div v-bind="bindings.label">{{ item.label }}</div>
+            <div v-bind="bindings.label">
+                {{ item.label }}
+            </div>
         </template>
     </v-list-item>
 

@@ -19,7 +19,15 @@ const style = computed(() => ({
 </script>
 <template>
     <div class="inline-flex items-center">
-        <Icon v-if="name.includes(':')" :icon="name" :style="style" />
-        <fa-icon v-else :icon="name" :style="style" />
+        <Icon
+            v-if="name.includes(':')"
+            :icon="name"
+            :style="style"
+        />
+        <fa-icon
+            v-else
+            :icon="name"
+            :style="style"
+        />
     </div>
 </template>

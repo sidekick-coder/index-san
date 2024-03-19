@@ -77,10 +77,16 @@ onErrorCaptured((err) => {
 
 <template>
     <article class="is-markdown whitespace-pre-line leading-tight">
-        <div v-if="error" class="bg-danger/70 rounded px-4 py-2">
+        <div
+            v-if="error"
+            class="bg-danger/70 rounded px-4 py-2"
+        >
             {{ error }}
         </div>
-        <component :is="view" v-else />
+        <component
+            :is="view"
+            v-else
+        />
     </article>
 </template>
 

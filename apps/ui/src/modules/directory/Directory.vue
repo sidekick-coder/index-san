@@ -85,19 +85,27 @@ function findIconColor(entry: DriveEntry){
     return 'text-gray-500'
 }
 
+function findRoute(entry: DriveEntry){
+    // fix dots and special characters
+    return `/entries/${encodeURIComponent(entry.path)}`
+}
+
 </script>
 <template>
     <div class="w-full">
-
         <div class="w-full bg-body-500">
-            <input v-model="search" class="bg-transparent w-full h-12 px-4 outline-none" placeholder="Search..." />
+            <input
+                v-model="search"
+                class="bg-transparent w-full h-12 px-4 outline-none"
+                placeholder="Search..."
+            >
         </div>
 
         <div class="flex flex-col overflow-y-auto">
             <is-list-item
                 v-for="e in filteredEntries"
                 :key="e.path"
-                :to="`/entries/${e.path}`"
+                :to="findRoute(e)"
             >
                 <is-icon
                     :name="findIcon(e)"

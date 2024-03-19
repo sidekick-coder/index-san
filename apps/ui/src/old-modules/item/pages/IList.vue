@@ -41,7 +41,10 @@ watch(() => props.collectionId, load, {
 })
 </script>
 <template>
-    <div v-if="collection" class="w-full h-full">
+    <div
+        v-if="collection"
+        class="w-full h-full"
+    >
         <c-view-group
             :collection-id="collectionId"
             :title="meta.title"

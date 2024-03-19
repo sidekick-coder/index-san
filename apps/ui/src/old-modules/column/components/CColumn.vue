@@ -131,18 +131,31 @@ const relation = computed(() => {
 })
 </script>
 <template>
-    <div v-if="!column" class="text-t-secondary text-sm overflow-hidden" v-bind="$attrs">
-        <v-icon name="triangle-exclamation" class="mr-2 text-xs" />
+    <div
+        v-if="!column"
+        class="text-t-secondary text-sm overflow-hidden"
+        v-bind="$attrs"
+    >
+        <v-icon
+            name="triangle-exclamation"
+            class="mr-2 text-xs"
+        />
         {{ $t('errors.unknown') }}
     </div>
 
-    <v-dialog v-else v-model="dialog">
+    <v-dialog
+        v-else
+        v-model="dialog"
+    >
         <template #activator="{ attrs }">
             <div
                 class="cursor-pointer text-t-secondary flex items-center overflow-hidden"
                 v-bind="{ ...attrs, ...$attrs }"
             >
-                <v-icon :name="icons[column.type] || 'font'" class="mr-3" />
+                <v-icon
+                    :name="icons[column.type] || 'font'"
+                    class="mr-3"
+                />
 
                 <div class="text-sm">
                     {{ column.label }}
@@ -150,20 +163,34 @@ const relation = computed(() => {
             </div>
         </template>
 
-        <v-card width="500" color="b-secondary">
+        <v-card
+            width="500"
+            color="b-secondary"
+        >
             <v-card-head class="px-4">
                 <v-card-title>
                     {{ $t('editEntity', [$t('column')]) }}
                 </v-card-title>
-                <v-btn mode="text" color="danger" class="ml-auto" @click="deleteColumn">
+                <v-btn
+                    mode="text"
+                    color="danger"
+                    class="ml-auto"
+                    @click="deleteColumn"
+                >
                     <v-icon name="trash" />
                 </v-btn>
             </v-card-head>
 
             <v-card-content>
-                <w-form class="w-full" @submit="submit">
+                <w-form
+                    class="w-full"
+                    @submit="submit"
+                >
                     <div class="mb-4">
-                        <v-input v-model="payload.label" label="Label" />
+                        <v-input
+                            v-model="payload.label"
+                            label="Label"
+                        />
                     </div>
 
                     <div class="mb-4">
@@ -182,18 +209,26 @@ const relation = computed(() => {
                         v-if="![ColumnType.createdAt, ColumnType.updatedAt].includes(payload.type)"
                         class="mb-4"
                     >
-                        <v-input v-model="payload.field" label="Field" />
+                        <v-input
+                            v-model="payload.field"
+                            label="Field"
+                        />
                     </div>
 
                     <template v-if="payload.type === 'select'">
-                        <div class="text-t-secondary font-bold mb-2">{{ $t('option', 2) }}</div>
+                        <div class="text-t-secondary font-bold mb-2">
+                            {{ $t('option', 2) }}
+                        </div>
 
                         <div
                             v-for="(option, index) in payload.options"
                             :key="option"
                             class="flex items-center mb-4 last:mb-0"
                         >
-                            <v-menu offset-x :close-on-content-click="true">
+                            <v-menu
+                                offset-x
+                                :close-on-content-click="true"
+                            >
                                 <template #activator="{ attrs }">
                                     <v-btn
                                         v-bind="attrs"
@@ -201,7 +236,10 @@ const relation = computed(() => {
                                         size="xs"
                                     />
 
-                                    <v-input v-model="option.name" class="ml-4">
+                                    <v-input
+                                        v-model="option.name"
+                                        class="ml-4"
+                                    >
                                         <template #append>
                                             <v-btn
                                                 color="b-primary"
@@ -214,7 +252,10 @@ const relation = computed(() => {
                                     </v-input>
                                 </template>
 
-                                <v-card class="py-4 px-2" color="b-primary">
+                                <v-card
+                                    class="py-4 px-2"
+                                    color="b-primary"
+                                >
                                     <v-btn
                                         color="accent"
                                         size="xs"
@@ -243,7 +284,11 @@ const relation = computed(() => {
                             </v-menu>
                         </div>
                         <v-list-item class="-mx-4">
-                            <v-btn color="b-primary" size="sm" @click="payload.options.push({})">
+                            <v-btn
+                                color="b-primary"
+                                size="sm"
+                                @click="payload.options.push({})"
+                            >
                                 <v-icon name="plus" />
                             </v-btn>
                         </v-list-item>
@@ -261,7 +306,10 @@ const relation = computed(() => {
                             />
                         </div>
 
-                        <div v-if="payload.collectionId" class="mb-4">
+                        <div
+                            v-if="payload.collectionId"
+                            class="mb-4"
+                        >
                             <v-select
                                 v-model="payload.displayField"
                                 label="Collection display field"
@@ -273,7 +321,10 @@ const relation = computed(() => {
                         </div>
                     </template>
 
-                    <v-drawer v-if="payload.type === ColumnType.script" width="800">
+                    <v-drawer
+                        v-if="payload.type === ColumnType.script"
+                        width="800"
+                    >
                         <template #activator="{ attrs }">
                             <v-input
                                 v-bind="attrs"
@@ -284,12 +335,18 @@ const relation = computed(() => {
                                 input:class="cursor-pointer max-w-[calc(100%_-_32px)]"
                             >
                                 <template #append>
-                                    <v-icon name="code" class="ml-auto" />
+                                    <v-icon
+                                        name="code"
+                                        class="ml-auto"
+                                    />
                                 </template>
                             </v-input>
                         </template>
 
-                        <v-card color="b-secondary" class="h-full">
+                        <v-card
+                            color="b-secondary"
+                            class="h-full"
+                        >
                             <m-editor
                                 v-model="payload.content"
                                 :libs="libScriptColumn.mount(store.columns)"
@@ -297,7 +354,10 @@ const relation = computed(() => {
                         </v-card>
                     </v-drawer>
 
-                    <div v-if="payload.type === ColumnType.entry" class="mb-4">
+                    <div
+                        v-if="payload.type === ColumnType.entry"
+                        class="mb-4"
+                    >
                         <v-input
                             v-model="payload.filename"
                             :label="$t('filename')"
@@ -323,7 +383,12 @@ const relation = computed(() => {
                     </template>
 
                     <div>
-                        <v-btn type="submit" class="w-full">{{ $t('save') }}</v-btn>
+                        <v-btn
+                            type="submit"
+                            class="w-full"
+                        >
+                            {{ $t('save') }}
+                        </v-btn>
                     </div>
                 </w-form>
             </v-card-content>

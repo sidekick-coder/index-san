@@ -58,7 +58,10 @@ const style = computed(() => {
             <slot />
         </div>
 
-        <div v-if="$slots.footer" class="h-12">
+        <div
+            v-if="$slots.footer"
+            class="h-12"
+        >
             <slot name="footer" />
         </div>
     </aside>

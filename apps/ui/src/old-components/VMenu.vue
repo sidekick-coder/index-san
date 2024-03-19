@@ -185,7 +185,11 @@ watch(show, () => delay(setMaxPosition, 100))
 </script>
 
 <template>
-    <slot name="activator" :attrs="{ onClick, ref: onActivatorRef }" :toggle="toggle" />
+    <slot
+        name="activator"
+        :attrs="{ onClick, ref: onActivatorRef }"
+        :toggle="toggle"
+    />
 
     <teleport to="body">
         <transition v-bind="transition">

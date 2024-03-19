@@ -38,7 +38,11 @@ onMounted(setItem)
             </div>
         </header>
         <template v-for="(item, index) in items">
-            <component :is="item.component" v-if="current === index" :key="index" />
+            <component
+                :is="item.component"
+                v-if="current === index"
+                :key="index"
+            />
         </template>
     </div>
 </template>

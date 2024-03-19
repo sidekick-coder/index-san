@@ -15,7 +15,14 @@ const lines = computed(() => {
 })
 </script>
 <template>
-    <div v-if="lines.length" class="w-full text-sm whitespace-pre-wrap">
-        <div v-for="line in lines" :key="line" v-html="line" />
+    <div
+        v-if="lines.length"
+        class="w-full text-sm whitespace-pre-wrap"
+    >
+        <div
+            v-for="line in lines"
+            :key="line"
+            v-html="line"
+        />
     </div>
 </template>

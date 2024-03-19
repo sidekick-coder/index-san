@@ -11,8 +11,8 @@ const placement = defineProp<Placement>('placement', {
 })
 
 const model = defineModel({
+    type: Boolean,
     default: false,
-    local: true,
 })
 
 const { floatingStyles } = useFloating(root, floating, {
@@ -52,19 +52,21 @@ function hide() {
         }" 
     />
 
-    <div ref="floating" :style="floatingStyles">
+    <div
+        ref="floating"
+        :style="floatingStyles"
+    >
         <transition
             enter-active-class="transition ease-out duration-100"
             leave-active-class="transition ease-in duration-75"
             enter-from-class="opacity-0 scale-50"
             leave-to-class="opacity-0 scale-50"
         >
-
             <div
-                class="bg-body-500 text-body-0 text-xs py-1 px-2 rounded relative"
                 v-visible="model"
+                class="bg-body-500 text-body-0 text-xs py-1 px-2 rounded relative"
             >
-                <slot  />
+                <slot />
 
                 <div
                     class="flex absolute inset-0"
@@ -85,11 +87,7 @@ function hide() {
                         ]"
                     />
                 </div>
-                
             </div>
-            
         </transition>
-        
-       
     </div>
 </template>

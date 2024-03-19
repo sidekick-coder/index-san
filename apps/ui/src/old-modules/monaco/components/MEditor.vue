@@ -130,5 +130,8 @@ watch(
 )
 </script>
 <template>
-    <div ref="root" class="w-full h-full"></div>
+    <div
+        ref="root"
+        class="w-full h-full"
+    />
 </template>

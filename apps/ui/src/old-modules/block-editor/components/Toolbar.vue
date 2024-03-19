@@ -94,7 +94,11 @@ function deleteNodes() {
 
         <new-block-menu @select="onNewNode">
             <template #activator="{ attrs }">
-                <toolbar-btn v-bind="attrs" size="sm" color="text-t-secondary hover:text-t-primary">
+                <toolbar-btn
+                    v-bind="attrs"
+                    size="sm"
+                    color="text-t-secondary hover:text-t-primary"
+                >
                     <v-icon name="plus" />
                 </toolbar-btn>
             </template>

@@ -31,20 +31,39 @@ function removeChildren(index: number) {
 <template>
     <div class="my-2 border border-lines rounded">
         <v-list-item class="border-lines items-center">
-            <v-btn class="w-[38px] h-[38px] drag-handle" mode="text">
+            <v-btn
+                class="w-[38px] h-[38px] drag-handle"
+                mode="text"
+            >
                 <v-icon name="grip-vertical" />
             </v-btn>
 
-            <v-icon-picker v-if="!item.isSection" v-model="item.icon">
+            <v-icon-picker
+                v-if="!item.isSection"
+                v-model="item.icon"
+            >
                 <template #activator="{ attrs }">
-                    <v-btn class="w-[38px] h-[38px] ml-2" v-bind="attrs" mode="text">
-                        <v-icon v-if="item.icon" :name="item.icon"></v-icon>
-                        <v-icon v-else name="circle"></v-icon>
+                    <v-btn
+                        class="w-[38px] h-[38px] ml-2"
+                        v-bind="attrs"
+                        mode="text"
+                    >
+                        <v-icon
+                            v-if="item.icon"
+                            :name="item.icon"
+                        />
+                        <v-icon
+                            v-else
+                            name="circle"
+                        />
                     </v-btn>
                 </template>
             </v-icon-picker>
 
-            <v-input v-model="item.label" class="ml-2 w-full max-w-[500px]" />
+            <v-input
+                v-model="item.label"
+                class="ml-2 w-full max-w-[500px]"
+            />
 
             <v-btn
                 class="w-[38px] h-[38px] ml-2"
@@ -57,7 +76,10 @@ function removeChildren(index: number) {
         </v-list-item>
 
         <div class="ml-8 mr-4">
-            <Draggable v-model="item.children" v-bind="dragOptions">
+            <Draggable
+                v-model="item.children"
+                v-bind="dragOptions"
+            >
                 <template #item="{ index }">
                     <o-menu-item
                         v-model="item.children[index]"

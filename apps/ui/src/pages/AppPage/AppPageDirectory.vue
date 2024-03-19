@@ -88,9 +88,12 @@ function findIconColor(entry: DriveEntry){
 </script>
 <template>
     <div class="w-full">
-
         <div class="w-full bg-body-500">
-            <input v-model="search" class="bg-transparent w-full h-12 px-4 outline-none" placeholder="Search..." />
+            <input
+                v-model="search"
+                class="bg-transparent w-full h-12 px-4 outline-none"
+                placeholder="Search..."
+            >
         </div>
 
         <div class="flex flex-col overflow-y-auto">

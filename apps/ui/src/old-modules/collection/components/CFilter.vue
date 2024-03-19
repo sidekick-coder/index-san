@@ -47,7 +47,10 @@ const components: Record<Column['type'], any> = {
 const column = computed(() => props.columns.find((c) => c.id === model.value.columnId))
 </script>
 <template>
-    <v-card v-if="column" class="gap-x-4 flex-wrap">
+    <v-card
+        v-if="column"
+        class="gap-x-4 flex-wrap"
+    >
         <v-card-content>
             <v-card class="border border-lines">
                 <v-card-head padding>
@@ -55,7 +58,12 @@ const column = computed(() => props.columns.find((c) => c.id === model.value.col
                         {{ column.label }}
                     </v-card-title>
 
-                    <v-btn color="danger" text size="sm" @click="$emit('destroy')">
+                    <v-btn
+                        color="danger"
+                        text
+                        size="sm"
+                        @click="$emit('destroy')"
+                    >
                         <v-icon name="trash" />
                     </v-btn>
                 </v-card-head>

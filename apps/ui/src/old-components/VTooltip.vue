@@ -140,7 +140,11 @@ const style = computed(() => {
 </script>
 
 <template>
-    <slot name="activator" :attrs="{ ref: onRef, onMouseover, onMouseleave }" :toggle="toggle" />
+    <slot
+        name="activator"
+        :attrs="{ ref: onRef, onMouseover, onMouseleave }"
+        :toggle="toggle"
+    />
 
     <teleport to="body">
         <transition
@@ -155,7 +159,10 @@ const style = computed(() => {
                 class="v-tooltip z-20 fixed transition-all overflow-auto max-h-screen"
                 v-bind="$attrs"
             >
-                <v-card :color="color" class="text-xs px-3 py-2 rounded">
+                <v-card
+                    :color="color"
+                    class="text-xs px-3 py-2 rounded"
+                >
                     <slot />
                 </v-card>
             </div>

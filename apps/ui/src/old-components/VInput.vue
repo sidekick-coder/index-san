@@ -205,14 +205,29 @@ onMounted(() => {
 const ui = computed(() => (props.disabled ? 'disabled' : ''))
 </script>
 <template>
-    <div v-bind="bindings.root" class="w-full relative">
-        <div v-if="loading" class="absolute bottom-0 h-[1px] bg-accent w-full animate-pulse"></div>
+    <div
+        v-bind="bindings.root"
+        class="w-full relative"
+    >
+        <div
+            v-if="loading"
+            class="absolute bottom-0 h-[1px] bg-accent w-full animate-pulse"
+        />
 
-        <label v-if="label" :for="label" :class="labelClasses" v-bind="bindings.label">
+        <label
+            v-if="label"
+            :for="label"
+            :class="labelClasses"
+            v-bind="bindings.label"
+        >
             {{ label }}
         </label>
 
-        <div :class="classes" v-bind="bindings.wrapper" :data-ui="ui">
+        <div
+            :class="classes"
+            v-bind="bindings.wrapper"
+            :data-ui="ui"
+        >
             <slot name="prepend" />
 
             <input
@@ -229,7 +244,7 @@ const ui = computed(() => (props.disabled ? 'disabled' : ''))
                 @blur="onBlur"
                 @input="onInput"
                 @change="onChange"
-            />
+            >
             <slot name="append" />
         </div>
     </div>

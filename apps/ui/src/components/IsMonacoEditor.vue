@@ -19,7 +19,7 @@ const props = defineProps({
     },
     language: {
         type: String,
-        default: 'typescript',
+        default: 'text',
     },
     minimap: {
         type: Boolean,
@@ -131,5 +131,8 @@ watch(
 )
 </script>
 <template>
-    <div ref="root" class="w-full h-full"></div>
+    <div
+        ref="root"
+        class="w-full h-full"
+    />
 </template>

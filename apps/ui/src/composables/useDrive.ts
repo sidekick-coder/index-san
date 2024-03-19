@@ -7,7 +7,7 @@ export interface DriveEntry {
 export interface Drive {
     get: (path: string) => Promise<DriveEntry | null>
     list: (path: string) => Promise<DriveEntry[]>
-    read: (path: string) => Promise<string>
+    read: (path: string) => Promise<Uint8Array | null>
     write: (path: string, content: any) => Promise<void>
 }
 
@@ -21,5 +21,19 @@ export function useDrive(){
         drive.value = newDrive
     }
 
-    return { drive, isLoaded, setDrive }
+    function encode(contents: string){
+        return new TextEncoder().encode(contents)
+    }
+
+    function decode(contents: Uint8Array){
+        return new TextDecoder().decode(contents)
+    }
+
+    return {
+        drive,
+        isLoaded,
+        setDrive,
+        encode,
+        decode
+    }
 }

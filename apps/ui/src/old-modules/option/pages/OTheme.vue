@@ -89,7 +89,11 @@ watch(payload, save, { deep: true })
 
 <template>
     <v-container class="gap-y-4 flex flex-wrap py-5">
-        <div v-for="color in colors" :key="color.key" class="w-full flex items-end">
+        <div
+            v-for="color in colors"
+            :key="color.key"
+            class="w-full flex items-end"
+        >
             <div
                 class="w-24 h-24 bg-accent mr-4 text-xs flex items-end justify-center border border-lines"
                 :style="`background-color: rgb(${color.default})`"
@@ -115,7 +119,10 @@ watch(payload, save, { deep: true })
                 </div>
             </div>
 
-            <v-input v-model="payload[color.key]" :label="color.label" />
+            <v-input
+                v-model="payload[color.key]"
+                :label="color.label"
+            />
         </div>
     </v-container>
 </template>

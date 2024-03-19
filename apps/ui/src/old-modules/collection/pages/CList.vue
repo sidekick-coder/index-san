@@ -95,7 +95,11 @@ async function deleteItem(id: string) {
 <template>
     <div>
         <v-dialog v-model="dialog">
-            <c-form :edited-item="editedItem" @created="onCreate" @updated="onUpdated" />
+            <c-form
+                :edited-item="editedItem"
+                @created="onCreate"
+                @updated="onUpdated"
+            />
         </v-dialog>
 
         <v-container class="w-full border-b py-2 border-lines flex items-center">
@@ -103,23 +107,44 @@ async function deleteItem(id: string) {
                 {{ meta.title }}
             </v-card-title>
 
-            <v-btn class="ml-auto" size="sm" @click="dialog = true">
+            <v-btn
+                class="ml-auto"
+                size="sm"
+                @click="dialog = true"
+            >
                 {{ $t('addEntity', [$t('collection')]) }}
             </v-btn>
         </v-container>
 
-        <v-table :columns="columns" :items="store.collection.collections" :fixed="false">
+        <v-table
+            :columns="columns"
+            :items="store.collection.collections"
+            :fixed="false"
+        >
             <template #item-actions="{ item }">
                 <v-td class="flex justify-end pr-7">
-                    <v-btn mode="text" size="sm" :to="`/collections/${item.id}/items`">
+                    <v-btn
+                        mode="text"
+                        size="sm"
+                        :to="`/collections/${item.id}/items`"
+                    >
                         <fa-icon icon="eye" />
                     </v-btn>
 
-                    <v-btn mode="text" size="sm" @click="editCollection(item)">
+                    <v-btn
+                        mode="text"
+                        size="sm"
+                        @click="editCollection(item)"
+                    >
                         <fa-icon icon="pen" />
                     </v-btn>
 
-                    <v-btn mode="text" size="sm" color="danger" @click="deleteItem(item.id)">
+                    <v-btn
+                        mode="text"
+                        size="sm"
+                        color="danger"
+                        @click="deleteItem(item.id)"
+                    >
                         <fa-icon icon="trash" />
                     </v-btn>
                 </v-td>

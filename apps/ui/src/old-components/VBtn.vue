@@ -145,11 +145,20 @@ const styles = computed(() => colorVariation.styles)
         :disabled="disabled"
         :type="type"
     >
-        <div v-if="loading" class="absolute flex items-center justify-center">
-            <v-icon name="spinner" class="animate-spin" />
+        <div
+            v-if="loading"
+            class="absolute flex items-center justify-center"
+        >
+            <v-icon
+                name="spinner"
+                class="animate-spin"
+            />
         </div>
 
-        <div :class="[loading ? 'opacity-0' : '']" class="flex">
+        <div
+            :class="[loading ? 'opacity-0' : '']"
+            class="flex"
+        >
             <slot />
         </div>
     </component>

@@ -134,10 +134,20 @@ function onSelect(item: Item) {
 }
 </script>
 <template>
-    <IsMenu offset-y close-on-content-click :width="200">
+    <IsMenu
+        offset-y
+        close-on-content-click
+        :width="200"
+    >
         <template #activator="props">
-            <slot name="activator" v-bind="props">
-                <IsIcon name="mdi:plus" v-bind="props.attrs" />
+            <slot
+                name="activator"
+                v-bind="props"
+            >
+                <IsIcon
+                    name="mdi:plus"
+                    v-bind="props.attrs"
+                />
             </slot>
         </template>
 
@@ -154,12 +164,19 @@ function onSelect(item: Item) {
                     class="w-8 h-8 flex items-center justify-center mr-4"
                     color="zinc"
                 >
-                    <IsIcon :name="item.icon" size="sm" />
+                    <IsIcon
+                        :name="item.icon"
+                        size="sm"
+                    />
                 </IsCard>
 
                 <div>
-                    <div class="text-t-primary text-sm font-bold">{{ item.label }}</div>
-                    <div class="text-t-secondary text-xs">{{ item.description }}</div>
+                    <div class="text-t-primary text-sm font-bold">
+                        {{ item.label }}
+                    </div>
+                    <div class="text-t-secondary text-xs">
+                        {{ item.description }}
+                    </div>
                 </div>
             </IsListItem>
         </IsCard>

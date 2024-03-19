@@ -45,5 +45,9 @@ const content = computed(() => {
 </script>
 
 <template>
-    <m-editor readonly :model-value="content" language="shell" />
+    <m-editor
+        readonly
+        :model-value="content"
+        language="shell"
+    />
 </template>

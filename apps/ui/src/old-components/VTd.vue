@@ -30,6 +30,6 @@ const style = computed(() => {
         :class="[noPadding ? 'p-0' : 'py-2 px-4']"
         :style="style"
     >
-        <slot></slot>
+        <slot />
     </td>
 </template>

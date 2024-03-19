@@ -99,7 +99,11 @@ defineExpose({
 </script>
 <template>
     <div class="flex w-full">
-        <component :is="instance" v-if="showView" data-test-id="view-area" />
+        <component
+            :is="instance"
+            v-if="showView"
+            data-test-id="view-area"
+        />
         <div
             ref="editableAreaRef"
             :class="!focused && isDynamicRender ? 'opacity-0' : ''"

@@ -60,5 +60,8 @@ watch(() => props.path, setContent, {
 watch(content, save)
 </script>
 <template>
-    <m-editor v-if="!loading" v-model="content" />
+    <m-editor
+        v-if="!loading"
+        v-model="content"
+    />
 </template>

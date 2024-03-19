@@ -89,7 +89,11 @@ function deleteNodes() {
 
         <IsBlockEditorNewBlockMenu @select="onNewNode">
             <template #activator="{ attrs }">
-                <IsBlockEditorToolbarBtn v-bind="attrs" size="sm" color="text-t-secondary hover:text-t-primary">
+                <IsBlockEditorToolbarBtn
+                    v-bind="attrs"
+                    size="sm"
+                    color="text-t-secondary hover:text-t-primary"
+                >
                     <IsIcon name="mdi:plus" />
                 </IsBlockEditorToolbarBtn>
             </template>

@@ -9,7 +9,10 @@ defineProps({
 })
 </script>
 <template>
-    <a :href="href" @click.prevent="openURL(href)">
+    <a
+        :href="href"
+        @click.prevent="openURL(href)"
+    >
         <slot />
     </a>
 </template>

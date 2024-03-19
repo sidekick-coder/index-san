@@ -29,7 +29,12 @@ const routes: RouteRecordRaw[] = [
         path: '/cheat-sheet',
         name: 'CheatSheet',
         component: () => import('@/pages/CheatSheet/CheatSheet.vue'),
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('@/pages/NotFound/NotFound.vue'),
+    },
 
 ]
 

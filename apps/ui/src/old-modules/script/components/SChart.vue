@@ -95,8 +95,15 @@ function refresh() {
 }
 </script>
 <template>
-    <v-card :height="height" :width="width" :color="color">
-        <div ref="contentEl" class="hidden">
+    <v-card
+        :height="height"
+        :width="width"
+        :color="color"
+    >
+        <div
+            ref="contentEl"
+            class="hidden"
+        >
             <slot />
         </div>
 
@@ -114,24 +121,48 @@ function refresh() {
                 <v-icon name="chart-pie" />
             </v-btn>
 
-            <v-btn mode="text" size="xs" class="text-t-secondary" @click="refresh">
+            <v-btn
+                mode="text"
+                size="xs"
+                class="text-t-secondary"
+                @click="refresh"
+            >
                 <v-icon name="rotate" />
             </v-btn>
 
-            <v-btn mode="text" size="xs" class="text-t-secondary" @click="current = 'raw'">
+            <v-btn
+                mode="text"
+                size="xs"
+                class="text-t-secondary"
+                @click="current = 'raw'"
+            >
                 <v-icon name="code" />
             </v-btn>
 
-            <v-btn mode="text" size="xs" class="text-t-secondary" @click="current = 'debug'">
+            <v-btn
+                mode="text"
+                size="xs"
+                class="text-t-secondary"
+                @click="current = 'debug'"
+            >
                 <v-icon name="check-circle" />
             </v-btn>
         </v-card-head>
 
-        <v-card-content v-if="current === 'raw'" style="height: calc(100% - 54px)">
-            <m-editor :model-value="content" readonly />
+        <v-card-content
+            v-if="current === 'raw'"
+            style="height: calc(100% - 54px)"
+        >
+            <m-editor
+                :model-value="content"
+                readonly
+            />
         </v-card-content>
 
-        <v-card-content v-else-if="current === 'debug'" style="height: calc(100% - 54px)">
+        <v-card-content
+            v-else-if="current === 'debug'"
+            style="height: calc(100% - 54px)"
+        >
             <s-output :output="output" />
         </v-card-content>
 
@@ -140,15 +171,24 @@ function refresh() {
             style="height: calc(100% - 54px)"
             class="flex items-center justify-center animate-pulse"
         >
-            <v-icon name="chart-pie" class="text-[10rem] text-lines" />
+            <v-icon
+                name="chart-pie"
+                class="text-[10rem] text-lines"
+            />
         </v-card-content>
 
-        <transition v-else name="fade">
+        <transition
+            v-else
+            name="fade"
+        >
             <v-card-content
                 v-if="!chart.loading && chart.options"
                 style="height: calc(100% - 54px)"
             >
-                <v-chart ref="chartRef" :options="chart.options" />
+                <v-chart
+                    ref="chartRef"
+                    :options="chart.options"
+                />
             </v-card-content>
         </transition>
     </v-card>

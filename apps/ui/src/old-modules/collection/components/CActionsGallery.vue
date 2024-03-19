@@ -48,10 +48,20 @@ const columns = computed({
 })
 </script>
 <template>
-    <v-card v-if="view.component === 'gallery'" color="b-secondary">
+    <v-card
+        v-if="view.component === 'gallery'"
+        color="b-secondary"
+    >
         <v-card-content class="flex flex-wrap gap-y-4">
-            <v-input v-model="view.label" :label="$t('label')" />
-            <v-input v-model="view.limit" type="number" :label="$t('limit')" />
+            <v-input
+                v-model="view.label"
+                :label="$t('label')"
+            />
+            <v-input
+                v-model="view.limit"
+                type="number"
+                :label="$t('limit')"
+            />
 
             <v-select
                 v-model="view.thumbnail.key"

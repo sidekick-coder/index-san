@@ -64,7 +64,11 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
         @update:model-value="save"
     >
         <template #selection="{ attrs, displayValue }">
-            <v-input v-if="editModel" readonly v-bind="attrs">
+            <v-input
+                v-if="editModel"
+                readonly
+                v-bind="attrs"
+            >
                 <template #prepend>
                     <v-card
                         class="px-2 py-1 text-xs rounded"
@@ -77,7 +81,11 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
                 </template>
             </v-input>
 
-            <div v-else class="px-4 min-h-[40px] flex items-center" v-bind="attrs">
+            <div
+                v-else
+                class="px-4 min-h-[40px] flex items-center"
+                v-bind="attrs"
+            >
                 <v-card
                     class="px-2 py-1 text-xs rounded"
                     width="auto"
@@ -90,7 +98,10 @@ const editModel = useModelOrInnerValue(props, 'edit', emit)
         </template>
 
         <template #option="{ option, attrs }">
-            <v-list-item v-bind="attrs" color="opacity-75 hover:opacity-100">
+            <v-list-item
+                v-bind="attrs"
+                color="opacity-75 hover:opacity-100"
+            >
                 <v-card
                     class="px-2 py-1 text-xs rounded"
                     width="auto"

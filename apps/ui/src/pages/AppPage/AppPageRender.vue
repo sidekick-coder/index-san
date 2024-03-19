@@ -32,9 +32,16 @@ const currentComponent = computed(() => {
 </script>
 
 <template>
-    <component v-if="currentComponent" :is="currentComponent" v-bind="pageProps" />
+    <component
+        :is="currentComponent"
+        v-if="currentComponent"
+        v-bind="pageProps"
+    />
 
-    <div v-else class="min-h-full w-full flex items-center justify-center">
+    <div
+        v-else
+        class="min-h-full w-full flex items-center justify-center"
+    >
         No page found
     </div>
 </template>

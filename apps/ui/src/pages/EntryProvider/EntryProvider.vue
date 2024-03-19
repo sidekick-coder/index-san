@@ -61,18 +61,27 @@ watch(path, load, { immediate: true })
 
 <template>
     <div class="w-full min-h-full">
-        <div v-if="loading" class="w-full flex items-center justify-center min-h-full">
+        <div
+            v-if="loading"
+            class="w-full flex items-center justify-center min-h-full"
+        >
             Loading...
         </div>
         
         
-        <AppPageRender v-else-if="result" :name="result.page" :page-props="result.props" />
+        <AppPageRender
+            v-else-if="result"
+            :name="result.page"
+            :page-props="result.props"
+        />
         
-        <div v-else class="w-full flex items-center justify-center min-h-full">
+        <div
+            v-else
+            class="w-full flex items-center justify-center min-h-full"
+        >
             <div>Error loading entry: {{ error }}</div>
     
             <div>Path {{ path || '/' }}</div>
         </div>
     </div>
-
 </template>

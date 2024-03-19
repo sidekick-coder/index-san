@@ -12,5 +12,8 @@ registerLanguage(mdc)
 </script>
 
 <template>
-    <MonacoEditor v-model="model" :language="mdc.id" />
+    <MonacoEditor
+        v-model="model"
+        :language="mdc.id"
+    />
 </template>

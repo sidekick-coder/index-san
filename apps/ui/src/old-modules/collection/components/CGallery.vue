@@ -172,7 +172,10 @@ onKeyStroke('Delete', async () => {
 </script>
 
 <template>
-    <v-card v-if="view" width="100%">
+    <v-card
+        v-if="view"
+        width="100%"
+    >
         <c-actions
             v-if="!hideActions"
             v-bind="bindings.head"
@@ -180,7 +183,12 @@ onKeyStroke('Delete', async () => {
             :view-id="viewId"
         />
 
-        <v-menu v-model="actions.menu" :x="actions.x" :y="actions.y" close-on-content-click>
+        <v-menu
+            v-model="actions.menu"
+            :x="actions.x"
+            :y="actions.y"
+            close-on-content-click
+        >
             <v-card color="b-secondary">
                 <v-list-item
                     size="xs"
@@ -188,12 +196,23 @@ onKeyStroke('Delete', async () => {
                     dark
                     :to="`/collections/${collectionId}/items/${actions.id}`"
                 >
-                    <v-icon name="eye" class="mr-2" />
+                    <v-icon
+                        name="eye"
+                        class="mr-2"
+                    />
                     {{ $t('viewEntity', [$t('item')]) }}
                 </v-list-item>
 
-                <v-list-item size="xs" color="danger" dark @click="itemsStore.destroy(actions.id!)">
-                    <v-icon name="trash" class="mr-2" />
+                <v-list-item
+                    size="xs"
+                    color="danger"
+                    dark
+                    @click="itemsStore.destroy(actions.id!)"
+                >
+                    <v-icon
+                        name="trash"
+                        class="mr-2"
+                    />
                     {{ $t('deleteEntity', [$t('item')]) }}
                 </v-list-item>
             </v-card>
@@ -301,7 +320,10 @@ onKeyStroke('Delete', async () => {
                         v-bind="data.bindings.card"
                         @click="create"
                     >
-                        <v-icon class="text-2xl text-lines" name="plus" />
+                        <v-icon
+                            class="text-2xl text-lines"
+                            name="plus"
+                        />
                     </v-card>
                 </template>
             </v-gallery>

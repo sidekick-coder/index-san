@@ -38,7 +38,11 @@ const colorVariant = useVariant(props, 'color', {
 </script>
 <template>
     <label class="flex items-center cursor-pointer w-full">
-        <input v-model="model" type="checkbox" class="hidden" />
+        <input
+            v-model="model"
+            type="checkbox"
+            class="hidden"
+        >
 
         <v-icon
             v-if="model"
@@ -47,8 +51,15 @@ const colorVariant = useVariant(props, 'color', {
             name="square-check"
         />
 
-        <v-icon v-else name="fa-regular fa-square" class="text-t-secondary" />
+        <v-icon
+            v-else
+            name="fa-regular fa-square"
+            class="text-t-secondary"
+        />
 
-        <span v-if="label" class="text-t-secondary block font-bold ml-2">{{ label }}</span>
+        <span
+            v-if="label"
+            class="text-t-secondary block font-bold ml-2"
+        >{{ label }}</span>
     </label>
 </template>

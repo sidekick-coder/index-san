@@ -79,18 +79,29 @@ defineExpose({ save })
             <div class="px-7 flex justify-end w-full">
                 <slot name="prepend-actions" />
 
-                <v-btn size="sm" mode="text" @click="setContent">
+                <v-btn
+                    size="sm"
+                    mode="text"
+                    @click="setContent"
+                >
                     <v-icon name="arrows-rotate" />
                 </v-btn>
 
-                <v-btn size="sm" mode="text" @click="save">
+                <v-btn
+                    size="sm"
+                    mode="text"
+                    @click="save"
+                >
                     <v-icon name="save" />
                 </v-btn>
             </div>
         </v-layout-toolbar>
 
         <v-layout-content>
-            <slot name="editor" s>
+            <slot
+                name="editor"
+                s
+            >
                 <div class="h-full flex">
                     <m-editor
                         v-model="content"

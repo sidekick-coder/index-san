@@ -92,10 +92,24 @@ function getLabel(id: string) {
 }
 </script>
 <template>
-    <v-card color="b-secondary" width="350">
+    <v-card
+        color="b-secondary"
+        width="350"
+    >
         <v-card-head>
-            <v-btn mode="text" @click="tab = 0">{{ $t('config') }}</v-btn>
-            <v-btn mode="text" tile @click="tab = 1">{{ $t('view') }}</v-btn>
+            <v-btn
+                mode="text"
+                @click="tab = 0"
+            >
+                {{ $t('config') }}
+            </v-btn>
+            <v-btn
+                mode="text"
+                tile
+                @click="tab = 1"
+            >
+                {{ $t('view') }}
+            </v-btn>
         </v-card-head>
 
         <v-card-content v-if="tab == 0">
@@ -113,12 +127,18 @@ function getLabel(id: string) {
                 />
             </template>
 
-            <v-list-item v-else class="justify-center">
+            <v-list-item
+                v-else
+                class="justify-center"
+            >
                 {{ $t('noEntity', [$t('config', 2)]) }}
             </v-list-item>
         </v-card-content>
 
-        <v-card-content v-if="tab == 1" class="flex-wrap">
+        <v-card-content
+            v-if="tab == 1"
+            class="flex-wrap"
+        >
             <v-list-item
                 v-for="v in store.views.filter((v) => v.component !== 'group')"
                 :key="v.id"
@@ -129,11 +149,20 @@ function getLabel(id: string) {
                     {{ getLabel(v.id) }}
                 </div>
 
-                <v-btn size="sm" color="b-primary" class="mr-2" @click="destroy(v.id)">
+                <v-btn
+                    size="sm"
+                    color="b-primary"
+                    class="mr-2"
+                    @click="destroy(v.id)"
+                >
                     <v-icon name="trash" />
                 </v-btn>
 
-                <v-btn size="sm" color="b-primary" @click="toggle(v.id)">
+                <v-btn
+                    size="sm"
+                    color="b-primary"
+                    @click="toggle(v.id)"
+                >
                     <v-icon :name="view.viewIds.includes(v.id) ? 'minus' : 'plus'" />
                 </v-btn>
             </v-list-item>

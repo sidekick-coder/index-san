@@ -104,14 +104,25 @@ async function deleteItem(id: string) {
                 {{ meta.title }}
             </v-card-title>
 
-            <v-btn class="ml-auto" size="sm" @click="dialog = true">
+            <v-btn
+                class="ml-auto"
+                size="sm"
+                @click="dialog = true"
+            >
                 {{ $t('addEntity', [$t('workspace')]) }}
             </v-btn>
         </v-container>
 
-        <v-table :columns="columns" :items="store.workspace.workspaces" :fixed="false">
+        <v-table
+            :columns="columns"
+            :items="store.workspace.workspaces"
+            :fixed="false"
+        >
             <template #item-active="{ item }">
-                <v-td class="pl-10" no-padding>
+                <v-td
+                    class="pl-10"
+                    no-padding
+                >
                     <v-checkbox
                         :model-value="item.id === store.workspace.currentId"
                         @click="store.workspace.currentId = item.id"
@@ -127,11 +138,21 @@ async function deleteItem(id: string) {
 
             <template #item-actions="{ item }">
                 <v-td class="flex pr-7 justify-end">
-                    <v-btn size="sm" color="danger" mode="text" @click="editItem(item)">
+                    <v-btn
+                        size="sm"
+                        color="danger"
+                        mode="text"
+                        @click="editItem(item)"
+                    >
                         <v-icon name="pen" />
                     </v-btn>
 
-                    <v-btn size="sm" color="danger" mode="text" @click="deleteItem(item.id)">
+                    <v-btn
+                        size="sm"
+                        color="danger"
+                        mode="text"
+                        @click="deleteItem(item.id)"
+                    >
                         <v-icon name="trash" />
                     </v-btn>
                 </v-td>

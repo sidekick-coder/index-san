@@ -188,7 +188,10 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
                 :color="color"
                 v-bind="bindings.card"
             >
-                <template v-for="(column, cIndex) in columns" :key="cIndex">
+                <template
+                    v-for="(column, cIndex) in columns"
+                    :key="cIndex"
+                >
                     <v-list-item class="px-4 py-2">
                         {{ item[column.field] }}
                     </v-list-item>
@@ -213,7 +216,10 @@ function onSelect(item: any, itemIndex: number, e: MouseEvent) {
             @click="pagination.page++"
         >
             <v-card-content class="items-center justify-center text-sm text-t-secondary">
-                <v-icon name="arrow-down" class="mr-4" />
+                <v-icon
+                    name="arrow-down"
+                    class="mr-4"
+                />
 
                 <span>{{ `${$t('loadMore')} (${visibleItems.length}/${items.length})` }}</span>
             </v-card-content>

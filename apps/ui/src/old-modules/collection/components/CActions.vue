@@ -86,7 +86,7 @@ function isCommon(v: View): v is ViewCommon {
     <v-card-head class="overflow-x-auto">
         <slot name="left" />
 
-        <div class="grow"></div>
+        <div class="grow" />
 
         <template v-if="isCommon(view)">
             <div class="flex items-center transition-all">
@@ -99,39 +99,77 @@ function isCommon(v: View): v is ViewCommon {
                         class="w-full max-w-[300px] mx-4"
                     >
                         <template #append>
-                            <v-btn v-if="input" mode="text" size="sm" @click="input = ''">
+                            <v-btn
+                                v-if="input"
+                                mode="text"
+                                size="sm"
+                                @click="input = ''"
+                            >
                                 <v-icon name="times" />
                             </v-btn>
                         </template>
                     </v-input>
                 </transition>
 
-                <v-btn mode="text" size="sm" @click="showInput = !showInput">
+                <v-btn
+                    mode="text"
+                    size="sm"
+                    @click="showInput = !showInput"
+                >
                     <v-icon name="search" />
                 </v-btn>
 
-                <v-btn mode="text" size="sm" :loading="itemsStore.loading" @click="refresh">
+                <v-btn
+                    mode="text"
+                    size="sm"
+                    :loading="itemsStore.loading"
+                    @click="refresh"
+                >
                     <v-icon name="rotate" />
                 </v-btn>
 
-                <c-actions-order :collection-id="collectionId" :view-id="viewId" />
+                <c-actions-order
+                    :collection-id="collectionId"
+                    :view-id="viewId"
+                />
 
-                <c-actions-filters :collection-id="collectionId" :view-id="viewId" />
+                <c-actions-filters
+                    :collection-id="collectionId"
+                    :view-id="viewId"
+                />
 
-                <c-actions-columns :collection-id="collectionId" :view-id="viewId" />
+                <c-actions-columns
+                    :collection-id="collectionId"
+                    :view-id="viewId"
+                />
             </div>
         </template>
 
-        <v-menu v-model="menu" offset-y offset-x :open-on-click="false">
+        <v-menu
+            v-model="menu"
+            offset-y
+            offset-x
+            :open-on-click="false"
+        >
             <template #activator="{ attrs }">
-                <div class="h-[44px] flex items-center" v-bind="attrs">
-                    <v-btn mode="text" size="sm" @click="menu = !menu">
+                <div
+                    class="h-[44px] flex items-center"
+                    v-bind="attrs"
+                >
+                    <v-btn
+                        mode="text"
+                        size="sm"
+                        @click="menu = !menu"
+                    >
                         <v-icon name="cog" />
                     </v-btn>
                 </div>
             </template>
 
-            <slot v-if="menu" name="config-card">
+            <slot
+                v-if="menu"
+                name="config-card"
+            >
                 <c-actions-gallery
                     v-if="view.component === 'gallery'"
                     :collection-id="collectionId"

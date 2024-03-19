@@ -77,8 +77,16 @@ const icon = defineProp<string>('icon', {
 
         <div class="w-[40px] flex justify-center self-start">
             <slot name="dragger">
-                <IsBtn variant="text" size="none" class="h-12 px-2 group-hover:opacity-100" :class="isSelectedInEditor ? 'opacity-100' : 'opacity-0'">
-                    <IsIcon data-test-id="icon" :name="icon" />
+                <IsBtn
+                    variant="text"
+                    size="none"
+                    class="h-12 px-2 group-hover:opacity-100"
+                    :class="isSelectedInEditor ? 'opacity-100' : 'opacity-0'"
+                >
+                    <IsIcon
+                        data-test-id="icon"
+                        :name="icon"
+                    />
                 </IsBtn>
             </slot>
         </div>

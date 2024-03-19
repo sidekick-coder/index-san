@@ -78,9 +78,15 @@ function onSave() {
 }
 </script>
 <template>
-    <block v-model="model" class="pr-10">
+    <block
+        v-model="model"
+        class="pr-10"
+    >
         <template #toolbar>
-            <ToolbarBtn data-test-id="edit-btn" @click="edit = true">
+            <ToolbarBtn
+                data-test-id="edit-btn"
+                @click="edit = true"
+            >
                 <v-icon name="pen" />
             </ToolbarBtn>
         </template>
@@ -91,7 +97,11 @@ function onSave() {
                     {{ running ? 'Running...' : $t('clickToEvaluate') }}
                 </div>
 
-                <v-btn data-test-id="run-btn" :disabled="running" @click="run">
+                <v-btn
+                    data-test-id="run-btn"
+                    :disabled="running"
+                    @click="run"
+                >
                     <v-icon
                         :name="running ? 'spinner' : 'play'"
                         :class="running ? 'animate-spin' : ''"
@@ -100,28 +110,46 @@ function onSave() {
                     {{ $t('run') }}
                 </v-btn>
 
-                <v-btn data-test-id="clear-btn" :disabled="running" @click="output = []">
+                <v-btn
+                    data-test-id="clear-btn"
+                    :disabled="running"
+                    @click="output = []"
+                >
                     {{ $t('clear') }}
                 </v-btn>
             </div>
 
-            <div v-show="output.length" class="w-full">
+            <div
+                v-show="output.length"
+                class="w-full"
+            >
                 <ANSICard v-model="output" />
             </div>
         </div>
 
         <v-dialog v-model="edit">
-            <v-card height="500" width="800" color="b-secondary">
+            <v-card
+                height="500"
+                width="800"
+                color="b-secondary"
+            >
                 <v-card-head padding>
                     <v-card-title class="mr-auto">
                         {{ $t('editEntity', [$t('code')]) }}
                     </v-card-title>
 
-                    <v-btn color="danger" class="mr-4" @click="onCancel">
+                    <v-btn
+                        color="danger"
+                        class="mr-4"
+                        @click="onCancel"
+                    >
                         {{ $t('cancel') }}
                     </v-btn>
 
-                    <v-btn data-test-id="save-btn" @click="onSave">
+                    <v-btn
+                        data-test-id="save-btn"
+                        @click="onSave"
+                    >
                         {{ $t('save') }}
                     </v-btn>
                 </v-card-head>
