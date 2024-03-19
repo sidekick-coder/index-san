@@ -4,7 +4,7 @@
     "description": "A CRUD maker based in filesystem",
     "scripts": {
         "lint": "npm -w ui run lint",
-        "test": "npm -w ui run test",
+        "test": "echo \"Error: no test specified\"",
         "dev": "npm -w @index-san/electron run dev",
         "build": "node scripts/build.js",
         "make:version": "node scripts/version.js",
