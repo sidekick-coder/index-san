@@ -1,9 +1,16 @@
 <script lang="ts" setup>
 
+import MonacoEditor from './components/MonacoEditor.vue'
+
 // general
 const path = defineProp<string>('path', {
     type: String,
     required: true
+})
+
+const language = defineProp<string>('language', {
+    type: String,
+    default: 'plaintext'
 })
 
 const { drive, encode, decode } = useDrive()
@@ -30,8 +37,9 @@ async function save(){
 
 <template>
     <div class="h-dvh">
-        <is-monaco-editor
+        <monaco-editor
             v-model="text"
+            :language="language"
             @keydown.ctrl.s.prevent="save"
         />
     </div>

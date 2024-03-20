@@ -13,7 +13,7 @@ const drawer = useLocalStorage('drawer', true)
             :class="drawer ? 'w-72 border-r' : 'w-0'"
         />
 
-        <div class="flex-1 min-h-full">
+        <div class="flex-1 h-dvh">
             <slot />
         </div>
     </is-app>

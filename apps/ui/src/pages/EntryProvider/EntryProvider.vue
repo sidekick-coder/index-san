@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { EntryMiddleware, EntryMiddlewareResult } from '@/composables/defineEntryMiddleware'
 import { directoryEntryMiddleware } from '@/modules/directory/directoryEntryMiddleware';
-import { textEditorEntryMiddleware } from '@/modules/text-editor/textEditorEntryMiddleware';
+import { monacoEditorEntryMiddleware } from '@/modules/monaco/monacoEditorEntryMiddleware';
 import AppPageRender from '@/pages/AppPage/AppPageRender.vue'
 
 import orderBy from 'lodash/orderBy'
@@ -12,7 +12,7 @@ const { drive } = useDrive()
 // middlewares
 const middlewares = ref<EntryMiddleware[]>([
     directoryEntryMiddleware,
-    textEditorEntryMiddleware
+    monacoEditorEntryMiddleware
 ])
 
 // load
@@ -60,7 +60,7 @@ watch(path, load, { immediate: true })
 </script>
 
 <template>
-    <div class="w-full min-h-full">
+    <div class="w-full h-full">
         <div
             v-if="loading"
             class="w-full flex items-center justify-center min-h-full"
@@ -77,7 +77,7 @@ watch(path, load, { immediate: true })
         
         <div
             v-else
-            class="w-full flex items-center justify-center min-h-full"
+            class="w-full min-h-full flex items-center justify-center "
         >
             <div>Error loading entry: {{ error }}</div>
     
