@@ -3,9 +3,33 @@ import type { Drive, DriveEntry } from "./useDrive";
 export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive {
 
     const dirname = (path: string) => {
-        const args = path.split('/').slice(0, -1).join('/')
+        const args = path
+            .split('/')
+            .slice(0, -1)
+            .filter(Boolean)
+            .join('/')
 
         return args === '' ? '/' : args
+    }
+
+    const getHandleByPath = async (path: string) => {
+        if (path === '/') {
+            return handle
+        }
+
+        let currentHandle = handle
+
+        for (const part of path.split('/')) {
+            if (part === '') {
+                continue
+            }
+
+            currentHandle = await currentHandle.getDirectoryHandle(part, {
+                create: false
+            })
+        }
+
+        return currentHandle
     }
 
     const list: Drive['list'] = async (path) => {
@@ -15,6 +39,7 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         if (path === '/') {
             for await (const entry of handle.values()) {
                 result.push({
+                    name: entry.name,
                     path: entry.name,
                     type: entry.kind === 'file' ? 'file' : 'directory'
                 })
@@ -23,9 +48,7 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
             return result
         }
 
-        const folder = await handle.getDirectoryHandle(path, {
-            create: false        
-        })
+        const folder = await getHandleByPath(path)
 
         if (folder.kind !== 'directory') {
             throw new Error('Not a directory')
@@ -33,7 +56,8 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
 
         for await (const entry of folder.values()) {
             result.push({
-                path: entry.name,
+                name: entry.name,
+                path: `${path}/${entry.name}`,
                 type: entry.kind === 'file' ? 'file' : 'directory'
             })
         }
@@ -45,16 +69,18 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
 
         if (path === '/') {
             return {
+                name: '',
                 path: '/',
                 type: 'directory'
             }
         }
 
-        const directory = dirname(path)
+        console.log('get', path)
 
+        
         const allParent = await list(dirname(path))
-
-        const entry = allParent.find(e => e.path === path.split('/').pop())
+        
+        const entry = allParent.find(e => e.path === path)
 
         return entry || null
     }

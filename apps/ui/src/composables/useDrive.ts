@@ -1,5 +1,6 @@
 
 export interface DriveEntry {
+    name: string
     path: string
     type: 'file'|'directory'
 }
