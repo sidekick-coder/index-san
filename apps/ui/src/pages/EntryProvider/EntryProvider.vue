@@ -26,19 +26,17 @@ const loading = ref(true)
 const error = ref<string>()
 const result = ref<EntryMiddlewareResult>()
 
-async function load(){
-    loading.value = true
+async function setResult(){
     result.value = undefined
 
     const args = Array.isArray(path.value) ? path.value : [path.value]
 
-    const filename = `/${args.join('/')}`
+    const filename = `${args.join('/')}`
 
-    const entry = await drive.value.get(filename)
+    const entry = await drive.value.get(filename === '' ? '/' : filename)
 
     if (!entry) {
-        error.value = `Can not find entry: ${filename}`
-        return
+        throw `Can not find entry: ${filename}`
     }
 
     for await (const middleware of orderBy(middlewares.value, ['order'], ['asc'])) {
@@ -48,10 +46,22 @@ async function load(){
             result.value = middlewareResult
         }
     }
+}
+
+function load(){
+    loading.value = true
+
+    setResult()
+        .then(() => {
+            error.value = undefined
+        })
+        .catch(e => {
+            error.value = e
+        })
+        .finally(() => {
+            setTimeout(() => (loading.value = false), 500)
+        })
     
-    setTimeout(() => {
-        loading.value = false
-    }, 500)
 }
 
 watch(path, load, { immediate: true })
@@ -63,24 +73,28 @@ watch(path, load, { immediate: true })
     <div class="w-full h-full">
         <div
             v-if="loading"
-            class="w-full flex items-center justify-center min-h-full"
+            class="w-full flex items-center justify-center h-full"
         >
             Loading...
         </div>
-        
-        
+            
+            
         <AppPageRender
             v-else-if="result"
             :name="result.page"
             :page-props="result.props"
         />
-        
+            
         <div
             v-else
-            class="w-full min-h-full flex items-center justify-center "
+            class="w-full min-h-full flex flex-col items-center justify-center "
         >
-            <div>Error loading entry: {{ error }}</div>
+            <div>Error loading entry</div>
     
+            <div>
+                {{ error }}
+            </div>
+        
             <div>Path {{ path || '/' }}</div>
         </div>
     </div>

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 
+import { RouterLink } from 'vue-router';
+
 // general
 const classMap = ref(new Map<string, string>())
 const classes = computed(() => Array.from(classMap.value.values()).join(' '))
@@ -12,15 +14,16 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'text',
 })
 
-const color = defineProp<'zinc' | 'accent'>('color',  {
+const color = defineProp<'zinc' | 'accent' | 'primary'>('color',  {
     type: String,
     default: 'zinc',
 })
 
 function setFillColor(){
-    const options = {
+    const options: Record<typeof color.value, string> = {
         zinc: 'bg-zinc-500 hover-and-clickable:bg-zinc-400',
         accent: 'bg-teal-500',
+        primary: 'bg-primary-500',
     }
 
     const option = options[color.value]
@@ -29,9 +32,10 @@ function setFillColor(){
 }
 
 function setTextColor(){
-    const options = {
+    const options: Record<typeof color.value, string> = {
         zinc: 'text-zinc-400 hover:bg-zinc-400/5',
         accent: 'hover:text-teal-400 hover:bg-teal-400/5',
+        primary: 'hover:text-primary-400 hover:bg-primary-400/5',
     }
 
     const option = options[color.value]
@@ -97,10 +101,20 @@ function setRounded(){
 
 watch(rounded, setRounded, { immediate: true })
 
+// clickable
+const to = defineProp<string>('to', {
+    type: String,
+    default: null,
+})
+
 </script>
 
 <template>
-    <button :class="classes">
+    <component
+        :is="to ? RouterLink : 'button'"
+        :to="to"
+        :class="classes"
+    >
         <slot />
-    </button>
+    </component>
 </template>

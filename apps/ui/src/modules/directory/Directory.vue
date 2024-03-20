@@ -6,8 +6,9 @@ const { drive } = useDrive()
 const router = useRouter()
 const route = useRoute()
 
-const path = computed(() => {
-    return route.query.path as string || '/'
+const path = defineProp<string>('path', {
+    type: String,
+    default: '/',
 })
 
 const search = ref('')
@@ -33,8 +34,6 @@ const filteredEntries = computed(() => {
 async function load(){
     entries.value = []
 
-    console.log('Loading', path.value)
-
     const result = await drive.value.list(path.value)
 
     entries.value = orderBy(result, ['type', 'path'], ['asc', 'asc'])
@@ -42,20 +41,6 @@ async function load(){
 
 watch(path, load, { immediate: true })
 
-function onEntryClick(entry: DriveEntry){
-
-    if (entry.type === 'directory') {
-        router.push({
-            name: 'FileExplorerFolder',
-            params: {
-                path: entry.path
-            }
-        })
-        return
-    }
-
-    console.log(entry)
-}
 
 function findIcon(entry: DriveEntry){
     if (entry.type === 'directory') {
@@ -85,27 +70,84 @@ function findIconColor(entry: DriveEntry){
     return 'text-gray-500'
 }
 
-function findRoute(entry: DriveEntry){
-    // fix dots and special characters
-    return `/entries/${encodeURIComponent(entry.path)}`
-}
 
 </script>
 <template>
     <div class="w-full">
-        <div class="w-full bg-body-500">
-            <input
-                v-model="search"
-                class="bg-transparent w-full h-12 px-4 outline-none"
-                placeholder="Search..."
-            >
+        <div class="w-full h-16 border-b border-body-500 flex items-center px-10 gap-x-5">
+            <div class="-ml-3">
+                <is-btn
+                    variant="text"
+                    color="primary"
+                    size="none"
+                    class="h-10 w-10"
+                    to="/entries"
+                >
+                    <is-icon name="heroicons-solid:home" />
+                </is-btn>
+                
+                <is-btn
+                    variant="text"
+                    color="primary"
+                    size="none"
+                    class="h-10 w-10"
+                >
+                    <is-icon name="heroicons-solid:arrow-left-circle" />
+                </is-btn>
+                
+                <is-btn
+                    variant="text"
+                    color="primary"
+                    size="none"
+                    class="h-10 w-10"
+                >
+                    <is-icon name="heroicons-solid:arrow-right-circle" />
+                </is-btn>
+
+                <is-btn
+                    variant="text"
+                    color="primary"
+                    size="none"
+                    class="h-10 w-10"
+                >
+                    <is-icon name="heroicons-solid:refresh" />
+                </is-btn>
+            </div>
+
+            <div class="flex-1">
+                <div
+                    class="text-sm h-10 bg-body-500 w-full px-4 py-2 outline-none rounded flex items-center gap-x-2 text-body-100"
+                >
+                    <is-icon name="heroicons-solid:computer-desktop" />
+
+                    {{ path === '/' ? '/' : `/${path}` }}
+                </div>  
+            </div>
+
+            <div class="w-80">
+                <input
+                    v-model="search"
+                    class="bg-body-500 w-full px-4 py-2 outline-none rounded text-sm h-10 border border-transparent focus:border-primary-500"
+                    placeholder="Search..."
+                >
+            </div>
         </div>
 
         <div class="flex flex-col overflow-y-auto">
             <is-list-item
+                v-if="!filteredEntries.length"
+                class="px-10 justify-center"
+            >
+                <div>
+                    No entries
+                </div>
+            </is-list-item>
+
+            <is-list-item
                 v-for="e in filteredEntries"
                 :key="e.path"
-                :to="findRoute(e)"
+                :to="`/entries/${e.path}`"
+                class="px-10"
             >
                 <is-icon
                     :name="findIcon(e)"
@@ -114,7 +156,7 @@ function findRoute(entry: DriveEntry){
                 />
 
                 <div class="ml-4">
-                    {{ e.path }}
+                    {{ e.name }}
                 </div>
             </is-list-item>
         </div>

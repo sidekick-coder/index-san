@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import type { RouterLinkProps } from 'vue-router';
+import { twMerge } from 'tailwind-merge'
 
 
 // general
 
 const attrs = useAttrs()
+const className = defineProp<string | string[]>("class", {
+    type: String,
+    default: '',
+})
 
 const classMap = ref(new Map<string, string>())
-const classes = computed(() => Array.from(classMap.value.values()).join(' '))
+
+const classes = computed(() => {
+    return twMerge(Array.from(classMap.value.values()).join(' '), className.value)
+})
 
 classMap.value.set('base', 'w-full flex items-center transition-colors')
 
