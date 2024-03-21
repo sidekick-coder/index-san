@@ -27,8 +27,6 @@ const error = ref<string>()
 const result = ref<EntryMiddlewareResult>()
 
 async function setResult(){
-    result.value = undefined
-
     const args = Array.isArray(path.value) ? path.value : [path.value]
 
     const filename = `${args.join('/')}`
@@ -71,16 +69,8 @@ watch(path, load, { immediate: true })
 
 <template>
     <div class="w-full h-full">
-        <div
-            v-if="loading"
-            class="w-full flex items-center justify-center h-full"
-        >
-            Loading...
-        </div>
-            
-            
         <AppPageRender
-            v-else-if="result"
+            v-if="result"
             :name="result.page"
             :page-props="result.props"
         />

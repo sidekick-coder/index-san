@@ -41,25 +41,25 @@
 
 
 /* Firefox */
-* {
-    scrollbar-width: auto;
-    // scrollbar-color: rgb(var(--b-secondary)) rgb(var(--b-primary));
-}
+// * {
+//     scrollbar-width: auto;
+//     // scrollbar-color: rgb(var(--b-secondary)) rgb(var(--b-primary));
+// }
 
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
+// /* Chrome, Edge, and Safari */
+// *::-webkit-scrollbar {
+//     width: 10px;
+//     height: 10px;
+// }
 
-*::-webkit-scrollbar-track {
-    // background: rgb(var(--b-primary));
-}
-::-webkit-scrollbar-corner {
-    // background: rgb(var(--b-primary));
-  }
+// *::-webkit-scrollbar-track {
+//     // background: rgb(var(--b-primary));
+// }
+// ::-webkit-scrollbar-corner {
+//     // background: rgb(var(--b-primary));
+//   }
 
-::-webkit-scrollbar-thumb {
-    // @apply bg-lines/60;
-}
+// ::-webkit-scrollbar-thumb {
+//     // @apply bg-lines/60;
+// }
 

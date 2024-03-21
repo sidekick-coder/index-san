@@ -2,15 +2,18 @@
 import type { DriveEntry } from '@/composables/useDrive';
 import orderBy from 'lodash/orderBy'
 
-const { drive } = useDrive()
-const router = useRouter()
+// general
 const route = useRoute()
 
+// entries
 const path = defineProp<string>('path', {
     type: String,
     default: '/',
 })
 
+const { drive } = useDrive()
+
+const loading = ref(true)
 const search = ref('')
 const entries = ref<DriveEntry[]>([])
 const exclude = {
@@ -32,14 +35,18 @@ const filteredEntries = computed(() => {
 })
 
 async function load(){
+    loading.value = true
+
     entries.value = []
 
     const result = await drive.value.list(path.value)
 
     entries.value = orderBy(result, ['type', 'path'], ['asc', 'asc'])
-}
 
-watch(path, load, { immediate: true })
+    setTimeout(() => {
+        loading.value = false
+    }, 800)
+}
 
 
 function findIcon(entry: DriveEntry){
@@ -71,9 +78,28 @@ function findIconColor(entry: DriveEntry){
 }
 
 
+watch(path, load, { immediate: true })
+
+
+// controls
+const controls = ref({
+    home: false,
+    back: false,
+    forward: false,
+})
+
+function setControls(){
+    controls.value.home = path.value !== '/'
+    controls.value.back = !!history.state.back && path.value !== '/'
+    controls.value.forward = !!history.state.forward
+}
+
+
+watch(() => route.path, setControls, { immediate: true })
+
 </script>
 <template>
-    <div class="w-full">
+    <div class="w-full h-full flex flex-col">
         <div class="w-full h-16 border-b border-body-500 flex items-center px-10 gap-x-5">
             <div class="-ml-3">
                 <is-btn
@@ -81,6 +107,7 @@ function findIconColor(entry: DriveEntry){
                     color="primary"
                     size="none"
                     class="h-10 w-10"
+                    :class="controls.home ? '' : 'text-gray-500 pointer-events-none'"
                     to="/entries"
                 >
                     <is-icon name="heroicons-solid:home" />
@@ -91,6 +118,8 @@ function findIconColor(entry: DriveEntry){
                     color="primary"
                     size="none"
                     class="h-10 w-10"
+                    :class="controls.back ? '' : 'text-gray-500 pointer-events-none'"
+                    @click="$router.back()"
                 >
                     <is-icon name="heroicons-solid:arrow-left-circle" />
                 </is-btn>
@@ -100,6 +129,8 @@ function findIconColor(entry: DriveEntry){
                     color="primary"
                     size="none"
                     class="h-10 w-10"
+                    :class="controls.forward ? '' : 'text-gray-500 pointer-events-none'"
+                    @click="$router.forward()"
                 >
                     <is-icon name="heroicons-solid:arrow-right-circle" />
                 </is-btn>
@@ -109,6 +140,7 @@ function findIconColor(entry: DriveEntry){
                     color="primary"
                     size="none"
                     class="h-10 w-10"
+                    @click="load"
                 >
                     <is-icon name="heroicons-solid:refresh" />
                 </is-btn>
@@ -133,32 +165,39 @@ function findIconColor(entry: DriveEntry){
             </div>
         </div>
 
-        <div class="flex flex-col overflow-y-auto">
-            <is-list-item
-                v-if="!filteredEntries.length"
-                class="px-10 justify-center"
+        <div class="flex-1 overflow-y-auto relative">
+            <div
+                v-if="loading"
+                class="absolute w-full h-1 bg-primary-500 animate-pulse"
+            />
+
+            <div
+                v-else-if="!filteredEntries.length"
+                class="justify-center text-sm absolute size-full flex items-center text-body-100"
             >
                 <div>
                     No entries
                 </div>
-            </is-list-item>
+            </div>
+            
+            <div class="flex flex-col pb-[25rem] relative">
+                <is-list-item
+                    v-for="e in filteredEntries"
+                    :key="e.path"
+                    :to="`/entries/${e.path}`"
+                    class="px-10"
+                >
+                    <is-icon
+                        :name="findIcon(e)"
+                        size="xl"
+                        :class="findIconColor(e)"
+                    />
 
-            <is-list-item
-                v-for="e in filteredEntries"
-                :key="e.path"
-                :to="`/entries/${e.path}`"
-                class="px-10"
-            >
-                <is-icon
-                    :name="findIcon(e)"
-                    size="xl"
-                    :class="findIconColor(e)"
-                />
-
-                <div class="ml-4">
-                    {{ e.name }}
-                </div>
-            </is-list-item>
+                    <div class="ml-4">
+                        {{ e.name }}
+                    </div>
+                </is-list-item>
+            </div>
         </div>
     </div>
 </template>

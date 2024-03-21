@@ -2,12 +2,22 @@ export const monacoEditorEntryMiddleware = defineEntryMiddleware({
     order: 100,
     handle: async ({ entry }) => {
         
-        if (['txt'].some(ext => entry.path.endsWith(ext))) {
+        if (entry.path.endsWith('.txt')) {
             return {
                 page: 'monaco-editor',
                 props: {
                     path: entry.path,
                     language: 'plaintext',
+                }
+            }
+        }
+        
+        if (entry.path.endsWith('.md')) {
+            return {
+                page: 'monaco-editor',
+                props: {
+                    path: entry.path,
+                    language: 'markdown',
                 }
             }
         }

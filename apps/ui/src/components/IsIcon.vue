@@ -1,25 +1,18 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-
-// const props = defineProps({
-//     name: {
-//         type: String,
-//         required: true,
-//     },
-//     size: {
-//         type: String,
-//         default: null,
-//     },
-// })
+import { twMerge } from 'tailwind-merge'
 
 // general
-const parentClasses = defineProp<any>('class', {
-    type: [String, Array, Object],
+const className = defineProp<string | string[]>("class", {
+    type: String,
     default: '',
 })
 
 const classMap = ref(new Map<string, string>())
-const classes = computed(() => Array.from(classMap.value.values()).join(' '))
+
+const classes = computed(() => {
+    return twMerge(Array.from(classMap.value.values()).join(' '), className.value)
+})
 
 classMap.value.set('base', 'block')
 
@@ -36,7 +29,7 @@ const size = defineProp<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'>('size', {
 })
 
 function setSize(){
-    const options = {
+    const options: Record<typeof size.value, string> = {
         xs: 'text-xs',
         sm: 'text-sm',
         md: 'text-base',
@@ -53,7 +46,8 @@ function setSize(){
 watch(size, setSize, { immediate: true })
 </script>
 <template>
-    <span :class="[classes, parentClasses]">
-        <Icon :icon="name" />
-    </span>
+    <Icon
+        :icon="name"
+        :class="classes"
+    />
 </template>

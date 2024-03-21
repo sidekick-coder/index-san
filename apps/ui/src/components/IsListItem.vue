@@ -47,15 +47,15 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'text',
 })
 
-const color = defineProp<'zinc' | 'accent'>('color', {
+const color = defineProp<'body' | 'accent'>('color', {
     type: String,
-    default: 'zinc',
+    default: 'body',
 })
 
 function setTextColor(){
     const options = {
         accent: 'text-teal-500 hover-and-clickable:bg-teal-500 hover-and-clickable:text-teal-500 [&.router-link-active]:bg-teal-500/5',
-        zinc: 'text-body-50 hover-and-clickable:bg-body-300/5 hover-and-clickable:text-body-0 [&.router-link-active]:bg-zinc-300/5',
+        body: 'text-body-50 hover-and-clickable:bg-body-600 [&.router-link-active]:bg-body-300/5',
     }
 
     const option = options[color.value]
@@ -66,7 +66,7 @@ function setTextColor(){
 function setFillColor(){
     const options = {
         accent: 'bg-teal-500 hover-and-clickable:bg-teal-400 [&.router-link-active]:bg-teal-400',
-        zinc: 'bg-zinc-600 hover-and-clickable:bg-zinc-500 [&.router-link-active]:bg-zinc-500',
+        body: 'bg-body-600 hover-and-clickable:bg-body-500 [&.router-link-active]:bg-body-500',
     }
 
     const option = options[color.value]
