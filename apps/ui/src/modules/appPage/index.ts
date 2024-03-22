@@ -1,7 +1,7 @@
 export default defineAppModule({
     setup({ addRoute }) {
         addRoute({
-            path: '/hephaestus-editor',
+            path: '/app-page/:name',
             component: () => import('./pages/AppPage.vue'),
         })
     }

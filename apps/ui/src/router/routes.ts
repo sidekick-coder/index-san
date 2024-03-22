@@ -13,17 +13,11 @@ const routes: RouteRecordRaw[] = [
             layout: 'empty'
         },
     },
-    {
-        path: '/entries/:path(.*)*',
-        name: 'EntryProvider',
-        props: true,
-        component: () => import('@/pages/EntryProvider/EntryProvider.vue'),
-    },
     // {
-    //     path: '/app-pages/:name',
-    //     name: 'AppPageProvider',
+    //     path: '/entries/:path(.*)*',
+    //     name: 'EntryProvider',
     //     props: true,
-    //     component: () => import('@/pages/AppPage/AppPage.vue'),
+    //     component: () => import('@/pages/EntryProvider/EntryProvider.vue'),
     // },
     {
         path: '/cheat-sheet',

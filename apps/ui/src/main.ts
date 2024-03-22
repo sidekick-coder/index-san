@@ -7,7 +7,8 @@ import App from './App.vue'
 import router from '@/router/router'
 
 import { vVisible } from './directives/vVisible'
-import type { AppModule } from './composables/defineAppModule'
+import type { AppModule, AppModuleSetupContext } from './composables/defineAppModule'
+import type { RouteRecordRaw } from 'vue-router'
 
 async function getPlugins() {
     const files = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
@@ -45,8 +46,6 @@ async function getAppModules() {
 async function createApp() {
     const app = createVueApp(App)
 
-    app.use(router)
-
     app.directive('visible', vVisible)
     
     const plugins = await getPlugins()
@@ -64,13 +63,16 @@ async function createApp() {
     for await (const appModule of appModules) {
         console.debug(`[app] module ${appModule.name} loaded`)
 
-        if (appModule.setup) {
-            await appModule.setup({
-                router,
-                addRoute: router.addRoute,
-            })
-        }
+        await appModule.setup({
+            addRoute: r => {
+                console.debug(`[app] module ${appModule.name} added route ${r.path}`)
+    
+                router.addRoute(r)
+            }
+        })
     }
+
+    app.use(router)
 
     return app
 }

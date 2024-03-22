@@ -1,8 +1,7 @@
-import type { Router } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 
 export interface AppModuleSetupContext {
-    router: Router
-    addRoute: Router['addRoute']
+    addRoute: (route: RouteRecordRaw) => void
 }
 
 export interface AppModule {    
