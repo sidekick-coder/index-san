@@ -7,8 +7,9 @@ import App from './App.vue'
 import router from '@/router/router'
 
 import { vVisible } from './directives/vVisible'
-import type { AppModule, AppModuleSetupContext } from './composables/defineAppModule'
-import type { RouteRecordRaw } from 'vue-router'
+import type { AppModule } from './composables/defineAppModule'
+import type { AppPage } from './composables/defineAppPage'
+import type { EntryMiddleware } from './composables/defineEntryMiddleware'
 
 async function getPlugins() {
     const files = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
@@ -46,9 +47,13 @@ async function getAppModules() {
 async function createApp() {
     const app = createVueApp(App)
 
-    app.directive('visible', vVisible)
+    const appPages = useAppPages()
+    const entryMiddlewares = useEntryMiddlewares()
     
     const plugins = await getPlugins()
+    const appModules = await getAppModules()
+
+    app.directive('visible', vVisible)    
 
     for await (const plugin of plugins) {
         console.debug(`[app] plugin ${plugin.name} loaded`)
@@ -58,12 +63,23 @@ async function createApp() {
         }
     }
 
-    const appModules = await getAppModules()
 
     for await (const appModule of appModules) {
         console.debug(`[app] module ${appModule.name} loaded`)
 
         await appModule.setup({
+            addAppPage: p => {
+                console.debug(`[app] module ${appModule.name} added app page ${p.name}`)
+
+                appPages.value.push(p)
+            },
+
+            addEntryMiddleware: m => {
+                console.debug(`[app] module ${appModule.name} added entry middleware`)
+
+                entryMiddlewares.value.push(m)
+            },
+
             addRoute: r => {
                 console.debug(`[app] module ${appModule.name} added route ${r.path}`)
     

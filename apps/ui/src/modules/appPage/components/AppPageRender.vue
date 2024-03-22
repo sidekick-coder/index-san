@@ -15,11 +15,7 @@ const pageProps = defineProp<Record<string, any>>('pageProps', {
     default: () => ({})
 })
 
-const pages = shallowRef<AppPage[]>([
-    directoryAppPage,
-    monacoEditorAppPage,
-    hephaestusAppPage
-])
+const pages = useAppPages()
 
 const current = computed(() => pages.value.find(p => p.name === name.value))
 

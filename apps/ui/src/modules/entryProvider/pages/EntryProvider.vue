@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { EntryMiddleware, EntryMiddlewareResult } from '@/composables/defineEntryMiddleware'
-import { directoryEntryMiddleware } from '@/modules/directory/directoryEntryMiddleware';
-import { monacoEditorEntryMiddleware } from '@/modules/monaco/monacoEditorEntryMiddleware';
+import type { EntryMiddlewareResult } from '@/composables/defineEntryMiddleware'
 import AppPageRender from '@/modules/appPage/components/AppPageRender.vue'
 
 import orderBy from 'lodash/orderBy'
@@ -9,13 +7,8 @@ import orderBy from 'lodash/orderBy'
 // general
 const { drive } = useDrive()
 
-// middlewares
-const middlewares = ref<EntryMiddleware[]>([
-    directoryEntryMiddleware,
-    monacoEditorEntryMiddleware
-])
-
 // load
+const middlewares = useEntryMiddlewares()
 
 const path = defineProp<string | string[]>('path', {
     type: [String, Array],
