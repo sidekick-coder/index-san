@@ -56,33 +56,31 @@ npm run dev
     ├── useLocalStorage.ts
 ```
 
-### Pages
+### Modules
 
-**Description:** Pages lives under the `pages` folder, the page should be a folder, and they are registered in the app router.
+**Description:** Modules lives under the `modules` folder and they can have their own components, composables, pages, services, etc.
 
-**filename convention:** The filename of the page should be in `PascalCase` and must have the prefix `Page`.
+**filename convention:**
 
-**Rules:**
-
-- The page should be a folder
-- The page folder should have a `[PageName].vue` file inside
-- Page local components should be inside the page `components` folder and should have the prefix of the page name
-- Page local composables of the page should be inside the page `composables` folder
+- module: Modules folder name must be in should be in `camelCase`
+- components: The filename of the component should be in `PascalCase` and must have the prefix of the module name. Example: `ModuleNameComponentName.vue`
+- composables: The filename of the composable should be in `camelCase` and they not need to have the prefix of the module name.
 
 **Example:**
     
 ```
-    pages/
-    ├── HomePage/
-    │   ├── HomePage.vue
+    modules/
+    ├── myModule/
     |   ├── composables/
-    |   |   ├── useHomePage.ts
-    |   |   └── useHomePage.spec.ts
-    │   └── components/
-    │       ├── HomePageHeader.vue
-    │       └── HomePageFooter.vue
-    ├── AboutPage/
-    │   ├── AboutPage.vue
-    │   └── components/
-    │       ├── AboutPageHeader.vue
+    |   |   ├── useModuleComposable.ts
+    |   |   └── useAnotherModuleComposable.spec.ts
+    |   ├── components/
+    |   |   ├── MyModuleComponent.vue
+    |   |   └── AnotherModuleComponent.vue
+    |   ├── pages/
+    |   |   ├── MyModulePage.vue
+    |   |   └── AnotherModulePage.vue
+    |   ├── services/
+    |   |   ├── myModuleService.ts
+    |   |   └── anotherModuleService.ts
 ```
