@@ -75,8 +75,6 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
             }
         }
 
-        console.log('get', path)
-
         
         const allParent = await list(dirname(path))
         

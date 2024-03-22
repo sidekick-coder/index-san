@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import MonacoEditor from './components/MonacoEditor.vue'
+import MonacoEditor from './MonacoEditor.vue'
 
 // general
 const path = defineProp<string>('path', {

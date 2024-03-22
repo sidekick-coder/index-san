@@ -2,7 +2,7 @@
 import type { EntryMiddleware, EntryMiddlewareResult } from '@/composables/defineEntryMiddleware'
 import { directoryEntryMiddleware } from '@/modules/directory/directoryEntryMiddleware';
 import { monacoEditorEntryMiddleware } from '@/modules/monaco/monacoEditorEntryMiddleware';
-import AppPageRender from '@/pages/AppPage/AppPageRender.vue'
+import AppPageRender from '@/modules/appPage/components/AppPageRender.vue'
 
 import orderBy from 'lodash/orderBy'
 

@@ -19,12 +19,12 @@ const routes: RouteRecordRaw[] = [
         props: true,
         component: () => import('@/pages/EntryProvider/EntryProvider.vue'),
     },
-    {
-        path: '/app-pages/:name',
-        name: 'AppPageProvider',
-        props: true,
-        component: () => import('@/pages/AppPage/AppPage.vue'),
-    },
+    // {
+    //     path: '/app-pages/:name',
+    //     name: 'AppPageProvider',
+    //     props: true,
+    //     component: () => import('@/pages/AppPage/AppPage.vue'),
+    // },
     {
         path: '/cheat-sheet',
         name: 'CheatSheet',

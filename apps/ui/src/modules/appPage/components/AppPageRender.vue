@@ -2,6 +2,7 @@
 
 import type { AppPage } from '@/composables/defineAppPage'
 import { directoryAppPage } from '@/modules/directory/directoryAppPage';
+import { hephaestusAppPage } from '@/modules/hephaestus/hephaestusAppPage';
 import { monacoEditorAppPage } from '@/modules/monaco/monacoEditorAppPage';
 
 const name = defineProp('name', {
@@ -16,7 +17,8 @@ const pageProps = defineProp<Record<string, any>>('pageProps', {
 
 const pages = shallowRef<AppPage[]>([
     directoryAppPage,
-    monacoEditorAppPage
+    monacoEditorAppPage,
+    hephaestusAppPage
 ])
 
 const current = computed(() => pages.value.find(p => p.name === name.value))

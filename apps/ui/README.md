@@ -66,6 +66,10 @@ npm run dev
 - components: The filename of the component should be in `PascalCase` and must have the prefix of the module name. Example: `ModuleNameComponentName.vue`
 - composables: The filename of the composable should be in `camelCase` and they not need to have the prefix of the module name.
 
+**Rules**
+
+- Module should have a `index.ts` with a default export using `defineAppModule` function to register the module in the application.
+
 **Example:**
     
 ```
