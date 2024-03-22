@@ -1,4 +1,4 @@
-import Directory from "./Directory.vue"
+import Directory from "./components/Directory.vue"
 
 export const directoryAppPage = defineAppPage({
     name: 'directory',

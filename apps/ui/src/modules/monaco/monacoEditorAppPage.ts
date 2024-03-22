@@ -1,4 +1,4 @@
-import MonacoEditorAppPage from "./MonacoEditorAppPage.vue"
+import MonacoEditorAppPage from "./components/MonacoEditorAppPage.vue"
 
 export const monacoEditorAppPage = defineAppPage({
     name: 'monaco-editor',
