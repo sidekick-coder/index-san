@@ -38,7 +38,8 @@
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.1",
     "vue-wind": "^0.1.3",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "hephaestus": "*"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",
