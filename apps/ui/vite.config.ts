@@ -7,6 +7,9 @@ import AutoImport from 'unplugin-auto-import/vite'
 import DefineProp from '@vue-macros/define-prop/vite'
 
 export default defineConfig({
+    optimizeDeps: {
+        exclude: ['hephaestus']
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
