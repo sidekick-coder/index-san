@@ -146,4 +146,5 @@ export default {
         notEditWhenUseVariable: 'You can not edit this block because it uses a variable',
     },
     fileExplorer: 'File explorer',
+    saving: 'Saving',
 }

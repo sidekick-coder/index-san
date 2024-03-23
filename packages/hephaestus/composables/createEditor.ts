@@ -1,4 +1,5 @@
-import { MarkdownNodeArray, MarkdownParser } from '@language-kit/markdown'
+import { MarkdownNode, MarkdownNodeArray, MarkdownParser } from '@language-kit/markdown'
+import { ref, watch } from 'vue'
 
 export interface EditorObserver {
     (args: any): void
@@ -6,37 +7,19 @@ export interface EditorObserver {
 
 export function createEditor(){
     const parser = new MarkdownParser()
-    const observers = new Map<string, EditorObserver[]>()
-    
-    const state = {
-        text: '',
-        nodes: new MarkdownNodeArray(),
+
+    const text = ref('')
+    const nodes = ref(new MarkdownNodeArray())
+
+    function setNodes(){
+        nodes.value = parser.toNodes(text.value)
     }
 
-    function getText(){
-        return state.text
-    }
-
-    function setText(text: string){
-        state.text = text
-    }
-
-    function onUpdate(event: 'text' | 'nodes', cb: EditorObserver){
-        const all = observers.get(event) || []
-
-        all.push(cb)
-
-        observers.set(event, all)
-    }
-
-
+    watch(text, setNodes)
 
     return {
-        state,
-        parser,
-
-        getText,
-        setText,
-        onUpdate
+        text,
+        nodes,
+        parser
     }
 }

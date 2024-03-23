@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
+import HephaestusEditor from 'hephaestus/components/Editor.vue'
 import { createEditor } from 'hephaestus/composables/createEditor'
 
 // general
@@ -23,23 +24,6 @@ async function load(){
 }
 
 watch(path, load, { immediate: true })
-
-// editor
-const editor = createEditor()
-
-const text = ref('')
-
-function setEditorText(){
-    if (contents.value) {
-        text.value = decode(contents.value)
-    }
-}
-
-watch(contents, setEditorText)
-
-editor.onUpdate('text', (value: string) => {
-    text.value = value
-})
 
 // mode
 const loadingMode = ref(false)
@@ -73,11 +57,32 @@ function setMode(value: 'text' | 'blocks' | 'split'){
     }, 500)
 }
 
+// editor
+const saving = ref(false)
+const { text, nodes } = createEditor()
+
+function setEditorText(){
+    if (contents.value) {
+        text.value = decode(contents.value)
+    }
+}
+
+async function save(){
+    saving.value = true
+
+    await drive.write(path.value, text.value)
+
+    setTimeout(() => {
+        saving.value = false
+    }, 500)
+}
+
+watch(contents, setEditorText)
 </script>
 
 <template>
     <div class="flex flex-col h-full">
-        <div class="flex-1 flex">
+        <div class="flex h-[calc(100%-2rem)]">
             <div
                 v-if="loadingMode"
                 class="flex items-center justify-center size-full"
@@ -96,6 +101,7 @@ function setMode(value: 'text' | 'blocks' | 'split'){
                     <MonacoEditor
                         v-model="text"
                         language="markdown"
+                        @keydown.ctrl.s.prevent="save"
                     />
                 </div>
             
@@ -103,7 +109,7 @@ function setMode(value: 'text' | 'blocks' | 'split'){
                     v-if="mode === 'blocks' || mode === 'split'"
                     class="flex-1"
                 >
-                    blocks
+                    <HephaestusEditor v-model="nodes" />
                 </div>
             </template>
         </div>
@@ -123,6 +129,22 @@ function setMode(value: 'text' | 'blocks' | 'split'){
                     />
 
                     {{ m.label }}
+                </div>
+
+                <div class="flex-1" />
+
+                <div
+                    v-if="saving"
+                    class="px-2 flex items-center "
+                >
+                    <div class="mr-2">
+                        {{ $t('saving') }}
+                    </div>
+
+                    <is-icon
+                        name="heroicons-solid:refresh"
+                        class="animate-spin text-xs"
+                    />
                 </div>
             </div>
         </div>
