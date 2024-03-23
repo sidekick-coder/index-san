@@ -4,25 +4,33 @@
 
 <img src="./logo.ico" height="200" />
 
-Notes app & files management app (under development)
+Notes app + Filesystem API
 
-[Buy me a coffee](https://github.com/sponsors/zzhenryquezz) -
-[Downloads](https://github.com/sidekick-coder/index-san/releases) -
-[Docs](https://index-san.sidekick-coder.com/)
+[App](https://app.index-san.dev) -
+[Docs](https://index-san.dev) -
+[Support](https://github.com/sponsors/zzhenryquezz)
 
 </div>
 
-##  Development status
-
-The current status is an alpha version
-
-So the current features can have huge changes in implementation or be removed later.
-
 ## About
 
-The idea is have something like notion but using files and folders instead of an usual database.
+This app is a Web application using the latest browser API for folders & files manipulation, the [FileSystem API](https://developer.chrome.com/docs/capabilities/web-apis/file-system-access).
 
-This is useful because you can link your notes/tasks to things that normally are not possible like PSD and MP4 files.
+The goal of this project is to be a modern **notes + filesystem app**, with tools to manipulate and present data in a flexible way to allow users to manipulate and present data in a way that is not possible with traditional notes apps.
+
+Examples of what we would like to achieve:
+
+- Read a csv file and a line chart
+- Read multiple files with different formats and show they in a unique line chart.
+- Press a button and make requests to an bunch of APIs at same time.
+- Run scripts from time to time to update data (like a queue).
+- Have a internal database that can auto-update with data from an API, like an stocks API.
+
+You can test the app right now if you wish, there is no need for installation or sign-up
+
+[https://app.index-san.dev](https://app.index-san.dev)
+
+> warning: The app is in alpha version, so it can have bugs and some features can be missing or not working properly.
 
 ## Setup
 
@@ -33,22 +41,7 @@ npm install // install root dependencies
 
 npm install -ws // install packages dependencies
 
-npm run dev // Run electron app
+npm -w ui run dev // Run ui vue app
 ```
-
-## FAQ
-
-### What is the state of project?
-
-Right now we are in a state of alpha, the app have all basic features implemented, but have with some bugs here and there, and also some parts need improvements!
-
-
-### Why browsers, windows, macOS or antivirus complains about the app download/installation?
-
-Both Windows and macOS apps need a payed certificate to avoid this warnings, but buy one is a very expensive investments that I can't do right now!
-
-### Why app do not auto-update?
-
-Same reason as before, to add self-update to the app it is required to have a payed certificate.
 
 
