@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import AppPageRender from './AppPageRender.vue';
+import AppPageRender from '@/modules/appPage/components/AppPageRender.vue';
 
 const route = useRoute();
 

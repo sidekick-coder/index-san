@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-
-import type { AppPage } from '@/composables/defineAppPage'
-import { directoryAppPage } from '@/modules/directory/directoryAppPage';
-import { hephaestusAppPage } from '@/modules/hephaestus/hephaestusAppPage';
-import { monacoEditorAppPage } from '@/modules/monaco/monacoEditorAppPage';
-
 const name = defineProp('name', {
     type: String,
     required: true
