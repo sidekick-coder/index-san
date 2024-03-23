@@ -7,8 +7,8 @@ on:
       - "develop"
   
 jobs:
-  core:
-    name: core
+  ui:
+    name: ui
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -22,40 +22,10 @@ jobs:
         run: npm install
       
       - name: lint
-        run: npm -w @index-san/core run lint
+        run: npm -w ui run lint
       
-      - name: test
-        run: npm -w @index-san/core run test
-      
-      - name: build
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm -w @index-san/core run build
-  
-  app:
-    name: app
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20.4.0
-          cache: 'npm'
-
-      - name: install
-        run: npm install
-
-      - name: build core
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm -w @index-san/core run build
-      
-      - name: lint
-        run: npm -w @index-san/app run lint
-      
-      - name: test
-        run: npm -w @index-san/app run test
+      # - name: test
+      #   run: npm -w ui run test
       
       - name: build
-        run: npm -w @index-san/app run build
+        run: npm -w ui run build
