@@ -1,0 +1,65 @@
+// Vue transitions
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: all 0.1s ease;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+    transform: translateY(-10%);
+    opacity: 0;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: all 0.1s ease;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+    transform: translateX(10%);
+    opacity: 0;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+// Scrollbar
+
+
+/* Firefox */
+// * {
+//     scrollbar-width: auto;
+//     // scrollbar-color: rgb(var(--b-secondary)) rgb(var(--b-primary));
+// }
+
+// /* Chrome, Edge, and Safari */
+// *::-webkit-scrollbar {
+//     width: 10px;
+//     height: 10px;
+// }
+
+// *::-webkit-scrollbar-track {
+//     // background: rgb(var(--b-primary));
+// }
+// ::-webkit-scrollbar-corner {
+//     // background: rgb(var(--b-primary));
+//   }
+
+// ::-webkit-scrollbar-thumb {
+//     // @apply bg-lines/60;
+// }
+
