@@ -12,6 +12,10 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         return args === '' ? '/' : args
     }
 
+    const basename = (path: string) => {
+        return path.split('/').pop() || '/'
+    }
+
     const getHandleByPath = async (path: string) => {
         if (path === '/') {
             return handle
@@ -74,7 +78,6 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
                 type: 'directory'
             }
         }
-
         
         const allParent = await list(dirname(path))
         
@@ -84,7 +87,10 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const read: Drive['read'] = async (path) => {
-        const fileHandle = await handle.getFileHandle(path, {
+
+        const folderHandle = await getHandleByPath(dirname(path))
+
+        const fileHandle = await folderHandle.getFileHandle(basename(path), {
             create: false
         })
 
@@ -98,8 +104,10 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const write: Drive['write'] = async (path, content) => {
-        const fileHandle = await handle.getFileHandle(path, {
-            create: true
+        const folderHandle = await getHandleByPath(dirname(path))
+
+        const fileHandle = await folderHandle.getFileHandle(basename(path), {
+            create: false
         })
 
         const writable = await fileHandle.createWritable()
