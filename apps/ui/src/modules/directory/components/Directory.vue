@@ -39,7 +39,7 @@ async function load(){
 
     entries.value = []
 
-    const result = await drive.value.list(path.value)
+    const result = await drive.list(path.value)
 
     entries.value = orderBy(result, ['type', 'path'], ['asc', 'asc'])
 

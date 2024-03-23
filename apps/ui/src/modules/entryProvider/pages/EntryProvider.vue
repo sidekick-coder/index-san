@@ -24,7 +24,7 @@ async function setResult(){
 
     const filename = `${args.join('/')}`
 
-    const entry = await drive.value.get(filename === '' ? '/' : filename)
+    const entry = await drive.get(filename === '' ? '/' : filename)
 
     if (!entry) {
         throw `Can not find entry: ${filename}`

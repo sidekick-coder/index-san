@@ -31,7 +31,7 @@ export function useDrive(){
     }
 
     return {
-        drive,
+        drive: unref(drive),
         isLoaded,
         setDrive,
         encode,

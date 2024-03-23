@@ -19,7 +19,7 @@ const { drive, encode, decode } = useDrive()
 const text = ref('')
 
 async function load(){
-    const content = await drive.value.read(path.value)
+    const content = await drive.read(path.value)
 
     if (content) {
         text.value = decode(content)
@@ -30,7 +30,7 @@ async function load(){
 watch(path, load, { immediate: true })
 
 async function save(){
-    await drive.value.write(path.value, text.value)
+    await drive.write(path.value, text.value)
 
 }
 </script>
