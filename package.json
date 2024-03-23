@@ -1,6 +1,6 @@
 {
     "name": "index-san",
-    "version": "0.10.1",
+    "version": "0.10.2",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
         "preversion": "npm run lint && npm run test",
