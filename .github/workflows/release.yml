@@ -1,0 +1,31 @@
+name: Release
+
+on: 
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: install 
+        run: npm install
+      
+      - name: changelog
+        run: npm run make:changelog
+
+      - uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "CHANGELOG.md"
+          draft: true

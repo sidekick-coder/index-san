@@ -3,12 +3,11 @@
     "version": "0.9.13-alpha",
     "description": "A CRUD maker based in filesystem",
     "scripts": {
+        "preversion": "npm run lint && npm run test",
         "lint": "npm -w ui run lint",
         "test": "echo \"Error: no test specified\"",
         "dev": "npm -w @index-san/electron run dev",
         "build": "node scripts/build.js",
-        "make:version": "node scripts/version.js",
-        "make:use-case": "node scripts/new-use-case",
         "make:changelog": "node scripts/changelog",
         "changelogen": "changelogen",
         "prepare": "husky install"
