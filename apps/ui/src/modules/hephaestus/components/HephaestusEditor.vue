@@ -3,6 +3,8 @@ import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 import HephaestusEditor from 'hephaestus/components/Editor.vue'
 import { createEditor } from 'hephaestus/composables/createEditor'
 
+import IsBtn from '@/components/IsBtn.vue'
+
 // general
 const tm = useI18n()
 const { drive, decode } = useDrive()
@@ -61,6 +63,14 @@ function setMode(value: 'text' | 'blocks' | 'split'){
 const saving = ref(false)
 const { text, nodes } = createEditor()
 
+const editorComponents = [
+    {
+        name: 'button',
+        component: IsBtn,
+        icon: 'heroicons-solid:academic-cap',
+    }
+]
+
 function setEditorText(){
     if (contents.value) {
         text.value = decode(contents.value)
@@ -110,7 +120,10 @@ watch(contents, setEditorText)
                     v-if="mode === 'blocks' || mode === 'split'"
                     class="flex-1"
                 >
-                    <HephaestusEditor v-model="nodes" />
+                    <HephaestusEditor
+                        v-model="nodes"
+                        :components="editorComponents"
+                    />
                 </div>
             </template>
         </div>
@@ -121,7 +134,7 @@ watch(contents, setEditorText)
                     v-for="m in modes"
                     :key="m.id"
                     class="px-2 hover:bg-body-800 cursor-pointer flex items-center"
-                    :class="mode === m.id ? 'text-primary-800' : ''"
+                    :class="mode === m.id ? 'text-primary-500' : ''"
                     @click="setMode(m.id)"
                 >
                     <is-icon

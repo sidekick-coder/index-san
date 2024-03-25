@@ -23,7 +23,7 @@ function setFillColor(){
     const options: Record<typeof color.value, string> = {
         zinc: 'bg-zinc-500 hover-and-clickable:bg-zinc-400',
         accent: 'bg-teal-500',
-        primary: 'bg-primary-500',
+        primary: 'bg-primary-500 text-body-500',
     }
 
     const option = options[color.value]

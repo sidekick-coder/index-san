@@ -72,7 +72,7 @@ export default {
             ],
             // normal component block
             [
-                /^\s*::\s*(button|card)?\s*/,
+                /^\s*::\s*\w+\s*/,
                 {
                     token: 'variable.source',
                     next: 'defaultComponent',

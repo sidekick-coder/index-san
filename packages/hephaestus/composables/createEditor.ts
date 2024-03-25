@@ -1,6 +1,8 @@
 import { MarkdownNode, MarkdownNodeArray, MarkdownParser } from '@language-kit/markdown'
 import { ref, watch } from 'vue'
 
+import debounce from 'lodash/debounce'
+
 export interface EditorObserver {
     (args: any): void
 }
@@ -15,7 +17,7 @@ export function createEditor(){
         nodes.value = parser.toNodes(text.value)
     }
 
-    watch(text, setNodes)
+    watch(text, debounce(setNodes, 1000))
 
     return {
         text,

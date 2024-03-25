@@ -122,7 +122,7 @@ monaco.editor.defineTheme('default', {
             token: 'invalid.deprecated',
         },
         {
-            foreground: '149249',
+            foreground: '#1887e3',
             token: 'variable.source',
         },
         {

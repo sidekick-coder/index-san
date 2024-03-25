@@ -56,6 +56,7 @@ function onItemClick(e: MouseEvent, to: string) {
                         :to="link.to"
                         v-bind="attrs"
                         justify="center"
+                        :class="($route.path.startsWith(link.to) || $route.path === link.to) ? '!text-primary-500 bg-primary-900/25' : ''"
                         @click="e => onItemClick(e, link.to)"
                     >
                         <is-icon

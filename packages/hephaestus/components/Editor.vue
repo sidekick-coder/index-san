@@ -4,6 +4,12 @@ import { TokenType } from '@language-kit/lexer'
 
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
+import BlockComponent from './BlockComponent.vue'
+
+const components = defineProp('components', {
+    type: Array,
+    default: () => ([])
+})
 
 const nodes = defineModel<MarkdownNode[]>({
     type: Array,
@@ -30,11 +36,18 @@ function isEmpty(node: MarkdownNode) {
 
         <template v-for="node in nodes">
 
-            <div v-if="isEmpty(node)" class="hidden">asdas</div>
+            <div v-if="isEmpty(node)" class="hidden"></div>
 
             <BlockParagraph
                 v-else-if="node.is('Paragraph')"
                 :model-value="node"
+                v-bind="blockAttrs"
+            />
+
+            <BlockComponent
+                v-else-if="node.is('Component')"
+                :model-value="node"
+                :components="components"
                 v-bind="blockAttrs"
             />
 
