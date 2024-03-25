@@ -2,6 +2,7 @@
 
 // general
 const route = useRoute()
+const router = useRouter()
 
 // drawer
 const drawer = defineModel('drawer', {
@@ -28,10 +29,13 @@ const links = [
     }
 ]
 
-function onItemClick(e: MouseEvent, to: string) {
-    if (to === route.path) {
+function onItemClick(to: string) {
+    if (to === route.path || route.path.startsWith(to)) {
         drawer.value = !drawer.value
+        return
     }
+
+    router.push(to)
 }
 
 </script>
@@ -41,7 +45,7 @@ function onItemClick(e: MouseEvent, to: string) {
         <div class="flex flex-col h-full">
             <is-list-item
                 justify="center"
-                @click="drawer = !drawer"
+                to="/entries"
             >
                 <is-logo class="w-5 h-5" />
             </is-list-item>
@@ -53,11 +57,10 @@ function onItemClick(e: MouseEvent, to: string) {
             >
                 <template #activator="{ attrs }">
                     <is-list-item
-                        :to="link.to"
                         v-bind="attrs"
                         justify="center"
                         :class="($route.path.startsWith(link.to) || $route.path === link.to) ? '!text-primary-500 bg-primary-900/25' : ''"
-                        @click="e => onItemClick(e, link.to)"
+                        @click="onItemClick(link.to)"
                     >
                         <is-icon
                             :name="link.icon"

@@ -8,24 +8,20 @@ const language = defineProp<string>('language', {
     default: 'plaintext',
 })
 
-const hideLineNumbers = defineProp<boolean>('hideLineNumbers', {
-    type: Boolean,
-    default: false,
-})
-
 const model = defineModel({
     type: String,
     default: ''
 })
 
 const root = ref<HTMLElement>()
+const editorRef = ref<HTMLElement>()
 
 let editor: ReturnType<typeof createEditor>
 
-onMounted(() => {
-    if (!root.value) return
+function setEditor(){
+    if (!editorRef.value) return
 
-    editor = createEditor(root.value!, {
+    editor = createEditor(editorRef.value!, {
         value: model.value,
         language: language.value,
         overviewRulerBorder: false,
@@ -44,7 +40,9 @@ onMounted(() => {
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
-})
+}
+
+onMounted(setEditor)
 
 onUnmounted(() => {
     editor.getModel()?.dispose()
@@ -63,6 +61,11 @@ watch(model,
 <template>
     <div
         ref="root"
-        class="w-full h-full"
-    />
+        class="w-full h-full relative"
+    >
+        <div
+            ref="editorRef"
+            class="w-full h-full absolute"
+        />
+    </div>
 </template>
