@@ -96,11 +96,12 @@ watch(contents, setEditorText)
             <template v-else>
                 <div
                     v-if="mode === 'text' || mode === 'split'"
-                    class="flex-1"
+                    class="flex-1 border-r border-body-500"
                 >
                     <MonacoEditor
                         v-model="text"
-                        language="markdown"
+                        language="hephaestus"
+                        hide-line-numbers
                         @keydown.ctrl.s.prevent="save"
                     />
                 </div>
