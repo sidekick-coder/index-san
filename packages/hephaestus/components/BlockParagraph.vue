@@ -3,10 +3,16 @@ import { MarkdownNodeParagraph } from '@language-kit/markdown';
 import { computed, ref, watch } from 'vue';
 
 import BlockBase from './BlockBase.vue'
+import BlockRenderer from './BlockRenderer.vue'
 
 const node = defineModel<MarkdownNodeParagraph>({
     type: Object,
     required: true,
+})
+
+const context = defineProp<any>('context', {
+    type: Object,
+    default: () => ({})
 })
 
 // content
@@ -23,6 +29,6 @@ watch(node, setContent, { immediate: true })
 
 <template>    
     <BlockBase icon="dashicons:editor-paragraph">
-        <div v-html="content"></div>
+        <BlockRenderer :context="context" :model-value="content" />
     </BlockBase>
 </template>

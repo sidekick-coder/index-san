@@ -74,10 +74,13 @@ watch(node, setComponent, { immediate: true })
 </script>
 
 <template>    
-    <BlockBase :icon="icon">
-        <div v-if="loading">Loading</div>
+    <BlockBase
+        :icon="icon"
+        :class="loading ? 'animate-pulse' : ''"
+        class="relative"
+    >
 
-        <component v-else-if="instance" :is="instance"></component>
+        <component v-if="instance" :is="instance"></component>
 
         <div v-else>Component not found</div>
     </BlockBase>
