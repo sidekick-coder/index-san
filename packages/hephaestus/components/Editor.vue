@@ -1,10 +1,15 @@
 <script lang="ts" setup>
 import { MarkdownNode, MarkdownNodeComponent } from '@language-kit/markdown'
 import { ref, watch } from 'vue';
+import { HecateCompiler } from 'hecate/composables/createCompiler'
 
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
 import BlockComponent from './BlockComponent.vue'
+
+import BlockError from './BlockError.vue'
+import HVariable from '../../hecate/nodes/HVariable';
+import HFunction from '../../hecate/nodes/HFunction';
 
 const components = defineProp('components', {
     type: Array,
@@ -19,6 +24,11 @@ const nodes = defineModel<MarkdownNode[]>({
 const blockAttrs = defineProp<any>('blockAttrs', {
     type: Object,
     default: () => ({})
+})
+
+const compiler = defineProp<HecateCompiler>('compiler', {
+    type: Object,
+    default: null,
 })
 
 function isEmpty(node: MarkdownNode) {
@@ -38,33 +48,53 @@ function isSetup(node: MarkdownNode): node is MarkdownNodeComponent {
     return node.is('Component') && node.name === 'setup'
 }
 
-function setSetup(){
-    loading.value = true
-
+async function setSetup(){
     const setupNode = nodes.value.find(isSetup)
 
+
     if (!setupNode) {
+        return
+    }
+
+    if (!compiler.value) {
+        console.error('[hephaestus] setup used without a compiler')
+        return
+    }
+
+    loading.value = true
+
+    const hNodes = compiler.value.toNodes(setupNode.body)
+
+    const properties = [] as string[]
+    
+    hNodes.forEach(n => {
+        if (n instanceof HVariable) {
+            properties.push(n.name)
+        }
+
+        if (n instanceof HFunction) {
+            properties.push(n.name)
+        }
+    })
+
+    const code = `
+        export function setup(){
+            ${setupNode.body}
+
+            return { ${properties.join(', ')} }
+        }
+    `
+
+    const result = await compiler.value.compile(code)
+
+    if (!result?.exports.setup) {
+        console.error('[hephaestus] error on evaluation')
         loading.value = false
         return
     }
 
-    // get all strings from setup node
-    const variablesKeys = setupNode.toText().match(/(?<=const |let |var )\w+/g)
-
-    const functionKeys = setupNode.toText().match(/(?<=function )\w+/g)
-
-    const code = `        
-        ${setupNode.body}
-
-        return {
-            ${variablesKeys?.join(', ')},
-            ${functionKeys?.join(', ')}
-        }        
-    `
-
-    const setup = new Function(code)
-
-    context.value = setup() || {}
+    
+    context.value = result.exports.setup()
     
     setTimeout(() => {
         loading.value = false
@@ -82,7 +112,7 @@ watch(nodes, setSetup, {
     <div class="h-full overflow-auto">
         <div v-if="!loading" class="flex flex-col">
 
-            <template v-for="node in nodes">
+            <BlockError v-for="node in nodes">
     
                 <div v-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
     
@@ -111,7 +141,7 @@ watch(nodes, setSetup, {
                     Invalid node type: {{ node.type }}
                 </div>
                 
-            </template>
+            </BlockError>
         </div>
 
 

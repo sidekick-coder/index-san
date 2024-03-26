@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 import HephaestusEditor from 'hephaestus/components/Editor.vue'
+
 import { createEditor } from 'hephaestus/composables/createEditor'
+import { useCompiler } from '@/modules/hecate/composables/useCompiler'
 
 import IsBtn from '@/components/IsBtn.vue'
 
@@ -58,6 +60,9 @@ function setMode(value: 'text' | 'blocks' | 'split'){
         loadingMode.value = false
     }, 500)
 }
+
+// compiler
+const compiler = useCompiler()
 
 // editor
 const saving = ref(false)
@@ -123,6 +128,7 @@ watch(contents, setEditorText)
                     <HephaestusEditor
                         v-model="nodes"
                         :components="editorComponents"
+                        :compiler="compiler"
                     />
                 </div>
             </template>
