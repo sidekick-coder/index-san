@@ -63,8 +63,6 @@ export default class HImportProcessor extends BaseProcessor<HNode> {
 
         
         const endIndex = this.findEnd()
-        
-        console.log('Processing import', endIndex)
 
         if (endIndex === -1) return false
 

@@ -94,8 +94,10 @@ async function setSetup(){
 
     const result = await compiler.value.compile(code)
 
-    if (!result?.exports.setup) {
-        console.error('[hephaestus] error on evaluation')
+    
+    if (!result.exports.setup || result.error) {
+        console.error(result.error?.message || '[hephaestus] setup failed to compile')
+        console.error(result)
         loading.value = false
         return
     }

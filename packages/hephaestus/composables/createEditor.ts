@@ -17,11 +17,10 @@ export function createEditor(){
         nodes.value = parser.toNodes(text.value)
     }
 
-    watch(text, debounce(setNodes, 1000))
-
     return {
         text,
         nodes,
-        parser
+        parser,
+        setNodes
     }
 }

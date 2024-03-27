@@ -7,7 +7,7 @@ export type HecateCompiler = ReturnType<typeof createCompiler>
 
 export interface HecateCompilerImportResolver {
     test: (path: string) => boolean
-    resolve: (path: string) => Promise<string>
+    resolve: (path: string) => Promise<any>
 }
 
 export interface HecateCompilerOptions {
@@ -85,12 +85,10 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
 
         const imports = {} as Record<string, any>
 
-        // console.log(nodes)
-
         // handle imports
         deepForEach(nodes, (node) => {
             if (node instanceof HImport) {
-                imports[node.from] = {}
+                imports[node.from] = null
 
                 const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');`
 
@@ -99,10 +97,10 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
             }
         })
 
+       
+
         transformed = minify(transformed)
         nodes = parser.toNodes(transformed)
-
-        console.log(transformed)
 
         let codeTransformed = '// -------- hecate header -------- //\n\n'
 
@@ -113,7 +111,7 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
         codeTransformed += nodes.toText().trim()
 
         if (needExport.length) {
-            codeTransformed += '\n\n\n// -------- hecate footer -------- //\n\n'
+            codeTransformed += '\n\n// -------- hecate footer -------- //\n\n'
 
             codeTransformed += `$hecate.export({ ${needExport.join(', ')} })\n\n`
         }
@@ -124,8 +122,28 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
             logs: [] as any[]
         }
 
+        for await (const key of Object.keys(imports)) {
+            const resolver = importResolvers.find((r) => r.test(key))
+
+            if (!resolver) {
+                result.error = new Error(`[hecate] Import resolver not found for ${key}`)
+                return result
+            }
+
+            imports[key] = await resolver.resolve(key)
+                .then((data) => data)
+                .catch((err) => {
+                    console.error(err)
+                    result.error = err
+                })
+
+            if (result.error) {
+                return result
+            }
+        }
+
         const $hecate = {
-            import: async (path: string) => {
+            import: (path: string) => {
                 return imports[path]
             },
             export: (data: any) => {

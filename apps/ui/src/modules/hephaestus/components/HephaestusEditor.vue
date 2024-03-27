@@ -6,7 +6,7 @@ import { createEditor } from 'hephaestus/composables/createEditor'
 import { createCompiler } from 'hecate/composables/createCompiler'
 
 import IsBtn from '@/components/IsBtn.vue'
-import { createImportResolvers } from '@/modules/hecate/composables/createImportResolvers'
+import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
 
 // general
 const tm = useI18n()
@@ -63,15 +63,19 @@ function setMode(value: 'text' | 'blocks' | 'split'){
 }
 
 // compiler
-const importResolvers = createImportResolvers()
+const driveResolvers = createDriveImportResolvers({
+    fromEntryPath: path.value,
+})
 
 const compiler = createCompiler({
-    importResolvers
+    importResolvers: [
+        ...driveResolvers,
+    ]
 })
 
 // editor
 const saving = ref(false)
-const { text, nodes } = createEditor()
+const { text, nodes, setNodes } = createEditor()
 
 const editorComponents = [
     {
@@ -84,6 +88,8 @@ const editorComponents = [
 function setEditorText(){
     if (contents.value) {
         text.value = decode(contents.value)
+
+        setNodes()
     }
 }
 
@@ -91,6 +97,8 @@ async function save(){
     saving.value = true
 
     await drive.write(path.value, text.value)
+
+    setNodes()
 
     setTimeout(() => {
         saving.value = false
