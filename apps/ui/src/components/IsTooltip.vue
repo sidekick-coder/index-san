@@ -55,6 +55,7 @@ function hide() {
     <div
         ref="floating"
         :style="floatingStyles"
+        :class="!model ? 'pointer-events-none' : ''"
     >
         <transition
             enter-active-class="transition ease-out duration-100"

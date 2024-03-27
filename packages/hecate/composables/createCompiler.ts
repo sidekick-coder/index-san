@@ -6,6 +6,8 @@ import HImport from "../nodes/HImport"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
+export type HecateCompilerResult = Awaited<ReturnType<HecateCompiler['compile']>>
+
 export interface HecateCompilerImportResolver {
     test: (path: string) => boolean
     resolve: (path: string) => Promise<any>
@@ -173,7 +175,7 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
             },
             console: {
                 log: (...args: any[]) => {
-                    result.logs.push(args)                
+                    result.logs.push(...args)                
                 },
             }
         }

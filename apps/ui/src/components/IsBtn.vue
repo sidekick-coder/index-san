@@ -81,7 +81,7 @@ function setSize(){
 watch(size, setSize, { immediate: true })
 
 // rounded
-const rounded = defineProp<'none'| 'sm' | 'md' | 'lg'>('rounded', {
+const rounded = defineProp<'none'| 'sm' | 'md' | 'lg' | 'full'>('rounded', {
     type: String,
     default: 'md',
 })
@@ -92,6 +92,7 @@ function setRounded(){
         sm: 'rounded-sm',
         md: 'rounded-md',
         lg: 'rounded-lg',
+        full: 'rounded-full',
     }
 
     const option = options[rounded.value]

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { MarkdownNode, MarkdownNodeComponent } from '@language-kit/markdown'
 import { ref, watch } from 'vue';
-import { HecateCompiler } from 'hecate/composables/createCompiler'
+import { HecateCompiler, HecateCompilerResult } from 'hecate/composables/createCompiler'
 
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
@@ -45,6 +45,11 @@ function isEmpty(node: MarkdownNode) {
 const context = ref<any>({})
 const loading = ref(true)
 
+const setupResult = defineModel<HecateCompilerResult>('setupResult', {
+    type: Object,
+    default: null
+})
+
 function isSetup(node: MarkdownNode): node is MarkdownNodeComponent {
     return node.is('Component') && node.name === 'setup'
 }
@@ -52,12 +57,17 @@ function isSetup(node: MarkdownNode): node is MarkdownNodeComponent {
 async function setSetup(){
     const setupNode = nodes.value.find(isSetup)
 
-
     if (!setupNode) {
+        loading.value = false
         return
     }
 
     if (!compiler.value) {
+        setupResult.value = {
+            exports: {},
+            error: new Error('compiler not found'),
+            logs: [],
+        }
         console.error('[hephaestus] setup used without a compiler')
         return
     }
@@ -99,11 +109,29 @@ async function setSetup(){
         console.error(result.error?.message || '[hephaestus] setup failed to compile')
         console.error(result)
         loading.value = false
+        setupResult.value = {
+            exports: {},
+            error: result.error,
+            logs: result.logs,
+        }
         return
     }
 
+    try {
+        context.value = result.exports.setup()
+    } catch (error) {
+        console.error('[hephaestus] setup failed to run')
+        console.error(error)
+        loading.value = false
+        setupResult.value = {
+            exports: {},
+            error: error,
+            logs: [],
+        }
+        return
+    }    
     
-    context.value = result.exports.setup()
+    setupResult.value = result
     
     setTimeout(() => {
         loading.value = false

@@ -3,9 +3,11 @@ import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 import HephaestusEditor from 'hephaestus/components/Editor.vue'
 
 import { createEditor } from 'hephaestus/composables/createEditor'
-import { createCompiler } from 'hecate/composables/createCompiler'
+import { createCompiler, type HecateCompilerResult } from 'hecate/composables/createCompiler'
 
 import IsBtn from '@/components/IsBtn.vue'
+import EditorLogs from './HephaestusEditorLogs.vue'
+import EditorErrors from './HephaestusEditorErrors.vue'
 import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
 
 // general
@@ -75,6 +77,7 @@ const compiler = createCompiler({
 
 // editor
 const saving = ref(false)
+const setupResult = ref<HecateCompilerResult>()
 const { text, nodes, setNodes } = createEditor()
 
 const editorComponents = [
@@ -110,7 +113,38 @@ watch(contents, setEditorText)
 
 <template>
     <div class="flex flex-col h-full">
-        <div class="flex h-[calc(100%-2rem)]">
+        <div class="h-16 border-b border-body-500 flex items-center px-10 gap-x-5">
+            <div class="-ml-3">
+                <is-btn
+                    variant="text"
+                    color="primary"
+                    size="none"
+                    class="h-10 w-10"                    
+                    to="/entries"
+                >
+                    <is-icon name="heroicons-solid:home" />
+                </is-btn>
+            </div>
+
+            <div class="flex-1">
+                <div
+                    class="text-sm h-10 bg-body-500 w-full px-4 py-2 outline-none rounded flex items-center gap-x-2 text-body-100"
+                >
+                    <is-icon name="heroicons-solid:computer-desktop" />
+
+                    {{ `/${path}` }}
+                </div>  
+            </div>
+
+            <div class="flex-1" />
+            
+            <template v-if="setupResult">
+                <editor-logs :logs="setupResult.logs" />
+                <editor-errors :error="setupResult.error" />
+            </template>
+        </div>
+
+        <div class="flex h-[calc(100%-2rem-4rem)]">
             <div
                 v-if="loadingMode"
                 class="flex items-center justify-center size-full"
@@ -140,6 +174,7 @@ watch(contents, setEditorText)
                 >
                     <HephaestusEditor
                         v-model="nodes"
+                        v-model:setup-result="setupResult"
                         :components="editorComponents"
                         :compiler="compiler"
                     />
@@ -147,38 +182,37 @@ watch(contents, setEditorText)
             </template>
         </div>
 
-        <div class="w-full">
-            <div class="h-8 bg-body-900 w-full flex text-xs">
-                <div
-                    v-for="m in modes"
-                    :key="m.id"
-                    class="px-2 hover:bg-body-800 cursor-pointer flex items-center"
-                    :class="mode === m.id ? 'text-primary-500' : ''"
-                    @click="setMode(m.id)"
-                >
-                    <is-icon
-                        :name="m.icon"
-                        class="mr-2"
-                    />
+        
+        <div class="h-8 bg-body-900 w-full flex text-xs">
+            <div
+                v-for="m in modes"
+                :key="m.id"
+                class="px-2 hover:bg-body-800 cursor-pointer flex items-center"
+                :class="mode === m.id ? 'text-primary-500' : ''"
+                @click="setMode(m.id)"
+            >
+                <is-icon
+                    :name="m.icon"
+                    class="mr-2"
+                />
 
-                    {{ m.label }}
+                {{ m.label }}
+            </div>
+
+            <div class="flex-1" />
+
+            <div
+                v-if="saving"
+                class="px-2 flex items-center "
+            >
+                <div class="mr-2">
+                    {{ $t('saving') }}
                 </div>
 
-                <div class="flex-1" />
-
-                <div
-                    v-if="saving"
-                    class="px-2 flex items-center "
-                >
-                    <div class="mr-2">
-                        {{ $t('saving') }}
-                    </div>
-
-                    <is-icon
-                        name="heroicons-solid:refresh"
-                        class="animate-spin text-xs"
-                    />
-                </div>
+                <is-icon
+                    name="heroicons-solid:refresh"
+                    class="animate-spin text-xs"
+                />
             </div>
         </div>
     </div>
