@@ -5,6 +5,9 @@ import HConst from '../nodes/HVariable'
 import HImport from '../nodes/HImport'
 
 export default class HImportProcessor extends BaseProcessor<HNode> {
+
+    public order = 1
+
     public findEnd() {
         return this.tokens.findIndex((t) => {
             if (t.value === ';') {
@@ -27,9 +30,6 @@ export default class HImportProcessor extends BaseProcessor<HNode> {
             return t.value === '"' || t.value === "'";
         })
 
-        console.log('start', start)
-        console.log('end', end)
-
         return this.tokens.slice(start + 1, end).map((t) => t.value).join('')
     }
 
@@ -50,14 +50,21 @@ export default class HImportProcessor extends BaseProcessor<HNode> {
         return properties
     }
 
+    public isImport(){
+        const [current, _space, next] = this.tokens
+
+        if (current.value !== 'import') return false
+
+        return current.value === 'import' && next.value === '{'
+    }
+
     public process() {
-        const [current, one, two] = this.tokens
+        if (!this.isImport()) return false
 
-        if (current.value !== 'import' || two.value !== '{') {
-            return false
-        }
-
+        
         const endIndex = this.findEnd()
+        
+        console.log('Processing import', endIndex)
 
         if (endIndex === -1) return false
 

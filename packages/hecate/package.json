@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@language-kit/core": "^0.1.0"
+    "@language-kit/core": "^0.1.3"
   }
 }

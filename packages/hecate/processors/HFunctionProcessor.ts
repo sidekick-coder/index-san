@@ -4,6 +4,9 @@ import HNode from '../base/HNode'
 import HFunction from '../nodes/HFunction'
 
 export default class HFunctionProcessor extends BaseProcessor<HNode> {
+
+    public order = 1
+
     public findEnd() {
         const start = this.tokens.findIndex((t) => t.value === '{')
         let open = 0
@@ -41,6 +44,10 @@ export default class HFunctionProcessor extends BaseProcessor<HNode> {
         })
 
         return token?.value || ''
+    }
+
+    public findBodyStartToken() {
+        return this.tokens.find((t) => t.value === '{')
     }
 
     public findBody() {

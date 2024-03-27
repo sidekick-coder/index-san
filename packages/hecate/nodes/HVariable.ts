@@ -7,4 +7,5 @@ export default class HVariable extends HNode {
     
     public name = ''
     public value = ''
+    public export = false
 }

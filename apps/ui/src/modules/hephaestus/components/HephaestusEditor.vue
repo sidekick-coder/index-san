@@ -3,9 +3,10 @@ import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 import HephaestusEditor from 'hephaestus/components/Editor.vue'
 
 import { createEditor } from 'hephaestus/composables/createEditor'
-import { useCompiler } from '@/modules/hecate/composables/useCompiler'
+import { createCompiler } from 'hecate/composables/createCompiler'
 
 import IsBtn from '@/components/IsBtn.vue'
+import { createImportResolvers } from '@/modules/hecate/composables/createImportResolvers'
 
 // general
 const tm = useI18n()
@@ -62,7 +63,11 @@ function setMode(value: 'text' | 'blocks' | 'split'){
 }
 
 // compiler
-const compiler = useCompiler()
+const importResolvers = createImportResolvers()
+
+const compiler = createCompiler({
+    importResolvers
+})
 
 // editor
 const saving = ref(false)

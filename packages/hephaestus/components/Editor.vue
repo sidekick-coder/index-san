@@ -10,6 +10,7 @@ import BlockComponent from './BlockComponent.vue'
 import BlockError from './BlockError.vue'
 import HVariable from '../../hecate/nodes/HVariable';
 import HFunction from '../../hecate/nodes/HFunction';
+import HImport from 'hecate/nodes/HImport';
 
 const components = defineProp('components', {
     type: Array,
@@ -74,6 +75,12 @@ async function setSetup(){
 
         if (n instanceof HFunction) {
             properties.push(n.name)
+        }
+
+        if (n instanceof HImport) {
+            n.properties.forEach(p => {
+                properties.push(p.name)
+            })
         }
     })
 
