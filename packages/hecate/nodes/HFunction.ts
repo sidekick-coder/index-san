@@ -14,9 +14,9 @@ export default class HFunction extends HNode {
 
         const bodyToken = this.tokens.find((t) => t.value === '{')
 
-        this.children.forEach((child) => {
-            child.setPositions(bodyToken?.start ? bodyToken.start + 1 : 0)
-        })
+        let position = bodyToken?.start || 0
+
+        this.children.setPositions(position + 1)
 
         return this
     }

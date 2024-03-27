@@ -4,7 +4,8 @@ import HNode from './base/HNode'
 import HVariableProcessor from './processors/HVariableProcessor'
 import HImportProcessor from './processors/HImportProcessor'
 import HFunctionProcessor from './processors/HFunctionProcessor'
-import HUnknownProcessor from './processors/HUnkownProcessor'
+import HUnknownProcessor from './processors/HUnknownProcessor'
+import HConsoleProcessor from './processors/HConsoleProcessor'
 
 export default class HParser extends BaseParser<HNode> {
     constructor() {
@@ -14,7 +15,8 @@ export default class HParser extends BaseParser<HNode> {
             HImportProcessor,
             HVariableProcessor,
             HFunctionProcessor,
-            HUnknownProcessor
+            HUnknownProcessor,
+            HConsoleProcessor
         ])
     }
 

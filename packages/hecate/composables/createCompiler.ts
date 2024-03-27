@@ -1,5 +1,6 @@
 import HParser from "../HParser"
 import HNode from "../base/HNode"
+import HConsole from "../nodes/HConsole"
 import HFunction from "../nodes/HFunction"
 import HImport from "../nodes/HImport"
 
@@ -53,7 +54,8 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
             .replaceAll('\r', '\n')
             .split('\n')
             .map((l) => l.trim())
-            .filter(Boolean).join('\n')
+            .filter(Boolean)
+            .join('\n')
     }
 
     function replaceString(source: string, start: number, end: number, value = '') {
@@ -95,26 +97,43 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
                 transformed = replaceString(transformed, node.start, node.end, replace)
 
             }
-        })
-
-       
+        })       
 
         transformed = minify(transformed)
         nodes = parser.toNodes(transformed)
 
-        let codeTransformed = '// -------- hecate header -------- //\n\n'
+        // handle console.log
+        deepForEach(nodes, (node) => {
+            if (node instanceof HConsole) {
 
-        codeTransformed += '$hecate = this.$hecate\n\n'
+                const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
 
-        codeTransformed += '// -------- code -------- //\n\n'
+                transformed = replaceString(transformed, node.start, node.end, replace)
+            }
+        })
 
-        codeTransformed += nodes.toText().trim()
+        transformed = minify(transformed)
+        nodes = parser.toNodes(transformed)
+
+        const lines = [
+            "// -------- hecate header -------- //",
+            "",
+            "$hecate = this.$hecate;",
+            "",
+            "// -------- code -------- //",
+            "",
+            nodes.toText().trim(),
+        ]
 
         if (needExport.length) {
-            codeTransformed += '\n\n// -------- hecate footer -------- //\n\n'
-
-            codeTransformed += `$hecate.export({ ${needExport.join(', ')} })\n\n`
+            lines.push(
+                '// -------- hecate footer -------- //',
+                "",
+                `$hecate.export({ ${needExport.join(', ')} });`
+            )
         }
+
+        const finalCode = lines.join('\n')
 
         const result = {
             exports: {} as Record<string, any>,
@@ -159,7 +178,7 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
             }
         }
 
-        await execute(codeTransformed, { $hecate }).catch((err) => {
+        await execute(finalCode, { $hecate }).catch((err) => {
             result.error = err
         })
 
