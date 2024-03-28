@@ -15,6 +15,10 @@ export default class HVariableProcessor extends BaseProcessor<HNode> {
             if (t.type === 'BreakLine') {
                 return true
             }
+            
+            if (t.type === 'EndOfFile') {
+                return true
+            }
 
             return false
         })
@@ -54,13 +58,16 @@ export default class HVariableProcessor extends BaseProcessor<HNode> {
     public process() {
         const current = this.tokens[0]
 
+        
         if (!this.isVariable() && !this.isExportVariable()) {
             return false
         }
-
+        
+        
         const endIndex = this.findEnd()
 
         if (endIndex === -1) return false
+
 
         const tokens = this.tokens.slice(0, endIndex + 1)
 
