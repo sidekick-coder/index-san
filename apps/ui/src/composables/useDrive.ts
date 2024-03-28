@@ -10,6 +10,9 @@ export interface Drive {
     list: (path: string) => Promise<DriveEntry[]>
     read: (path: string) => Promise<Uint8Array | null>
     write: (path: string, content: any) => Promise<void>
+    destroy: (path: string) => Promise<void>
+    move: (from: string, to: string) => Promise<void>
+    mkdir: (path: string) => Promise<void>
 }
 
 const drive = ref<Drive>() as Ref<Drive>

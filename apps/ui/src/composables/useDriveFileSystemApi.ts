@@ -99,15 +99,13 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         const contents = await file.arrayBuffer()
 
         return new Uint8Array(contents)
-
-        
     }
 
     const write: Drive['write'] = async (path, content) => {
         const folderHandle = await getHandleByPath(dirname(path))
 
         const fileHandle = await folderHandle.getFileHandle(basename(path), {
-            create: false
+            create: true
         })
 
         const writable = await fileHandle.createWritable()
@@ -117,5 +115,40 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         await writable.close()
     }
 
-    return { list, get, read, write }
+    const destroy: Drive['destroy'] = async (path) => {
+        const folderHandle = await getHandleByPath(dirname(path))
+
+        await folderHandle.removeEntry(basename(path), {
+            recursive: true
+        })
+    }
+
+    const move: Drive['move'] = async (from, to) => {
+
+        const entry = await get(from)
+
+        if (!entry) {
+            throw new Error('File not found')
+        }
+
+        if (entry.type === 'directory') {
+            throw new Error('Cannot move directories')
+        }
+
+        const contents = await read(from)
+
+        await write(to, contents)
+
+        await destroy(entry.path)
+    }
+
+    const mkdir: Drive['mkdir'] = async (path) => {
+        const folderHandle = await getHandleByPath(dirname(path))
+
+        await folderHandle.getDirectoryHandle(basename(path), {
+            create: true
+        })
+    }
+
+    return { list, get, read, write, destroy, move, mkdir }
 }

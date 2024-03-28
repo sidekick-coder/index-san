@@ -7,17 +7,13 @@ defineOptions({
     inheritAttrs: false,
 })
 
+// floating
 const root = ref<any>(null)
 const floating = ref<HTMLElement | null>(null)
 
 const placement = defineProp<Placement>('placement', {
     type: String,
     default: 'bottom',
-})
-
-const model = defineModel({
-    type: Boolean,
-    default: false,
 })
 
 const { floatingStyles } = useFloating(root, floating, {
@@ -37,8 +33,26 @@ function onRef(el: Element | ComponentPublicInstance | null, refs: Record<string
     }
 }
 
+// visibility
+const model = defineModel({
+    type: Boolean,
+    default: false,
+})
+
+const closeOnContentClick = defineProp<boolean>('closeOnContentClick', {
+    type: Boolean,
+    default: true,
+})
+
 function toggle() {
     model.value = !model.value
+}
+
+function onContentClick(){
+    if (closeOnContentClick.value) {
+        model.value = false
+    }
+
 }
 
 onClickOutside(floating, () => {
@@ -61,6 +75,8 @@ onClickOutside(floating, () => {
     <div
         ref="floating"
         :style="floatingStyles"
+        class="z-20"
+        @click="onContentClick"
     >
         <transition
             enter-active-class="transition ease-out duration-200"

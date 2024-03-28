@@ -4,18 +4,17 @@
 const classMap = ref(new Map<string, string>())
 const classes = computed(() => Array.from(classMap.value.values()).join(' '))
 
-classMap.value.set('general', '')
+classMap.value.set('general', 'overflow-hidden')
 
 // color
-const color = defineProp<'default' | 'zinc'>('color',  {
+const color = defineProp<'body-800'>('color',  {
     type: String,
-    default: 'default',
+    default: 'body-800',
 })
 
 function setColor(){
     const options = {
-        default: 'bg-zinc-100 text-zinc-900',
-        zinc: 'bg-zinc-900 text-zinc-100',
+        'body-800': 'bg-body-800',
     }
 
     const option = options[color.value]
