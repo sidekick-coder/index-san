@@ -14,6 +14,11 @@ const node = defineModel<MarkdownNodeComponent>({
     required: true,
 })
 
+const context = defineProp<any>('context', {
+    type: Object,
+    default: () => ({})
+})
+
 // render
 const loading = ref(true)
 
@@ -45,22 +50,22 @@ function setComponent(){
 
     Object.entries(node.value.attrs).forEach(([key, value]) => {
 
-        // check if key is a word without spaces and only letters
-        if (/^[a-zA-Z]+$/.test(key)) {
-            attrs.push(`${key}="${value}"`)
+        if (!key || !value) {
+            return
         }
 
-        
+        attrs.push(`${key}="${value}"`)
     })
 
     instance.value = {
+        name: 'ComponentProvider',
         components: {
             ComponentRender: search.component,
         },
-        data: () => ({
-            node: node.value,
-        }),
         template: `<ComponentRender ${attrs.join(' ')} >${node.value.body}</ComponentRender>`,
+        setup() {
+            return context.value
+        }
     }
 
     setTimeout(() => {

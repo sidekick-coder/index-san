@@ -3,12 +3,13 @@ import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 import HephaestusEditor from 'hephaestus/components/Editor.vue'
 
 import { createEditor } from 'hephaestus/composables/createEditor'
-import { createCompiler, type HecateCompilerResult } from 'hecate/composables/createCompiler'
+import { createCompiler, type HecateCompilerImportResolver, type HecateCompilerResult } from 'hecate/composables/createCompiler'
+import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
+import { createCommonImportResolvers } from '@/modules/hecate/composables/createCommonImportResolvers'
 
 import IsBtn from '@/components/IsBtn.vue'
 import EditorLogs from './HephaestusEditorLogs.vue'
 import EditorErrors from './HephaestusEditorErrors.vue'
-import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
 
 import BlockChart from './HephaestusBlockChart.vue'
 import type { MarkdownNodeComponent } from '@language-kit/markdown'
@@ -68,14 +69,18 @@ function setMode(value: 'text' | 'blocks' | 'split'){
 }
 
 // compiler
-const driveResolvers = createDriveImportResolvers({
-    fromEntryPath: path.value,
-})
+const importResolvers = [] as HecateCompilerImportResolver[]
+
+importResolvers.push(
+    ...createCommonImportResolvers(),
+    ...createDriveImportResolvers({ fromEntryPath: path.value })
+)
 
 const compiler = createCompiler({
-    importResolvers: [
-        ...driveResolvers,
-    ]
+    importResolvers,
+    logger: {
+        log: (...args) => logs.value.push(args.join(' ')),    
+    }
 })
 
 // editor

@@ -45,7 +45,10 @@ function show(value: any) {
                     class="h-10 w-10"
                     @click="drawer = true"
                 >
-                    <is-icon name="heroicons-solid:document-text" />
+                    <is-icon
+                        name="heroicons-solid:document-text"
+                        :class="logs.length ? 'text-blue-500' : ''"
+                    />
                 </is-btn>
             </template>
             <div>Logs</div>

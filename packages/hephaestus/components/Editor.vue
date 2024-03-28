@@ -55,12 +55,6 @@ const errors = defineModel<Error[]>('errors', {
     default: () => ([])
 })
 
-const logs = defineModel<any[]>('logs', {
-    type: Array,
-    default: () => ([])
-})
-
-
 function isSetup(node: MarkdownNode): node is MarkdownNodeComponent {
     return node.is('Component') && node.name === 'setup'
 }
@@ -80,7 +74,7 @@ async function setSetup(){
 
     loading.value = true
 
-    const hNodes = compiler.value.toNodes(setupNode.body)
+    const hNodes = compiler.value.toNodes(compiler.value.minify(setupNode.body))
 
     const properties = [] as string[]
     
@@ -109,8 +103,6 @@ async function setSetup(){
     `
 
     const result = await compiler.value.compile(code)
-
-    logs.value.push(...result.logs)
     
     if (!result.exports.setup || result.error) {        
         loading.value = false        
@@ -165,6 +157,7 @@ watch(nodes, setSetup, {
                     v-else-if="node.is('Component')"
                     :model-value="node"
                     :components="components"
+                    :context="context"
                     v-bind="blockAttrs"
                 />
     
