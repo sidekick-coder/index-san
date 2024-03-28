@@ -25,7 +25,9 @@ export default class HConsoleProcessor extends BaseProcessor<HNode> {
         const start = this.tokens.findIndex((t) => t.value === '(')
         const end = this.tokens.findIndex((t) => t.value === ')')
 
-        return this.tokens.slice(start + 1, end).map((t) => t.value)
+        const argsString = this.tokens.slice(start + 1, end).map((t) => t.value).join('')
+
+        return argsString.split(',').map((arg) => arg.trim())
     }
 
     public process() {

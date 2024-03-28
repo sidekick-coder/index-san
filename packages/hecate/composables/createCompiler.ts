@@ -106,10 +106,9 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
 
         // handle console.log
         deepForEach(nodes, (node) => {
-            if (node instanceof HConsole) {
-
+            if (node instanceof HConsole) {                
                 const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
-
+                
                 transformed = replaceString(transformed, node.start, node.end, replace)
             }
         })
