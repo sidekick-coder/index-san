@@ -13,13 +13,18 @@ export interface HecateCompilerImportResolver {
     resolve: (path: string) => Promise<any>
 }
 
+export interface HecateCompilerLogger {
+    log: (...args: any[]) => void
+}
+
 export interface HecateCompilerOptions {
     importResolvers: HecateCompilerImportResolver[]
+    logger?: HecateCompilerLogger
 }
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 
-export function createCompiler({ importResolvers }: HecateCompilerOptions) {
+export function createCompiler({ importResolvers, logger }: HecateCompilerOptions) {
 
     const parser = new HParser()
 
@@ -174,7 +179,8 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
             },
             console: {
                 log: (...args: any[]) => {
-                    result.logs.push(...args)                
+                    logger?.log(...args)
+                    result.logs.push(args)
                 },
             }
         }
@@ -189,6 +195,7 @@ export function createCompiler({ importResolvers }: HecateCompilerOptions) {
 
 
     return {
+        minify,
         deepForEach,
         compile,
         toNodes
