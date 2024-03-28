@@ -27,6 +27,11 @@ const blockAttrs = defineProp<any>('blockAttrs', {
     default: () => ({})
 })
 
+const blocks = defineProp<any[]>('blocks', {
+    type: Array,
+    default: () => ([])
+})
+
 const compiler = defineProp<HecateCompiler>('compiler', {
     type: Object,
     default: null,
@@ -150,8 +155,16 @@ watch(nodes, setSetup, {
         <div v-if="!loading" class="flex flex-col">
 
             <BlockError v-for="node in nodes">
+
+                <component
+                    v-if="blocks.some(b => b.test(node))"
+                    :is="blocks.find(b => b.test(node)).component"
+                    :model-value="node"
+                    :context="context"
+                    v-bind="blockAttrs"
+                />
     
-                <div v-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
+                <div v-else-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
     
                 <BlockParagraph
                     v-else-if="node.is('Paragraph')"

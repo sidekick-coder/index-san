@@ -23,8 +23,11 @@
     "@mdit-vue/plugin-component": "^0.12.0",
     "@vueuse/core": "^10.1.2",
     "ansi-to-html": "^0.7.2",
+    "apexcharts": "^3.48.0",
     "chart.js": "^4.3.0",
     "chartjs-plugin-annotation": "^3.0.1",
+    "hecate": "*",
+    "hephaestus": "*",
     "highlight.js": "^11.8.0",
     "idb-keyval": "^6.2.1",
     "lodash": "^4.17.21",
@@ -38,9 +41,7 @@
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.1",
     "vue-wind": "^0.1.3",
-    "vuedraggable": "^4.1.0",
-    "hephaestus": "*",
-    "hecate": "*"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",

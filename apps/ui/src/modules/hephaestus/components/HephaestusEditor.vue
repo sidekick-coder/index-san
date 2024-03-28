@@ -10,6 +10,9 @@ import EditorLogs from './HephaestusEditorLogs.vue'
 import EditorErrors from './HephaestusEditorErrors.vue'
 import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
 
+import BlockChart from './HephaestusBlockChart.vue'
+import type { MarkdownNodeComponent } from '@language-kit/markdown'
+
 // general
 const tm = useI18n()
 const { drive, decode } = useDrive()
@@ -77,6 +80,14 @@ const compiler = createCompiler({
 
 // editor
 const saving = ref(false)
+
+const blocks = [
+    {
+        test: (node: MarkdownNodeComponent) => node.is('Component') && node.name === 'chart',
+        component: BlockChart,
+    }
+]
+
 const setupResult = ref<HecateCompilerResult>()
 const { text, nodes, setNodes } = createEditor()
 
@@ -177,6 +188,7 @@ watch(contents, setEditorText)
                         v-model:setup-result="setupResult"
                         :components="editorComponents"
                         :compiler="compiler"
+                        :blocks="blocks"
                     />
                 </div>
             </template>
