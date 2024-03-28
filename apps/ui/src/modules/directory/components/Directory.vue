@@ -188,7 +188,7 @@ function editEntry(e: DriveEntry){
     editedEntry.value.originalName = e.name
 }
 
-async function onBlurEditEntry(){
+async function saveEditedEntry(){
     if (editedEntry.value.loading) {
         return
     }
@@ -360,8 +360,8 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                                 autofocus
                                 spellcheck="false"
                                 @click.prevent
-                                @blur="onBlurEditEntry"
-                                @keydown.enter="onBlurEditEntry"
+                                @blur="saveEditedEntry"
+                                @keydown.enter="saveEditedEntry"
                             >
 
                             <div v-else>
@@ -370,26 +370,39 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                         </div>
                     </div>
 
-                    <div class="opacity- group-hover:opacity-100">
+                    <div>
                         <is-btn
+                            v-if="editedEntry.originalName === e.name"
                             variant="text"
                             color="primary"
                             size="none"
                             class="h-8 w-8"
-                            @click.prevent.stop="editEntry(e)"
+                            @click.prevent.stop="saveEditedEntry"
                         >
-                            <is-icon name="heroicons-solid:pencil" />
+                            <is-icon name="heroicons-solid:check" />
                         </is-btn>
 
-                        <is-btn
-                            variant="text"
-                            color="primary"
-                            size="none"
-                            class="h-8 w-8"
-                            @click.prevent.stop="deleteEntry(e)"
-                        >
-                            <is-icon name="heroicons-solid:trash" />
-                        </is-btn>
+                        <template v-else>
+                            <is-btn
+                                variant="text"
+                                color="primary"
+                                size="none"
+                                class="h-8 w-8 opacity-0 group-hover:opacity-100"
+                                @click.prevent.stop="editEntry(e)"
+                            >
+                                <is-icon name="heroicons-solid:pencil" />
+                            </is-btn>
+    
+                            <is-btn
+                                variant="text"
+                                color="primary"
+                                size="none"
+                                class="h-8 w-8 opacity-0 group-hover:opacity-100"
+                                @click.prevent.stop="deleteEntry(e)"
+                            >
+                                <is-icon name="heroicons-solid:trash" />
+                            </is-btn>
+                        </template>
                     </div>
                 </is-list-item>
             </div>

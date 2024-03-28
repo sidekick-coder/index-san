@@ -108,6 +108,23 @@ const to = defineProp<string>('to', {
     default: null,
 })
 
+// disabled
+const disabled = defineProp<boolean>('disabled', {
+    type: Boolean,
+    default: false,
+})
+
+function setDisabled(){
+    if (disabled.value) {
+        classMap.value.set('disabled', 'cursor-not-allowed opacity-50')
+        return
+    } 
+    
+    classMap.value.delete('disabled')
+}
+
+watch(disabled, setDisabled, { immediate: true })
+
 </script>
 
 <template>
@@ -115,6 +132,7 @@ const to = defineProp<string>('to', {
         :is="to ? RouterLink : 'button'"
         :to="to"
         :class="classes"
+        :disabled="disabled"
     >
         <slot />
     </component>
