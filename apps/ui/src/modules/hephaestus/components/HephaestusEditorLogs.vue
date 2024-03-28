@@ -41,6 +41,8 @@ function show(value: any) {
             <template #activator="{ attrs }">
                 <is-btn
                     v-bind="attrs"
+                    size="none"
+                    class="h-10 w-10"
                     @click="drawer = true"
                 >
                     <is-icon name="heroicons-solid:document-text" />

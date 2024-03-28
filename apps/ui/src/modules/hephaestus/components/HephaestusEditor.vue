@@ -88,7 +88,8 @@ const blocks = [
     }
 ]
 
-const setupResult = ref<HecateCompilerResult>()
+const errors = ref<Error[]>([])
+const logs = ref<string[]>([])
 const { text, nodes, setNodes } = createEditor()
 
 const editorComponents = [
@@ -148,11 +149,11 @@ watch(contents, setEditorText)
             </div>
 
             <div class="flex-1" />
-            
-            <template v-if="setupResult">
-                <editor-logs :logs="setupResult.logs" />
-                <editor-errors :error="setupResult.error" />
-            </template>
+
+            <div class="flex">
+                <editor-logs :logs="logs" />
+                <editor-errors :errors="errors" />
+            </div>
         </div>
 
         <div class="flex h-[calc(100%-2rem-4rem)]">
@@ -185,7 +186,8 @@ watch(contents, setEditorText)
                 >
                     <HephaestusEditor
                         v-model="nodes"
-                        v-model:setup-result="setupResult"
+                        v-model:errors="errors"
+                        v-model:logs="logs"
                         :components="editorComponents"
                         :compiler="compiler"
                         :blocks="blocks"
