@@ -86,7 +86,11 @@ export default class HFunctionProcessor extends BaseProcessor<HNode> {
         node.name = this.findName()
         node.export = this.isExportFunction()
         node.body = this.findBody().toText().trim()
-        node.children = this.parser.toNodes(node.body)
+        node.children = this.parser.toNodes(this.findBody().toText(), {
+            lexer: {
+                includeEndOfFileToken: false
+            }
+        })
 
         this.nodes.push(node)
 
