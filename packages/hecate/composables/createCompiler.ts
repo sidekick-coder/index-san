@@ -1,3 +1,4 @@
+import { NodeArray } from "@language-kit/core"
 import HParser from "../HParser"
 import HNode from "../base/HNode"
 import HConsole from "../nodes/HConsole"
@@ -20,6 +21,10 @@ export interface HecateCompilerLogger {
 export interface HecateCompilerOptions {
     importResolvers: HecateCompilerImportResolver[]
     logger?: HecateCompilerLogger
+}
+
+export interface HecateCompilerTransformFn {
+    (code: string, nodes: NodeArray<HNode>): [boolean, string]
 }
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
@@ -54,6 +59,18 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
             }
         })
     }
+    
+    function allNodes(nodes: HNode[]) {
+        const result = nodes.slice()
+
+        nodes.forEach((node) => {
+            if (node instanceof HFunction) {
+                result.push(...allNodes(node.children))
+            }
+        })
+
+        return result
+    }
 
     // remove unnecessary spaces and new lines
     function minify(code: string){
@@ -65,61 +82,96 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
             .join('\n')
     }
 
-    function replaceString(source: string, start: number, end: number, value = '') {
-        return source.slice(0, start) + value + source.slice(end + 1)
+    // recursively transform the code
+    function transform(code: string, cb: HecateCompilerTransformFn) {
+        let nodes = parser.toNodes(code)
+
+        const [result, newCode] = cb(code, nodes)
+
+        if (!result) {
+            return code
+        }
+
+        return transform(newCode, cb)
+    }
+
+    function transformAll(code: string, cbs: HecateCompilerTransformFn[]) {
+        let transformed = code
+
+        for (const cb of cbs) {
+            transformed = transform(transformed, cb)
+        }
+
+        return transformed
+    }
+
+    // remove exports
+    const transformExports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
+        for (const node of allNodes(nodes)) {
+            if (node instanceof HFunction && node.export) {
+                const token = node.tokens.find((t) => t.value === 'export')
+
+                if (!token) continue
+
+                const newCode = code.slice(0, token.start) + code.slice(token.end + 1)
+
+                return [true, minify(newCode)]           
+            }
+        }
+
+        return [false, code]
+    }
+
+    const transformImports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
+
+        for (const node of allNodes(nodes)) {
+            if (node instanceof HImport) {
+                const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');`
+
+                const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
+
+                return [true, minify(newCode)]
+            }
+        }
+
+        return [false, code]
+    }
+
+    const transformConsole: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
+        for (const node of allNodes(nodes)) {
+            if (node instanceof HConsole) {                
+                const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
+
+                const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
+
+                return [true, minify(newCode)]
+            }
+        }
+
+        return [false, code]
     }
 
     async function compile(code: string) {
-        let transformed = minify(code)
-        let nodes = parser.toNodes(transformed)
-
-        // handle exports
-        const needExport: string[] = []
-
-        deepForEach(nodes, (node) => {
-            if (node instanceof HFunction && node.export) {
-                needExport.push(node.name)
-
-                // remove export keyword
-                const token = node.tokens.find((t) => t.value === 'export')
-
-                if (!token) return
-                
-                transformed = replaceString(transformed, token.start, token.end)
-            }
-        })
-
-        transformed = minify(transformed)
-        nodes = parser.toNodes(transformed)
-
         const imports = {} as Record<string, any>
 
-        // handle imports
-        deepForEach(nodes, (node) => {
-            if (node instanceof HImport) {
+        // register imports & exports
+        const needExport: string[] = []
+
+        for (const node of allNodes(parser.toNodes(code))) {
+            if (node instanceof HFunction && node.export) {
+                needExport.push(node.name)
+            }
+    
+            if (node  instanceof HImport) {
                 imports[node.from] = null
-
-                const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');`
-
-                transformed = replaceString(transformed, node.start, node.end, replace)
-
             }
-        })       
+        }
 
-        transformed = minify(transformed)
-        nodes = parser.toNodes(transformed)
-
-        // handle console.log
-        deepForEach(nodes, (node) => {
-            if (node instanceof HConsole) {                
-                const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
-                
-                transformed = replaceString(transformed, node.start, node.end, replace)
-            }
-        })
-
-        transformed = minify(transformed)
-        nodes = parser.toNodes(transformed)
+        const transformed = transformAll(code, [
+            transformExports,
+            transformImports,
+            transformConsole
+        ])
 
         const lines = [
             "// -------- hecate header -------- //",
@@ -128,7 +180,7 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
             "",
             "// -------- code -------- //",
             "",
-            nodes.toText().trim(),
+            transformed,
         ]
 
         if (needExport.length) {

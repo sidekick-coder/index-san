@@ -5,7 +5,7 @@ import HConsole from '../nodes/HConsole'
 
 export default class HConsoleProcessor extends BaseProcessor<HNode> {
 
-    public order = 1
+    public order = 2
 
     public findEnd() {
         return this.tokens.findIndex((t) => {
@@ -13,9 +13,14 @@ export default class HConsoleProcessor extends BaseProcessor<HNode> {
                 return true
             }
 
+            if (t.value === ')') {
+                return true
+            }
+
             if (t.type === 'BreakLine') {
                 return true
             }
+
 
             return false
         })
