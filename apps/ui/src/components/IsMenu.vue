@@ -74,8 +74,9 @@ onClickOutside(floating, () => {
 
     <div
         ref="floating"
-        :style="floatingStyles"
         class="z-20"
+        :style="floatingStyles"
+        :class="!model ? 'pointer-events-none' : ''"
         @click="onContentClick"
     >
         <transition
