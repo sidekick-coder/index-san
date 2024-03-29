@@ -18,6 +18,7 @@ function show(value: Error) {
             <template #activator="{ attrs }">
                 <is-btn
                     v-bind="attrs"
+                    variant="text"
                     size="none"
                     class="h-10 w-10"     
                     @click="drawer = true"

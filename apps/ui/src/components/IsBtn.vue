@@ -11,12 +11,12 @@ classMap.value.set('general', 'inline-flex items-center justify-center')
 // color
 const variant = defineProp<'text' | 'fill'>('variant', {
     type: String,
-    default: 'text',
+    default: 'fill',
 })
 
 const color = defineProp<'zinc' | 'accent' | 'primary'>('color',  {
     type: String,
-    default: 'zinc',
+    default: 'primary',
 })
 
 function setFillColor(){
