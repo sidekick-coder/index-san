@@ -41,6 +41,10 @@ export default class ChronoApp {
         this.headEntryRepository = new LocalHeadEntryRepository(drive, this.objectRepository)
     }
 
+    public async hasRepository() {
+        return await this.drive.exists('.chrono')
+    }
+
     public async init() {
         const useCase = new InitUseCase(this.drive)
 

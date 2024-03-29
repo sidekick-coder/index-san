@@ -33,10 +33,16 @@ export default class LocalObjectRepository implements IObjectRepository {
     }
 
     public findAll: IObjectRepository['findAll'] = async () => {
-        const files = await this.drive.readdir(this.directory, {
-            recursive: true,
-            onlyFiles: true,
-        })
+        const folders = await this.drive.readdir(this.directory)
+        const files: string[] = []
+
+        for await (const folder of folders) {
+            const folderPath = this.drive.resolve(this.directory, folder)
+
+            const folderFiles = await this.drive.readdir(folderPath)
+
+            files.push(...folderFiles.map((file) => `${folder}/${file}`))
+        }
 
         const result: ChronoObject[] = []
 

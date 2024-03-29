@@ -17,7 +17,7 @@ const loading = ref(true)
 const search = ref('')
 const entries = ref<DriveEntry[]>([])
 const exclude = {
-    folders: ['.is']
+    folders: ['.is', '.chrono']
 }
 
 const filteredEntries = computed(() => {

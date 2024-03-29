@@ -16,15 +16,14 @@ export default class StatusUseCase {
     public async execute() {
         const service = new HashEntryService(this.drive, this.objectRepository, this.blobRepository)
 
-        const allFiles = await this.drive.readdir('.', {
-            recursive: true,
-            exclude: ['.chrono'],
-            onlyFiles: true,
-        })
+        const allFiles = await this.drive.findAllFiles()
+
+        const filteredFiles = allFiles.filter((f) => !f.includes('.chrono'))
 
         const entries = await this.entryRepository.findAll()
 
-        const untracked = allFiles.filter((f) => !entries.some((e) => e.path === f))
+        const untracked = filteredFiles.filter((f) => !entries.some((e) => e.path === f))
+
         const added = entries
             .filter((e) => [IndexEntryStatus.Added, IndexEntryStatus.Modified].includes(e.status))
             .map((e) => e.path)

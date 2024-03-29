@@ -12,12 +12,16 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         return args === '' ? '/' : args
     }
 
+    const isRootPath = (path: string) => {
+        return ['/', '', '.'].includes(path)
+    }
+
     const basename = (path: string) => {
         return path.split('/').pop() || '/'
     }
 
     const getHandleByPath = async (path: string) => {
-        if (path === '/') {
+        if (isRootPath(path)) {
             return handle
         }
 
@@ -37,10 +41,17 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const list: Drive['list'] = async (path) => {
+        console.debug('[drive-fs-api] list', path)
+
+        const entry = await get(path)
+
+        if (!entry) {
+            throw new Error('Not found')
+        }
 
         const result = [] as DriveEntry[]
 
-        if (path === '/') {
+        if (isRootPath(path)) {
             for await (const entry of handle.values()) {
                 result.push({
                     name: entry.name,
@@ -70,8 +81,9 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const get: Drive['get'] = async (path) => {
+        console.debug('[drive-fs-api] get', path)
 
-        if (path === '/') {
+        if (isRootPath(path)) {
             return {
                 name: '',
                 path: '/',
@@ -87,9 +99,16 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const read: Drive['read'] = async (path) => {
+        console.debug('[drive-fs-api] read', path)
 
-        const folderHandle = await getHandleByPath(dirname(path))
+        const entry = await get(path)
 
+        if (!entry) {
+            return null
+        }
+        
+        const folderHandle = await getHandleByPath(dirname(path))        
+        
         const fileHandle = await folderHandle.getFileHandle(basename(path), {
             create: false
         })
@@ -102,6 +121,8 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const write: Drive['write'] = async (path, content) => {
+        console.debug('[drive-fs-api] write', path)
+
         const folderHandle = await getHandleByPath(dirname(path))
 
         const fileHandle = await folderHandle.getFileHandle(basename(path), {
@@ -116,6 +137,8 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const destroy: Drive['destroy'] = async (path) => {
+        console.debug('[drive-fs-api] destroy', path)
+
         const folderHandle = await getHandleByPath(dirname(path))
 
         await folderHandle.removeEntry(basename(path), {
@@ -124,6 +147,7 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const move: Drive['move'] = async (from, to) => {
+        console.debug('[drive-fs-api] move', { from, to })
 
         const entry = await get(from)
 
@@ -143,6 +167,8 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     const mkdir: Drive['mkdir'] = async (path) => {
+        console.debug('[drive-fs-api] mkdir', path)
+
         const folderHandle = await getHandleByPath(dirname(path))
 
         await folderHandle.getDirectoryHandle(basename(path), {
@@ -150,5 +176,13 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         })
     }
 
-    return { list, get, read, write, destroy, move, mkdir }
+    return {
+        list,
+        get,
+        read,
+        write,
+        destroy,
+        move,
+        mkdir
+    }
 }

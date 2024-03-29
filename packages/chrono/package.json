@@ -1,5 +1,5 @@
 {
-  "name": "@index-san/chrono",
+  "name": "chrono",
   "version": "1.0.0",
   "description": "Crono file version",
   "main": "index.js",

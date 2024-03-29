@@ -3,6 +3,7 @@
 // general
 const route = useRoute()
 const router = useRouter()
+const tm = useI18n()
 
 // drawer
 const drawer = defineModel('drawer', {
@@ -15,17 +16,22 @@ const links = [
     {
         to: '/entries',
         icon: 'mdi:folder',
-        label: 'fileExplorer'
+        label: tm.t('fileExplorer')
     },
     {
         to: '/workspace-selector',
         icon: 'fa:cubes',
-        label: 'workspace'
+        label: tm.t('workspace')
     },
     {
         to: '/cheat-sheet',
         icon: 'mdi:markdown',
-        label: 'cheatSheet'
+        label: tm.t('cheatSheet')
+    },
+    {
+        to: '/chrono',
+        icon: 'mdi:clock-time-four-outline',
+        label: 'Version management'
     }
 ]
 
@@ -70,7 +76,7 @@ function onItemClick(to: string) {
                 </template>
 
                 <div>
-                    {{ $t(link.label, 2) }}
+                    {{ link.label }}
                 </div>
             </is-tooltip>            
             

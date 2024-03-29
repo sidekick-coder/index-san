@@ -7,6 +7,11 @@ export default class LocalIndexEntryRepository implements IIndexEntryRepository 
     constructor(private readonly drive: IDrive) {}
 
     public findAll: IIndexEntryRepository['findAll'] = async () => {
+
+        if (!this.drive.exists('.chrono/index')) {
+            await this.saveAll([])
+        }
+
         const contents = await this.drive.read('.chrono/index')
 
         const json = JSON.parse(contents ? HelperService.decode(contents) : '[]')

@@ -26,6 +26,7 @@
     "apexcharts": "^3.48.0",
     "chart.js": "^4.3.0",
     "chartjs-plugin-annotation": "^3.0.1",
+    "chrono": "^1.0.0",
     "hecate": "*",
     "hephaestus": "*",
     "highlight.js": "^11.8.0",

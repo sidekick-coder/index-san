@@ -7,6 +7,8 @@ export default class LogUseCase {
     public async execute() {
         const objects = await this.objectRepository.findAll()
 
+        console.log(objects)
+
         return objects
             .filter((object) => object.type === 'commit')
             .map((o) => new ChronoObjectCommit(o.content, o.hash))
