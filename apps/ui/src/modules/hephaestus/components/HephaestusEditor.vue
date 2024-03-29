@@ -159,7 +159,16 @@ const compiler = createCompiler({
                     class="h-10 w-10"                    
                     to="/entries"
                 >
-                    <is-icon name="heroicons-solid:home" />
+                    <is-icon name="heroicons:home-solid" />
+                </is-btn>
+                <is-btn
+                    variant="text"
+                    color="primary"
+                    size="none"
+                    class="h-10 w-10"
+                    @click="load"
+                >
+                    <is-icon name="heroicons:arrow-path-solid" />
                 </is-btn>
             </div>
 

@@ -95,7 +95,7 @@ function setControls(){
 }
 
 
-watch(() => route.path, setControls, { immediate: true })
+watch(() => route.fullPath, setControls, { immediate: true })
 
 // entry crud
 async function createFile(){
@@ -232,7 +232,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     :class="controls.home ? '' : 'text-gray-500 pointer-events-none'"
                     to="/entries"
                 >
-                    <is-icon name="heroicons-solid:home" />
+                    <is-icon name="heroicons:home-solid" />
                 </is-btn>
                 
                 <is-btn
@@ -243,7 +243,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     :class="controls.back ? '' : 'text-gray-500 pointer-events-none'"
                     @click="$router.back()"
                 >
-                    <is-icon name="heroicons-solid:arrow-left-circle" />
+                    <is-icon name="heroicons:arrow-left-circle-solid" />
                 </is-btn>
                 
                 <is-btn
@@ -254,7 +254,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     :class="controls.forward ? '' : 'text-gray-500 pointer-events-none'"
                     @click="$router.forward()"
                 >
-                    <is-icon name="heroicons-solid:arrow-right-circle" />
+                    <is-icon name="heroicons:arrow-right-circle-solid" />
                 </is-btn>
 
                 <is-btn
@@ -264,7 +264,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     class="h-10 w-10"
                     @click="load"
                 >
-                    <is-icon name="heroicons-solid:refresh" />
+                    <is-icon name="heroicons:arrow-path-solid" />
                 </is-btn>
                 <is-menu>
                     <template #activator="{ attrs }">
@@ -275,7 +275,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                             class="h-10 w-10"
                             v-bind="attrs"
                         >
-                            <is-icon name="heroicons-solid:plus" />
+                            <is-icon name="heroicons:plus-solid" />
                         </is-btn>                    
                     </template>
 
