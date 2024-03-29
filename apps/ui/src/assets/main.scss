@@ -40,9 +40,14 @@
 // Scrollbar
 *::-webkit-scrollbar {
     width: .5em;
+    height: .5em;
 }
  
 *::-webkit-scrollbar-track {
+    background: rgb(var(--color-body-900))
+}
+
+*::-webkit-scrollbar-corner {
     background: rgb(var(--color-body-900))
 }
  
@@ -52,6 +57,10 @@
 
 .bg-body-700 {
     *::-webkit-scrollbar-track {
+        background: rgb(var(--color-body-800))
+    }
+
+    *::-webkit-scrollbar-corner {
         background: rgb(var(--color-body-800))
     }
 

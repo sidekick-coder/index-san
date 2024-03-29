@@ -1,11 +1,43 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { createEditor } from '@/modules/monaco/composables/createEditor'
+import { createEditor, type EditorOptions } from '@/modules/monaco/composables/createEditor'
 
 // editor
 const language = defineProp<string>('language', {
     type: String,
     default: 'plaintext',
+})
+
+const lineNumbers = defineProp<EditorOptions['lineNumbers']>('lineNumbers', {
+    type: String,
+    default: 'on',
+})
+
+const lineDecorationsWidth = defineProp<EditorOptions['lineDecorationsWidth']>('lineDecorationsWidth', {
+    type: Number,
+    default: undefined,
+})
+
+const folding = defineProp<EditorOptions['folding']>('folding', {
+    type: Boolean,
+    default: true,
+})
+
+const minimap = defineProp<EditorOptions['minimap']>('minimap', {
+    type: Object,
+    default: () => ({
+        enabled: false,
+    }),
+})
+const scrollbar = defineProp<EditorOptions['scrollbar']>('scrollbar', {
+    type: Object,
+    default: () => ({
+        verticalScrollbarSize: 10,
+        horizontalScrollbarSize: 10,
+        useShadows: false,
+        horizontal: 'visible',
+        vertical: 'visible',
+    }),
 })
 
 const model = defineModel({
@@ -27,16 +59,11 @@ function setEditor(){
         overviewRulerBorder: false,
         theme: 'default',
         trimAutoWhitespace: false,
-        minimap: {
-            enabled: false,
-        },
-        scrollbar: {
-            verticalScrollbarSize: 10,
-            horizontalScrollbarSize: 10,
-            useShadows: false,
-            horizontal: 'visible',
-            vertical: 'visible',
-        },
+        lineNumbers: lineNumbers.value,
+        minimap: minimap.value,
+        folding: folding.value,
+        scrollbar: scrollbar.value,
+        lineDecorationsWidth: lineDecorationsWidth.value,
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))

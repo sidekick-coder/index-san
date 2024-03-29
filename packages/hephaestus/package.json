@@ -16,7 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@language-kit/markdown": "^1.5.2",
+    "@language-kit/markdown": "^1.6.0",
+    "@vueuse/core": "^10.9.0",
     "hecate": "^1.0.0"
   }
 }

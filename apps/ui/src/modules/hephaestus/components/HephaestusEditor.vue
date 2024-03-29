@@ -10,6 +10,7 @@ import { createCommonImportResolvers } from '@/modules/hecate/composables/create
 import IsBtn from '@/components/IsBtn.vue'
 import EditorLogs from './HephaestusEditorLogs.vue'
 import EditorErrors from './HephaestusEditorErrors.vue'
+import EditorTextarea from './HephaestusEditorEditTextarea.vue'
 
 import BlockChart from './HephaestusBlockChart.vue'
 import type { MarkdownNodeComponent } from '@language-kit/markdown'
@@ -68,34 +69,52 @@ function setMode(value: 'text' | 'blocks' | 'split'){
     }, 500)
 }
 
-// compiler
-const importResolvers = [] as HecateCompilerImportResolver[]
-
-importResolvers.push(
-    ...createCommonImportResolvers(),
-    ...createDriveImportResolvers({ fromEntryPath: path.value })
-)
-
-const compiler = createCompiler({
-    importResolvers,
-    logger: {
-        log: (...args) => logs.value.push(args.join(' ')),    
-    }
-})
-
 // editor
 const saving = ref(false)
+const text = ref('')
 
+const { nodes, setNodes } = createEditor()
+
+async function save(){
+    saving.value = true
+
+    await drive.write(path.value, text.value)
+
+    setTimeout(() => {
+        saving.value = false
+    }, 500)
+}
+
+async function saveText(){
+    await save()
+
+    setNodes(text.value)
+}
+
+function setTextByContents(){
+    if (contents.value) {
+        text.value = decode(contents.value).replace(/\r\n/g, '\n')
+
+        setNodes(text.value)
+    }
+}
+
+function setTextByNodes(){
+    text.value = nodes.value.map(n => n.toText()).join('')
+
+    save()
+}
+
+watch(contents, setTextByContents)
+watch(nodes, setTextByNodes)
+
+// components & blocks
 const blocks = [
     {
         test: (node: MarkdownNodeComponent) => node.is('Component') && node.name === 'chart',
         component: BlockChart,
     }
 ]
-
-const errors = ref<Error[]>([])
-const logs = ref<string[]>([])
-const { text, nodes, setNodes } = createEditor()
 
 const editorComponents = [
     {
@@ -105,27 +124,28 @@ const editorComponents = [
     }
 ]
 
-function setEditorText(){
-    if (contents.value) {
-        text.value = decode(contents.value)
+// logs & errors
+const errors = ref<Error[]>([])
+const logs = ref<string[]>([])
 
-        setNodes()
-    }
+// compiler
+const importResolvers = [
+    ...createCommonImportResolvers(),
+    ...createDriveImportResolvers({ fromEntryPath: path.value })
+]
+
+const logger = {
+    log: (...args: string[]) => logs.value.push(args.join(' ')),
 }
 
-async function save(){
-    saving.value = true
+const compiler = createCompiler({
+    importResolvers,
+    logger
+})
 
-    await drive.write(path.value, text.value)
+// save
 
-    setNodes()
 
-    setTimeout(() => {
-        saving.value = false
-    }, 500)
-}
-
-watch(contents, setEditorText)
 </script>
 
 <template>
@@ -181,7 +201,7 @@ watch(contents, setEditorText)
                         v-model="text"
                         language="hephaestus"
                         hide-line-numbers
-                        @keydown.ctrl.s.prevent="save"
+                        @keydown.ctrl.s.prevent="saveText"
                     />
                 </div>
             
@@ -196,6 +216,7 @@ watch(contents, setEditorText)
                         :components="editorComponents"
                         :compiler="compiler"
                         :blocks="blocks"
+                        :edit-textarea-component="EditorTextarea"
                     />
                 </div>
             </template>

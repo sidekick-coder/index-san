@@ -1,30 +1,25 @@
 <script lang="ts" setup>
-import { MarkdownNode, MarkdownNodeComponent } from '@language-kit/markdown'
+import { MarkdownNode, MarkdownNodeComponent, MarkdownParser } from '@language-kit/markdown'
 import { ref, watch } from 'vue';
-import { HecateCompiler, HecateCompilerResult } from 'hecate/composables/createCompiler'
+import { HecateCompiler } from 'hecate/composables/createCompiler'
+import { onClickOutside } from '@vueuse/core'
 
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
 import BlockComponent from './BlockComponent.vue'
 
 import BlockError from './BlockError.vue'
-import HVariable from '../../hecate/nodes/HVariable';
-import HFunction from '../../hecate/nodes/HFunction';
+import EditorEditTextarea from './EditorEditTextarea.vue'
+
+import HVariable from 'hecate/nodes/HVariable';
+import HFunction from 'hecate/nodes/HFunction';
 import HImport from 'hecate/nodes/HImport';
 
+
+// extensions
 const components = defineProp('components', {
     type: Array,
     default: () => ([])
-})
-
-const nodes = defineModel<MarkdownNode[]>({
-    type: Array,
-    default: () => []
-})
-
-const blockAttrs = defineProp<any>('blockAttrs', {
-    type: Object,
-    default: () => ({})
 })
 
 const blocks = defineProp<any[]>('blocks', {
@@ -32,9 +27,15 @@ const blocks = defineProp<any[]>('blocks', {
     default: () => ([])
 })
 
-const compiler = defineProp<HecateCompiler>('compiler', {
+const editTextareaComponent = defineProp<any>('editTextareaComponent', {
     type: Object,
-    default: null,
+    default: () => EditorEditTextarea
+})
+
+// nodes
+const nodes = defineModel<MarkdownNode[]>({
+    type: Array,
+    default: () => [],
 })
 
 function isEmpty(node: MarkdownNode) {
@@ -46,6 +47,10 @@ function isEmpty(node: MarkdownNode) {
 }
 
 // setup
+const compiler = defineProp<HecateCompiler>('compiler', {
+    type: Object,
+    default: null,
+})
 
 const context = ref<any>({})
 const loading = ref(true)
@@ -128,50 +133,117 @@ watch(nodes, setSetup, {
     deep: true
 })
 
+// edit
+const parser = defineProp<MarkdownParser>('parser', {
+    type: Object,
+    default: () => new MarkdownParser()
+})
+
+const editedIndex = ref(-1)
+const editedText = ref('')
+const editedNode = ref<MarkdownNode>()
+const editedContainerRef = ref<any>()
+
+function editNode(node: MarkdownNode, index: number) {
+    editedIndex.value = index
+    editedText.value = node.toText()
+    editedNode.value = node
+}
+
+function discardEditedNode(){
+    editedIndex.value = -1
+    editedText.value = ''
+    editedNode.value = undefined
+}
+
+function saveEditedNode(){
+    if (editedIndex.value === -1) return
+
+    let text = nodes.value.map(n => n.toText()).join('')
+
+    const start = editedNode.value?.start
+    const end = editedNode.value?.end === -1 ? text.length : editedNode.value?.end
+
+    if (start === undefined || end === undefined) {
+        editedIndex.value = -1
+        editedText.value = ''
+        editedNode.value = undefined
+
+        console.error('[hephaestus] error updating nodes')
+        return
+    }
+
+    text = text.slice(0, start) + editedText.value + text.slice(end + 1)
+    
+    nodes.value = parser.value.toNodes(text)
+
+    editedIndex.value = -1
+    editedText.value = ''
+}
+
+onClickOutside(editedContainerRef, saveEditedNode)
 </script>
 
 <template>
     <div class="h-full overflow-auto">
         <div v-if="!loading" class="flex flex-col">
 
-            <BlockError v-for="node in nodes">
+            <BlockError
+                v-for="(node, index) in nodes"
+                :key="index"
+                @click="editNode(node, index)"
+                class="relative"
+            >
 
-                <component
-                    v-if="blocks.some(b => b.test(node))"
-                    :is="blocks.find(b => b.test(node)).component"
-                    :model-value="node"
-                    :context="context"
-                    v-bind="blockAttrs"
-                />
-    
-                <div v-else-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
-    
-                <BlockParagraph
-                    v-else-if="node.is('Paragraph')"
-                    :model-value="node"
-                    :context="context"
-                    v-bind="blockAttrs"
-                />
-    
-                <BlockComponent
-                    v-else-if="node.is('Component')"
-                    :model-value="node"
-                    :components="components"
-                    :context="context"
-                    v-bind="blockAttrs"
-                />
-    
-                <BlockHeading
-                    v-else-if="node.is('Heading')"
-                    :model-value="node"
-                    v-bind="blockAttrs"
-                />
-    
-                <div v-else>
-    
-                    Invalid node type: {{ node.type }}
+                <div
+                    v-if="editedIndex === index"
+                    :ref="e => editedContainerRef = e"
+                    class="relative"
+                >
+                    <component
+                        :is="editTextareaComponent"
+                        v-if="editedIndex === index"
+                        v-model="editedText"
+                        @blur="saveEditedNode"
+                    />
                 </div>
-                
+
+                <div v-else>
+                    <component
+                        v-if="blocks.some(b => b.test(node))"
+                        :is="blocks.find(b => b.test(node)).component"
+                        :model-value="node"
+                        :context="context"
+                    />
+        
+                    <div v-else-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
+        
+                    <BlockParagraph
+                        v-else-if="node.is('Paragraph')"
+                        :model-value="node"
+                        :context="context"
+                    />
+        
+                    <BlockComponent
+                        v-else-if="node.is('Component')"
+                        :model-value="node"
+                        :components="components"
+                        :context="context"
+                    />
+        
+                    <BlockHeading
+                        v-else-if="node.is('Heading')"
+                        :model-value="node"
+                    />
+        
+                    <div v-else>
+        
+                        Invalid node type: {{ node.type }}
+                    </div>
+                    
+                </div>
+
+
             </BlockError>
         </div>
 
