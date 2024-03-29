@@ -50,7 +50,7 @@ const modes = [
     {
         id: 'blocks' as const,
         label: tm.t('block'),
-        icon: 'heroicons-solid:cube',
+        icon: 'heroicons:cube-solid',
     },
     {
         id: 'text' as const,
@@ -207,7 +207,7 @@ const compiler = createCompiler({
             
                 <div
                     v-if="mode === 'blocks' || mode === 'split'"
-                    class="flex-1"
+                    class="flex-1 max-w-full"
                 >
                     <HephaestusEditor
                         v-model="nodes"
@@ -223,7 +223,7 @@ const compiler = createCompiler({
         </div>
 
         
-        <div class="h-8 bg-body-900 w-full flex text-xs">
+        <div class="h-8 bg-body-900 w-full flex text-xs z-10">
             <div
                 v-for="m in modes"
                 :key="m.id"

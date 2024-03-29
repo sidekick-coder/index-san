@@ -14,7 +14,7 @@ const icon = defineProp('icon', {
             <is-icon :name="icon" />
         </div>
 
-        <div class="flex-1 flex items-center">
+        <div class="flex-1 flex items-center max-w-full">
             <slot />
             
         </div>

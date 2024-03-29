@@ -30,9 +30,7 @@ const compiler = createCompiler({
 async function setOptions(){
     const code = node.value.body
 
-    const result  = await compiler.compile(code)
-
-    console.log(result)
+    await compiler.compile(code)
 }
 
 watch(node, setOptions, { immediate: true })

@@ -40,6 +40,11 @@ const scrollbar = defineProp<EditorOptions['scrollbar']>('scrollbar', {
     }),
 })
 
+const autofocus = defineProp<boolean>('autofocus', {
+    type: Boolean,
+    default: false,
+})
+
 const model = defineModel({
     type: String,
     default: ''
@@ -49,6 +54,8 @@ const root = ref<HTMLElement>()
 const editorRef = ref<HTMLElement>()
 
 let editor: ReturnType<typeof createEditor>
+
+const emit = defineEmits(['blur'])
 
 function setEditor(){
     if (!editorRef.value) return
@@ -67,6 +74,14 @@ function setEditor(){
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
+
+    if (autofocus) {
+        editor.focus()
+    }
+
+    editor.onDidBlurEditorWidget(() => {
+        emit('blur')
+    })
 }
 
 onMounted(setEditor)

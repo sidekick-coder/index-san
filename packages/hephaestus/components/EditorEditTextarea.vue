@@ -22,13 +22,13 @@ onMounted(() => {
 
     if (!root.value) return
 
-    // root.value.addEventListener('change', setTextareaSize)
+    root.value.addEventListener('change', setTextareaSize)
 })
 
 onUnmounted(() => {
     if (!root.value) return
 
-    // root.value.removeEventListener('change', setTextareaSize)
+    root.value.removeEventListener('change', setTextareaSize)
 })
 
 </script>

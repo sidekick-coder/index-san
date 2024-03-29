@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 
-const root = ref<HTMLTextAreaElement>()
+const emit = defineEmits(['save'])
 
 const model = defineModel<string>({
     type: String,
@@ -23,7 +23,7 @@ watch(model, setSize, { immediate: true })
 <template>
     <div
         :style="{ height: height + 'px' }"
-        class="flex"
+        class="flex w-full overflow-auto"
     >
         <div class="w-10" />
 
@@ -31,8 +31,11 @@ watch(model, setSize, { immediate: true })
             v-model="model"
             language="hephaestus"
             line-numbers="off"
+            autofocus
             :folding="false"
             :line-decorations-width="0"
+            @keydown.ctrl.s.prevent="$emit('save')"
+            @blur="$emit('save')"
         />
     </div>
 </template>

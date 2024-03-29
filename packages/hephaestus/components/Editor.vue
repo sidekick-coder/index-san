@@ -185,7 +185,7 @@ onClickOutside(editedContainerRef, saveEditedNode)
 </script>
 
 <template>
-    <div class="h-full overflow-auto">
+    <div class="h-full w-full overflow-auto pb-[60%]">
         <div v-if="!loading" class="flex flex-col">
 
             <BlockError
@@ -205,45 +205,41 @@ onClickOutside(editedContainerRef, saveEditedNode)
                         v-if="editedIndex === index"
                         v-model="editedText"
                         @blur="saveEditedNode"
+                        @save="saveEditedNode"
                     />
                 </div>
-
+                
+                <component
+                    v-else-if="blocks.some(b => b.test(node))"
+                    :is="blocks.find(b => b.test(node)).component"
+                    :model-value="node"
+                    :context="context"
+                />
+    
+                <div v-else-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
+    
+                <BlockParagraph
+                    v-else-if="node.is('Paragraph')"
+                    :model-value="node"
+                    :context="context"
+                />
+    
+                <BlockComponent
+                    v-else-if="node.is('Component')"
+                    :model-value="node"
+                    :components="components"
+                    :context="context"
+                />
+    
+                <BlockHeading
+                    v-else-if="node.is('Heading')"
+                    :model-value="node"
+                />
+    
                 <div v-else>
-                    <component
-                        v-if="blocks.some(b => b.test(node))"
-                        :is="blocks.find(b => b.test(node)).component"
-                        :model-value="node"
-                        :context="context"
-                    />
-        
-                    <div v-else-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
-        
-                    <BlockParagraph
-                        v-else-if="node.is('Paragraph')"
-                        :model-value="node"
-                        :context="context"
-                    />
-        
-                    <BlockComponent
-                        v-else-if="node.is('Component')"
-                        :model-value="node"
-                        :components="components"
-                        :context="context"
-                    />
-        
-                    <BlockHeading
-                        v-else-if="node.is('Heading')"
-                        :model-value="node"
-                    />
-        
-                    <div v-else>
-        
-                        Invalid node type: {{ node.type }}
-                    </div>
-                    
+    
+                    Invalid node type: {{ node.type }}
                 </div>
-
-
             </BlockError>
         </div>
 
