@@ -205,8 +205,8 @@ monaco.editor.defineTheme('default', {
     colors: {
         'editor.foreground': '#fafafa',
         'editor.background': '#2c291c',
-        'editor.selectionBackground': '#1e1b0d',
-        'editor.lineHighlightBackground': '#1e1b0d',
+        'editor.selectionBackground': '#3d3a2e',
+        'editor.lineHighlightBackground': '#3d3a2e',
         'editorCursor.foreground': '#fafafa',
         'editorWhitespace.foreground': '#7f7d75',
         'editorIndentGuide.activeBackground': '#c4c3bf',

@@ -12,9 +12,9 @@ const model = defineModel<string>({
 const height = ref(56)
 
 function setSize(){
-    const lines = model.value.split('\n').length
+    const lines = model.value.split('\n').length + 4
 
-    height.value = Math.max(56, lines * 20)
+    height.value = Math.max(60, lines * 20)
 }
 
 watch(model, setSize, { immediate: true })

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarkdownNode, MarkdownNodeComponent, MarkdownParser } from '@language-kit/markdown'
+import { MarkdownNode, MarkdownNodeComponent, MarkdownParser, MarkdownNodeBreakLine } from '@language-kit/markdown'
 import { ref, watch } from 'vue';
 import { HecateCompiler } from 'hecate/composables/createCompiler'
 import { onClickOutside } from '@vueuse/core'
@@ -39,6 +39,9 @@ const nodes = defineModel<MarkdownNode[]>({
 })
 
 function isEmpty(node: MarkdownNode) {
+
+    if (node instanceof MarkdownNodeBreakLine) return true
+
     if (!node.is('Paragraph')) return false
 
     // if is an empty paragraph
