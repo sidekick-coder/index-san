@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 
 import { RouterLink } from 'vue-router';
+import { twMerge } from 'tailwind-merge'
 
 // general
+const className = defineProp<string | string[]>("class")
 const classMap = ref(new Map<string, string>())
-const classes = computed(() => Array.from(classMap.value.values()).join(' '))
+const classes = computed(() => {
+    return twMerge(Array.from(classMap.value.values()).join(' '), className.value)
+})
 
 classMap.value.set('general', 'inline-flex items-center justify-center')
 

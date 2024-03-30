@@ -7,13 +7,9 @@ import { twMerge } from 'tailwind-merge'
 // general
 
 const attrs = useAttrs()
-const className = defineProp<string | string[]>("class", {
-    type: String,
-    default: '',
-})
 
+const className = defineProp<any>("class")
 const classMap = ref(new Map<string, string>())
-
 const classes = computed(() => {
     return twMerge(Array.from(classMap.value.values()).join(' '), className.value)
 })
