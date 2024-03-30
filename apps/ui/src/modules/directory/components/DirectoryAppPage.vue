@@ -3,6 +3,8 @@ import type { DriveEntry } from '@/composables/useDrive';
 import orderBy from 'lodash/orderBy'
 import { useDirectoryStore } from '@/modules/directory/store';
 
+import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
+
 // general
 const route = useRoute()
 
@@ -26,7 +28,12 @@ const entries = computed(() => {
 })
 
 const filteredEntries = computed(() => {
-    return entries.value.filter(e => {
+
+    if (!search.value) {
+        return entries.value
+    }
+
+    return directoryStore.entries.filter(e => {
         if (search.value.length > 0 && !e.path.includes(search.value)) {
             return false
         }
@@ -205,104 +212,32 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
 </script>
 <template>
     <div class="w-full h-full flex flex-col">
-        <div class="w-full h-14 border-b border-body-500 flex items-center px-10 gap-x-5">
-            <div class="-ml-3 flex gap-x-2">
+        <DirectoryEntryToolbar :path="path">
+            <template #append-controls>
                 <is-btn
                     variant="text"
                     color="primary"
                     size="none"
-                    class="h-10 w-10"
-                    :class="controls.home ? '' : 'text-gray-500 pointer-events-none'"
-                    to="/entries"
-                >
-                    <is-icon name="heroicons:home-solid" />
-                </is-btn>
-                
-                <is-btn
-                    variant="text"
-                    color="primary"
-                    size="none"
-                    class="h-10 w-10"
-                    :class="controls.back ? '' : 'text-gray-500 pointer-events-none'"
-                    @click="$router.back()"
-                >
-                    <is-icon name="heroicons:arrow-left-circle-solid" />
-                </is-btn>
-                
-                <is-btn
-                    variant="text"
-                    color="primary"
-                    size="none"
-                    class="h-10 w-10"
-                    :class="controls.forward ? '' : 'text-gray-500 pointer-events-none'"
-                    @click="$router.forward()"
-                >
-                    <is-icon name="heroicons:arrow-right-circle-solid" />
-                </is-btn>
-
-                <is-btn
-                    variant="text"
-                    color="primary"
-                    size="none"
-                    class="h-10 w-10"
+                    class="h-8 w-8"
                     @click="directoryStore.load"
                 >
-                    <is-icon name="heroicons:arrow-path-solid" />
+                    <is-icon
+                        size="sm"
+                        name="heroicons:arrow-path-solid"
+                    />
                 </is-btn>
-                <is-menu>
-                    <template #activator="{ attrs }">
-                        <is-btn
-                            variant="text"
-                            color="primary"
-                            size="none"
-                            class="h-10 w-10"
-                            v-bind="attrs"
-                        >
-                            <is-icon name="heroicons:plus-solid" />
-                        </is-btn>                    
-                    </template>
+            </template>
 
-                    <is-card>
-                        <is-list-item
-                            size="sm"
-                            @click="createFile"
-                        >
-                            <is-icon name="heroicons-solid:document" />
-                            <div class="ml-4">
-                                New File
-                            </div>
-                        </is-list-item>
-                        <is-list-item
-                            size="sm"
-                            @click="createFolder"
-                        >
-                            <is-icon name="heroicons-solid:folder" />
-                            <div class="ml-4">
-                                New Folder
-                            </div>
-                        </is-list-item>
-                    </is-card>
-                </is-menu>
-            </div>
-
-            <div class="flex-1">
-                <div
-                    class="text-xs h-10 bg-body-500 w-full px-4 py-2 outline-none rounded flex items-center gap-x-2 text-body-100"
-                >
-                    <is-icon name="heroicons-solid:computer-desktop" />
-
-                    {{ path === '/' ? '/' : `/${path}` }}
-                </div>  
-            </div>
-
-            <div class="w-80">
-                <input
-                    v-model="search"
-                    class="bg-body-500 w-full px-4 py-2 outline-none rounded text-xs h-10 border border-transparent focus:border-primary-500"
-                    placeholder="Search..."
-                >
-            </div>
-        </div>
+            <template #right>
+                <div class="w-80">
+                    <input
+                        v-model="search"
+                        class="bg-body-500 w-full px-4 py-2 outline-none rounded text-xs h-8 border border-transparent focus:border-primary-500"
+                        placeholder="Search..."
+                    >
+                </div>
+            </template>
+        </DirectoryEntryToolbar>
 
         <div class="flex-1 overflow-y-auto relative">
             <div
@@ -348,7 +283,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                             >
 
                             <div v-else>
-                                {{ e.name }}
+                                {{ search ? e.path : e.name }}
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import { createCompiler, type HecateCompilerImportResolver, type HecateCompilerR
 import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
 import { createCommonImportResolvers } from '@/modules/hecate/composables/createCommonImportResolvers'
 
+import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
 import IsBtn from '@/components/IsBtn.vue'
 import EditorLogs from './HephaestusEditorLogs.vue'
 import EditorErrors from './HephaestusEditorErrors.vue'
@@ -151,47 +152,28 @@ const compiler = createCompiler({
 
 <template>
     <div class="flex flex-col h-full">
-        <div class="h-16 border-b border-body-500 flex items-center px-10 gap-x-5">
-            <div class="-ml-3">
+        <DirectoryEntryToolbar :path="path">
+            <template #append-controls>
                 <is-btn
                     variant="text"
                     color="primary"
                     size="none"
-                    class="h-10 w-10"                    
-                    to="/entries"
-                >
-                    <is-icon name="heroicons:home-solid" />
-                </is-btn>
-                <is-btn
-                    variant="text"
-                    color="primary"
-                    size="none"
-                    class="h-10 w-10"
+                    class="h-8 w-8"
                     @click="load"
                 >
                     <is-icon name="heroicons:arrow-path-solid" />
                 </is-btn>
-            </div>
+            </template>
 
-            <div class="flex-1">
-                <div
-                    class="text-sm h-10 bg-body-500 w-full px-4 py-2 outline-none rounded flex items-center gap-x-2 text-body-100"
-                >
-                    <is-icon name="heroicons-solid:computer-desktop" />
+            <template #right>
+                <div class="flex -mr-2 items-center">
+                    <editor-logs :logs="logs" />
+                    <editor-errors :errors="errors" />
+                </div>
+            </template>
+        </DirectoryEntryToolbar>
 
-                    {{ `/${path}` }}
-                </div>  
-            </div>
-
-            <div class="flex-1" />
-
-            <div class="flex">
-                <editor-logs :logs="logs" />
-                <editor-errors :errors="errors" />
-            </div>
-        </div>
-
-        <div class="flex h-[calc(100%-2rem-4rem)]">
+        <div class="flex h-[calc(100%-2rem-3rem)]">
             <div
                 v-if="loadingMode"
                 class="flex items-center justify-center size-full"

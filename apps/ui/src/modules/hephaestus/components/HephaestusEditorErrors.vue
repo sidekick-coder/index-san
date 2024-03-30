@@ -20,10 +20,11 @@ function show(value: Error) {
                     v-bind="attrs"
                     variant="text"
                     size="none"
-                    class="h-10 w-10"     
+                    class="h-8 w-8"     
                     @click="drawer = true"
                 >
                     <is-icon
+                        size="sm"
                         name="heroicons-solid:exclamation-triangle"
                         :class="errors.length ? 'text-red-500' : ''"
                     />

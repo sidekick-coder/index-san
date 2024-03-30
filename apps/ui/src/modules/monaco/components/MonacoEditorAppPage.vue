@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 
 import MonacoEditor from './MonacoEditor.vue'
+import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
 
 // general
 const path = defineProp<string>('path', {
@@ -38,11 +39,15 @@ async function save(){
 </script>
 
 <template>
-    <div class="h-dvh">
-        <monaco-editor
-            v-model="text"
-            :language="language"
-            @keydown.ctrl.s.prevent="save"
-        />
+    <div class="h-full flex flex-col">
+        <DirectoryEntryToolbar :path="path" />
+        
+        <div class="flex-1">
+            <monaco-editor
+                v-model="text"
+                :language="language"
+                @keydown.ctrl.s.prevent="save"
+            />
+        </div>
     </div>
 </template>

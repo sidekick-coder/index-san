@@ -28,7 +28,7 @@ const size = defineProp<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('size', {
 
 function setSize(){
     const options = {
-        xs: 'text-xs py-3 px-4',
+        xs: 'text-xs py-2 px-4',
         sm: 'text-sm h-12 px-4',
         md: 'text-md h-12 px-4',
         lg: 'text-lg h-14 px-4',
