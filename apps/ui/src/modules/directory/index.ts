@@ -1,14 +1,21 @@
-import Directory from "./components/Directory.vue"
+import DirectoryAppPage from "./components/DirectoryAppPage.vue"
+import DirectorySidebar from "./components/DirectorySidebar.vue"
 import { directoryEntryMiddleware } from "./directoryEntryMiddleware"
 
 export default defineAppModule({
-    setup({ addAppPage, addEntryMiddleware }) {
+    setup({ addAppPage, addEntryMiddleware, addMenuItem }) {
         addAppPage({
             name: 'directory',
-            component: Directory,
+            component: DirectoryAppPage,
         })
 
-
         addEntryMiddleware(directoryEntryMiddleware)
+
+        addMenuItem({
+            name: 'directory',
+            label: 'Directory',
+            icon: 'heroicons:folder-solid',
+            component: DirectorySidebar,
+        })
     }
 })

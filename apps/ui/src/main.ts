@@ -49,6 +49,7 @@ async function createApp() {
 
     const appPages = useAppPages()
     const entryMiddlewares = useEntryMiddlewares()
+    const menuItems = useMenuItems()
     
     const plugins = await getPlugins()
     const appModules = await getAppModules()
@@ -84,6 +85,12 @@ async function createApp() {
                 console.debug(`[app] module ${appModule.name} added route ${r.path}`)
     
                 router.addRoute(r)
+            },
+
+            addMenuItem: m => {
+                console.debug(`[app] module ${appModule.name} added menu item ${m.name}`)
+
+                menuItems.value.push(m)
             }
         })
     }

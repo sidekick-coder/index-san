@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 import type { AppPage } from "./defineAppPage";
 import type { EntryMiddleware } from "./defineEntryMiddleware";
+import type { MenuItem } from "./defineMenuItem";
 
 export interface AppModuleSetupContext {
     // vue router
@@ -11,6 +12,9 @@ export interface AppModuleSetupContext {
     
     // app pages
     addAppPage: (appPage: AppPage) => void
+
+    // add menu item
+    addMenuItem: (menuItem: MenuItem) => void
 }
 
 export interface AppModule {    

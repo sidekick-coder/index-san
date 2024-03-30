@@ -2,16 +2,42 @@
 
 const drawer = useLocalStorage('drawer', true)
 
+// menu
+const menuItems = useMenuItems()
+
+const activeMenuItem = useLocalStorage('activeMenuItem', '')
+
+const sidebarComponent = computed(() => {
+    const item = menuItems.value.find(item => item.name === activeMenuItem.value)
+
+    return item?.component
+})
+
+// drive
+
+const { isLoaded } = useDrive()
+
 </script>
 
 <template>
-    <is-app class="flex bg-body-700">
-        <is-app-drawer-mini v-model:drawer="drawer" />
+    <is-app
+        v-if="isLoaded"
+        class="flex bg-body-700"
+    >
+        <is-app-drawer-mini
+            v-model:drawer="drawer"
+            v-model:active-menu-item="activeMenuItem"
+        />
 
         <div 
-            class="bg-body-800  border-body-500 transition-[width] duration-300"
+            class="bg-body-800  border-body-500 transition-[width] duration-300 h-dvh overflow-y-auto"
             :class="drawer ? 'w-72 border-r' : 'w-0'"
-        />
+        >
+            <component
+                :is="sidebarComponent"
+                v-if="sidebarComponent"
+            />
+        </div>
 
         <div class="flex-1 h-dvh bg-body-700 overflow-hidden">
             <slot />

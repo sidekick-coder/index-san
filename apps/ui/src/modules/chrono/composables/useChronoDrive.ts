@@ -7,20 +7,8 @@ export function useChronoDrive(): IDrive {
         return args.join('/')
     }
 
-    async function findAllEntries(path = '/') {
-        const entries = await drive.list(path)
-
-        for await (const entry of entries) {
-            if (entry.type === 'directory') {
-                entries.push(...await findAllEntries(entry.path))
-            }
-        }
-
-        return entries
-    }
-
     const findAllFiles: IDrive['findAllFiles'] = async () => {
-        const entries = await findAllEntries()
+        const entries = await drive.findAll()
 
         return entries
             .filter(entry => entry.type === 'file')

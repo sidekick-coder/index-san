@@ -40,6 +40,18 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
         return currentHandle
     }
 
+    const findAll: Drive['findAll'] = async (path = '/') => {
+        const entries = await list(path)
+
+        for await (const entry of entries) {
+            if (entry.type === 'directory') {
+                entries.push(...await findAll(entry.path))
+            }
+        }
+
+        return entries.filter((e, i, a) => a.findIndex(e2 => e2.path === e.path) === i)
+    }
+
     const list: Drive['list'] = async (path) => {
         console.debug('[drive-fs-api] list', path)
 
@@ -177,6 +189,7 @@ export function useDriveFileSystemApi(handle: FileSystemDirectoryHandle): Drive 
     }
 
     return {
+        findAll,
         list,
         get,
         read,

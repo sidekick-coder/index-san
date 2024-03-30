@@ -11,13 +11,26 @@ const drawer = defineModel('drawer', {
     default: false    
 })
 
+// menu
+const menuItems = useMenuItems()
+
+const activeMenuItem = defineModel('activeMenuItem', {
+    type: String,
+    default: ''
+})
+
+function onItemClick(name: string) {
+    if (activeMenuItem.value === name) {
+        drawer.value = !drawer.value
+        return
+    }
+
+    activeMenuItem.value = name
+    drawer.value = true
+}
+
 // links
 const links = [
-    {
-        to: '/entries',
-        icon: 'mdi:folder',
-        label: tm.t('fileExplorer')
-    },
     {
         to: '/workspace-selector',
         icon: 'fa:cubes',
@@ -35,7 +48,7 @@ const links = [
     }
 ]
 
-function onItemClick(to: string) {
+function onLinkClick(to: string) {
     if (to === route.path || route.path.startsWith(to)) {
         drawer.value = !drawer.value
         return
@@ -57,6 +70,30 @@ function onItemClick(to: string) {
             </is-list-item>
 
             <is-tooltip
+                v-for="(item, i) in menuItems"
+                :key="i"
+                placement="right"
+            >
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        v-bind="attrs"
+                        justify="center"
+                        :class="activeMenuItem === item.name ? '!text-primary-500 bg-primary-900/25' : ''"
+                        @click="onItemClick(item.name)"
+                    >
+                        <is-icon
+                            :name="item.icon"
+                            size="xl"
+                        />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ item.label }}
+                </div>
+            </is-tooltip>
+
+            <is-tooltip
                 v-for="(link, i) in links"
                 :key="i"
                 placement="right"
@@ -66,7 +103,7 @@ function onItemClick(to: string) {
                         v-bind="attrs"
                         justify="center"
                         :class="($route.path.startsWith(link.to) || $route.path === link.to) ? '!text-primary-500 bg-primary-900/25' : ''"
-                        @click="onItemClick(link.to)"
+                        @click="onLinkClick(link.to)"
                     >
                         <is-icon
                             :name="link.icon"

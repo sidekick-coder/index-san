@@ -6,6 +6,7 @@ export interface DriveEntry {
 }
 
 export interface Drive {
+    findAll: (path?: string) => Promise<DriveEntry[]>
     get: (path: string) => Promise<DriveEntry | null>
     list: (path: string) => Promise<DriveEntry[]>
     read: (path: string) => Promise<Uint8Array | null>

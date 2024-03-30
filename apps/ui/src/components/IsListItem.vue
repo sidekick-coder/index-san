@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { RouterLinkProps } from 'vue-router';
+import { RouterLink, type RouterLinkProps } from 'vue-router';
+
 import { twMerge } from 'tailwind-merge'
 
 
@@ -47,15 +48,24 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'text',
 })
 
-const color = defineProp<'body' | 'accent'>('color', {
+const color = defineProp<'body'>('color', {
     type: String,
     default: 'body',
 })
 
+const active = defineProp<boolean>('active', {
+    type: Boolean,
+    default: false,
+})
+
 function setTextColor(){
     const options = {
-        accent: 'text-teal-500 hover-and-clickable:bg-teal-500 hover-and-clickable:text-teal-500 [&.router-link-active]:bg-teal-500/5',
-        body: 'text-body-50 hover-and-clickable:bg-body-600 [&.router-link-active]:bg-body-300/5',
+        body: `
+            text-body-50
+            hover-and-clickable:bg-body-600
+            [&.router-link-active]:bg-body-600
+            data-[active=true]:bg-body-600
+        `,
     }
 
     const option = options[color.value]
@@ -65,8 +75,12 @@ function setTextColor(){
 
 function setFillColor(){
     const options = {
-        accent: 'bg-teal-500 hover-and-clickable:bg-teal-400 [&.router-link-active]:bg-teal-400',
-        body: 'bg-body-600 hover-and-clickable:bg-body-500 [&.router-link-active]:bg-body-500',
+        body: `
+            bg-body-600
+            hover-and-clickable:bg-body-500
+            [&.router-link-active]:bg-body-500
+            data-[active=true]:bg-body-500
+        `,
     }
 
     const option = options[color.value]
@@ -137,18 +151,12 @@ watch(justify, setJustify, { immediate: true })
 </script>
 
 <template>
-    <router-link
-        v-if="to"
+    <component
+        :is="to ? RouterLink : 'div'"
         :to="to"
         :class="classes"
+        :data-active="active"
     >
         <slot />
-    </router-link>
-
-    <div
-        v-else
-        :class="classes"
-    >
-        <slot />
-    </div>
+    </component>
 </template>
