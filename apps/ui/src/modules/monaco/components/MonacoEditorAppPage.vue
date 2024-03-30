@@ -13,7 +13,9 @@ const language = defineProp<string>('language', {
     default: 'plaintext'
 })
 
-const { drive, encode, decode } = useDrive()
+const { drive: _drive, encode, decode } = useDrive()
+
+const drive = unref(_drive)
 
 // load
 const text = ref('')

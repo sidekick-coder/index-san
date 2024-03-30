@@ -30,7 +30,7 @@ const { isLoaded } = useDrive()
 
         <div 
             class="bg-body-800  border-body-500 transition-[width] duration-300 h-dvh overflow-y-auto"
-            :class="drawer ? 'w-72 border-r' : 'w-0'"
+            :class="drawer ? 'w-80 border-r' : 'w-0'"
         >
             <component
                 :is="sidebarComponent"

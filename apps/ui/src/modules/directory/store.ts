@@ -27,6 +27,10 @@ export const useDirectoryStore = defineStore('directory', () => {
         loading.value = false
     }
 
+    function findEntry(path: string){
+        return entries.value.find(e => e.path === path)
+    }
+
     function findChildEntries(path: string){
         if (path === '/') {
             return entries.value.filter(e => {
@@ -85,6 +89,20 @@ export const useDirectoryStore = defineStore('directory', () => {
         return 'text-gray-500'
     }
 
+    function convertPathToEntries(paths: string[]) {
+        const entries = [] as DriveEntry[];
+        
+        paths.forEach(f => {
+            const entry = findEntry(f);
+    
+            if (entry) {
+                entries.push(entry);
+            }
+        })
+    
+        return entries;
+    }
+
     watch(isLoaded, load, { immediate: true })
 
 
@@ -93,10 +111,11 @@ export const useDirectoryStore = defineStore('directory', () => {
         entries,
 
         load,
+        findEntry,
         findChildEntries,
 
         findEntryIcon,
         findEntryIconColor,
-
+        convertPathToEntries,
     }
 })
