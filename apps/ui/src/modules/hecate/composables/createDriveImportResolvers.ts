@@ -7,7 +7,9 @@ export interface Options {
 
 export function createDriveImportResolvers(options?: Options) {
     
-    const { drive, decode } = useDrive();
+    const { drive: _drive, decode } = useDrive();
+    const drive = unref(_drive);
+
 
     const rootResolver: HecateCompilerImportResolver = {
         test: (key: string) => key.startsWith('@/'),

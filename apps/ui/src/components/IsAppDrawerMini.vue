@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import orderBy from 'lodash/orderBy'
 
 // general
 const route = useRoute()
 const router = useRouter()
 const tm = useI18n()
+
+const { setDrive } = useDrive()
 
 // drawer
 const drawer = defineModel('drawer', {
@@ -29,34 +32,11 @@ function onItemClick(name: string) {
     drawer.value = true
 }
 
-// links
-const links = [
-    {
-        to: '/workspace-selector',
-        icon: 'fa:cubes',
-        label: tm.t('workspace')
-    },
-    {
-        to: '/cheat-sheet',
-        icon: 'mdi:markdown',
-        label: tm.t('cheatSheet')
-    },
-    {
-        to: '/chrono',
-        icon: 'mdi:clock-time-four-outline',
-        label: 'Version management'
-    }
-]
+function exitWorkspace() {
+    setDrive()
 
-function onLinkClick(to: string) {
-    if (to === route.path || route.path.startsWith(to)) {
-        drawer.value = !drawer.value
-        return
-    }
-
-    router.push(to)
+    router.push('/workspace-selector')
 }
-
 </script>
 
 <template>
@@ -70,7 +50,7 @@ function onLinkClick(to: string) {
             </is-list-item>
 
             <is-tooltip
-                v-for="(item, i) in menuItems"
+                v-for="(item, i) in orderBy(menuItems, 'order')"
                 :key="i"
                 placement="right"
             >
@@ -92,69 +72,27 @@ function onLinkClick(to: string) {
                     {{ item.label }}
                 </div>
             </is-tooltip>
+            
+            <div class="grow" />
 
-            <is-tooltip
-                v-for="(link, i) in links"
-                :key="i"
-                placement="right"
-            >
+            <is-tooltip placement="right">
                 <template #activator="{ attrs }">
                     <is-list-item
-                        v-bind="attrs"
                         justify="center"
-                        :class="($route.path.startsWith(link.to) || $route.path === link.to) ? '!text-primary-500 bg-primary-900/25' : ''"
-                        @click="onLinkClick(link.to)"
+                        v-bind="attrs"
+                        @click="exitWorkspace"
                     >
                         <is-icon
-                            :name="link.icon"
+                            name="heroicons:arrow-left-end-on-rectangle-solid"
                             size="xl"
                         />
                     </is-list-item>
                 </template>
 
                 <div>
-                    {{ link.label }}
-                </div>
-            </is-tooltip>            
-            
-
-            <!--
-
-            
-
-            <div class="grow" />
-
-            <is-tooltip placement="right">
-                <template #activator="{ attrs }">
-                    <is-list-item
-                        to="/workspaces"
-                        justify="center"
-                        v-bind="attrs"
-                    >
-                        <is-icon name="fa:cubes" size="xl" />
-                    </is-list-item>
-                </template>
-
-                <div>
-                    {{ $t('workspace', 2) }}
+                    Exit workspace
                 </div>
             </is-tooltip>
-
-            <is-tooltip placement="right">
-                <template #activator="{ attrs }">
-                    <is-list-item
-                        to="/options"
-                        justify="center"
-                        v-bind="attrs"
-                    >
-                        <is-icon name="mdi:cog" size="xl" />
-                    </is-list-item>
-                </template>
-
-                <div>
-                    {{ $t('setting', 2) }}
-                </div>
-            </is-tooltip> -->
         </div>
     </div>
 </template>

@@ -1,4 +1,5 @@
 export interface MenuItem {
+    order?: number
     name: string
     label: string
     icon: string

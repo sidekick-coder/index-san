@@ -5,7 +5,8 @@ import AppPageRender from '@/modules/appPage/components/AppPageRender.vue'
 import orderBy from 'lodash/orderBy'
 
 // general
-const { drive } = useDrive()
+const { drive: _drive } = useDrive()
+const drive = unref(_drive)
 
 // load
 const middlewares = useEntryMiddlewares()

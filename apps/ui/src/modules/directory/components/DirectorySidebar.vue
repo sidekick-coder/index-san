@@ -7,7 +7,11 @@ import DirectorySidebarItem from './DirectorySidebarItem.vue';
 const directoryStore = useDirectoryStore()
 
 const entries = computed(() => {
-    return orderBy(directoryStore.findChildEntries('/'), ['type', 'name'], ['asc', 'asc'])
+    const all = directoryStore.findChildEntries('/', {
+        exclude: ['.chrono', '.is']
+    })
+
+    return orderBy(all, ['type', 'name'], ['asc', 'asc'])
 })
 
 </script>

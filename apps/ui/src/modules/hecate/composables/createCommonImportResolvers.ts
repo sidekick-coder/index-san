@@ -18,7 +18,15 @@ export function createCommonImportResolvers(options?: Options) {
         }),
         defineImportResolver({
             test: (path: string) => path === 'app:drive',
-            resolve: async () => Promise.resolve({ useDrive })
+            resolve: async () => {
+                const { drive, encode, decode } = useDrive()
+
+                return {
+                    drive: unref(drive),
+                    encode,
+                    decode
+                }
+            }
         })
     )
 

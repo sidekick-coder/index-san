@@ -1,7 +1,9 @@
 import type IDrive from "chrono/src/gateways/IDrive"
 
 export function useChronoDrive(): IDrive {
-    const { drive } = useDrive()
+    const { drive: _drive } = useDrive()
+    
+    const drive = unref(_drive)
 
     const resolve: IDrive['resolve'] = (...args) => {
         return args.join('/')

@@ -3,15 +3,24 @@ import { defineStore } from "pinia";
 import orderBy from 'lodash/orderBy'
 
 export const useDirectoryStore = defineStore('directory', () => {
-    const { drive } = useDrive()
+    const { drive, isLoaded } = useDrive()
 
     const entries = ref<DriveEntry[]>([])
     const loading = ref(false)
 
+    const options = ref({
+        exclude: ['.is', '.chrono']
+    })
+
     async function load(){
+        if (!isLoaded.value) {
+            entries.value = []
+            return
+        }
+
         loading.value = true
 
-        const all = await drive.findAll()
+        const all = await drive.value.findAll()
 
         entries.value = orderBy(all, 'path')
 
@@ -20,15 +29,27 @@ export const useDirectoryStore = defineStore('directory', () => {
 
     function findChildEntries(path: string){
         if (path === '/') {
-            return entries.value.filter(e => !e.path.includes('/'))
+            return entries.value.filter(e => {
+                if (options.value.exclude.some(ex => e.path.startsWith(ex))) {
+                    return false
+                }
+
+                return !e.path.includes('/')
+            })
         }
 
         return entries.value.filter(e => {
-            if (e.path === path) return false
+            if (e.path === path) {
+                return false
+            }
 
-            if (!e.path.startsWith(path)) return false
+            if (!e.path.startsWith(path)) {
+                return false
+            }
 
-            console.log(e.path, path)
+            if (options.value.exclude.some(ex => e.path.startsWith(ex))){
+                return false
+            }
 
             const relative = e.path.slice(path.length)
 
@@ -64,7 +85,7 @@ export const useDirectoryStore = defineStore('directory', () => {
         return 'text-gray-500'
     }
 
-    watch(drive, load, { immediate: true })
+    watch(isLoaded, load, { immediate: true })
 
 
     return {

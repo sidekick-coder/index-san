@@ -17,7 +17,8 @@ import type { MarkdownNodeComponent } from '@language-kit/markdown'
 
 // general
 const tm = useI18n()
-const { drive, decode } = useDrive()
+const { drive: _drive, decode } = useDrive();
+const drive = unref(_drive);
 
 // entry
 const path = defineProp<string>('path', {

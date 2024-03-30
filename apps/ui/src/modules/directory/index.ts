@@ -13,6 +13,7 @@ export default defineAppModule({
 
         addMenuItem({
             name: 'directory',
+            order: 1,
             label: 'Directory',
             icon: 'heroicons:folder-solid',
             component: DirectorySidebar,

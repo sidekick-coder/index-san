@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
 import orderBy from 'lodash/orderBy'
+import { useDirectoryStore } from '@/modules/directory/store';
 
 // general
 const route = useRoute()
@@ -11,21 +12,21 @@ const path = defineProp<string>('path', {
     default: '/',
 })
 
-const { drive, encode } = useDrive()
+// entry
+const directoryStore = useDirectoryStore()
+const { drive: _drive, encode } = useDrive()
+const drive = unref(_drive)
 
-const loading = ref(true)
 const search = ref('')
-const entries = ref<DriveEntry[]>([])
-const exclude = {
-    folders: ['.is', '.chrono']
-}
+
+const entries = computed(() => {
+    const all = directoryStore.findChildEntries(path.value)
+
+    return orderBy(all, ['type', 'name'], ['asc', 'asc'])
+})
 
 const filteredEntries = computed(() => {
     return entries.value.filter(e => {
-        if (e.type === 'directory' && exclude.folders.includes(e.path)) {
-            return false            
-        }
-
         if (search.value.length > 0 && !e.path.includes(search.value)) {
             return false
         }
@@ -33,21 +34,6 @@ const filteredEntries = computed(() => {
         return true
     })
 })
-
-async function load(){
-    loading.value = true
-
-    entries.value = []
-
-    const result = await drive.list(path.value)
-
-    entries.value = orderBy(result, ['type', 'path'], ['asc', 'asc'])
-
-    setTimeout(() => {
-        loading.value = false
-    }, 800)
-}
-
 
 function findIcon(entry: DriveEntry){
     if (entry.type === 'directory') {
@@ -76,9 +62,6 @@ function findIconColor(entry: DriveEntry){
 
     return 'text-gray-500'
 }
-
-
-watch(path, load, { immediate: true })
 
 
 // controls
@@ -172,7 +155,7 @@ async function deleteEntry(e: DriveEntry){
 
     await drive.destroy(e.path)
 
-    await load()
+    await directoryStore.load()
 }
 
 // edit
@@ -205,7 +188,7 @@ async function saveEditedEntry(){
 
     await drive.move(`${path.value}/${originalName}`, `${path.value}/${name}`)
 
-    await load()
+    await directoryStore.load()
 
     editedEntry.value.name = ''
     editedEntry.value.originalName = ''
@@ -262,7 +245,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     color="primary"
                     size="none"
                     class="h-10 w-10"
-                    @click="load"
+                    @click="directoryStore.load"
                 >
                     <is-icon name="heroicons:arrow-path-solid" />
                 </is-btn>
@@ -323,7 +306,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
 
         <div class="flex-1 overflow-y-auto relative">
             <div
-                v-if="loading"
+                v-if="directoryStore.loading"
                 class="absolute w-full h-1 bg-primary-500 animate-pulse"
             />
 

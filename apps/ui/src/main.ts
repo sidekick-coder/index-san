@@ -8,8 +8,6 @@ import router from '@/router/router'
 
 import { vVisible } from './directives/vVisible'
 import type { AppModule } from './composables/defineAppModule'
-import type { AppPage } from './composables/defineAppPage'
-import type { EntryMiddleware } from './composables/defineEntryMiddleware'
 
 async function getPlugins() {
     const files = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
