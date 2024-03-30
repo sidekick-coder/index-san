@@ -7,11 +7,11 @@ export default class LogUseCase {
     public async execute() {
         const objects = await this.objectRepository.findAll()
 
-        console.log(objects)
-
-        return objects
+        const commits = objects
             .filter((object) => object.type === 'commit')
             .map((o) => new ChronoObjectCommit(o.content, o.hash))
+
+        return commits
             .map((o) => o.serialize())
             .toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     }

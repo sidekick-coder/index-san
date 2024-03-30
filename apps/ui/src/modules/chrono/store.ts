@@ -4,6 +4,7 @@ import { useChrono } from "./composables/useChrono";
 export const useChronoStore = defineStore('chrono', () => {
     // general
     const { app } = useChrono()
+    const hasRepository = ref(false)
 
     // status
     const loadingStatus = ref(false)
@@ -13,12 +14,27 @@ export const useChronoStore = defineStore('chrono', () => {
         changed: [],
     })
 
+    async function setHasRepository(){
+        hasRepository.value = await app.hasRepository()
+
+        return hasRepository.value
+    }
+
     async function setStatus(){
+        if (!await setHasRepository()) return
+
         loadingStatus.value = true
+
 
         status.value = await app.status()
 
         loadingStatus.value = false
+    }
+
+    async function init(){
+        await app.init()
+
+        await setStatus()
     }
 
     async function add(path: string){
@@ -43,11 +59,13 @@ export const useChronoStore = defineStore('chrono', () => {
 
     return {
         app,
+        hasRepository,
 
         loadingStatus,
         status,
 
         setStatus,
+        init,
         add,
         remove,
         commit,

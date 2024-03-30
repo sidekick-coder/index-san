@@ -54,6 +54,7 @@ function hide() {
 
     <div
         ref="floating"
+        class="z-20"
         :style="floatingStyles"
         :class="!model ? 'pointer-events-none' : ''"
     >

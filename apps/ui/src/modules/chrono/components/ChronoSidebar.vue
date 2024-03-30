@@ -12,9 +12,6 @@ const chronoStore = useChronoStore();
 const directoryStore = useDirectoryStore();
 
 // untracked
-
-const showUntracked = ref(true);
-
 const untracked = computed<DriveEntry[]>(() => {
     const entries = directoryStore.convertPathToEntries(chronoStore.status.untracked)
 
@@ -76,63 +73,80 @@ function removeItem(path: string) {
             </is-btn>
         </div>
 
-        
-        <div class="px-4 py-4 flex flex-col gap-y-4">
-            <div class="text-body-100 font-bold text-xs">
-                Commit
+        <div
+            v-if="!chronoStore.hasRepository"
+            class="flex flex-col items-center p-4 gap-y-4"
+        >
+            <div class=" text-body-100 text-xs">
+                No repository found
             </div>
-
-            <input
-                v-model="commitMessage"
-                placeholder="commit message"
-                class="w-full px-4 py-2 bg-body-700 rounded text-sm outline-none placeholder:text-body-100"
-            >
 
             <is-btn
                 size="sm"
-                :disabled="!added.length || !commitMessage"
-                @click="commit"
+                @click="chronoStore.init"
             >
-                Commit
+                Create repository
             </is-btn>
         </div>
 
-        <ChronoSidebarEntryList
-            title="Added files"
-            :entries="added"
-        >
-            <template #actions="{ entry }">
-                <is-btn
-                    variant="text"
-                    size="none"
-                    class="h-6 w-6"
-                    @click="removeItem(entry.path)"
+        <template v-else>
+            <div class="px-4 py-4 flex flex-col gap-y-4">
+                <div class="text-body-100 font-bold text-xs">
+                    Commit
+                </div>
+    
+                <input
+                    v-model="commitMessage"
+                    placeholder="commit message"
+                    class="w-full px-4 py-2 bg-body-700 rounded text-sm outline-none placeholder:text-body-100"
                 >
-                    <is-icon
-                        name="heroicons:minus-solid"
-                        size="xs"
-                    />
-                </is-btn>
-            </template>
-        </ChronoSidebarEntryList>
-        
-        <ChronoSidebarEntryList
-            title="Untracked files"
-            :entries="untracked"
-        >
-            <template #actions="{ entry }">
+    
                 <is-btn
-                    variant="text"
-                    size="none"
-                    class="h-6 w-6"
-                    @click="addItem(entry.path)"
+                    size="sm"
+                    :disabled="!added.length || !commitMessage"
+                    @click="commit"
                 >
-                    <is-icon
-                        name="heroicons:plus-solid"
-                        size="xs"
-                    />
+                    Commit
                 </is-btn>
-            </template>
-        </ChronoSidebarEntryList>
+            </div>
+    
+            <ChronoSidebarEntryList
+                title="Added files"
+                :entries="added"
+            >
+                <template #actions="{ entry }">
+                    <is-btn
+                        variant="text"
+                        size="none"
+                        class="h-6 w-6"
+                        @click="removeItem(entry.path)"
+                    >
+                        <is-icon
+                            name="heroicons:minus-solid"
+                            size="xs"
+                        />
+                    </is-btn>
+                </template>
+            </ChronoSidebarEntryList>
+            
+            <ChronoSidebarEntryList
+                title="Untracked files"
+                :entries="untracked"
+            >
+                <template #actions="{ entry }">
+                    <is-btn
+                        variant="text"
+                        size="none"
+                        class="h-6 w-6"
+                        @click="addItem(entry.path)"
+                    >
+                        <is-icon
+                            name="heroicons:plus-solid"
+                            size="xs"
+                        />
+                    </is-btn>
+                </template>
+            </ChronoSidebarEntryList>
+        </template>
     </div>
 </template>

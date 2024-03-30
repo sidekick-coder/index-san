@@ -20,10 +20,18 @@ export default class ChronoObject {
         const properties = text
             .split('\n')
             .filter(Boolean)
-            .map((l) => l.split(': '))
-            .map(([key, value]) => [camelCase(key), value])
+            //split by first semi colon
+            .map((l) => l.split(/:(.*)/s))
+            .map(([key, value]) => [camelCase(key), value.trim()])
 
-        return Object.fromEntries(properties) as Record<string, string>
+        const entries = Object.fromEntries(properties)
+        
+        const { type, ...head } = entries
+
+        return {
+            type,
+            ...head,
+        } as Record<string, string>
     }
 
     public get body() {
