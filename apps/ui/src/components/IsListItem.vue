@@ -44,7 +44,7 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'text',
 })
 
-const color = defineProp<'body'>('color', {
+const color = defineProp<'body' | 'primary'>('color', {
     type: String,
     default: 'body',
 })
@@ -55,12 +55,18 @@ const active = defineProp<boolean>('active', {
 })
 
 function setTextColor(){
-    const options = {
+    const options: Record<typeof color.value, string> = {
         body: `
             text-body-50
             hover-and-clickable:bg-body-600
             [&.router-link-active]:bg-body-600
             data-[active=true]:bg-body-600
+        `,
+        primary: `
+            text-primary-50
+            hover-and-clickable:bg-primary-600
+            [&.router-link-active]:bg-primary-600
+            data-[active=true]:bg-primary-600
         `,
     }
 
@@ -70,12 +76,19 @@ function setTextColor(){
 }
 
 function setFillColor(){
-    const options = {
+    const options: Record<typeof color.value, string>  = {
         body: `
             bg-body-600
             hover-and-clickable:bg-body-500
             [&.router-link-active]:bg-body-500
             data-[active=true]:bg-body-500
+        `,
+        primary: `
+            bg-primary-600
+            text-body-500
+            hover-and-clickable:bg-primary-500
+            [&.router-link-active]:bg-primary-500
+            data-[active=true]:bg-primary-500
         `,
     }
 

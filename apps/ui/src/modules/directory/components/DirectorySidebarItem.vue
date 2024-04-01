@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
 import { useDirectoryStore } from '@/modules/directory/store';
+import { findEntryIcon } from '@/modules/directory/composables/findEntryIcon';
+import { useDirectoryEntries } from '@/modules/directory/composables/useDirectoryEntries';
+
+import DirectoryEntryIcon from './DirectoryEntryIcon.vue';
 
 
 // general
@@ -19,22 +23,20 @@ const level = defineProp<number>('level', {
     default: 1
 })
 
-const icon = directoryStore.findEntryIcon(entry.value)
+const icon = findEntryIcon(entry.value)
 const iconColor = directoryStore.findEntryIconColor(entry.value)
 
 // folder
 const show = ref(false)
 
-const children = computed(() => {
-    if (entry.value.type !== 'directory') {
-        return []
-    }
-
-    return directoryStore.findChildEntries(entry.value.path)
-})
+const { data: children, load: loadChildren } = useDirectoryEntries(entry.value.path)
 
 function setShow(){
     if (entry.value.type !== 'directory')  return
+
+    if (!children.value.length) {
+        loadChildren()
+    }
 
     if (show.value) return
 
@@ -71,13 +73,12 @@ function onClick() {
     >
         <div class="flex flex-col w-full">
             <div class="flex-1 flex items-center">
-                <is-icon
-                    :name="icon"
+                <DirectoryEntryIcon
+                    :entry="entry"
                     size="sm"
-                    :class="iconColor"
                 />
             
-                <div class="ml-3">
+                <div class="ml-3 truncate flex-1">
                     {{ entry.name }}
                 </div>
         

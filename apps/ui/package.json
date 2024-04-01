@@ -28,6 +28,7 @@
     "chartjs-plugin-annotation": "^3.0.1",
     "chrono": "^1.0.0",
     "date-fns": "^3.6.0",
+    "drive-fsa": "^1.0.0",
     "hecate": "*",
     "hephaestus": "*",
     "highlight.js": "^11.8.0",

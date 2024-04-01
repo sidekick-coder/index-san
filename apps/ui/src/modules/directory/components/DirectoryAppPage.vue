@@ -4,9 +4,12 @@ import orderBy from 'lodash/orderBy'
 import { useDirectoryStore } from '@/modules/directory/store';
 
 import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
+import { useDirectoryEntries } from '../composables/useDirectoryEntries';
+import DirectoryEntryIcon from './DirectoryEntryIcon.vue';
 
 // general
 const route = useRoute()
+const { drive, encode } = useDrive()
 
 // entries
 const path = defineProp<string>('path', {
@@ -15,17 +18,9 @@ const path = defineProp<string>('path', {
 })
 
 // entry
-const directoryStore = useDirectoryStore()
-const { drive: _drive, encode } = useDrive()
-const drive = unref(_drive)
-
 const search = ref('')
 
-const entries = computed(() => {
-    const all = directoryStore.findChildEntries(path.value)
-
-    return orderBy(all, ['type', 'name'], ['asc', 'asc'])
-})
+const { data: entries, loading, load: loadEntries } = useDirectoryEntries(path)
 
 const filteredEntries = computed(() => {
 
@@ -33,7 +28,7 @@ const filteredEntries = computed(() => {
         return entries.value
     }
 
-    return directoryStore.entries.filter(e => {
+    return entries.value.filter(e => {
         if (search.value.length > 0 && !e.path.includes(search.value)) {
             return false
         }
@@ -42,50 +37,7 @@ const filteredEntries = computed(() => {
     })
 })
 
-function findIcon(entry: DriveEntry){
-    if (entry.type === 'directory') {
-        return 'mdi:folder'
-    }
-
-    if (entry.path.endsWith('.md')) {
-        return 'mdi:markdown'
-    }
-
-    if (entry.path.endsWith('.ts')) {
-        return 'mdi:language-typescript'
-    }
-
-    return 'mdi:file'
-}
-
-function findIconColor(entry: DriveEntry){
-    if (entry.type === 'directory') {
-        return 'text-primary-500'
-    }
-
-    if (entry.path.endsWith('.ts')) {
-        return 'text-blue-500'
-    }
-
-    return 'text-gray-500'
-}
-
-
-// controls
-const controls = ref({
-    home: false,
-    back: false,
-    forward: false,
-})
-
-function setControls(){
-    controls.value.home = path.value !== '/'
-    controls.value.back = !!history.state.back && path.value !== '/'
-    controls.value.forward = !!history.state.forward
-}
-
-
-watch(() => route.fullPath, setControls, { immediate: true })
+watch(path, loadEntries, { immediate: true })
 
 // entry crud
 async function createFile(){
@@ -219,7 +171,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     color="primary"
                     size="none"
                     class="h-8 w-8"
-                    @click="directoryStore.load"
+                    @click="loadEntries"
                 >
                     <is-icon
                         size="sm"
@@ -241,7 +193,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
 
         <div class="flex-1 overflow-y-auto relative">
             <div
-                v-if="directoryStore.loading"
+                v-if="loading"
                 class="absolute w-full h-1 bg-primary-500 animate-pulse"
             />
 
@@ -263,10 +215,9 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     class="px-10 items-center group"
                 >
                     <div class="flex-1 flex items-center">
-                        <is-icon
-                            :name="findIcon(e)"
+                        <DirectoryEntryIcon
                             size="xl"
-                            :class="findIconColor(e)"
+                            :entry="e"
                         />
     
                         <div class="ml-4">

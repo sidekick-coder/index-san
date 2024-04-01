@@ -12,21 +12,6 @@ export const useDirectoryStore = defineStore('directory', () => {
         exclude: ['.is', '.chrono']
     })
 
-    async function load(){
-        if (!isLoaded.value) {
-            entries.value = []
-            return
-        }
-
-        loading.value = true
-
-        const all = await drive.value.findAll()
-
-        entries.value = orderBy(all, 'path')
-
-        loading.value = false
-    }
-
     function findEntry(path: string){
         return entries.value.find(e => e.path === path)
     }
@@ -103,14 +88,10 @@ export const useDirectoryStore = defineStore('directory', () => {
         return entries;
     }
 
-    watch(isLoaded, load, { immediate: true })
-
-
     return {
         loading,
         entries,
 
-        load,
         findEntry,
         findChildEntries,
 

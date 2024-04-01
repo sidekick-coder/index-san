@@ -1,18 +1,10 @@
 <script lang="ts" setup>
-import { useDirectoryStore } from '@/modules/directory/store';
-import orderBy from 'lodash/orderBy';
-
+import { useDirectoryEntries } from '@/modules/directory/composables/useDirectoryEntries';
 import DirectorySidebarItem from './DirectorySidebarItem.vue';
 
-const directoryStore = useDirectoryStore()
+const { data: entries, loading, load } = useDirectoryEntries('/')
 
-const entries = computed(() => {
-    const all = directoryStore.findChildEntries('/', {
-        exclude: ['.chrono', '.is']
-    })
-
-    return orderBy(all, ['type', 'name'], ['asc', 'asc'])
-})
+onMounted(load)
 
 </script>
 
@@ -37,7 +29,7 @@ const entries = computed(() => {
             </is-btn>
         </div>
 
-        <div v-if="directoryStore.loading">
+        <div v-if="loading">
             <div
                 v-for="i in 10"
                 :key="i"

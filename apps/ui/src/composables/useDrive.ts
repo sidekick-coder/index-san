@@ -5,10 +5,13 @@ export interface DriveEntry {
     type: 'file'|'directory'
 }
 
+export interface DriveListOptions {
+    recursive?: boolean
+}
+
 export interface Drive {
-    findAll: (path?: string) => Promise<DriveEntry[]>
     get: (path: string) => Promise<DriveEntry | null>
-    list: (path: string) => Promise<DriveEntry[]>
+    list: (path: string, options?: DriveListOptions) => Promise<DriveEntry[]>
     read: (path: string) => Promise<Uint8Array | null>
     write: (path: string, content: any) => Promise<void>
     destroy: (path: string) => Promise<void>

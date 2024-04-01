@@ -15,7 +15,7 @@ export async function loadLastDrive(){
 export function loadDrive(handle: FileSystemDirectoryHandle){
     const { setDrive } = useDrive()
 
-    const workspaceDrive = useDriveFileSystemApi(handle)
+    const workspaceDrive = createWorkspaceDrive(handle)
 
     setDrive(workspaceDrive)
 

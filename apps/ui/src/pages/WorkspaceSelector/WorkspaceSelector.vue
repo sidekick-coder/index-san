@@ -63,7 +63,7 @@ async function select(workspace: Workspace){
             <div class="flex flex-col gap-y-4 w-full">
                 <is-list-item
                     justify="center"
-                    color="accent"
+                    color="primary"
                     variant="fill"
                     class="rounded"
                     @click="addNew"

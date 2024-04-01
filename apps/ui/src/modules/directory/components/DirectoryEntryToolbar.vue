@@ -3,9 +3,6 @@ import { useChronoStore } from '@/modules/chrono/store';
 import type ChronoObjectCommit from 'chrono/src/entities/ChronoObjectCommit';
 import { formatDistanceToNow } from 'date-fns'
 
-
-const route = useRoute()
-
 const path = defineProp('path', {
     type: String,
     required: true
@@ -25,7 +22,7 @@ function setControls(){
 }
 
 
-watch(() => route.fullPath, setControls, { immediate: true })
+watch(() => path.value, setControls, { immediate: true })
 
 // change history
 const chronoStore = useChronoStore()

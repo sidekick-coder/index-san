@@ -55,7 +55,7 @@ export const useChronoStore = defineStore('chrono', () => {
         setStatus()
     }
 
-    setStatus()
+    // setStatus()
 
     return {
         app,

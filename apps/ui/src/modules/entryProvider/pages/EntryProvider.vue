@@ -31,13 +31,13 @@ async function setResult(){
         throw `Can not find entry: ${filename}`
     }
 
-    for await (const middleware of orderBy(middlewares.value, ['order'], ['asc'])) {
-        const middlewareResult = await middleware.handle({ entry })
+    let middlewareResult: EntryMiddlewareResult | undefined
 
-        if (middlewareResult) {
-            result.value = middlewareResult
-        }
+    for await (const middleware of orderBy(middlewares.value, ['order'], ['asc'])) {
+        middlewareResult = await middleware.handle({ entry }) || middlewareResult
     }
+    
+    result.value = middlewareResult    
 }
 
 function load(){
