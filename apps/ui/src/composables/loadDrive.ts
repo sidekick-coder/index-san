@@ -1,7 +1,14 @@
 import { get, set } from 'idb-keyval'
 
-export async function loadLastDrive(){
+
+export async function findCurrentDriveHandle(){
     const lastHandle = await get<FileSystemDirectoryHandle>('last-handle')
+    
+    return lastHandle || null
+}
+
+export async function loadLastDrive(){
+    const lastHandle = await findCurrentDriveHandle()
 
     if (!lastHandle) return
 

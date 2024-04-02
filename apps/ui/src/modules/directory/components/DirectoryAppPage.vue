@@ -210,7 +210,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                 <is-list-item
                     v-for="e in filteredEntries"
                     :key="e.path"
-                    :to="`/entries/${e.path}`"
+                    :to="`/entries/${encodeURIComponent(e.path)}`"
                     :class="editedEntry.originalName === e.name ? 'bg-body-500' : ''"
                     class="px-10 items-center group"
                 >
