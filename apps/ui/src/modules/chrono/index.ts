@@ -9,18 +9,18 @@ export default defineAppModule({
         //     component: ChronoDashboard,
         // })
 
-        // addMenuItem({
-        //     name: 'Chrono',
-        //     icon: 'heroicons:clock-solid',
-        //     label: 'Chrono',
-        //     component: ChronoSidebar,
-        // })
+        addMenuItem({
+            name: 'Chrono',
+            icon: 'heroicons:clock-solid',
+            label: 'Chrono',
+            component: ChronoSidebar,
+        })
 
-        // addMenuItem({
-        //     name: 'ChronoCommits',
-        //     icon: 'heroicons:clock',
-        //     label: 'Commits',
-        //     component: ChronoCommitListSidebar,
-        // })
+        addMenuItem({
+            name: 'ChronoCommits',
+            icon: 'heroicons:clock',
+            label: 'Commits',
+            component: ChronoCommitListSidebar,
+        })
     }
 })

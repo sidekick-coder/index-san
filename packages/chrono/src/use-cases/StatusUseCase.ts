@@ -16,7 +16,10 @@ export default class StatusUseCase {
     public async execute() {
         const service = new HashEntryService(this.drive, this.objectRepository, this.blobRepository)
 
-        const allFiles = await this.drive.findAllFiles()
+        const allFiles = await this.drive.readdir('/', {
+            recursive: true,
+            onlyFiles: true,
+        })
 
         const filteredFiles = allFiles.filter((f) => !f.includes('.chrono'))
 

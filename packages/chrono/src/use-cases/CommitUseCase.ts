@@ -157,7 +157,7 @@ export default class CommitUseCase {
 
         const { objectHash: commitHash } = await this.objectRepository.save(commit)
 
-        await this.drive.write('.chrono/HEAD', HelperService.encode(commitHash))
+        await this.drive.write('.chrono/head', HelperService.encode(commitHash))
 
         entries
             .filter((item) => item.isChanged())

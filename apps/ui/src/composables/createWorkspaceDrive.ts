@@ -2,7 +2,9 @@ import { createDrive } from "drive-fsa/composables/createDrive";
 import type { Drive } from "./useDrive";
 
 export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
-    const fsaDrive = createDrive(handle)
+    const fsaDrive = createDrive(handle, {
+        debug: true
+    })
 
     const list: Drive['list'] = async (path, options) => {
         const entries = await fsaDrive.list(path, {

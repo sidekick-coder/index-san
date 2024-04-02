@@ -10,7 +10,7 @@ onMounted(load)
 
 <template>
     <div class="flex flex-col">
-        <div class="px-4 flex bg-body-900 h-8 items-center border-b border-body-500">
+        <div class="px-4 flex bg-body-900 h-12 items-center border-b border-body-500">
             <div class="text-xs">
                 Explorer                
             </div>

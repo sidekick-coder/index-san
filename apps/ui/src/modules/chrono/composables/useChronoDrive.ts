@@ -9,14 +9,6 @@ export function useChronoDrive(): IDrive {
         return args.join('/')
     }
 
-    const findAllFiles: IDrive['findAllFiles'] = async () => {
-        const entries = await drive.findAll()
-
-        return entries
-            .filter(entry => entry.type === 'file')
-            .map(entry => entry.path)
-    }
-    
     const read: IDrive['read'] = (path) => {
         return drive.read(path)
     }
@@ -30,7 +22,17 @@ export function useChronoDrive(): IDrive {
     }
     
     const readdir: IDrive['readdir'] = async (path, options) => {
-        const entries = await drive.list(path)
+        const entries = await drive.list(path, {
+            recursive: options?.recursive,
+        })
+
+        if (options?.onlyFiles) {
+            return entries.filter(entry => entry.type === 'file').map(entry => entry.path)
+        }
+
+        if (options?.onlyDirectories){
+            return entries.filter(entry => entry.type === 'directory').map(entry => entry.path)
+        }
 
         return entries.map(entry => entry.name)
     }
@@ -57,7 +59,6 @@ export function useChronoDrive(): IDrive {
 
     return {
         resolve,
-        findAllFiles,
 
         read,
         write,

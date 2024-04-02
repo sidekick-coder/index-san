@@ -24,8 +24,7 @@ export const useChronoStore = defineStore('chrono', () => {
         if (!await setHasRepository()) return
 
         loadingStatus.value = true
-
-
+        
         status.value = await app.status()
 
         loadingStatus.value = false
@@ -55,7 +54,7 @@ export const useChronoStore = defineStore('chrono', () => {
         setStatus()
     }
 
-    // setStatus()
+    setHasRepository()
 
     return {
         app,

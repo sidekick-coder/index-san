@@ -29,7 +29,7 @@ export default defineConfig({
         }),
         Components({
             dts: 'runtime/components.d.ts',
-            dirs: ['src/components']
+            dirs: ['src/components', 'src/modules/*/components'],
         }),
     ],
 })

@@ -2,25 +2,37 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
 import { useChronoStore } from '@/modules/chrono/store';
-import { useDirectoryStore } from '@/modules/directory/store';
 import orderBy from 'lodash/orderBy';
 
 import ChronoSidebarEntryList from './ChronoSidebarEntryList.vue';
 
-
 const chronoStore = useChronoStore();
-const directoryStore = useDirectoryStore();
 
-// untracked
+// status
 const untracked = computed<DriveEntry[]>(() => {
-    const entries = directoryStore.convertPathToEntries(chronoStore.status.untracked)
+    const entries = convertPathsToDriveEntries(chronoStore.status.untracked)
 
     return orderBy(entries, 'path', 'asc');
 });
 
-function addItem(path: string) {
-    chronoStore.add(path);
+const added = computed<DriveEntry[]>(() => {
+    const entries = convertPathsToDriveEntries(chronoStore.status.added)
+
+    return orderBy(entries, 'path', 'asc');
+});
+
+
+async function addItem(path: string) {
+    await chronoStore.add(path);
+
+    await chronoStore.setStatus();
 }
+
+function removeItem(path: string) {
+    chronoStore.remove(path);
+}
+
+onMounted(chronoStore.setStatus)
 
 // commit
 const commitMessage = ref('');
@@ -31,32 +43,14 @@ async function commit() {
     commitMessage.value = '';
 }
 
-// added
-
-const added = computed<DriveEntry[]>(() => {
-    const entries = directoryStore.convertPathToEntries(chronoStore.status.added)
-
-    return orderBy(entries, 'path', 'asc');
-});
-
-function removeItem(path: string) {
-    chronoStore.remove(path);
-}
-
 
 </script>
 
 <template>
     <div :class="chronoStore.loadingStatus ? 'opacity-50 pointer-events-none' : ''">
-        <div class="px-4 flex bg-body-900 py-2 items-center border-b border-body-500">
-            <div class="flex-1">
-                <div class="text-sm">
-                    Chrono           
-                </div>
-                
-                <div class="text-xs text-body-200">
-                    Version control system
-                </div>
+        <div class="px-4 flex bg-body-900 h-12 items-center border-b border-body-500">
+            <div class="flex-1 text-xs">
+                Version control system
             </div>
 
             <is-btn

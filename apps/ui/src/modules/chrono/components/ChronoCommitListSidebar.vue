@@ -15,10 +15,6 @@ async function load(){
     }
 
     commits.value = await chronoStore.app.log();
-
-    // const commit = await chronoStore.app.catEntry("a60fbb4cd3c060155e183a0fcea8521b78950fda90ae8e7e65c8a945d88c281c")
-
-    // console.log(commit.contents);
 }
 
 watch(() => chronoStore.hasRepository, load, { immediate: true });

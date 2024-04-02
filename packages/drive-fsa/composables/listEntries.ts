@@ -1,4 +1,4 @@
-import { FSADriveEntry } from "../types/driveEntry"
+import type { FSADriveEntry } from "../types/driveEntry"
 import { findHandle } from "./findHandle"
 import { isRootPath } from "./isRootPath"
 import { resolvePath } from "./resolvePath"

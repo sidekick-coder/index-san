@@ -2,14 +2,12 @@
 import type { DriveEntry } from '@/composables/useDrive';
 import { useDirectoryStore } from '@/modules/directory/store';
 
-const directoryStore = useDirectoryStore();
-
 const title = defineProp('title',{
     type: String,
     default: 'Entries'
 })
 
-const entries = defineProp<DriveEntry>('entries',{
+const entries = defineProp<DriveEntry[]>('entries',{
     type: Array,
     default: () => []
 })
@@ -59,9 +57,8 @@ const show = ref(true)
                 class="flex items-center"
             >
                 <div class="mr-4">
-                    <is-icon
-                        :name="directoryStore.findEntryIcon(entry)"
-                        :class="directoryStore.findEntryIconColor(entry)"
+                    <DirectoryEntryIcon
+                        :entry="entry"
                         size="xs"
                     />
                 </div>

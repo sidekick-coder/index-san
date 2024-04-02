@@ -1,3 +1,3 @@
 export function isRootPath (path: string){
-    return ['/', '', '.'].includes(path)
+    return ['/', ''].includes(path)
 }

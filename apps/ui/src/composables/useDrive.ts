@@ -37,11 +37,21 @@ export function useDrive(){
         return new TextDecoder().decode(contents)
     }
 
+    function basename(path: string){
+        return path.split('/').pop() as string
+    }
+
+    function dirname(path: string){
+        return path.split('/').slice(0, -1).join('/')
+    }
+
     return {
         drive,
         isLoaded,
         setDrive,
         encode,
-        decode
+        decode,
+        basename,
+        dirname
     }
 }
