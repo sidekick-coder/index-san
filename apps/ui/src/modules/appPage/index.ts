@@ -14,7 +14,7 @@ export default defineAppModule({
 
         addEntryMiddleware({
             async handle({ entry }){
-                if ([ '.jpg', '.png', '.jpeg', '.webp', '.gif' ].some(ext => entry.name.endsWith(ext))) {
+                if (['.jpg', '.png', '.jpeg', '.webp', '.gif'].some(ext => entry.name.endsWith(ext))) {
                     return {
                         page: 'app-page-image',
                         props: {
