@@ -83,13 +83,33 @@ function onClick() {
                 </div>
         
                 <div
-                    v-if="entry.type === 'directory' && children.length"
+                    v-if="entry.type === 'directory'"
                     class="ml-auto"
                 >
-                    <is-icon
-                        :name="show ? 'heroicons:chevron-up-solid' : 'heroicons:chevron-down-solid'"
-                        size="sm"
-                    />
+                    <is-btn
+                        variant="text"
+                        size="none"
+                        class="h-6 w-6 opacity-0 group-hover:opacity-100"
+                        :to="`/entries/${entry.path}`"
+                        @click.stop
+                    >
+                        <is-icon
+                            name="heroicons:folder-open-solid"
+                            size="xs"
+                        />
+                    </is-btn>
+
+                    <is-btn
+                        v-if="children.length"
+                        variant="text"
+                        size="none"
+                        class="h-6 w-6"
+                    >
+                        <is-icon                            
+                            :name="show ? 'heroicons:chevron-up-solid' : 'heroicons:chevron-down-solid'"
+                            size="xs"
+                        />
+                    </is-btn>
                 </div>
             </div>
         </div>
