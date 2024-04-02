@@ -9,7 +9,7 @@ interface Options {
 export function useDirectoryEntries(path: MaybeRef<string>, options?: Options){
 
     const _options = ref({
-        exclude: ['/.is', '/.chrono'],
+        exclude: ['.is', '.chrono'],
         ...options
     })
 
