@@ -40,5 +40,7 @@ export default class LogUseCase {
         }
 
         return fileCommits
+            .map((o) => o.serialize())
+            .toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     }
 }

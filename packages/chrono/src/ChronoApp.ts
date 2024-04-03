@@ -21,6 +21,7 @@ import AddUseCase from './use-cases/AddUseCase'
 import ListFilesUseCase from './use-cases/ListFilesUseCase'
 import CheckoutUseCase from './use-cases/CheckoutUseCase'
 import LogUseCase from './use-cases/LogUseCase'
+import ShowUseCase from './use-cases/ShowUseCase'
 
 export default class ChronoApp {
     private readonly drive: IDrive
@@ -123,5 +124,11 @@ export default class ChronoApp {
         const useCase = new LogUseCase(this.objectRepository)
 
         return useCase.execute({ path })
+    }
+
+    public async show(path: string, hash: string) {
+        const useCase = new ShowUseCase(this.drive, this.objectRepository, this.blobRepository)
+
+        return useCase.execute({ path, hash })
     }
 }
