@@ -17,6 +17,10 @@ export async function writeEntry(rootHandle: FileSystemDirectoryHandle, path: st
         create: true
     })
 
+    if (handle instanceof FileSystemFileHandle === false) {
+        throw new Error('Invalid path')
+    }
+
     const writable = await handle.createWritable()
 
     await writable.write(content)

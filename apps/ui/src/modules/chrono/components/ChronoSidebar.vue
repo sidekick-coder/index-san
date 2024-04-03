@@ -9,10 +9,11 @@ import ChronoSidebarEntryList from './ChronoSidebarEntryList.vue';
 const chronoStore = useChronoStore();
 
 // status
-const untracked = computed<DriveEntry[]>(() => {
-    const entries = convertPathsToDriveEntries(chronoStore.status.untracked)
+const changed = computed<DriveEntry[]>(() => {
+    const untracked = convertPathsToDriveEntries(chronoStore.status.untracked)
+    const changed = convertPathsToDriveEntries(chronoStore.status.changed)
 
-    return orderBy(entries, 'path', 'asc');
+    return orderBy(untracked.concat(changed), 'path', 'asc');
 });
 
 const added = computed<DriveEntry[]>(() => {
@@ -20,6 +21,7 @@ const added = computed<DriveEntry[]>(() => {
 
     return orderBy(entries, 'path', 'asc');
 });
+
 
 
 async function addItem(path: string) {
@@ -103,9 +105,9 @@ async function commit() {
                     Commit
                 </is-btn>
             </div>
-    
+
             <ChronoSidebarEntryList
-                title="Added files"
+                title="Stage files"
                 :entries="added"
             >
                 <template #actions="{ entry }">
@@ -124,8 +126,8 @@ async function commit() {
             </ChronoSidebarEntryList>
             
             <ChronoSidebarEntryList
-                title="Untracked files"
-                :entries="untracked"
+                title="Changed files"
+                :entries="changed"
             >
                 <template #actions="{ entry }">
                     <is-btn

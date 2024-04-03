@@ -3,7 +3,7 @@ import { useChronoStore } from '@/modules/chrono/store';
 import type ChronoObjectCommit from 'chrono/src/entities/ChronoObjectCommit';
 import { formatDistanceToNow } from 'date-fns'
 
-const path = defineProp('path', {
+const path = defineProp<string>('path', {
     type: String,
     required: true
 })
@@ -31,12 +31,12 @@ const changes = ref<ChronoObjectCommit[]>([])
 const showChanges = ref(false)
 
 async function setChanges(){
-    if (!chronoStore.hasRepository) return
+    if (!await chronoStore.setHasRepository()) return
 
-    changes.value = await chronoStore.app.log()
+    changes.value = await chronoStore.app.log(path.value)
 }
 
-onMounted(setChanges)
+watch(path, setChanges, { immediate: true })
 
 </script>
 
@@ -126,7 +126,7 @@ onMounted(setChanges)
             <div class="flex flex-col">
                 <div
                     v-if="!changes.length"
-                    class="text-sm text-body-100"
+                    class="text-sm text-body-100 p-4"
                 >
                     No changes
                 </div>
@@ -137,7 +137,7 @@ onMounted(setChanges)
                     size="none"
                     class="px-4 py-4"
                     :active="i === 0"
-                    @click="() => {}"
+                    :to="`/app-page/chrono/file-history?path=${path}&hash=${change.hash}`"
                 >
                     <div class="w-10">
                         <is-icon
@@ -149,7 +149,7 @@ onMounted(setChanges)
 
                     <div class="flex flex-col flex-1">
                         <div>
-                            Edited by {author}
+                            {{ change.message }}
                         </div>
 
                         <div class="text-sm text-body-100">

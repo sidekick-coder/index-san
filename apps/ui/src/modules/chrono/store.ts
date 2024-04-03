@@ -58,6 +58,7 @@ export const useChronoStore = defineStore('chrono', () => {
 
     return {
         app,
+        setHasRepository,
         hasRepository,
 
         loadingStatus,

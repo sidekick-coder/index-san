@@ -1,13 +1,14 @@
-import ChronoDashboard from './pages/ChronoDashboard.vue'
 import ChronoSidebar from './components/ChronoSidebar.vue'
+import ChronoFileHistoryAppPage from './components/ChronoFileHistoryAppPage.vue'
 import ChronoCommitListSidebar from './components/ChronoCommitListSidebar.vue'
 
 export default defineAppModule({
-    setup({ addRoute, addMenuItem }) {
-        // addRoute({
-        //     path: '/chrono',
-        //     component: ChronoDashboard,
-        // })
+    setup({ addMenuItem, addAppPage }) {
+
+        addAppPage({
+            name: 'chrono/file-history',
+            component: ChronoFileHistoryAppPage,
+        })
 
         addMenuItem({
             name: 'Chrono',
