@@ -119,9 +119,9 @@ export default class ChronoApp {
         return useCase.execute({ hash, path })
     }
 
-    public async log() {
+    public async log(path?: string) {
         const useCase = new LogUseCase(this.objectRepository)
 
-        return useCase.execute()
+        return useCase.execute({ path })
     }
 }
