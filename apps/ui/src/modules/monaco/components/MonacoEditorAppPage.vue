@@ -9,9 +9,15 @@ const path = defineProp<string>('path', {
     required: true
 })
 
+
 const language = defineProp<string>('language', {
     type: String,
     default: 'plaintext'
+})
+
+const readonly = defineProp<boolean>('readonly', {
+    type: String,
+    required: false
 })
 
 const { drive: _drive, encode, decode } = useDrive()
@@ -46,6 +52,7 @@ async function save(){
             <monaco-editor
                 v-model="text"
                 :language="language"
+                :readonly="readonly"
                 @keydown.ctrl.s.prevent="save"
             />
         </div>

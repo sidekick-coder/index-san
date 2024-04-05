@@ -34,8 +34,27 @@ async function setChanges(){
 
 watch(path, setChanges, { immediate: true })
 
-// contents
+// blob path
 const contents = ref<string>()
+const blobPath = ref()
+
+function hasExtension(...ext: string[]){
+    return ext.some(e => path.value.endsWith(e))
+}
+
+async function setBlobPath(){
+    if (!current.value) {
+        blobPath.value = undefined
+        return
+    }
+
+    const object = await chronoStore.app.findCommitEntryObject({
+        commitHash: current.value.hash,
+        path: path.value
+    })
+
+    blobPath.value = `.chrono/blobs/${object.blobHash.slice(0, 2)}/${object.blobHash.slice(2)}`
+}
 
 async function setContents(){
     if (!current.value) {
@@ -48,6 +67,7 @@ async function setContents(){
     contents.value = response ? decode(response) : ''
 }
 
+watch(current, setBlobPath)
 watch(current, setContents, { immediate: true })
 
 </script>
@@ -55,9 +75,32 @@ watch(current, setContents, { immediate: true })
 <template>
     <div class="flex min-h-full">
         <div class="flex-1">
-            {{ 
-                contents ? contents : 'No content available'
-            }}
+            <div
+                v-if="!blobPath"
+                class="p-4 text-center text-body-100"
+            >
+                No content
+            </div>
+
+            <monaco-editor-app-page
+                v-else-if="hasExtension('.txt', 'md')"
+                :path="blobPath"
+                readonly
+            />
+            
+            <hephaestus-editor
+                v-else-if="hasExtension('.hph')"
+                :path="blobPath"
+                readonly
+                language="hephaestus"
+            />
+
+            <div
+                v-else
+                class="p-4 text-center text-body-100"
+            >
+                Can not display content
+            </div>
         </div>
 
         <div class="w-72 border-l border-body-500 min-h-full">

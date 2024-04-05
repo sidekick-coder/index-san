@@ -9,6 +9,11 @@ const model = defineModel<string>({
     default: '',
 })
 
+const readonly = defineProp<boolean>('readonly', {
+    type: Boolean,
+    default: false,
+})
+
 const height = ref(56)
 
 function setSize(){
@@ -34,6 +39,7 @@ watch(model, setSize, { immediate: true })
             autofocus
             :folding="false"
             :line-decorations-width="0"
+            :readonly="readonly"
             @keydown.ctrl.s.prevent="$emit('save')"
             @blur="$emit('save')"
         />

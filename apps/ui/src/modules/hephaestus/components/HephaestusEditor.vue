@@ -72,15 +72,26 @@ function setMode(value: 'text' | 'blocks' | 'split'){
 }
 
 // editor
+const readonly = defineProp<boolean>('readonly', {
+    type: Boolean,
+    default: false
+})
+
 const saving = ref(false)
+const original = ref('')
 const text = ref('')
+
 
 const { nodes, setNodes } = createEditor()
 
 async function save(){
+    if (text.value === original.value || readonly.value) return
+
     saving.value = true
 
     await drive.write(path.value, text.value)
+
+    original.value = text.value
 
     setTimeout(() => {
         saving.value = false
@@ -96,6 +107,7 @@ async function saveText(){
 function setTextByContents(){
     if (contents.value) {
         text.value = decode(contents.value).replace(/\r\n/g, '\n')
+        original.value = text.value
 
         setNodes(text.value)
     }
@@ -103,8 +115,6 @@ function setTextByContents(){
 
 function setTextByNodes(){
     text.value = nodes.value.map(n => n.toText()).join('')
-
-    save()
 }
 
 watch(contents, setTextByContents)
@@ -193,6 +203,7 @@ const compiler = createCompiler({
                         v-model="text"
                         language="hephaestus"
                         hide-line-numbers
+                        :readonly="readonly"
                         @keydown.ctrl.s.prevent="saveText"
                     />
                 </div>
@@ -209,6 +220,7 @@ const compiler = createCompiler({
                         :compiler="compiler"
                         :blocks="blocks"
                         :edit-textarea-component="EditorTextarea"
+                        :readonly="readonly"
                     />
                 </div>
             </template>

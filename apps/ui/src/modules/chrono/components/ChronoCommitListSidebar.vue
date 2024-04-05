@@ -26,7 +26,7 @@ watch(() => chronoStore.hasRepository, load, { immediate: true });
         <div class="px-4 flex bg-body-900 py-2 items-center border-b border-body-500">
             <div class="flex-1">
                 <div class="text-sm">
-                    Commits List
+                    Change history
                 </div>
             </div>
 
@@ -51,18 +51,31 @@ watch(() => chronoStore.hasRepository, load, { immediate: true });
         </div>
 
         <template v-else>
-            <div>
+            <div class="relative">
+                <div class="h-full left-0 top-0 py-6 absolute w-8 flex justify-center">
+                    <div class="h-full w-1 bg-body-500/25" />
+                </div>
+
                 <is-list-item 
-                    v-for="commit in commits"
+                    v-for="(commit, index) in commits"
                     :key="commit.hash"
-                    size="xs"
+                    size="none"
+                    class="py-2 pr-4"
                 >
-                    <div class="flex-1">
-                        {{ commit.message }}
+                    <div class="w-8 flex justify-center">
+                        <div
+                            class="w-2 h-2 rounded-full"
+                            :class="index === 0 ? 'bg-primary-500' : 'bg-body-500'"
+                        />
                     </div>
 
-                    <div class="text-body-100">
-                        {{ formatDistanceToNow(new Date(commit.date)) }}
+                    <div class="flex-1  flex flex-col">
+                        <div class="text-sm truncate text-body-50">
+                            {{ commit.message }}
+                        </div>
+                        <div class="text-body-100 text-xs">
+                            {{ formatDistanceToNow(new Date(commit.date)) }}
+                        </div>
                     </div>
                 </is-list-item>
             </div>

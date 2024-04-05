@@ -29,6 +29,11 @@ const minimap = defineProp<EditorOptions['minimap']>('minimap', {
         enabled: false,
     }),
 })
+const readonly = defineProp<boolean>('readonly', {
+    type: Boolean,
+    default: false
+})
+
 const scrollbar = defineProp<EditorOptions['scrollbar']>('scrollbar', {
     type: Object,
     default: () => ({
@@ -71,6 +76,7 @@ function setEditor(){
         folding: folding.value,
         scrollbar: scrollbar.value,
         lineDecorationsWidth: lineDecorationsWidth.value,
+        readOnly: readonly.value,
     })
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))

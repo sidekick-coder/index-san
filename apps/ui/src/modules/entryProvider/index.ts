@@ -3,7 +3,7 @@ export default defineAppModule({
         addRoute({
             path: '/entries/:path(.*)*',
             props: true,
-            component: () => import('./pages/EntryProvider.vue'),
+            component: () => import('./components/EntryProvider.vue'),
         })
     }
 })

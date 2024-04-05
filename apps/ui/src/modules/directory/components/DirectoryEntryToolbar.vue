@@ -86,6 +86,7 @@ watch(path, setChanges, { immediate: true })
             </is-btn>
 
             <is-btn
+                v-if="changes.length"
                 variant="text"
                 color="primary"
                 size="none"

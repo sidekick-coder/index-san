@@ -22,6 +22,7 @@ import ListFilesUseCase from './use-cases/ListFilesUseCase'
 import CheckoutUseCase from './use-cases/CheckoutUseCase'
 import LogUseCase from './use-cases/LogUseCase'
 import ShowUseCase from './use-cases/ShowUseCase'
+import FindCommitEntryObject from './use-cases/FindCommitEntryObject'
 
 interface UseCase {
     execute(params: any): Promise<any>
@@ -104,6 +105,12 @@ export default class ChronoApp {
             this.blobRepository,
             this.indexEntryRepository
         )
+
+        return useCase.execute(params)
+    }
+
+    public async findCommitEntryObject(params: UseCaseParams<FindCommitEntryObject>) {
+        const useCase = new FindCommitEntryObject(this.objectRepository)
 
         return useCase.execute(params)
     }

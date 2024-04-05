@@ -27,6 +27,11 @@ const blocks = defineProp<any[]>('blocks', {
     default: () => ([])
 })
 
+const readonly = defineProp<boolean>('readonly', {
+    type: Boolean,
+    default: false
+})
+
 const editTextareaComponent = defineProp<any>('editTextareaComponent', {
     type: Object,
     default: () => EditorEditTextarea
@@ -207,6 +212,7 @@ onClickOutside(editedContainerRef, saveEditedNode)
                         :is="editTextareaComponent"
                         v-if="editedIndex === index"
                         v-model="editedText"
+                        :readonly="readonly"
                         @blur="saveEditedNode"
                         @save="saveEditedNode"
                     />
