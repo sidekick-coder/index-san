@@ -12,6 +12,7 @@ import HashFileUseCase from './HashEntryUseCase'
 interface Params {
     message: string
     body?: string
+    author?: string
 }
 
 export default class CommitUseCase {
@@ -102,7 +103,7 @@ export default class CommitUseCase {
         })
     }
 
-    async execute({ message }: Params) {
+    async execute({ message, body, author }: Params) {
         if (!message) {
             throw new BaseException('Commit message is required')
         }
@@ -142,8 +143,10 @@ export default class CommitUseCase {
 
         const payload: any = {
             message,
+            author: author || 'anonymous',
             tree: rooTreeHash,
             date: new Date().toISOString(),
+            body,
         }
 
         const headContents = await this.drive.read('.chrono/head')

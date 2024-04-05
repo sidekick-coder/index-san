@@ -23,5 +23,7 @@ export default defineAppModule({
             label: 'Commits',
             component: ChronoCommitListSidebar,
         })
+
+        onHook('drive:write', async ({ path }) => createCommitFromPath(path))
     }
 })

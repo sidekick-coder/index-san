@@ -2,9 +2,7 @@ import { createDrive } from "drive-fsa/composables/createDrive";
 import type { Drive } from "./useDrive";
 
 export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
-    const fsaDrive = createDrive(handle, {
-        debug: true
-    })
+    const fsaDrive = createDrive(handle)
 
     const list: Drive['list'] = async (path, options) => {
         const entries = await fsaDrive.list(path, {
@@ -37,7 +35,9 @@ export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
     }
 
     const write: Drive['write'] = async (path, content) => {
-        return fsaDrive.write(path, content)
+        await fsaDrive.write(path, content)
+
+        emitHook('drive:write', { path, content })
     }
 
     const destroy: Drive['destroy'] = async (path) => {

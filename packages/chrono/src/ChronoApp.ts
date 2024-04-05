@@ -23,6 +23,11 @@ import CheckoutUseCase from './use-cases/CheckoutUseCase'
 import LogUseCase from './use-cases/LogUseCase'
 import ShowUseCase from './use-cases/ShowUseCase'
 
+interface UseCase {
+    execute(params: any): Promise<any>
+}
+type UseCaseParams<T extends UseCase> = Parameters<T['execute']>[0]
+
 export default class ChronoApp {
     private readonly drive: IDrive
     private readonly hash: IHash
@@ -92,7 +97,7 @@ export default class ChronoApp {
         return useCase.execute({ stage })
     }
 
-    public async commit(message: string, body?: string) {
+    public async commit(params: UseCaseParams<CommitUseCase>) {
         const useCase = new CommitUseCase(
             this.drive,
             this.objectRepository,
@@ -100,7 +105,7 @@ export default class ChronoApp {
             this.indexEntryRepository
         )
 
-        return useCase.execute({ message, body })
+        return useCase.execute(params)
     }
 
     public async status() {

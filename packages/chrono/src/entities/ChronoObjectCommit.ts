@@ -25,7 +25,9 @@ export default class ChronoObjectCommit extends ChronoObject {
     }
 
     public static from(payload: Payload) {
-        const object = ChronoObject.fromObject({ type: 'commit', ...payload }, payload.body)
+        const { body, ...head } = payload
+
+        const object = ChronoObject.fromObject({ type: 'commit', ...head }, body)
 
         return new ChronoObjectCommit(object.content)
     }
