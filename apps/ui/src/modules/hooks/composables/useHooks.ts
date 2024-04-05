@@ -1,5 +1,8 @@
 export interface HookEvents {
     'drive:write': { path: string, content: string }
+    'drive:destroy': { path: string }
+    'drive:move': { from: string, to: string }
+    'drive:mkdir': { path: string }
 }
 
 export interface HookListener {
@@ -10,7 +13,7 @@ export interface HookListener {
 const listeners: HookListener[] = []
 
 export function onHook<K extends keyof HookEvents>(name: K, handler: (data: HookEvents[K]) => void) {
-    listeners.push({ name, handler })
+    listeners.push({ name, handler: handler as any })
 }
 
 export function offHook<K extends keyof HookEvents>(name: K, handler: (data: HookEvents[K]) => void) {
@@ -23,7 +26,7 @@ export function offHook<K extends keyof HookEvents>(name: K, handler: (data: Hoo
 
 export function emitHook<K extends keyof HookEvents>(name: K, data: HookEvents[K]) {
     console.debug(`[hook] ${name}`, data)
-    
+
     listeners
         .filter(listener => listener.name === name)
         .forEach(listener => listener.handler(data))

@@ -12,8 +12,9 @@ const chronoStore = useChronoStore();
 const changed = computed<DriveEntry[]>(() => {
     const untracked = convertPathsToDriveEntries(chronoStore.status.untracked)
     const changed = convertPathsToDriveEntries(chronoStore.status.changed)
+    const deleted = convertPathsToDriveEntries(chronoStore.status.deleted)
 
-    return orderBy(untracked.concat(changed), 'path', 'asc');
+    return orderBy(untracked.concat(changed).concat(deleted), 'path', 'asc');
 });
 
 const added = computed<DriveEntry[]>(() => {

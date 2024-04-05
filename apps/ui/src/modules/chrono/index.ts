@@ -25,5 +25,10 @@ export default defineAppModule({
         })
 
         onHook('drive:write', async ({ path }) => createCommitFromPath(path))
+        onHook('drive:destroy', async ({ path }) => createCommitFromPath(path))
+        onHook('drive:move', async ({ from, to }) => {
+            await createCommitFromPath(from)
+            await createCommitFromPath(to)
+        })
     }
 })

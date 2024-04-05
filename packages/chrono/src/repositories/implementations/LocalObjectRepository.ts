@@ -19,6 +19,12 @@ export default class LocalObjectRepository implements IObjectRepository {
         const folderPath = this.drive.resolve(this.directory, startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
+        if (await this.drive.exists(filePath)) {
+            return {
+                objectHash,
+            }
+        }
+
         if (!(await this.drive.exists(folderPath))) {
             await this.drive.mkdir(folderPath)
         }

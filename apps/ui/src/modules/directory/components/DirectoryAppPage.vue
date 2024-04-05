@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
-import orderBy from 'lodash/orderBy'
-import { useDirectoryStore } from '@/modules/directory/store';
-
 import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
 import { useDirectoryEntries } from '../composables/useDirectoryEntries';
 import DirectoryEntryIcon from './DirectoryEntryIcon.vue';
 
 // general
-const route = useRoute()
 const { drive, encode } = useDrive()
 
 // entries
@@ -63,15 +59,9 @@ async function createFile(){
 
     const filepath = `${path.value}/${name}`
 
-    await drive.write(filepath, encode(''))
+    await drive.value.write(filepath, encode(''))
 
-    const fileEntry = await drive.get(filepath)
-
-    if (!fileEntry) {
-        return
-    }
-
-    entries.value.unshift(fileEntry)
+    await loadEntries()
 }
 
 async function createFolder(){
@@ -93,9 +83,9 @@ async function createFolder(){
 
     const filepath = `${path.value}/${name}`
 
-    await drive.mkdir(filepath)
+    await drive.value.mkdir(filepath)
 
-    const folderEntry = await drive.get(filepath)
+    const folderEntry = await drive.value.get(filepath)
 
     if (!folderEntry) {
         return
@@ -112,9 +102,9 @@ async function deleteEntry(e: DriveEntry){
         return
     }
 
-    await drive.destroy(e.path)
+    await drive.value.destroy(e.path)
 
-    await directoryStore.load()
+    await loadEntries()
 }
 
 // edit
@@ -145,9 +135,9 @@ async function saveEditedEntry(){
 
     editedEntry.value.loading = true
 
-    await drive.move(`${path.value}/${originalName}`, `${path.value}/${name}`)
+    await drive.value.move(`${path.value}/${originalName}`, `${path.value}/${name}`)
 
-    await directoryStore.load()
+    await loadEntries()
 
     editedEntry.value.name = ''
     editedEntry.value.originalName = ''
@@ -178,6 +168,40 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                         name="heroicons:arrow-path-solid"
                     />
                 </is-btn>
+                <is-menu>
+                    <template #activator="{ attrs }">
+                        <is-btn
+                            variant="text"
+                            color="primary"
+                            size="none"
+                            class="h-8 w-8"
+                            v-bind="attrs"
+                        >
+                            <is-icon name="heroicons:plus-solid" />
+                        </is-btn>                    
+                    </template>
+
+                    <is-card>
+                        <is-list-item
+                            size="sm"
+                            @click="createFile"
+                        >
+                            <is-icon name="heroicons-solid:document" />
+                            <div class="ml-4">
+                                New File
+                            </div>
+                        </is-list-item>
+                        <is-list-item
+                            size="sm"
+                            @click="createFolder"
+                        >
+                            <is-icon name="heroicons-solid:folder" />
+                            <div class="ml-4">
+                                New Folder
+                            </div>
+                        </is-list-item>
+                    </is-card>
+                </is-menu>
             </template>
 
             <template #right>

@@ -18,6 +18,10 @@ export default class LocalBlobRepository implements IBlobRepository {
         const folderPath = this.drive.resolve(this.directory, startHash)
         const filePath = this.drive.resolve(folderPath, endHash)
 
+        if (await this.drive.exists(filePath)) {
+            return { blobHash }
+        }
+
         if (!(await this.drive.exists(folderPath))) {
             await this.drive.mkdir(folderPath)
         }

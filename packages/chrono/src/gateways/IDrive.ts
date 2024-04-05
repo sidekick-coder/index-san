@@ -8,8 +8,6 @@ interface ReadDirOptions {
 export default interface IDrive {
     resolve: (...args: string[]) => string
 
-    findAllFiles: () => Promise<string[]>
-
     read: (path: string) => Promise<Uint8Array | null>
     write: (path: string, content: Uint8Array) => Promise<void>
 

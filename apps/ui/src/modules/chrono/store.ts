@@ -12,6 +12,7 @@ export const useChronoStore = defineStore('chrono', () => {
         untracked: [],
         added: [],
         changed: [],
+        deleted: [],
     })
 
     async function setHasRepository(){

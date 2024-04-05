@@ -1,4 +1,5 @@
 import type IDrive from "chrono/src/gateways/IDrive"
+import { isRootPath } from "drive-fsa/composables/isRootPath"
 
 export function useChronoDrive(): IDrive {
     const { drive: _drive } = useDrive()
@@ -38,9 +39,21 @@ export function useChronoDrive(): IDrive {
     }
 
     const exists: IDrive['exists'] = async (path) => {
-        const entry = await drive.get(path)
+        const parent = dirname(path)
 
-        return entry !== null
+        if (isRootPath(path)) {
+            return true
+        }
+
+        if (!await exists(parent)) {
+            return false
+        }
+
+        const parentEnries = await drive.list(parent)
+
+        const entry = parentEnries.find(entry => entry.name === basename(path))
+
+        return !!entry
     }
 
     const isFile: IDrive['isFile'] = async (path) => {
