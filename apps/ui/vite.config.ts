@@ -1,5 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
@@ -17,7 +18,7 @@ export default defineConfig({
         },
     },
     plugins: [
-        vue({ script: { defineModel: true } }),
+        vue({ script: { defineModel: true } }),       
         DefineProp(),
         AutoImport({
             dts: 'runtime/auto-imports.d.ts',
@@ -30,6 +31,45 @@ export default defineConfig({
         Components({
             dts: 'runtime/components.d.ts',
             dirs: ['src/components', 'src/modules/*/components'],
+        }),
+        VitePWA({
+            registerType: 'autoUpdate',
+            includeAssets: [
+                'favicon.ico',
+                'pwa/logo-180.png',
+                'pwa/logo-180.svg',
+                'pwa/screenshot-01.png'
+            ],
+            devOptions: {
+                // enabled: true,
+            },
+            manifest: {
+                name: 'Index-san',
+                short_name: 'IndexSan',
+                description: 'Notes app + Filesystem API for modern web',
+                theme_color: '#ffffff',                
+                icons: [
+                  {
+                    src: 'pwa/logo-180.png',
+                    sizes: '180x180',
+                    type: 'image/png'
+                  },
+                ],
+                screenshots: [
+                    {
+                        src: 'pwa/screenshot-01.png',
+                        sizes: '1280x720',
+                        type: 'image/png',
+                        form_factor: 'narrow',
+                    },
+                    {
+                        src: 'pwa/screenshot-01.png',
+                        sizes: '1280x720',
+                        type: 'image/png',
+                        form_factor: 'wide',
+                    },
+                ],
+              } 
         }),
     ],
 })

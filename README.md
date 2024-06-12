@@ -4,7 +4,7 @@
 
 <img src="./logo.ico" height="200" />
 
-Notes app + Filesystem API
+Notes app + Filesystem API for modern web
 
 [App](https://app.index-san.dev) -
 [Docs](https://index-san.dev) -
