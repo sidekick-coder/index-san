@@ -10,7 +10,7 @@ export async function moveEntry(rootHandle: FileSystemDirectoryHandle, from: str
         throw new Error('File not found')
     }
 
-    if (entry instanceof FileSystemFileHandle) {
+    if (entry.handle instanceof FileSystemFileHandle) {
 
         const contents = await readEntry(rootHandle, from)
     
@@ -21,8 +21,8 @@ export async function moveEntry(rootHandle: FileSystemDirectoryHandle, from: str
         return
     }
 
-    if (entry instanceof FileSystemDirectoryHandle) {
-        throw new Error('Not implemented yet')
+    if (entry.handle instanceof FileSystemDirectoryHandle) {
+        throw new Error('Folders move not implemented yet')
     }
 
 }
