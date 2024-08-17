@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useWorkspaces, type Workspace } from './composables/useWorkspaces'
+import type { Workspace } from '@/composables/workspace';
+import { useWorkspaces, } from './composables/useWorkspaces'
 
 // general
 const router = useRouter()
 
-// list
-
 const { load, loading, workspaces, save, verifyPermission } = useWorkspaces()
+const { basename } = useDrive()
 
 onMounted(load)
 
@@ -25,13 +25,11 @@ async function addNew(){
 
     await save({
         handle,
-        label: handle.name,
+        label: basename(handle.name),
     })
 }
 
 // select
-
-const { setDrive } = useDrive()
 
 async function select(workspace: Workspace){
 
@@ -39,7 +37,7 @@ async function select(workspace: Workspace){
 
     if (!permission) return
 
-    loadDrive(workspace.handle)
+    loadWorkspace(workspace)
 
     setTimeout(() => {
         router.push('/entries')
@@ -61,15 +59,11 @@ async function select(workspace: Workspace){
             class="w-full max-w-[20rem]"
         >            
             <div class="flex flex-col gap-y-4 w-full">
-                <is-list-item
-                    justify="center"
-                    color="primary"
-                    variant="fill"
-                    class="rounded"
+                <is-btn
                     @click="addNew"
                 >
                     {{ $t('addEntity',[$t('workspace')]) }}
-                </is-list-item>
+                </is-btn>
 
                 <is-list-item
                     v-for="w in workspaces"

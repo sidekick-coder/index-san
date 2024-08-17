@@ -7,7 +7,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-    await loadLastDrive()
+    await loadLastWorkspace()
 
     const { isLoaded } = useDrive()
 
