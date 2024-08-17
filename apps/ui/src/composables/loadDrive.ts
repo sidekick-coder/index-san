@@ -1,30 +1,29 @@
 import { get, set } from 'idb-keyval'
 
+export async function findCurrentDriveHandle() {
+	const lastHandle = await get<FileSystemDirectoryHandle>('last-handle')
 
-export async function findCurrentDriveHandle(){
-    const lastHandle = await get<FileSystemDirectoryHandle>('last-handle')
-    
-    return lastHandle || null
+	return lastHandle || null
 }
 
-export async function loadLastDrive(){
-    const lastHandle = await findCurrentDriveHandle()
+export async function loadLastDrive() {
+	const lastHandle = await findCurrentDriveHandle()
 
-    if (!lastHandle) return
+	if (!lastHandle) return
 
-    const isAllowed = await lastHandle.queryPermission({ mode: 'readwrite' })  === 'granted'
+	const isAllowed = await lastHandle.queryPermission({ mode: 'readwrite' }) === 'granted'
 
-    if(isAllowed){
-        loadDrive(lastHandle)
-    }
+	if (isAllowed) {
+		loadDrive(lastHandle)
+	}
 }
 
-export function loadDrive(handle: FileSystemDirectoryHandle){
-    const { setDrive } = useDrive()
+export function loadDrive(handle: FileSystemDirectoryHandle) {
+	const { setDrive } = useDrive()
 
-    const workspaceDrive = createWorkspaceDrive(handle)
+	const workspaceDrive = createWorkspaceDrive(handle)
 
-    setDrive(workspaceDrive)
+	setDrive(workspaceDrive)
 
-    set('last-handle', handle)
+	set('last-handle', handle)
 }

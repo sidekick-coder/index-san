@@ -33,7 +33,7 @@ onMounted(load)
                 :entry="rootEntry"
             />
 
-            <div class="ml-4">
+            <div class="ml-4 font-bold">
                 {{ title }}
             </div>
         </is-list-item>
