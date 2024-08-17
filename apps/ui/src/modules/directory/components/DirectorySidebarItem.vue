@@ -23,9 +23,6 @@ const level = defineProp<number>('level', {
     default: 1
 })
 
-const icon = findEntryIcon(entry.value)
-const iconColor = directoryStore.findEntryIconColor(entry.value)
-
 // folder
 const show = ref(false)
 
@@ -66,16 +63,28 @@ function onClick() {
 <template>
     <is-list-item
         class="px-4 items-center group"        
-        size="xs"
         :active="active"
         :style="{ paddingLeft: `${level * 1.5}rem` }"
         @click="onClick"
     >
         <div class="flex flex-col w-full">
             <div class="flex-1 flex items-center">
+                <is-icon
+                    v-if="entry.type === 'directory' && show"
+                    name="heroicons:folder-open-solid"
+                    class="text-primary-300"
+                />
+
+                <is-icon
+                    v-else-if="entry.type === 'directory'"
+                    name="heroicons:folder-solid"
+                    class="text-primary-300"
+                />
+
                 <DirectoryEntryIcon
+                    v-else
                     :entry="entry"
-                    size="sm"
+                    size="lg"
                 />
             
                 <div class="ml-3 truncate flex-1">
@@ -89,12 +98,12 @@ function onClick() {
                     <is-btn
                         variant="text"
                         size="none"
-                        class="h-6 w-6 opacity-0 group-hover:opacity-100"
+                        class="size-8 opacity-0 group-hover:opacity-100"
                         :to="`/entries/${entry.path}`"
                         @click.stop
                     >
                         <is-icon
-                            name="heroicons:folder-open-solid"
+                            name="heroicons:arrow-right-solid"
                             size="xs"
                         />
                     </is-btn>
@@ -103,7 +112,7 @@ function onClick() {
                         v-if="children.length"
                         variant="text"
                         size="none"
-                        class="h-6 w-6"
+                        class="size-8"
                     >
                         <is-icon                            
                             :name="show ? 'heroicons:chevron-up-solid' : 'heroicons:chevron-down-solid'"

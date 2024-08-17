@@ -1,8 +1,20 @@
 <script lang="ts" setup>
 import { useDirectoryEntries } from '@/modules/directory/composables/useDirectoryEntries';
 import DirectorySidebarItem from './DirectorySidebarItem.vue';
+import type { DriveEntry } from '@/composables/useDrive';
 
 const { data: entries, loading, load } = useDirectoryEntries('/')
+
+// root
+const { drive } = useDrive()
+
+const rootEntry = ref<DriveEntry | null>(null)
+
+onMounted(async () => {
+	rootEntry.value = await drive.value.get('/')
+})
+
+const title = computed(() => $config.name|| $workspace.label)
 
 onMounted(load)
 
@@ -10,24 +22,21 @@ onMounted(load)
 
 <template>
     <div class="flex flex-col">
-        <div class="px-4 flex bg-body-900 h-12 items-center border-b border-body-500">
-            <div class="text-xs">
-                Explorer                
+        <is-list-item
+            v-if="rootEntry"
+            to="/entries"
+            class="px-4 items-center group"
+        >
+            <is-icon
+                name="heroicons:folder-open-solid"
+                class="text-primary-300"
+                :entry="rootEntry"
+            />
+
+            <div class="ml-4">
+                {{ title }}
             </div>
-
-            <div class="flex-1" />
-
-            <is-btn
-                variant="text"
-                size="xs"
-                to="/entries"
-            >
-                <is-icon
-                    name="heroicons:folder-open-solid"
-                    size="sm"
-                />
-            </is-btn>
-        </div>
+        </is-list-item>
 
         <div v-if="loading">
             <div
@@ -43,12 +52,17 @@ onMounted(load)
             </div>
         </div>
         
-        <div v-else>
+        <div
+            v-else
+        >
             <div
                 v-for="entry in entries"
                 :key="entry.path"
             >
-                <DirectorySidebarItem :entry="entry" />
+                <DirectorySidebarItem
+                    :entry="entry"
+                    :level="2"
+                />
             </div>
         </div>
     </div>

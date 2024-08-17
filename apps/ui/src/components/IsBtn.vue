@@ -35,7 +35,7 @@ function setFillColor(){
 
 function setTextColor(){
     const options: Record<typeof color.value, string> = {
-        primary: 'hover:text-primary-400 hover:bg-primary-400/5',
+        primary: 'hover:bg-primary-400/50',
     }
 
     const option = options[color.value]

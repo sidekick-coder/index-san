@@ -25,7 +25,7 @@ const name = defineProp<string>('name', {
 // size
 const size = defineProp<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'>('size', {
     type: String,
-    default: 'md',
+    default: 'lg',
 })
 
 function setSize(){
