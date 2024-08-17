@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useChronoStore } from '@/modules/chrono/store';
 import type ChronoObjectCommit from 'chrono/src/entities/ChronoObjectCommit';
 import { formatDistanceToNow } from 'date-fns'
 
@@ -23,21 +22,6 @@ function setControls(){
 
 
 watch(() => path.value, setControls, { immediate: true })
-
-// change history
-const chronoStore = useChronoStore()
-
-const changes = ref<ChronoObjectCommit[]>([])
-const showChanges = ref(false)
-
-async function setChanges(){
-    if (!await chronoStore.setHasRepository()) return
-
-    changes.value = await chronoStore.app.log(path.value)
-}
-
-watch(path, setChanges, { immediate: true })
-
 </script>
 
 <template>
@@ -85,20 +69,6 @@ watch(path, setChanges, { immediate: true })
                 />
             </is-btn>
 
-            <is-btn
-                v-if="changes.length"
-                variant="text"
-                color="primary"
-                size="none"
-                class="h-8 w-8"
-                @click="showChanges = true"
-            >
-                <is-icon
-                    size="sm"
-                    name="heroicons:clock"
-                />
-            </is-btn>
-
             <slot name="append-controls" />
         </div>
 
@@ -118,72 +88,5 @@ watch(path, setChanges, { immediate: true })
         </div>
 
         <slot name="right" />
-
-        <is-drawer
-            v-model="showChanges"
-            position="right"
-            title="Change History"
-        >
-            <div class="flex flex-col">
-                <div
-                    v-if="!changes.length"
-                    class="text-sm text-body-100 p-4"
-                >
-                    No changes
-                </div>
-
-                <is-list-item
-                    v-for="(change, i) in changes"
-                    :key="change.hash"
-                    size="none"
-                    class="px-4 py-4"
-                    :active="i === 0"
-                    :to="`/app-page/chrono/file-history?path=${path}&hash=${change.hash}`"
-                >
-                    <div class="w-10">
-                        <is-icon
-                            name="heroicons:user-circle-solid"
-                            size="none"
-                            class="text-2xl"
-                        />
-                    </div>
-
-                    <div class="flex flex-col flex-1">
-                        <div>
-                            {{ change.message }}
-                        </div>
-
-                        <div class="text-sm text-body-100">
-                            {{ formatDistanceToNow(change.date) }}
-                        </div>
-                    </div>
-
-                    <div class="w-10 -mr-2">
-                        <is-tooltip placement="left">
-                            <template #activator="{ attrs }">
-                                <is-btn
-                                    variant="text"
-                                    color="primary"
-                                    size="none"
-                                    class="h-8 w-8"
-                                    v-bind="attrs"
-                                    @click="() => {}"
-                                >
-                                    <is-icon
-                                        name="heroicons:arrow-right-solid"
-                                        size="none"
-                                        class="sm"
-                                    />
-                                </is-btn>
-                            </template>
-
-                            <div>
-                                View change
-                            </div>
-                        </is-tooltip>
-                    </div>
-                </is-list-item>
-            </div>
-        </is-drawer>
     </div>
 </template>

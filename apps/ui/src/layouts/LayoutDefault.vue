@@ -36,6 +36,10 @@ const { isLoaded } = useDrive()
                 :is="sidebarComponent"
                 v-if="sidebarComponent"
             />
+
+            <div v-else>
+                No selected
+            </div>
         </div>
 
         <div class="flex-1 h-dvh bg-body-700 overflow-hidden">

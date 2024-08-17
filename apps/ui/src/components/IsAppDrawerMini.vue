@@ -44,7 +44,7 @@ function exitWorkspace() {
         <div class="flex flex-col h-full">
             <is-list-item
                 justify="center"
-                to="/entries"
+                @click="onItemClick('')"
             >
                 <is-logo class="w-5 h-5" />
             </is-list-item>
