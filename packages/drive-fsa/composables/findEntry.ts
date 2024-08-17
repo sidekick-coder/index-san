@@ -14,9 +14,9 @@ export async function findEntry(rootHandle: FileSystemDirectoryHandle, path: str
     }
 
     const dirname = findDirname(path)
-    
+
     const allParentEntries = await listEntries(rootHandle, dirname)
-    
+
     const entry = allParentEntries.find(e => e.path === path)
 
     return entry || null

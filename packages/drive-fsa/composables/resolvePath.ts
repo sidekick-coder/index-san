@@ -5,11 +5,5 @@ export function resolvePath (...path: string[]) {
         return '/'
     }
 
-    const newPath = path.join('/').replace('//', '/')
-
-    if (newPath[0] === '/') {
-        return newPath.slice(1)
-    }
-
-    return newPath
+    return path.join('/').replace('//', '/')
 }

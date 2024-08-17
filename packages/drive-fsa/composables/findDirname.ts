@@ -1,9 +1,13 @@
 export function findDirname(path: string){
-    const args = path
+    const result = path
         .split('/')
         .slice(0, -1)
         .filter(Boolean)
         .join('/')
 
-    return args === '' ? '/' : args
+	if (path.startsWith('/')) {
+		return '/' + result
+	}
+
+    return result
 }
