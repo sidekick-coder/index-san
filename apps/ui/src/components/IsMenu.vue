@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFloating, flip, offset, shift, type Placement } from '@floating-ui/vue';
+import { useFloating, shift, type Placement } from '@floating-ui/vue';
 import { onClickOutside } from '@vueuse/core';
 import type { ComponentPublicInstance } from 'vue';
 
@@ -21,7 +21,7 @@ const { floatingStyles } = useFloating(root, floating, {
     middleware: [shift()],
 })
 
-function onRef(el: Element | ComponentPublicInstance | null, refs: Record<string, any>)  {
+function onRef(el: Element | ComponentPublicInstance | null)  {
     if (el instanceof Element) {
         root.value = el
         return

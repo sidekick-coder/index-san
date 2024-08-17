@@ -45,6 +45,21 @@ export function useDrive(){
         return path.split('/').slice(0, -1).join('/')
     }
 
+	function resolve(...args: string[]){
+		const result = args
+			.map(a => a.replace(/\/\//g, '/'))
+			.map(a => a.split('/'))
+			.flat()
+			.filter(Boolean)
+			.join('/')
+
+		if (args[0].startsWith('/')) {
+			return '/' + result
+		}
+
+		return result
+	}
+
     return {
         drive,
         isLoaded,
@@ -52,6 +67,7 @@ export function useDrive(){
         encode,
         decode,
         basename,
-        dirname
+        dirname,
+		resolve
     }
 }

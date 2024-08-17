@@ -5,12 +5,13 @@ import { useDirectoryEntries } from '../composables/useDirectoryEntries';
 import DirectoryEntryIcon from './DirectoryEntryIcon.vue';
 
 // general
-const { drive, encode } = useDrive()
+const { drive, encode, resolve } = useDrive()
+const router = useRouter()
 
 // entries
 const path = defineProp<string>('path', {
-    type: String,
-    default: '/',
+	type: String,
+	default: '/',
 })
 
 // entry
@@ -20,135 +21,150 @@ const { data: entries, loading, load: loadEntries } = useDirectoryEntries(path)
 
 const filteredEntries = computed(() => {
 
-    if (!search.value) {
-        return entries.value
-    }
+	if (!search.value) {
+		return entries.value
+	}
 
-    return entries.value.filter(e => {
-        if (search.value.length > 0 && !e.path.includes(search.value)) {
-            return false
-        }
+	return entries.value.filter(e => {
+		if (search.value.length > 0 && !e.path.includes(search.value)) {
+			return false
+		}
 
-        return true
-    })
+		return true
+	})
 })
+
+function openEntry(entry: DriveEntry) {
+	if (editedEntry.value.originalName) return
+
+	router.push(`/entries/${encodeURIComponent(entry.path)}`)
+}
 
 watch(path, loadEntries, { immediate: true })
 
 // entry crud
 async function createFile(){
-    let count = 0
+	let count = 0
 
-    for (const entry of entries.value) {
-        if (entry.type !== 'file') {
-            continue
-        }
+	for (const entry of entries.value) {
+		if (entry.type !== 'file') {
+			continue
+		}
 
-        if (!entry.name.startsWith('new-file')) {
-            continue
-        }
+		if (!entry.name.startsWith('new-file')) {
+			continue
+		}
 
-        if (!entry.name.endsWith('.txt')) {
-            continue
-        }
+		if (!entry.name.endsWith('.txt')) {
+			continue
+		}
 
-        count++
-    }
+		count++
+	}
 
-    const name = count === 0 ? 'new-file.txt' : `new-file-${count}.txt`
+	const name = count === 0 ? 'new-file.txt' : `new-file-${count}.txt`
 
-    const filepath = `${path.value}/${name}`
+	const filepath = resolve(path.value, name) 
 
-    await drive.value.write(filepath, encode(''))
+	await drive.value.write(filepath, encode(''))
 
-    await loadEntries()
+	await loadEntries()
 }
 
 async function createFolder(){
-    let count = 0
+	let count = 0
 
-    for (const entry of entries.value) {
-        if (entry.type !== 'directory') {
-            continue
-        }
+	for (const entry of entries.value) {
+		if (entry.type !== 'directory') {
+			continue
+		}
 
-        if (!entry.name.startsWith('new-folder')) {
-            continue
-        }
+		if (!entry.name.startsWith('new-folder')) {
+			continue
+		}
 
-        count++
-    }
+		count++
+	}
 
-    const name = count === 0 ? 'new-folder' : `new-folder-${count}`
+	const name = count === 0 ? 'new-folder' : `new-folder-${count}`
 
-    const filepath = `${path.value}/${name}`
+	const filepath = `${path.value}/${name}`
 
-    await drive.value.mkdir(filepath)
+	await drive.value.mkdir(filepath)
 
-    const folderEntry = await drive.value.get(filepath)
-
-    if (!folderEntry) {
-        return
-    }
-
-    entries.value.unshift(folderEntry)
+	await loadEntries()
 }
 
 async function deleteEntry(e: DriveEntry){
 
-    const value = confirm('Are you sure you want to delete this entry?')
+	const value = confirm('Are you sure you want to delete this entry?')
 
-    if (!value) {
-        return
-    }
+	if (!value) {
+		return
+	}
 
-    await drive.value.destroy(e.path)
+	await drive.value.destroy(e.path)
 
-    await loadEntries()
+	await loadEntries()
 }
 
 // edit
 const editedEntry = ref({
-    loading: false,
-    inputRef: null as any | null,
-    name: '',
-    originalName: '',
+	loading: false,
+	inputRef: null as any | null,
+	name: '',
+	originalName: '',
 })
 
 function editEntry(e: DriveEntry){
-    editedEntry.value.name = e.name
-    editedEntry.value.originalName = e.name
+	editedEntry.value.name = e.name
+	editedEntry.value.originalName = e.name
+
+
+	editedEntry.value.inputRef?.focus()
 }
 
 async function saveEditedEntry(){
-    if (editedEntry.value.loading) {
-        return
-    }
+	if (editedEntry.value.loading) {
+		return
+	}
 
-    const { name, originalName } = editedEntry.value
+	const { name, originalName } = editedEntry.value
 
-    if (name === originalName) {
-        editedEntry.value.name = ''
-        editedEntry.value.originalName = ''
-        return
-    }
+	if (name === originalName) {
+		editedEntry.value.name = ''
+		editedEntry.value.originalName = ''
+		return
+	}
 
-    editedEntry.value.loading = true
+	const existsTo = entries.value.some(e => e.name === name)
 
-    await drive.value.move(`${path.value}/${originalName}`, `${path.value}/${name}`)
+	if (existsTo) {
+		editedEntry.value.name = ''
+		editedEntry.value.originalName = ''
+		$snackbar.error('target exists')
+		return
+	}
 
-    await loadEntries()
+	editedEntry.value.loading = true
 
-    editedEntry.value.name = ''
-    editedEntry.value.originalName = ''
+	const fromPath = resolve(path.value, originalName)
+	const toPath = resolve(path.value, name)
 
-    editedEntry.value.loading = false
+	await drive.value.move(fromPath, toPath)
+
+	await loadEntries()
+
+	editedEntry.value.name = ''
+	editedEntry.value.originalName = ''
+
+	editedEntry.value.loading = false
 }
 
 watch(() => editedEntry.value.inputRef, (inputRef) => {
-    if (inputRef) {
-        inputRef.focus()
-    }
+	if (inputRef) {
+		inputRef.focus()
+	}
 })
 
 </script>
@@ -229,27 +245,28 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                     No entries
                 </div>
             </div>
-            
+
             <div class="flex flex-col pb-[25rem] relative">
                 <is-list-item
                     v-for="e in filteredEntries"
                     :key="e.path"
-                    :to="`/entries/${encodeURIComponent(e.path)}`"
                     :class="editedEntry.originalName === e.name ? 'bg-body-500' : ''"
                     class="px-10 items-center group"
+                    @click="() => {}"
+                    @dblclick="openEntry(e)"
                 >
-                    <div class="flex-1 flex items-center">
+                    <div class="flex-1 flex items-center h-full">
                         <DirectoryEntryIcon
                             size="xl"
                             :entry="e"
                         />
-    
-                        <div class="ml-4">
+
+                        <div class="ml-4 flex-1 h-full flex items-center">
                             <input
                                 v-if="editedEntry.originalName === e.name"
                                 :ref="el => editedEntry.inputRef = el"
                                 v-model="editedEntry.name"
-                                class="bg-transparent outline-none"
+                                class="bg-transparent outline-none w-full h-full"
                                 autofocus
                                 spellcheck="false"
                                 @click.prevent
@@ -285,7 +302,7 @@ watch(() => editedEntry.value.inputRef, (inputRef) => {
                             >
                                 <is-icon name="heroicons-solid:pencil" />
                             </is-btn>
-    
+
                             <is-btn
                                 variant="text"
                                 color="primary"

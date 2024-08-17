@@ -30,16 +30,12 @@ const { isLoaded } = useDrive()
 
         <div 
             class="bg-body-800  border-body-500 transition-[width] duration-300 h-dvh overflow-y-auto"
-            :class="drawer ? 'w-80 border-r' : 'w-0'"
+            :class="drawer && sidebarComponent ? 'w-80 border-r' : 'w-0'"
         >
             <component
                 :is="sidebarComponent"
                 v-if="sidebarComponent"
             />
-
-            <div v-else>
-                No selected
-            </div>
         </div>
 
         <div class="flex-1 h-dvh bg-body-700 overflow-hidden">
