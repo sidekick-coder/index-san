@@ -1,5 +1,5 @@
-import type { DriveEntry } from "@/composables/useDrive";
 import { createCompiler, type HecateCompilerImportResolver } from "hecate/composables/createCompiler";
+import { defineImportResolver } from "hecate/composables/defineImportResolver";
 
 export interface Options {
     fromEntryPath?: string;
@@ -10,11 +10,16 @@ export function createDriveImportResolvers(options?: Options) {
     const { drive: _drive, decode } = useDrive();
     const drive = unref(_drive);
 
+	const driveResolver = defineImportResolver({
+		test: k => k === 'app:drive',
+		resolve: async () => ({ drive })
+	})
+
 
     const rootResolver: HecateCompilerImportResolver = {
-        test: (key: string) => key.startsWith('@/'),
+        test: (key: string) => key.startsWith('/'),
         resolve: async (key: string) => {
-            const filename = key.slice(2);
+            const filename = key
 
             const entry = await drive.get(filename);
             
@@ -44,5 +49,5 @@ export function createDriveImportResolvers(options?: Options) {
         }
     }
 
-    return [rootResolver];
+    return [rootResolver, driveResolver];
 }

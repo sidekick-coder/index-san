@@ -62,7 +62,7 @@ function show(value: any) {
                 @click="drawer = false"
             />
 
-            <div class="fixed top-0 h-full right-0 w-96 bg-body-700 z-20 border-l border-body-500">
+            <div class="fixed top-0 h-full right-0 min-w-[25rem] bg-body-700 z-20 border-l border-body-500">
                 <div class="h-16 flex items-center px-4">
                     <div class="text-lg font-bold">
                         Logs
@@ -100,7 +100,7 @@ function show(value: any) {
                         </div>
                         
                         <div class="text-sm text-body-100">
-                            {{ show(log) }}
+                            <pre>{{ show(log).trim() }}</pre>
                         </div>
                     </div>
                 </div>

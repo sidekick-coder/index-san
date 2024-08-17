@@ -147,7 +147,7 @@ const importResolvers = [
 ]
 
 const logger = {
-    log: (...args: string[]) => logs.value.push(args.join(' ')),
+    log: (...args: string[]) => logs.value.push(...args),
 }
 
 const compiler = createCompiler({

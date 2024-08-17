@@ -18,16 +18,14 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'fill',
 })
 
-const color = defineProp<'zinc' | 'accent' | 'primary'>('color',  {
+const color = defineProp<'primary'>('color',  {
     type: String,
     default: 'primary',
 })
 
 function setFillColor(){
     const options: Record<typeof color.value, string> = {
-        zinc: 'bg-zinc-500 hover-and-clickable:bg-zinc-400',
-        accent: 'bg-teal-500',
-        primary: 'bg-primary-500 text-body-500',
+        primary: 'bg-primary-500 text-body-0',
     }
 
     const option = options[color.value]
@@ -37,8 +35,6 @@ function setFillColor(){
 
 function setTextColor(){
     const options: Record<typeof color.value, string> = {
-        zinc: 'text-zinc-400 hover:bg-zinc-400/5',
-        accent: 'hover:text-teal-400 hover:bg-teal-400/5',
         primary: 'hover:text-primary-400 hover:bg-primary-400/5',
     }
 

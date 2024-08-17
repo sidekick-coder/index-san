@@ -3,7 +3,7 @@ import type { Drive } from "./useDrive";
 
 export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
     const fsaDrive = createDrive(handle, {
-        debug: false
+        debug: true 
     })
 
     const list: Drive['list'] = async (path, options) => {
