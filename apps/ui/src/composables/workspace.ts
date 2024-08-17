@@ -21,7 +21,8 @@ export async function loadWorkspace(workspace: Workspace) {
 	$workspace.label = workspace.label
 	$workspace.handle = workspace.handle
 
-	await loadDrive($workspace.handle)
+	loadDrive($workspace.handle)
+
 	await loadConfig()
 
 	await set('workspaces:last', {
@@ -29,6 +30,8 @@ export async function loadWorkspace(workspace: Workspace) {
 		label: workspace.label,
 		handle: workspace.handle
 	})
+
+	emitHook('workspace:loaded', { workspace })
 }
 
 export async function loadLastWorkspace(){

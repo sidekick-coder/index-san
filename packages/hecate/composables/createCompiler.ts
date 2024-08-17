@@ -4,252 +4,265 @@ import HNode from "../base/HNode"
 import HConsole from "../nodes/HConsole"
 import HFunction from "../nodes/HFunction"
 import HImport from "../nodes/HImport"
+import HExportDefaultObject from "../nodes/HExplortDefaultObject"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
 export type HecateCompilerResult = Awaited<ReturnType<HecateCompiler['compile']>>
 
 export interface HecateCompilerImportResolver {
-    test: (path: string) => boolean
-    resolve: (path: string) => Promise<any>
+	test: (path: string) => boolean
+	resolve: (path: string) => Promise<any>
 }
 
 export interface HecateCompilerLogger {
-    log: (...args: any[]) => void
+	log: (...args: any[]) => void
 }
 
 export interface HecateCompilerOptions {
-    importResolvers: HecateCompilerImportResolver[]
-    logger?: HecateCompilerLogger
+	importResolvers: HecateCompilerImportResolver[]
+	logger?: HecateCompilerLogger
 }
 
 export interface HecateCompilerTransformFn {
-    (code: string, nodes: NodeArray<HNode>): [boolean, string]
+	(code: string, nodes: NodeArray<HNode>): [boolean, string]
 }
 
-const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
+const AsyncFunction = Object.getPrototypeOf(async function() { }).constructor
 
 export function createCompiler({ importResolvers, logger }: HecateCompilerOptions) {
 
-    const parser = new HParser()
+	const parser = new HParser()
 
-    function toNodes(code: string) {
-        return parser.toNodes(code)
-    }
+	function toNodes(code: string) {
+		return parser.toNodes(code)
+	}
 
-    async function execute(code: string, context: any) {
-        try {
-            const fn = new AsyncFunction(code)
-    
-            await fn.call(context)
-                .catch((err: Error) => {
-                    console.error(err)
-                })
-        } catch (error) {
-            throw error
-        }
-    }
+	async function execute(code: string, context: any) {
+		try {
+			const fn = new AsyncFunction(code)
 
-    function deepForEach(nodes: HNode[], cb: (node: HNode) => void) {
-        nodes.forEach((node) => {
-            cb(node)
+			await fn.call(context)
+				.catch((err: Error) => {
+					console.error(err)
+				})
+		} catch (error) {
+			throw error
+		}
+	}
 
-            if (node instanceof HFunction) {
-                deepForEach(node.children, cb)
-            }
-        })
-    }
-    
-    function allNodes(nodes: HNode[]) {
-        const result = nodes.slice()
+	function deepForEach(nodes: HNode[], cb: (node: HNode) => void) {
+		nodes.forEach((node) => {
+			cb(node)
 
-        nodes.forEach((node) => {
-            if (node instanceof HFunction) {
-                result.push(...allNodes(node.children))
-            }
-        })
+			if (node instanceof HFunction) {
+				deepForEach(node.children, cb)
+			}
+		})
+	}
 
-        return result
-    }
+	function allNodes(nodes: HNode[]) {
+		const result = nodes.slice()
 
-    // remove unnecessary spaces and new lines
-    function minify(code: string){
-        return code
-            .replaceAll('\r', '\n')
-            .split('\n')
-            .map((l) => l.trim())
-            .filter(Boolean)
-            .join('\n')
-    }
+		nodes.forEach((node) => {
+			if (node instanceof HFunction) {
+				result.push(...allNodes(node.children))
+			}
+		})
 
-    // recursively transform the code
-    function transform(code: string, cb: HecateCompilerTransformFn) {
-        let nodes = parser.toNodes(code)
+		return result
+	}
 
-        const [result, newCode] = cb(code, nodes)
+	// remove unnecessary spaces and new lines
+	function minify(code: string) {
+		return code
+			.replaceAll('\r', '\n')
+			.split('\n')
+			.map((l) => l.trim())
+			.filter(Boolean)
+			.join('\n')
+	}
 
-        if (!result) {
-            return code
-        }
+	// recursively transform the code
+	function transform(code: string, cb: HecateCompilerTransformFn) {
+		let nodes = parser.toNodes(code)
 
-        return transform(newCode, cb)
-    }
+		const [result, newCode] = cb(code, nodes)
 
-    function transformAll(code: string, cbs: HecateCompilerTransformFn[]) {
-        let transformed = code
+		if (!result) {
+			return code
+		}
 
-        for (const cb of cbs) {
-            transformed = transform(transformed, cb)
-        }
+		return transform(newCode, cb)
+	}
 
-        return transformed
-    }
+	function transformAll(code: string, cbs: HecateCompilerTransformFn[]) {
+		let transformed = code
 
-    // remove exports
-    const transformExports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
-        for (const node of allNodes(nodes)) {
-            if (node instanceof HFunction && node.export) {
-                const token = node.tokens.find((t) => t.value === 'export')
+		for (const cb of cbs) {
+			transformed = transform(transformed, cb)
+		}
 
-                if (!token) continue
+		return transformed
+	}
 
-                const newCode = code.slice(0, token.start) + code.slice(token.end + 1)
+	// remove exports
+	const transformExports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
+		for (const node of allNodes(nodes)) {
+			if (node instanceof HFunction && node.export) {
+				const token = node.tokens.find((t) => t.value === 'export')
 
-                return [true, minify(newCode)]           
-            }
-        }
+				if (!token) continue
 
-        return [false, code]
-    }
+				const newCode = code.slice(0, token.start) + code.slice(token.end + 1)
 
-    const transformImports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
+				return [true, minify(newCode)]
+			}
+			if (node instanceof HExportDefaultObject) {
+				const replace = `\nconst __default = ${node.value}`
 
-        for (const node of allNodes(nodes)) {
-            if (node instanceof HImport) {
-                const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');`
+				const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
-                const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
+				return [true, minify(newCode)]
+			}
 
-                return [true, minify(newCode)]
-            }
-        }
+		}
 
-        return [false, code]
-    }
+		return [false, code]
+	}
 
-    const transformConsole: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
-        for (const node of allNodes(nodes)) {
-            if (node instanceof HConsole) {                
-                const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
+	const transformImports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
 
-                const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
+		for (const node of allNodes(nodes)) {
+			if (node instanceof HImport) {
+				const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');`
 
-                return [true, minify(newCode)]
-            }
-        }
+				const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
-        return [false, code]
-    }
+				return [true, minify(newCode)]
+			}
+		}
 
-    async function compile(code: string) {
-        const imports = {} as Record<string, any>
+		return [false, code]
+	}
 
-        // register imports & exports
-        const needExport: string[] = []
+	const transformConsole: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
+		for (const node of allNodes(nodes)) {
+			if (node instanceof HConsole) {
+				const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
 
-        for (const node of allNodes(parser.toNodes(code))) {
-            if (node instanceof HFunction && node.export) {
-                needExport.push(node.name)
-            }
-    
-            if (node  instanceof HImport) {
-                imports[node.from] = null
-            }
-        }
+				const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
-        const transformed = transformAll(code, [
-            transformExports,
-            transformImports,
-            transformConsole
-        ])
+				return [true, minify(newCode)]
+			}
+		}
 
-        const lines = [
-            "// -------- hecate header -------- //",
-            "",
-            "$hecate = this.$hecate;",
-            "",
-            "// -------- code -------- //",
-            "",
-            transformed,
-        ]
+		return [false, code]
+	}
 
-        if (needExport.length) {
-            lines.push(
-                '// -------- hecate footer -------- //',
-                "",
-                `$hecate.export({ ${needExport.join(', ')} });`
-            )
-        }
+	async function compile(code: string) {
+		const imports = {} as Record<string, any>
 
-        const finalCode = lines.join('\n')
+		// register imports & exports
+		const needExport: string[] = []
 
-        const result = {
-            exports: {} as Record<string, any>,
-            error: null as any,
-            logs: [] as any[]
-        }
+		for (const node of allNodes(parser.toNodes(code))) {
+			if (node instanceof HFunction && node.export) {
+				needExport.push(node.name)
+			}
 
-        for await (const key of Object.keys(imports)) {
-            const resolver = importResolvers.find((r) => r.test(key))
+			if (node instanceof HExportDefaultObject) {
+				needExport.push('default: __default')
+			}
 
-            if (!resolver) {
-                result.error = new Error(`[hecate] Import resolver not found for ${key}`)
-                return result
-            }
+			if (node instanceof HImport) {
+				imports[node.from] = null
+			}
+		}
 
-            imports[key] = await resolver.resolve(key)
-                .then((data) => data)
-                .catch((err) => {
-                    console.error(err)
-                    result.error = err
-                })
+		const transformed = transformAll(code, [
+			transformExports,
+			transformImports,
+			transformConsole
+		])
 
-            if (result.error) {
-                return result
-            }
-        }
+		const lines = [
+			"// -------- hecate header -------- //",
+			"",
+			"$hecate = this.$hecate;",
+			"",
+			"// -------- code -------- //",
+			"",
+			transformed,
+		]
 
-        const $hecate = {
-            import: (path: string) => {
-                return imports[path]
-            },
-            export: (data: any) => {
-                result.exports = data
-            },
-            error: (err: Error) => {
-                result.error = err
-            },
-            console: {
-                log: (...args: any[]) => {
-                    logger?.log(...args)
-                    result.logs.push(args)
-                },
-            }
-        }
+		if (needExport.length) {
+			lines.push(
+				'// -------- hecate footer -------- //',
+				"",
+				`$hecate.export({ ${needExport.join(', ')} });`
+			)
+		}
 
-        await execute(finalCode, { $hecate }).catch((err) => {
-            result.error = err
-        })
+		const finalCode = lines.join('\n')
 
-        return result
+		const result = {
+			exports: {} as Record<string, any>,
+			error: null as any,
+			logs: [] as any[]
+		}
 
-    }
+		for await (const key of Object.keys(imports)) {
+			const resolver = importResolvers.find((r) => r.test(key))
+
+			if (!resolver) {
+				result.error = new Error(`[hecate] Import resolver not found for ${key}`)
+				return result
+			}
+
+			imports[key] = await resolver.resolve(key)
+				.then((data) => data)
+				.catch((err) => {
+					console.error(err)
+					result.error = err
+				})
+
+			if (result.error) {
+				return result
+			}
+		}
+
+		const $hecate = {
+			import: (path: string) => {
+				return imports[path]
+			},
+			export: (data: any) => {
+				result.exports = data
+			},
+			error: (err: Error) => {
+				result.error = err
+			},
+			console: {
+				log: (...args: any[]) => {
+					logger?.log(...args)
+					result.logs.push(args)
+				},
+			}
+		}
+
+		await execute(finalCode, { $hecate }).catch((err) => {
+			result.error = err
+		})
+
+		return result
+
+	}
 
 
-    return {
-        minify,
-        deepForEach,
-        compile,
-        toNodes
-    }
+	return {
+		minify,
+		deepForEach,
+		compile,
+		toNodes
+	}
 }

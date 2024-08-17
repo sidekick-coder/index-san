@@ -7,12 +7,14 @@ import HFunctionProcessor from './processors/HFunctionProcessor'
 import HUnknownProcessor from './processors/HUnknownProcessor'
 import HConsoleProcessor from './processors/HConsoleProcessor'
 import HHecateObjectProcessor from './processors/HHecateObjectProcessor'
+import HExportDefaultObjectProcessor from './processors/HExportDefaultObjectProcessor'
 
 export default class HParser extends BaseParser<HNode> {
     constructor() {
         super()
 
         this.setProcessors([
+			HExportDefaultObjectProcessor,
             HImportProcessor,
             HVariableProcessor,
             HFunctionProcessor,

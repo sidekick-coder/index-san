@@ -2,6 +2,7 @@
 const filename = '/.is/config.json'
 
 export interface IsConfigPlugin {
+	id: string
 	active: boolean
 }
 
