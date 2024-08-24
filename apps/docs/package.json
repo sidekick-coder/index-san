@@ -6,7 +6,7 @@
     "dev": "nuxi dev",
     "build": "nuxi build",
     "generate": "nuxi generate",
-    "preview": "nuxi preview",
+    "preview": "npx serve .output/public",
     "lint": "eslint ."
   },
   "devDependencies": {
