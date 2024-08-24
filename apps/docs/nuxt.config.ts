@@ -1,11 +1,18 @@
 export default defineNuxtConfig({
-    extends: '@nuxt-themes/docus',
-    modules: ['@nuxtjs/tailwindcss'],
-    content: {
-        locales: ['en-US', 'pt-BR'],
-        defaultLocale: 'en-US',
-    },
-    pinceau: {
-        preflight: false,
-    },
+  // https://github.com/nuxt-themes/docus
+  extends: ['@nuxt-themes/docus'],
+
+  devtools: { enabled: true },
+
+  modules: [
+    // Remove it if you don't use Plausible analytics
+    // https://github.com/nuxt-modules/plausible
+    '@nuxtjs/plausible'
+  ],
+
+  compatibilityDate: '2024-08-24',
+	css: [
+		'~/assets/main.css'
+	]
+
 })
