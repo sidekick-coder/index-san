@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.ts,.js --max-warnings 0",
     "coverage": "vitest run --coverage",
     "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
     "tsc": "vue-tsc --noEmit"
   },
   "dependencies": {
