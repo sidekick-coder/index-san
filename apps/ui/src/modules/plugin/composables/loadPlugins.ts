@@ -2,8 +2,12 @@ import { createCompiler } from "hecate/composables/createCompiler";
 import type { IsPluginInfo } from "./listPlugins";
 import { addPluginImport } from "./plugin-resolvers";
 import { importJavascriptFile } from "@/modules/hecate/resolvers/javascript";
+import type { EntryMiddleware } from "@/composables/defineEntryMiddleware";
+import type { AppPage } from "@/composables/defineAppPage";
 
 const loading = ref(true)
+const entryMiddlewares = useEntryMiddlewares()
+const appPages = useAppPages()
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
 	const { drive, decode, resolve } = useDrive()
@@ -41,16 +45,23 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		return
 	}
 
-	const components = [] as any[] 
+	const components = [] as any[]
+	const pages = [] as any[]
 
 	await pluginDefinition.setup({
+		resolve: (...args: string[]) => resolve(folder, ...args),
+		addComponent: (payload: any) => components.push(payload),
+		addAppPage: (payload: any) => pages.push(payload),
 		addImport: (key: string, filename: string) => {
 			addPluginImport(key, filename)
 
 			console.log(`[plugin(${pluginInfo.id})] add module`, { key, filename })
 		},
-		resolve: (...args: string[]) => resolve(folder, ...args),
-		addComponent: (payload: any) => components.push(payload)
+		addEntryMiddleware: (payload: EntryMiddleware) => {
+			entryMiddlewares.value.push(payload)
+
+			console.log(`[plugin(${pluginInfo.id})] add entry middleware`, payload)
+		},
 	})
 
 	for await (const componentDef of components) {
@@ -65,8 +76,21 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 
 			console.log(`[plugin(${pluginInfo.id})] add component`, componentDef)
 		}
-
 	}
+
+	for await (const pageDef of pages) {
+		const component = await importJavascriptFile(pageDef.filename)
+
+		if (component?.default) {
+			appPages.value.push({
+				name: pageDef.name,
+				component: component.default
+			})
+
+			console.log(`[plugin(${pluginInfo.id})] add app page`, pageDef)
+		}
+	}
+
 
 }
 
