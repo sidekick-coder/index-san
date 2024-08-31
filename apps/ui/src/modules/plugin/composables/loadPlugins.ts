@@ -8,6 +8,7 @@ import type { AppPage } from "@/composables/defineAppPage";
 const loading = ref(true)
 const entryMiddlewares = useEntryMiddlewares()
 const appPages = useAppPages()
+const appMenuItems = useMenuItems()
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
 	const { drive, decode, resolve } = useDrive()
@@ -47,11 +48,13 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 
 	const components = [] as any[]
 	const pages = [] as any[]
+	const menuItems = [] as any[]
 
 	await pluginDefinition.setup({
 		resolve: (...args: string[]) => resolve(folder, ...args),
 		addComponent: (payload: any) => components.push(payload),
 		addAppPage: (payload: any) => pages.push(payload),
+		addMenuItem: (payload: any) => menuItems.push(payload),
 		addImport: (key: string, filename: string) => {
 			addPluginImport(key, filename)
 
@@ -83,7 +86,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 
 		if (component?.default) {
 			appPages.value.push({
-				name: pageDef.name,
+				...pageDef,	
 				component: component.default
 			})
 
@@ -91,6 +94,18 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		}
 	}
 
+	for await (const menuDef of menuItems) {
+		const component = await importJavascriptFile(menuDef.filename)
+
+		if (component?.default) {
+			appMenuItems.value.push({
+				...menuDef,
+				component: component.default
+			})
+
+			console.log(`[plugin(${pluginInfo.id})] add menu`, menuDef)
+		}
+	}
 
 }
 

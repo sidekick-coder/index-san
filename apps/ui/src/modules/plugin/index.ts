@@ -12,7 +12,7 @@ export default defineAppModule({
             name: 'plugins',
             order: 1,
             label: 'Plugins',
-            icon: 'heroicons:rocket-launch-solid',
+            icon: 'heroicons:bolt-solid',
             component: PluginSidebar,
         })
 
