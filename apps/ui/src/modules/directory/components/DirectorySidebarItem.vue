@@ -40,21 +40,45 @@ function setShow(){
     show.value = route.path.startsWith(`/entries/${entry.value.path}`)
 }
 
+function onDirectoryUpdate({ path, from, to }: any){
+
+    if (entry.value.type !== 'directory')  return
+
+	if (![path, to, from].some(p => p?.startsWith(entry.value.path))) return
+
+	loadChildren()
+}
+
 watch(() => route.path, setShow, { immediate: true })
 
+// events
+
+const hooks = ['drive:write', 'drive:destroy', 'drive:mkdir', 'drive:move'] as const
+
+onMounted(() => {
+	hooks.forEach((h) => {
+		onHook(h, onDirectoryUpdate)
+	})
+})
+
+onUnmounted(() => {
+	hooks.forEach((h) => {
+		offHook(h, onDirectoryUpdate)
+	})
+})
 // actions
 
 const active = computed(() => {
-    return route.path === `/entries/${entry.value.path}`
+	return route.path === `/entries/${entry.value.path}`
 })
 
 function onClick() {
-    if (entry.value.type === 'directory') {
-        show.value = !show.value
-        return
-    }
+	if (entry.value.type === 'directory') {
+		show.value = !show.value
+		return
+	}
 
-    router.push(`/entries/${entry.value.path}`)
+	router.push(`/entries/${entry.value.path}`)
 }
 
 
@@ -86,11 +110,11 @@ function onClick() {
                     :entry="entry"
                     size="lg"
                 />
-            
+
                 <div class="ml-3 truncate flex-1">
                     {{ entry.name }}
                 </div>
-        
+
                 <div
                     v-if="entry.type === 'directory'"
                     class="ml-auto"
@@ -123,7 +147,7 @@ function onClick() {
             </div>
         </div>
     </is-list-item>
-        
+
     <div v-if="show">
         <div
             v-for="child in children"
