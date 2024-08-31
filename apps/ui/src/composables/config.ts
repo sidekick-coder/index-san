@@ -16,10 +16,12 @@ export const $config = reactive<IsConfig>({
 	activePlugins: []
 })
 
-export async function saveConfig(payload: IsConfig) {
+export async function saveConfig(payload: Partial<IsConfig>) {
 	const { drive } = useDrive()
 
-	await drive.value.write(filename, JSON.stringify(payload, null, 4))
+	const config = {...$config, ...payload}
+
+	await drive.value.write(filename, JSON.stringify(config, null, 4))
 }
 
 export async function loadConfig(){

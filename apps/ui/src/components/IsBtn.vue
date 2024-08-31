@@ -18,7 +18,7 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'fill',
 })
 
-const color = defineProp<'primary'>('color',  {
+const color = defineProp<'primary' | 'danger' | 'success'>('color',  {
     type: String,
     default: 'primary',
 })
@@ -26,6 +26,8 @@ const color = defineProp<'primary'>('color',  {
 function setFillColor(){
     const options: Record<typeof color.value, string> = {
         primary: 'bg-primary-500 text-body-0',
+		danger: 'bg-danger-500 text-body-0',
+		success: 'bg-success-500 text-body-0'
     }
 
     const option = options[color.value]
@@ -36,6 +38,8 @@ function setFillColor(){
 function setTextColor(){
     const options: Record<typeof color.value, string> = {
         primary: 'hover:bg-primary-400/50',
+        danger: 'hover:bg-danger-400/50',
+        success: 'hover:bg-sucess-400/50',
     }
 
     const option = options[color.value]
