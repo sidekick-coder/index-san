@@ -199,7 +199,7 @@ onClickOutside(editedContainerRef, saveEditedNode)
             <BlockError
                 v-for="(node, index) in nodes"
                 :key="index"
-                @click="editNode(node, index)"
+                @dblclick="editNode(node, index)"
                 class="relative"
             >
 
