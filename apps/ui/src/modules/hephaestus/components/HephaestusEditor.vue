@@ -15,6 +15,7 @@ import EditorTextarea from './HephaestusEditorEditTextarea.vue'
 
 import BlockChart from './HephaestusBlockChart.vue'
 import type { MarkdownNodeComponent } from '@language-kit/markdown'
+import { useGlobalResolvers } from '@/modules/hecate/composables/global-resolvers'
 
 // general
 const tm = useI18n()
@@ -141,10 +142,14 @@ const errors = ref<Error[]>([])
 const logs = ref<string[]>([])
 
 // compiler
-const importResolvers = [
-    ...createCommonImportResolvers(),
-    ...createDriveImportResolvers({ fromEntryPath: path.value })
-]
+// const importResolvers = [
+//     ...createCommonImportResolvers(),
+//     ...createDriveImportResolvers({ fromEntryPath: path.value })
+// ]
+
+const importResolvers = useGlobalResolvers({
+	extend: []
+})
 
 const logger = {
     log: (...args: string[]) => logs.value.push(...args),

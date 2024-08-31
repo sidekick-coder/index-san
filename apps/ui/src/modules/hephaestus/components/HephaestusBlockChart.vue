@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers';
+import { useGlobalResolvers } from '@/modules/hecate/composables/global-resolvers';
 import type { MarkdownNodeComponent } from '@language-kit/markdown';
 import { createCompiler } from 'hecate/composables/createCompiler';
+import { defineImportResolver } from 'hecate/composables/defineImportResolver';
 import BlockBase from 'hephaestus/components/BlockBase.vue'
 
 const node = defineModel<MarkdownNodeComponent>({
@@ -9,28 +10,30 @@ const node = defineModel<MarkdownNodeComponent>({
     required: true
 })
 
-const loading = ref(false)
-
 const options = ref<any>(null)
 
 // compile
-const resolvers = createDriveImportResolvers()
+const resolvers = useGlobalResolvers({
+	extend: [
+		defineImportResolver({
+			test: path => path === 'app:chart',
+			resolve: async () => Promise.resolve({
+				useChart: () => options
+			})
 
-resolvers.push({
-    test: path => path === 'app:chart',
-    resolve: async () => Promise.resolve({
-        useChart: () => options
-    })
-})
+		})
+	]
+}) 
+
 
 const compiler = createCompiler({
-    importResolvers: resolvers,
+	importResolvers: resolvers,
 })
 
 async function setOptions(){
-    const code = node.value.body
+	const code = node.value.body
 
-    await compiler.compile(code)
+	await compiler.compile(code)
 }
 
 watch(node, setOptions, { immediate: true })

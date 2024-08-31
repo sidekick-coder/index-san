@@ -1,10 +1,15 @@
 import { createCompiler } from "hecate/composables/createCompiler";
 import type { IsPluginInfo } from "./listPlugins";
+import { addPluginModule } from "./plugin-resolvers";
+
+const loading= ref(false)
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
 	const { drive, decode, resolve } = useDrive()
 
-	const filename = resolve('.is/plugins', pluginInfo.id, 'index.js')
+	const folder = resolve('.is/plugins', pluginInfo.id)
+
+	const filename = resolve(folder, 'index.js')
 
 	const fileExist = await drive.value.get(filename)
 
@@ -35,12 +40,21 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		return
 	}
 
-	await pluginDefinition.setup()
+	await pluginDefinition.setup({
+		addModule: (key: string, filename: string) => {
+			addPluginModule(key, filename)
+
+			console.log(`[plugin(${pluginInfo.id})] add module`, { key, filename })
+		},
+		resolve: (...args: string[]) => resolve(folder, ...args)
+	})
 
 }
 
 
 export async function loadActivePlugins() {
+	loading.value = true
+
 	const plugins = await listPlugins()
 
 	const activePlugins = plugins.filter(p => p.active)
@@ -48,5 +62,11 @@ export async function loadActivePlugins() {
 	for await (const p of activePlugins) {
 		await loadPlugin(p)
 	}
-
+	
+	loading.value = false
 }
+
+
+export const $plugins = reactive({
+	loading
+})

@@ -28,7 +28,7 @@ function show(value: any) {
         )
     }
 
-    return result
+    return result || ''
 }
 
 

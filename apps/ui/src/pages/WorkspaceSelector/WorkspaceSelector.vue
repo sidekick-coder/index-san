@@ -5,7 +5,7 @@ import { useWorkspaces, } from './composables/useWorkspaces'
 // general
 const router = useRouter()
 
-const { load, loading, workspaces, save, verifyPermission } = useWorkspaces()
+const { load, loading, workspaces, save} = useWorkspaces()
 const { basename } = useDrive()
 
 onMounted(load)
@@ -32,12 +32,11 @@ async function addNew(){
 // select
 
 async function select(workspace: Workspace){
+	if (!(await verifyPermission(workspace))) return
 
-    const permission = await verifyPermission(workspace)
+	const success = loadWorkspace(workspace)
 
-    if (!permission) return
-
-    loadWorkspace(workspace)
+	if (!success) return
 
     setTimeout(() => {
         router.push('/entries')
@@ -58,6 +57,13 @@ async function select(workspace: Workspace){
             v-else
             class="w-full max-w-[20rem]"
         >            
+            <div class="text-center mb-4">
+                <h1 class="font-bold text-2xl">
+                    Workspace
+                </h1>
+                <h2>Select a workspace folder</h2>
+            </div>
+
             <div class="flex flex-col gap-y-4 w-full">
                 <is-btn
                     @click="addNew"

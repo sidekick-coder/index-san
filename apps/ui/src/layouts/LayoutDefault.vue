@@ -16,11 +16,15 @@ const sidebarComponent = computed(() => {
 
 const { isLoaded } = useDrive()
 
+const loading = computed(() => {
+	return [!isLoaded.value, $plugins.loading].some(Boolean)
+})
+
 </script>
 
 <template>
     <is-app
-        v-if="isLoaded"
+        v-if="!loading"
         class="flex bg-body-700"
     >
         <is-app-drawer-mini

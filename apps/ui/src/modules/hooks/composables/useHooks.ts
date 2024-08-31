@@ -14,9 +14,10 @@ export interface HookListener {
 }
 
 const listeners: HookListener[] = []
+const debug = false
 
 export function onHook<K extends keyof HookEvents>(name: K, handler: (data: HookEvents[K]) => void) {
-	console.debug(`[hook] subscribe ${name}`, { handler })
+	if (debug) console.debug(`[hook] subscribe ${name}`, { handler })
 
 	listeners.push({ name, handler: handler as any })
 }
@@ -29,17 +30,14 @@ export function offHook<K extends keyof HookEvents>(name: K, handler: (data: Hoo
 	}
 }
 
-export function emitHook<K extends keyof HookEvents>(name: K, data: HookEvents[K]) {
+export async function emitHook<K extends keyof HookEvents>(name: K, data: HookEvents[K]) {
 	const subscriptions = listeners.filter(l => l.name === name)
 
-	for (const s of subscriptions) {
-		s.handler(data)
+	for await (const s of subscriptions) {
+		await s.handler(data)
 	}
 
-	console.debug(`[hook] emit ${name} `, {
-		subscriptions,
-		data,
-	})
+	if (debug) console.debug(`[hook] emit ${name} `, { subscriptions, data })
 }
 
 export function useHooks() {
