@@ -1,12 +1,10 @@
-import { resolveJavascriptFile } from "@/modules/hecate/resolvers/javascript"
+import { importJavascriptFile } from "@/modules/hecate/resolvers/javascript"
 import { defineImportResolver } from "hecate/composables/defineImportResolver"
 
 const register = ref(new Map<string, string>)
 
 export const pluginResolver = defineImportResolver({
 	test: key => {
-		
-	console.log(register.value)
 		return register.value.has(key)
 	} ,
 	resolve: async (key) => {
@@ -16,11 +14,11 @@ export const pluginResolver = defineImportResolver({
 			throw new Error('error loading plugin file')
 		}
 	
-		return resolveJavascriptFile(filename) 
+		return importJavascriptFile(filename) 
 	}
 })
 
-export function addPluginModule(key: string, filename: string){
+export function addPluginImport(key: string, filename: string){
 	register.value.set(key, filename)
 
 }

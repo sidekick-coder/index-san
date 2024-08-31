@@ -3,9 +3,7 @@ import MonacoEditor from '@/modules/monaco/components/MonacoEditor.vue'
 import HephaestusEditor from 'hephaestus/components/Editor.vue'
 
 import { createEditor } from 'hephaestus/composables/createEditor'
-import { createCompiler, type HecateCompilerImportResolver, type HecateCompilerResult } from 'hecate/composables/createCompiler'
-import { createDriveImportResolvers } from '@/modules/hecate/composables/createDriveImportResolvers'
-import { createCommonImportResolvers } from '@/modules/hecate/composables/createCommonImportResolvers'
+import { createCompiler } from 'hecate/composables/createCompiler'
 
 import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
 import IsBtn from '@/components/IsBtn.vue'
@@ -129,7 +127,8 @@ const blocks = [
     }
 ]
 
-const editorComponents = [
+
+const editorComponents: any[] = [
     {
         name: 'button',
         component: IsBtn,
@@ -137,15 +136,13 @@ const editorComponents = [
     }
 ]
 
+editorComponents.push(...usePluginComponents())
+
 // logs & errors
 const errors = ref<Error[]>([])
 const logs = ref<string[]>([])
 
 // compiler
-// const importResolvers = [
-//     ...createCommonImportResolvers(),
-//     ...createDriveImportResolvers({ fromEntryPath: path.value })
-// ]
 
 const importResolvers = useGlobalResolvers({
 	extend: []
@@ -159,10 +156,6 @@ const compiler = createCompiler({
     importResolvers,
     logger
 })
-
-// save
-
-
 </script>
 
 <template>

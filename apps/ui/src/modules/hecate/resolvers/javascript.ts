@@ -4,11 +4,11 @@ import { useGlobalResolvers } from "../composables/global-resolvers";
 export const javascriptResolver: HecateCompilerImportResolver = {
 	test: (key) => key.startsWith('/') && key.endsWith('.js'),
 	resolve: async (key) => {
-		return resolveJavascriptFile(key)
+		return importJavascriptFile(key)
 	}
 }
 
-export async function resolveJavascriptFile(filename: string) {
+export async function importJavascriptFile(filename: string) {
 	const { drive: _drive, decode } = useDrive();
 
 	const drive = _drive.value
