@@ -4,57 +4,84 @@ import { orderBy } from 'lodash';
 
 // general
 const route = useRoute()
+const router = useRouter()
 
-const path = computed(() => route.params.path)
+const path = computed(() => {
+	 const args = Array.isArray(route.params.path) ? route.params.path : [route.params.path]
+
+	return `${args.join('/')}`
+})
 
 // entries
 const { drive, dirname } = useDrive()
 
 const entry = ref<DriveEntry | null>(null)
 const entries = ref<DriveEntry[]>([])
-const loading = ref(false)
 
-const title = computed(() => entry.value?.name || path.value)
+async function setEntries(){
+	if (!entry.value) {
+		entries.value = []
+		return
+	}
+
+	const result = await drive.value.list(entry.value.path)
+
+	entries.value = orderBy(result, ['type', 'name'])
+}
 
 async function load(){
-    const args = Array.isArray(path.value) ? path.value : [path.value]
-
-    const filename = `${args.join('/')}`
-
-	loading.value = true
-
-	let result = await drive.value.get(filename)
-
-	console.log(result, path.value)
+	let result = await drive.value.get(path.value)
 
 	if (result && result.type === 'file') {
-		result = await drive.value.get(dirname(filename))
+		result = await drive.value.get(dirname(path.value))
 	}
 
 	if (!result) {
-		entries.value = []
-		loading.value = false
+		entry.value = null	
 		return
 	}
 
 	entry.value = result
-	
-	entries.value = await drive.value.list(result.path)
-
-	setTimeout(() => {
-		loading.value = false
-	}, 800);
-	
 }
 
 watch(path, load, { immediate: true })
+watch(entry, setEntries, { immediate: true })
+
+// key binds
+const root = ref<HTMLElement>()
+
+function prev(){
+	const currentIndex = entries.value.findIndex(e => e.path === path.value)
+
+	const item = entries.value[currentIndex - 1]
+
+	if (item) {
+		router.push(`/entries/${item.path}`)
+	}
+}
+
+function next(){
+	const currentIndex = entries.value.findIndex(e => e.path === path.value)
+
+	const item = entries.value[currentIndex + 1]
+
+	if (item) {
+		router.push(`/entries/${item.path}`)
+	}
+}
+
+
+onKeyStroke('ArrowUp', prev, { target: root })
+onKeyStroke('ArrowDown', next, { target: root })
 
 </script>
 
 <template>
     <div
         v-if="entry"
+        ref="root"
         class="flex flex-col min-h-full"
+        tabindex="-1"
     >
         <is-list-item
             class="px-4 items-center group border-b border-body-500"
