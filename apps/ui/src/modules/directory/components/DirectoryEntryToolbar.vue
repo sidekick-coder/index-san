@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import type ChronoObjectCommit from 'chrono/src/entities/ChronoObjectCommit';
-import { formatDistanceToNow } from 'date-fns'
-
 const path = defineProp<string>('path', {
     type: String,
     required: true
 })
+
 
 // controls
 const controls = ref({
@@ -83,7 +81,7 @@ watch(() => path.value, setControls, { immediate: true })
                     name="heroicons-solid:computer-desktop"
                 />
 
-                {{ path === '/' ? '/' : `/${path}` }}
+                {{ path === '/' ? '/' : `${path}` }}
             </div>
         </div>
 

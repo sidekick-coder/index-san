@@ -58,7 +58,7 @@ function exitWorkspace() {
                     <is-list-item
                         v-bind="attrs"
                         justify="center"
-                        :class="activeMenuItem === item.name ? '!text-primary-500 bg-primary-900/25' : ''"
+                        :class="activeMenuItem === item.name ? '!text-primary-300 bg-primary-900/25' : ''"
                         @click="onItemClick(item.name)"
                     >
                         <is-icon

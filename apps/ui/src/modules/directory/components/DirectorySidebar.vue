@@ -1,68 +1,104 @@
 <script lang="ts" setup>
-import { useDirectoryEntries } from '@/modules/directory/composables/useDirectoryEntries';
-import DirectorySidebarItem from './DirectorySidebarItem.vue';
 import type { DriveEntry } from '@/composables/useDrive';
+import { orderBy } from 'lodash';
 
-const { data: entries, loading, load } = useDirectoryEntries('/')
+// general
+const route = useRoute()
 
-// root
-const { drive } = useDrive()
+const path = computed(() => route.params.path)
 
-const rootEntry = ref<DriveEntry | null>(null)
+// entries
+const { drive, dirname } = useDrive()
 
-onMounted(async () => {
-	rootEntry.value = await drive.value.get('/')
-})
+const entry = ref<DriveEntry | null>(null)
+const entries = ref<DriveEntry[]>([])
+const loading = ref(false)
 
-const title = computed(() => $config.name|| $workspace.label)
+const title = computed(() => entry.value?.name || path.value)
 
-onMounted(load)
+async function load(){
+    const args = Array.isArray(path.value) ? path.value : [path.value]
+
+    const filename = `${args.join('/')}`
+
+	loading.value = true
+
+	let result = await drive.value.get(filename)
+
+	console.log(result, path.value)
+
+	if (result && result.type === 'file') {
+		result = await drive.value.get(dirname(filename))
+	}
+
+	if (!result) {
+		entries.value = []
+		loading.value = false
+		return
+	}
+
+	entry.value = result
+	
+	entries.value = await drive.value.list(result.path)
+
+	setTimeout(() => {
+		loading.value = false
+	}, 800);
+	
+}
+
+watch(path, load, { immediate: true })
 
 </script>
 
 <template>
-    <div class="flex flex-col">
+    <div
+        v-if="entry"
+        class="flex flex-col min-h-full"
+    >
         <is-list-item
-            v-if="rootEntry"
-            to="/entries"
-            class="px-4 items-center group"
+            class="px-4 items-center group border-b border-body-500"
         >
             <is-icon
                 name="heroicons:folder-open-solid"
                 class="text-primary-300"
-                :entry="rootEntry"
+                :entry="entry"
             />
 
             <div class="ml-4 font-bold">
-                {{ title }}
+                {{ entry.path === '/' ? 'Root' : entry.name }}
             </div>
         </is-list-item>
 
-        <div v-if="loading">
+
+        <div 
+            v-if="!entries.length"
+            class="flex-1 h-full w-full flex items-center justify-center"
+        >
+            <is-icon
+                name="heroicons:folder-solid"
+                class="text-body-500 text-[3rem]"
+            />
+        </div>
+       
+        <div v-else>
             <div
-                v-for="i in 10"
-                :key="i"
-                class="px-4 py-2"
+                v-for="e in orderBy(entries, ['type', 'name'])"
+                :key="e.path"
             >
                 <is-list-item
-                    
-                    class="animate-pulse bg-body-700 "
-                    size="xs"
-                />
-            </div>
-        </div>
-        
-        <div
-            v-else
-        >
-            <div
-                v-for="entry in entries"
-                :key="entry.path"
-            >
-                <DirectorySidebarItem
-                    :entry="entry"
-                    :level="2"
-                />
+                    :to="`/entries/${e.path}`"
+                    class="px-4 items-center group"
+                >
+                    <DirectoryEntryIcon
+                        :entry="e"
+                        size="lg"
+                    />
+
+                    <div class="ml-4 font-bold">
+                        {{ e.name }}
+                    </div>
+                </is-list-item>
             </div>
         </div>
     </div>

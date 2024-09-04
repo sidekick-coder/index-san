@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
-import { useDirectoryStore } from '@/modules/directory/store';
-import { findEntryIcon } from '@/modules/directory/composables/findEntryIcon';
 import { useDirectoryEntries } from '@/modules/directory/composables/useDirectoryEntries';
 
 import DirectoryEntryIcon from './DirectoryEntryIcon.vue';
 
 
 // general
-const directoryStore = useDirectoryStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -68,6 +65,11 @@ onUnmounted(() => {
 })
 // actions
 
+const hideActions = defineProp('hideActions', {
+	type: Boolean,
+	default: false
+})
+
 const active = computed(() => {
 	return route.path === `/entries/${entry.value.path}`
 })
@@ -116,7 +118,7 @@ function onClick() {
                 </div>
 
                 <div
-                    v-if="entry.type === 'directory'"
+                    v-if="entry.type === 'directory' && !hideActions"
                     class="ml-auto"
                 >
                     <is-btn
