@@ -81,7 +81,7 @@ function setEditor(){
 
     editor.getModel()?.onDidChangeContent(() => (model.value = editor.getValue()))
 
-    if (autofocus) {
+    if (autofocus.value) {
         editor.focus()
     }
 
