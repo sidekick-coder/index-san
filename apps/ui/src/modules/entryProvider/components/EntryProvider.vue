@@ -5,7 +5,7 @@ import AppPageRender from '@/modules/appPage/components/AppPageRender.vue'
 import orderBy from 'lodash/orderBy'
 
 // general
-const { drive: _drive } = useDrive()
+const { drive: _drive, resolve } = useDrive()
 const drive = unref(_drive)
 
 // load
@@ -73,13 +73,13 @@ watch(path, load, { immediate: true })
             v-else
             class="w-full min-h-full flex flex-col items-center justify-center "
         >
-            <div>Error loading entry</div>
+            <div>Can not open entry</div>
     
             <div>
                 {{ error }}
             </div>
         
-            <div>Path {{ path || '/' }}</div>
+            <div>Path {{ resolve(...path) }}</div>
         </div>
     </div>
 </template>
