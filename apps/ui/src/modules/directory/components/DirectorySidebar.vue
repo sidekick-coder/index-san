@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
+import { offset } from '@floating-ui/vue';
 import { orderBy } from 'lodash';
 
 // general
@@ -7,7 +8,7 @@ const route = useRoute()
 const router = useRouter()
 
 const path = computed(() => {
-	 const args = Array.isArray(route.params.path) ? route.params.path : [route.params.path]
+	const args = Array.isArray(route.params.path) ? route.params.path : [route.params.path]
 
 	return `${args.join('/')}`
 })
@@ -49,25 +50,62 @@ watch(entry, setEntries, { immediate: true })
 
 // key binds
 const root = ref<HTMLElement>()
+const listRef = ref<HTMLElement>()
+const itemsRef = ref<HTMLElement[]>([])
 
-function prev(){
-	const currentIndex = entries.value.findIndex(e => e.path === path.value)
+function isItemVisible(element: HTMLElement) {
+	const elTop = element.offsetTop
+	const elBottom = elTop
 
-	const item = entries.value[currentIndex - 1]
+	const containerTop = listRef.value!.scrollTop
+	const containerBottom = containerTop + listRef.value!.clientHeight
 
-	if (item) {
-		router.push(`/entries/${item.path}`)
+	if (elBottom < containerBottom && elTop > containerTop) {
+		return true
 	}
+
+	return false
+
 }
 
-function next(){
+function prev(e: KeyboardEvent){
 	const currentIndex = entries.value.findIndex(e => e.path === path.value)
+	const index = currentIndex - 1
 
-	const item = entries.value[currentIndex + 1]
+	const item = entries.value[index]
+	const itemRef = itemsRef.value[index]
 
-	if (item) {
-		router.push(`/entries/${item.path}`)
+	if (!item || item.type === 'directory') return
+
+	if (!isItemVisible(itemRef)) {
+		itemRef?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'end'
+		})
 	}
+
+	router.push(`/entries/${item.path}`)
+
+	e.preventDefault()
+}
+
+function next(e: KeyboardEvent){
+
+	const currentIndex = entries.value.findIndex(e => e.path === path.value)
+	const index = currentIndex + 1
+
+	const item = entries.value[index]
+	const itemRef = itemsRef.value[index]
+
+	if (!item || item.type === 'directory') return
+
+	if (!isItemVisible(itemRef)) {
+		itemRef?.scrollIntoView({ behavior: 'smooth' })
+	}
+
+	router.push(`/entries/${item.path}`)
+
+	e.preventDefault()
 }
 
 
@@ -80,7 +118,7 @@ onKeyStroke('ArrowDown', next, { target: root })
     <div
         v-if="entry"
         ref="root"
-        class="flex flex-col min-h-full"
+        class="flex flex-col min-h-full overflow-auto"
         tabindex="-1"
     >
         <is-list-item
@@ -107,22 +145,29 @@ onKeyStroke('ArrowDown', next, { target: root })
                 class="text-body-500 text-[3rem]"
             />
         </div>
-       
-        <div v-else>
+
+        <div
+            v-else
+            ref="listRef"
+            class="h-[calc(100vh-48px)] overflow-y-auto"
+        >
             <div
-                v-for="e in orderBy(entries, ['type', 'name'])"
+                v-for="e in entries"
                 :key="e.path"
+                ref="itemsRef"
             >
                 <is-list-item
                     :to="`/entries/${e.path}`"
                     class="px-4 items-center group"
                 >
-                    <DirectoryEntryIcon
-                        :entry="e"
-                        size="lg"
-                    />
+                    <div class="w-4">
+                        <DirectoryEntryIcon
+                            :entry="e"
+                            size="lg"
+                        />
+                    </div>
 
-                    <div class="ml-4 font-bold">
+                    <div class="ml-4 font-bold truncate">
                         {{ e.name }}
                     </div>
                 </is-list-item>
