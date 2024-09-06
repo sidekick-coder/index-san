@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
-
 // general
 const path = defineProp<string>('path', {
     type: String,
     required: true
 })
 
-const { drive, encode, decode } = useDrive()
+const { drive } = useDrive()
 
 // load
 const src = ref<string>()
