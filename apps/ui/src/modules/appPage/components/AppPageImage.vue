@@ -31,14 +31,12 @@ watch(path, load, { immediate: true })
 </script>
 
 <template>
-    <div class="h-full flex flex-col">
-        <DirectoryEntryToolbar :path="path" />
-        
+    <div class="h-full flex flex-col p-10">
         <div class="flex-1 overflow-auto">
             <img
                 v-if="src"
                 :src="src"
-                class="mx-auto"
+                class="mx-auto max-h-full max-w-full"
             >
         </div>
     </div>
