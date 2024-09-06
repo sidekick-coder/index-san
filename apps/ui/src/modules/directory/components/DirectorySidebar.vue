@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { DriveEntry } from '@/composables/useDrive';
-import { offset } from '@floating-ui/vue';
 import { orderBy } from 'lodash';
 
 // general
@@ -8,6 +7,8 @@ const route = useRoute()
 const router = useRouter()
 
 const path = computed(() => {
+	if (!route.params.path) return '/'
+
 	const args = Array.isArray(route.params.path) ? route.params.path : [route.params.path]
 
 	return `${args.join('/')}`
@@ -31,6 +32,10 @@ async function setEntries(){
 }
 
 async function load(){
+
+	if (path.value === entry.value?.path) return
+	if (dirname(path.value) === entry.value?.path) return
+
 	let result = await drive.value.get(path.value)
 
 	if (result && result.type === 'file') {
@@ -73,11 +78,11 @@ function prev(e: KeyboardEvent){
 	const index = currentIndex - 1
 
 	const item = entries.value[index]
-	const itemRef = itemsRef.value[index]
+	const itemRef = itemsRef.value.find(e => e.id === `item-` + index)
 
 	if (!item || item.type === 'directory') return
 
-	if (!isItemVisible(itemRef)) {
+	if (itemRef && !isItemVisible(itemRef)) {
 		itemRef?.scrollIntoView({
 			behavior: 'smooth',
 			block: 'end'
@@ -95,11 +100,11 @@ function next(e: KeyboardEvent){
 	const index = currentIndex + 1
 
 	const item = entries.value[index]
-	const itemRef = itemsRef.value[index]
+	const itemRef = itemsRef.value.find(e => e.id === `item-` + index)
 
 	if (!item || item.type === 'directory') return
 
-	if (!isItemVisible(itemRef)) {
+	if (itemRef && !isItemVisible(itemRef)) {
 		itemRef?.scrollIntoView({ behavior: 'smooth' })
 	}
 
@@ -111,6 +116,18 @@ function next(e: KeyboardEvent){
 
 onKeyStroke('ArrowUp', prev, { target: root })
 onKeyStroke('ArrowDown', next, { target: root })
+
+watch(entries, async () => {
+	await until(() => entries.value.length === itemsRef.value.length).toBeTruthy()
+
+	const index = entries.value.findIndex(e => e.path === path.value)
+	const itemRef = itemsRef.value.find(e => e.id === `item-` + index)
+
+	if (itemRef && !isItemVisible(itemRef)) {
+		itemRef?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+	}
+
+})
 
 </script>
 
@@ -152,7 +169,8 @@ onKeyStroke('ArrowDown', next, { target: root })
             class="h-[calc(100vh-48px)] overflow-y-auto"
         >
             <div
-                v-for="e in entries"
+                v-for="(e, index) in entries"
+                :id="`item-${index}`"
                 :key="e.path"
                 ref="itemsRef"
             >
