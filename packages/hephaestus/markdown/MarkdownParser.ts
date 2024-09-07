@@ -1,5 +1,6 @@
 import { MarkdownParser, Processors } from '@language-kit/markdown'
 import { MarkdownProcessorComponent } from  './MarkdownProcessorComponent'
+import { MarkdownProcessorLogicalComponent } from './MarkdownProcessorLogicalComponent'
 
 
 export class HephaestusMarkdownParser extends MarkdownParser {
@@ -7,7 +8,8 @@ export class HephaestusMarkdownParser extends MarkdownParser {
 		super(
 			[
 				...Object.values(Processors),
-				MarkdownProcessorComponent
+				MarkdownProcessorComponent,
+				MarkdownProcessorLogicalComponent,
 			]
 		)
 	}
