@@ -32,7 +32,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		importResolvers: [],
 		logger: {
 			log(...args) {
-				console.log(`[plugins][${pluginInfo.name}]`, ...args)
+				console.debug(`[plugins][${pluginInfo.name}]`, ...args)
 			},
 		}
 	})
@@ -58,12 +58,12 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		addImport: (key: string, filename: string) => {
 			addPluginImport(key, filename)
 
-			console.log(`[plugin(${pluginInfo.id})] add module`, { key, filename })
+			console.debug(`[plugin(${pluginInfo.id})] add module`, { key, filename })
 		},
 		addEntryMiddleware: (payload: EntryMiddleware) => {
 			entryMiddlewares.value.push(payload)
 
-			console.log(`[plugin(${pluginInfo.id})] add entry middleware`, payload)
+			console.debug(`[plugin(${pluginInfo.id})] add entry middleware`, payload)
 		},
 	})
 
@@ -77,7 +77,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 				component: component.default
 			})
 
-			console.log(`[plugin(${pluginInfo.id})] add component`, componentDef)
+			console.debug(`[plugin(${pluginInfo.id})] add component`, componentDef)
 		}
 	}
 
@@ -90,7 +90,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 				component: component.default
 			})
 
-			console.log(`[plugin(${pluginInfo.id})] add app page`, pageDef)
+			console.debug(`[plugin(${pluginInfo.id})] add app page`, pageDef)
 		}
 	}
 
@@ -103,7 +103,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 				component: component.default
 			})
 
-			console.log(`[plugin(${pluginInfo.id})] add menu`, menuDef)
+			console.debug(`[plugin(${pluginInfo.id})] add menu`, menuDef)
 		}
 	}
 
@@ -119,7 +119,7 @@ export async function loadActivePlugins() {
 
 	for await (const p of activePlugins) {
 		await loadPlugin(p).catch((err) => {
-			console.log(`[plugin(${p.id})] error loading plugin`, { err })
+			console.debug(`[plugin(${p.id})] error loading plugin`, { err })
 		})
 	}
 
