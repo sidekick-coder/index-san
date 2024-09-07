@@ -1,0 +1,9 @@
+# Colors
+
+[primary with **bold**]{ style="color: rgb(var(--color-primary-500))" }
+[secondary with **bold**]{ style="color: rgb(var(--color-secondary-500))" }
+
+
+```ts
+const test = 123
+```

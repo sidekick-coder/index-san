@@ -26,7 +26,10 @@ export default defineConfig({
                 'src/composables',
                 'src/modules/*/composables',
             ],
-            imports: ['vue', 'vue-router', 'vue-i18n', '@vueuse/core']
+            imports: ['vue', 'vue-router', 'vue-i18n', '@vueuse/core', {
+					from: '@vueuse/router',
+					imports: ['useRouteQuery']
+			}]
         }),
         Components({
             dts: 'runtime/components.d.ts',

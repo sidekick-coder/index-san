@@ -6,17 +6,5 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach(async (to, from, next) => {
-	if (!$workspace.id) await loadLastWorkspace()
-
-    const { isLoaded } = useDrive()
-
-    if (!isLoaded.value && to.name !== 'WorkspaceSelector') {
-        return next({ name: 'WorkspaceSelector' })
-    }
-
-    return next()
-})
-
 export default router
 

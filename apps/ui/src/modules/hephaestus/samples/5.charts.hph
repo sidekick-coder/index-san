@@ -1,0 +1,118 @@
+# Charts
+
+This is a component to show charts in the pages
+
+## Static
+This way uses a json in component body
+
+:: chart
+{
+    "chart": {
+        "type": "line",
+        "height": 200,
+        "toolbar": {
+            "show": false
+        }
+    },
+    "series": [{
+        "name": "sales",
+        "data": [
+            30,
+            40,
+            35,
+            50,
+            49,
+            60,
+            70,
+            91,
+            125
+        ]
+    }],
+    "xaxis": {
+        "categories": [
+            1991,
+            1992,
+            1993,
+            1994,
+            1995,
+            1996,
+            1997,
+            1998,
+            2000
+        ]
+    }
+}
+::
+
+## Logic
+::! chart
+import { attrs, slots } from "app:component"
+
+const data = []
+const categories = []
+
+for (let i = 0; i < 10; i++) {
+    data.push(Math.ceil(Math.random() * 100))
+    categories.push(1990 + i)
+}
+
+attrs['model-value'] = {
+    chart: {
+        type: 'line',
+        height: 200,
+        toolbar: {
+            show: false
+        },
+    },
+    series: [{
+        name: 'sales',
+        data
+    }],
+    xaxis: {
+        categories
+    }
+}
+::
+
+## Bar
+
+::! chart
+import { attrs, slots } from "app:component"
+
+attrs['model-value'] = {
+    chart: {
+        type: 'bar',
+        height: 300,
+        toolbar: {
+            show: false
+        },
+    },
+    series: [{
+        name: 'sales',
+        data: [
+            30,
+            40,
+            35,
+            50,
+            49,
+            60,
+            70,
+            91,
+            125
+        ]
+    }],
+    xaxis: {
+        categories: [
+            1991,
+            1992,
+            1993,
+            1994,
+            1995,
+            1996,
+            1997,
+            1998,
+            2000
+        ]
+    }
+}
+::

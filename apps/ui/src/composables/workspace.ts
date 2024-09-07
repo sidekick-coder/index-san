@@ -1,5 +1,4 @@
 import { get, set } from 'idb-keyval'
-import uuid from 'uuid-random'
 
 export interface Workspace {
 	id: string

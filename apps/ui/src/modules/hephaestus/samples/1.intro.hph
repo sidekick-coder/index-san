@@ -1,0 +1,19 @@
+# Hephaestus
+
+A hybrid editor of markdown & block editor.
+
+
+## Buttons
+
+:: button { color="warning" }
+Static
+::
+
+::! button
+import { slots, attrs } from 'app:component'
+
+slots.default = () => 'Logic'
+
+attrs.color = 'danger'
+::
+

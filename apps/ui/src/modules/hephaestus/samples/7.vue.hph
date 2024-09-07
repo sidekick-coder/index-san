@@ -1,0 +1,16 @@
+::! setup
+import { ref, watch } from "vue"
+
+const count = ref(0)
+
+::
+
+Count: {{ count }}
+
+:: button {
+    variant="fill"
+    color="primary"
+    @click="count++" 
+}
+    Increment {{ count }}
+::

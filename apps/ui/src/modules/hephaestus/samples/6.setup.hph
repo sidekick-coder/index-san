@@ -1,0 +1,14 @@
+::! setup
+let count = 8
+
+function double(){
+    return count * 2
+}
+::
+
+# Setup
+
+
+Count: {{ count }}
+
+Double: {{ double() }}
