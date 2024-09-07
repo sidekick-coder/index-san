@@ -12,7 +12,7 @@ import EditorErrors from './HephaestusEditorErrors.vue'
 import EditorTextarea from './HephaestusEditorEditTextarea.vue'
 
 import BlockChart from './HephaestusBlockChart.vue'
-import type { MarkdownNodeComponent } from '@language-kit/markdown'
+import type { MarkdownNodeComponent } from 'hephaestus/markdown/MarkdownNodeComponent'
 import { useGlobalResolvers } from '@/modules/hecate/composables/global-resolvers'
 
 // general

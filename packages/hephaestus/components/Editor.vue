@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MarkdownNode, MarkdownNodeComponent, MarkdownParser, MarkdownNodeBreakLine } from '@language-kit/markdown'
+import { MarkdownNode, MarkdownNodeBreakLine, MarkdownNodeParagraph, MarkdownNodeHeading } from '@language-kit/markdown'
 import { ref, watch } from 'vue';
 import { HecateCompiler } from 'hecate/composables/createCompiler'
 import { onClickOutside } from '@vueuse/core'
@@ -14,6 +14,9 @@ import EditorEditTextarea from './EditorEditTextarea.vue'
 import HVariable from 'hecate/nodes/HVariable';
 import HFunction from 'hecate/nodes/HFunction';
 import HImport from 'hecate/nodes/HImport';
+
+import { HephaestusMarkdownParser } from '../markdown/MarkdownParser';
+import { MarkdownNodeComponent } from '../markdown/MarkdownNodeComponent';
 
 
 // extensions
@@ -69,7 +72,11 @@ const errors = defineModel<Error[]>('errors', {
 })
 
 function isSetup(node: MarkdownNode): node is MarkdownNodeComponent {
-    return node.is('Component') && node.name === 'setup'
+	if (node instanceof MarkdownNodeComponent) {
+		return node.name === 'setup'
+	}
+
+    return false
 }
 
 async function setSetup(){
@@ -142,9 +149,9 @@ watch(nodes, setSetup, {
 })
 
 // edit
-const parser = defineProp<MarkdownParser>('parser', {
+const parser = defineProp<HephaestusMarkdownParser>('parser', {
     type: Object,
-    default: () => new MarkdownParser()
+    default: () => new HephaestusMarkdownParser()
 })
 
 const editedIndex = ref(-1)
@@ -156,12 +163,6 @@ function editNode(node: MarkdownNode, index: number) {
     editedIndex.value = index
     editedText.value = node.toText()
     editedNode.value = node
-}
-
-function discardEditedNode(){
-    editedIndex.value = -1
-    editedText.value = ''
-    editedNode.value = undefined
 }
 
 function saveEditedNode(){
@@ -194,15 +195,16 @@ onClickOutside(editedContainerRef, saveEditedNode)
 
 <template>
     <div class="h-full w-full overflow-auto pb-[60%]">
-        <div v-if="!loading" class="flex flex-col">
-
+        <div
+            v-if="!loading"
+            class="flex flex-col"
+        >
             <BlockError
                 v-for="(node, index) in nodes"
                 :key="index"
-                @dblclick="editNode(node, index)"
                 class="relative"
+                @dblclick="editNode(node, index)"
             >
-
                 <div
                     v-if="editedIndex === index"
                     :ref="e => editedContainerRef = e"
@@ -219,39 +221,39 @@ onClickOutside(editedContainerRef, saveEditedNode)
                 </div>
                 
                 <component
-                    v-else-if="blocks.some(b => b.test(node))"
                     :is="blocks.find(b => b.test(node)).component"
+                    v-else-if="blocks.some(b => b.test(node))"
                     :model-value="node"
                     :context="context"
                 />
     
-                <div v-else-if="isEmpty(node) || isSetup(node) " class="hidden"></div>
+                <div
+                    v-else-if="isEmpty(node) || isSetup(node) "
+                    class="hidden"
+                />
     
                 <BlockParagraph
-                    v-else-if="node.is('Paragraph')"
+                    v-else-if="node instanceof MarkdownNodeParagraph"
                     :model-value="node"
                     :context="context"
                 />
     
                 <BlockComponent
-                    v-else-if="node.is('Component')"
+                    v-else-if="node instanceof MarkdownNodeComponent"
                     :model-value="node"
                     :components="components"
                     :context="context"
                 />
     
                 <BlockHeading
-                    v-else-if="node.is('Heading')"
+                    v-else-if="node instanceof MarkdownNodeHeading"
                     :model-value="node"
                 />
     
                 <div v-else>
-    
                     Invalid node type: {{ node.type }}
                 </div>
             </BlockError>
         </div>
-
-
     </div>
 </template>

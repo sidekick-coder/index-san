@@ -1,14 +1,13 @@
-import { MarkdownNode, MarkdownNodeArray, MarkdownParser } from '@language-kit/markdown'
-import { ref, watch } from 'vue'
-
-import debounce from 'lodash/debounce'
+import {  MarkdownNodeArray } from '@language-kit/markdown'
+import { ref } from 'vue'
+import { HephaestusMarkdownParser } from '../markdown/MarkdownParser'
 
 export interface EditorObserver {
     (args: any): void
 }
 
 export function createEditor(){
-    const parser = new MarkdownParser()
+    const parser = new HephaestusMarkdownParser() 
     const nodes = ref(new MarkdownNodeArray())
 
     function setNodes(text: string){

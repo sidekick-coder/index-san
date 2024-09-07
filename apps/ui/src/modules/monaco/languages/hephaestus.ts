@@ -64,7 +64,7 @@ export default {
 
             // index-san scripts component block
             [
-                /^\s*::\s*(script|chart|setup)\s*/,
+                /^\s*::!\s*\w+\s*/,
                 {
                     token: 'variable.source',
                     next: 'scriptComponent',
