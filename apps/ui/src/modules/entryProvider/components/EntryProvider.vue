@@ -79,7 +79,7 @@ watch(path, load, { immediate: true })
                 {{ error }}
             </div>
         
-            <div>Path {{ resolve(...path) }}</div>
+            <div>Path {{ path ? resolve(...path) : '/' }}</div>
         </div>
     </div>
 </template>
