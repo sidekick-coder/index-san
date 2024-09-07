@@ -7,12 +7,11 @@ import { createCompiler } from 'hecate/composables/createCompiler'
 
 import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
 import IsBtn from '@/components/IsBtn.vue'
+import IsChart from '@/components/IsChart.vue'
 import EditorLogs from './HephaestusEditorLogs.vue'
 import EditorErrors from './HephaestusEditorErrors.vue'
 import EditorTextarea from './HephaestusEditorEditTextarea.vue'
 
-import BlockChart from './HephaestusBlockChart.vue'
-import type { MarkdownNodeComponent } from 'hephaestus/markdown/MarkdownNodeComponent'
 import { useGlobalResolvers } from '@/modules/hecate/composables/global-resolvers'
 
 // general
@@ -119,20 +118,16 @@ function setTextByNodes(){
 watch(contents, setTextByContents)
 watch(nodes, setTextByNodes)
 
-// components & blocks
-const blocks = [
-    {
-        test: (node: MarkdownNodeComponent) => node.is('Component') && node.name === 'chart',
-        component: BlockChart,
-    }
-]
-
-
 const editorComponents: any[] = [
     {
         name: 'button',
         component: IsBtn,
-        icon: 'heroicons-solid:academic-cap',
+        icon: 'heroicons:cursor-arrow-rays-solid',
+    },
+    {
+        name: 'chart',
+        component: IsChart,
+        icon: 'heroicons:chart-pie-solid',
     }
 ]
 
@@ -216,7 +211,6 @@ const compiler = createCompiler({
                         v-model:logs="logs"
                         :components="editorComponents"
                         :compiler="compiler"
-                        :blocks="blocks"
                         :edit-textarea-component="EditorTextarea"
                         :readonly="readonly"
                     />

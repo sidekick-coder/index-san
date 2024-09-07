@@ -7,6 +7,7 @@ import { onClickOutside } from '@vueuse/core'
 import BlockParagraph from './BlockParagraph.vue'
 import BlockHeading from './BlockHeading.vue'
 import BlockComponent from './BlockComponent.vue'
+import BlockLogicalComponent from './BlockLogicalComponent.vue'
 
 import BlockError from './BlockError.vue'
 import EditorEditTextarea from './EditorEditTextarea.vue'
@@ -17,15 +18,11 @@ import HImport from 'hecate/nodes/HImport';
 
 import { HephaestusMarkdownParser } from '../markdown/MarkdownParser';
 import { MarkdownNodeComponent } from '../markdown/MarkdownNodeComponent';
+import { MarkdownNodeLogicalComponent } from '../markdown/MarkdownNodeLogicalComponent';
 
 
 // extensions
 const components = defineProp('components', {
-    type: Array,
-    default: () => ([])
-})
-
-const blocks = defineProp<any[]>('blocks', {
     type: Array,
     default: () => ([])
 })
@@ -71,8 +68,8 @@ const errors = defineModel<Error[]>('errors', {
     default: () => ([])
 })
 
-function isSetup(node: MarkdownNode): node is MarkdownNodeComponent {
-	if (node instanceof MarkdownNodeComponent) {
+function isSetup(node: MarkdownNode): node is MarkdownNodeLogicalComponent {
+	if (node instanceof MarkdownNodeLogicalComponent) {
 		return node.name === 'setup'
 	}
 
@@ -220,15 +217,8 @@ onClickOutside(editedContainerRef, saveEditedNode)
                     />
                 </div>
                 
-                <component
-                    :is="blocks.find(b => b.test(node)).component"
-                    v-else-if="blocks.some(b => b.test(node))"
-                    :model-value="node"
-                    :context="context"
-                />
-    
                 <div
-                    v-else-if="isEmpty(node) || isSetup(node) "
+                    v-else-if="isEmpty(node) || isSetup(node)"
                     class="hidden"
                 />
     
@@ -238,6 +228,14 @@ onClickOutside(editedContainerRef, saveEditedNode)
                     :context="context"
                 />
     
+                <BlockLogicalComponent
+                    v-else-if="node instanceof MarkdownNodeLogicalComponent"
+                    :model-value="node"
+                    :components="components"
+                    :context="context"
+                    :compiler="compiler"
+                />
+
                 <BlockComponent
                     v-else-if="node instanceof MarkdownNodeComponent"
                     :model-value="node"

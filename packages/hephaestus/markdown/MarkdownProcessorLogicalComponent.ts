@@ -118,13 +118,10 @@ export class MarkdownProcessorLogicalComponent extends MarkdownProcessor {
         node.body = this.findBodyTokens().toText().trim()
         node.name = this.findNameTokens().toText().trim()
         node.attrs = this.findAttrsObject()
-        node.isInlined = tokens.at(-1)?.type !== Token.types.BreakLine
 
         this.nodes.push(node)
 
         this.tokens.splice(0, tokens.length)
-
-		console.log(node)
 
         return true
     }

@@ -260,6 +260,7 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 
 
 	return {
+		importResolvers,
 		minify,
 		deepForEach,
 		compile,

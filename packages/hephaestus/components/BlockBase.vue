@@ -8,16 +8,11 @@ const icon = defineProp('icon', {
 </script>
 
 <template>
-    <div class="flex items-center group hover:bg-body-600/25 py-4 transition-all">
-
-        <div class="w-10 flex items-center justify-center text-body-500">
+    <div class="flex items-center group hover:bg-body-600/25 py-4 transition-all px-10">
+        <div class="absolute left-0 top-0 w-10 h-full flex items-center justify-center text-body-500">
             <is-icon :name="icon" />
         </div>
 
-        <div class="flex-1 flex items-center max-w-full">
-            <slot />
-            
-        </div>
-
+        <slot />
     </div>
 </template>

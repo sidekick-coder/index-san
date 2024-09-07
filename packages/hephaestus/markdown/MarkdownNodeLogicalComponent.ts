@@ -5,5 +5,4 @@ export class MarkdownNodeLogicalComponent extends MarkdownNode {
     public name = 'unknown'
     public body = ''
     public attrs: Record<string, string> = {}
-    public isInlined = false
 }
