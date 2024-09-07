@@ -140,6 +140,7 @@ watch(entries, async () => {
     >
         <is-list-item
             class="px-4 items-center group border-b border-body-500"
+            :to="`/entries/${entry.path}`"
         >
             <is-icon
                 name="heroicons:folder-open-solid"
