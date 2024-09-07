@@ -18,7 +18,7 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'fill',
 })
 
-const color = defineProp<'primary' | 'danger' | 'success'>('color',  {
+const color = defineProp<'primary' | 'danger' | 'success' | 'warning'>('color',  {
     type: String,
     default: 'primary',
 })
@@ -27,7 +27,9 @@ function setFillColor(){
     const options: Record<typeof color.value, string> = {
         primary: 'bg-primary-500 text-body-0',
 		danger: 'bg-danger-500 text-body-0',
-		success: 'bg-success-500 text-body-0'
+		success: 'bg-success-500 text-body-0',
+		warning: 'bg-warning-500 text-body-0',
+
     }
 
     const option = options[color.value]
