@@ -32,10 +32,6 @@ async function setEntries(){
 }
 
 async function load(){
-
-	if (path.value === entry.value?.path) return
-	if (dirname(path.value) === entry.value?.path) return
-
 	let result = await drive.value.get(path.value)
 
 	if (result && result.type === 'file') {
@@ -141,6 +137,7 @@ watch(entries, async () => {
         <is-list-item
             class="px-4 items-center group border-b border-body-500"
             :to="`/entries/${entry.path}`"
+            color="none"
         >
             <is-icon
                 name="heroicons:folder-open-solid"
