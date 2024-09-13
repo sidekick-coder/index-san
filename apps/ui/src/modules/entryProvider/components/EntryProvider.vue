@@ -37,7 +37,9 @@ async function setResult(){
         middlewareResult = await middleware.handle({ entry }) || middlewareResult
     }
     
-    result.value = middlewareResult    
+    result.value = middlewareResult
+
+	document.title = entry.name
 }
 
 function load(){
