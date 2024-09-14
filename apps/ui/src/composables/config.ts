@@ -17,18 +17,17 @@ export const $config = reactive<IsConfig>({
 })
 
 export async function saveConfig(payload: Partial<IsConfig>) {
-	const { drive } = useDrive()
+	const drive = useWorkspaceDrive() 
 
 	const config = {...$config, ...payload}
 
-	await drive.value.write(filename, JSON.stringify(config, null, 4))
+	await drive.write(filename, JSON.stringify(config, null, 4))
 }
 
 export async function loadConfig(){
+	const drive = useWorkspaceDrive() 
 
-	const { drive, decode } = useDrive()
-
-	const fileExists = await drive.value.get(filename)
+	const fileExists = await drive.get(filename)
 
 	if (!fileExists) {
 		await saveConfig({
@@ -37,10 +36,11 @@ export async function loadConfig(){
 		})
 	}
 
-	const contents = await drive.value.read(filename)
+	const contents = await drive.read(filename)
 
 	const data = JSON.parse(decode(contents!))
 
 	Object.assign($config, data)
 
+	console.log('[app] config loaded', $config)
 }

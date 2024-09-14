@@ -2,11 +2,7 @@
 import orderBy from 'lodash/orderBy'
 
 // general
-const route = useRoute()
 const router = useRouter()
-const tm = useI18n()
-
-const { setDrive } = useDrive()
 
 // drawer
 const drawer = defineModel('drawer', {
@@ -33,9 +29,7 @@ function onItemClick(name: string) {
 }
 
 function exitWorkspace() {
-    setDrive()
-
-    router.push('/workspace-selector')
+    router.push('/workspaces')
 }
 </script>
 

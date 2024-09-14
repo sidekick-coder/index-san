@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Workspace } from '@/composables/workspace';
-import { useWorkspaces, } from './composables/useWorkspaces'
 
 // general
 const router = useRouter()
@@ -87,7 +86,7 @@ async function select(workspace: Workspace) {
                         :key="w.id"
                         variant="fill"
                         class="rounded"
-                        @click="select(w)"
+                        :to="`/workspaces/${w.id}`"
                     >
                         <div>
                             /{{ w.label }}

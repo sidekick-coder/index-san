@@ -5,8 +5,8 @@ import { useDirectoryEntries } from '../composables/useDirectoryEntries';
 import DirectoryEntryIcon from './DirectoryEntryIcon.vue';
 
 // general
-const { drive, encode, resolve } = useDrive()
 const router = useRouter()
+const drive = useWorkspaceDrive()
 
 // entries
 const path = defineProp<string>('path', {
@@ -37,7 +37,12 @@ const filteredEntries = computed(() => {
 function openEntry(entry: DriveEntry) {
 	if (editedEntry.value.originalName) return
 
-	router.push(`/entries/${encodeURIComponent(entry.path)}`)
+	router.push({
+		name: 'entry',
+		params: {
+			path: encodeURIComponent(entry.path)
+		}
+	})
 }
 
 watch(path, loadEntries, { immediate: true })
@@ -66,7 +71,7 @@ async function createFile(){
 
 	const filepath = resolve(path.value, name) 
 
-	await drive.value.write(filepath, encode(''))
+	await drive.write(filepath, encode(''))
 
 	await loadEntries()
 }
@@ -90,7 +95,7 @@ async function createFolder(){
 
 	const filepath = `${path.value}/${name}`
 
-	await drive.value.mkdir(filepath)
+	await drive.mkdir(filepath)
 
 	await loadEntries()
 }
@@ -103,7 +108,7 @@ async function deleteEntry(e: DriveEntry){
 		return
 	}
 
-	await drive.value.destroy(e.path)
+	await drive.destroy(e.path)
 
 	await loadEntries()
 }
@@ -151,7 +156,7 @@ async function saveEditedEntry(){
 	const fromPath = resolve(path.value, originalName)
 	const toPath = resolve(path.value, name)
 
-	await drive.value.move(fromPath, toPath)
+	await drive.move(fromPath, toPath)
 
 	await loadEntries()
 

@@ -3,43 +3,36 @@ import type { DriveEntry } from '@/composables/useDrive';
 import { orderBy } from 'lodash';
 
 // general
-const route = useRoute()
 const router = useRouter()
 
-const path = computed(() => {
-	if (!route.params.path) return '/'
-
-	const args = Array.isArray(route.params.path) ? route.params.path : [route.params.path]
-
-	return `${args.join('/')}`
-})
+const path = useRouteEntryPath()
 
 // entries
-const { drive, dirname } = useDrive()
+const drive = useWorkspaceDrive()
 
 const entry = ref<DriveEntry | null>(null)
 const entries = ref<DriveEntry[]>([])
 
-async function setEntries(){
+async function setEntries() {
 	if (!entry.value) {
 		entries.value = []
 		return
 	}
 
-	const result = await drive.value.list(entry.value.path)
+	const result = await drive.list(entry.value.path)
 
 	entries.value = orderBy(result, ['type', 'name'])
 }
 
-async function load(){
-	let result = await drive.value.get(path.value)
+async function load() {
+	let result = await drive.get(path.value)
 
 	if (result && result.type === 'file') {
-		result = await drive.value.get(dirname(path.value))
+		result = await drive.get(dirname(path.value))
 	}
 
 	if (!result) {
-		entry.value = null	
+		entry.value = null
 		return
 	}
 
@@ -69,7 +62,7 @@ function isItemVisible(element: HTMLElement) {
 
 }
 
-function prev(e: KeyboardEvent){
+function prev(e: KeyboardEvent) {
 	const currentIndex = entries.value.findIndex(e => e.path === path.value)
 	const index = currentIndex - 1
 
@@ -90,7 +83,7 @@ function prev(e: KeyboardEvent){
 	e.preventDefault()
 }
 
-function next(e: KeyboardEvent){
+function next(e: KeyboardEvent) {
 
 	const currentIndex = entries.value.findIndex(e => e.path === path.value)
 	const index = currentIndex + 1
@@ -136,7 +129,12 @@ watch(entries, async () => {
     >
         <is-list-item
             class="px-4 items-center group border-b border-body-500"
-            :to="`/entries/${entry.path}`"
+            :to="{
+                name: 'entry',
+                params: {
+                    path: entry.path
+                }
+            }"
             color="none"
         >
             <is-icon
@@ -151,7 +149,7 @@ watch(entries, async () => {
         </is-list-item>
 
 
-        <div 
+        <div
             v-if="!entries.length"
             class="flex-1 h-full w-full flex items-center justify-center"
         >
@@ -173,7 +171,12 @@ watch(entries, async () => {
                 ref="itemsRef"
             >
                 <is-list-item
-                    :to="`/entries/${e.path}`"
+                    :to="{
+                        name: 'entry',
+                        params: {
+                            path: e.path
+                        }
+                    }"
                     class="px-4 items-center group"
                 >
                     <div class="w-4">

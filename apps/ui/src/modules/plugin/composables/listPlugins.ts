@@ -7,15 +7,15 @@ export interface IsPluginInfo {
 export async function listPlugins() {
 	const folderPath = '/.is/plugins'
 
-	const { drive } = useDrive()
+	const drive = useWorkspaceDrive() 
 
-	const hasPluginFolder = await drive.value.get(folderPath)
+	const hasPluginFolder = await drive.get(folderPath)
 
 	if (!hasPluginFolder) {
 		return []
 	}
 
-	const entries = await drive.value.list(folderPath)
+	const entries = await drive.list(folderPath)
 
 	const plugins = entries.map(e => {
 		const pluginConfig = $config.activePlugins.find(ap => ap.id === e.name)

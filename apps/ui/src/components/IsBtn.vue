@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import { RouterLink } from 'vue-router';
+import { RouterLink, type RouterLinkProps } from 'vue-router';
 import { twMerge } from 'tailwind-merge'
 
 // general
@@ -109,8 +109,8 @@ function setRounded(){
 watch(rounded, setRounded, { immediate: true })
 
 // clickable
-const to = defineProp<string>('to', {
-    type: String,
+const to = defineProp<RouterLinkProps['to']>('to', {
+    type: [String, Object],
     default: null,
 })
 

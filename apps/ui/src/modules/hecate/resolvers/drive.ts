@@ -3,12 +3,13 @@ import { defineImportResolver } from "hecate/composables/defineImportResolver"
 export const driveResolver = defineImportResolver({
 	test: (path: string) => path === 'app:drive',
 	resolve: async () => {
-		const { drive, encode, decode } = useDrive()
+		const drive = useWorkspaceDrive() 
 
 		return {
-			drive: unref(drive),
+			drive,
 			encode,
-			decode
+			decode,
+			resolve
 		}
 	}
 })

@@ -29,7 +29,8 @@ export default defineConfig({
             imports: ['vue', 'vue-router', 'vue-i18n', '@vueuse/core', {
 					from: '@vueuse/router',
 					imports: ['useRouteQuery']
-			}]
+			}],
+			vueTemplate: true,
         }),
         Components({
             dts: 'runtime/components.d.ts',

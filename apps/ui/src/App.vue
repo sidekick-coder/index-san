@@ -1,16 +1,8 @@
-<script setup lang="ts">
-import LayoutDefault from './layouts/LayoutDefault.vue'
-</script>
 <template>
-    <div>
+    <is-app>
         <is-snackbar-container />
-
-        <is-app v-if="$route.meta.layout === 'empty'">
+        <suspense>
             <router-view />
-        </is-app>
-
-        <layout-default v-else>
-            <router-view />
-        </layout-default>
-    </div>
+        </suspense>
+    </is-app>
 </template>

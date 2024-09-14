@@ -4,101 +4,109 @@ import './assets/main.scss'
 import { createApp as createVueApp } from 'vue'
 import type { Plugin } from '@/composables/definePlugin'
 import App from './App.vue'
-import router from '@/router/router'
 
 import { vVisible } from './directives/vVisible'
 import type { AppModule } from './composables/defineAppModule'
+import { createRouter, createWebHistory } from 'vue-router'
 
 async function getPlugins() {
-    const files = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
-    
-    const plugins: Plugin[] = Object.entries(files)
-        .filter(([, p]) => !!p.default)
-        .map(([name, p]) => ({
-            name: name.replace('./plugins/', ''),
-            order: 999,
-            ...p.default,
-        }))
+	const files = import.meta.glob<Record<string, Plugin>>('./plugins/*.ts', { eager: true })
 
-    plugins.sort((a, b) => a.order! - b.order!)
+	const plugins: Plugin[] = Object.entries(files)
+		.filter(([, p]) => !!p.default)
+		.map(([name, p]) => ({
+			name: name.replace('./plugins/', ''),
+			order: 999,
+			...p.default,
+		}))
 
-    return plugins
+	plugins.sort((a, b) => a.order! - b.order!)
+
+	return plugins
 }
 
 async function getAppModules() {
-    const files = import.meta.glob<Record<string, AppModule>>('./modules/**/index.ts', { eager: true })
+	const files = import.meta.glob<Record<string, AppModule>>('./modules/**/index.ts', { eager: true })
 
-    const appModules = Object.entries(files)
-        .filter(([, p]) => !!p.default)
-        .map(([name, p]) => ({
-            name: name.replace('./modules/', '').replace('/index.ts', ''),
-            order: 999,
-            ...p.default,
-        }))
+	const appModules = Object.entries(files)
+		.filter(([, p]) => !!p.default)
+		.map(([name, p]) => ({
+			name: name.replace('./modules/', '').replace('/index.ts', ''),
+			order: 999,
+			...p.default,
+		}))
 
-    appModules.sort((a, b) => a.order! - b.order!)
-    
-    return appModules as AppModule[]
+	appModules.sort((a, b) => (a.order || 99) - (b.order || 99))
+
+	return appModules as AppModule[]
 
 }
 
 async function createApp() {
-    const app = createVueApp(App)
+	const app = createVueApp(App)
+	const router = createRouter({
+		history: createWebHistory(),
+		routes: []
+	})
 
-    const appPages = useAppPages()
-    const entryMiddlewares = useEntryMiddlewares()
-    const menuItems = useMenuItems()
-    
-    const plugins = await getPlugins()
-    const appModules = await getAppModules()
+	const appPages = useAppPages()
+	const entryMiddlewares = useEntryMiddlewares()
+	const menuItems = useMenuItems()
 
-    app.directive('visible', vVisible)    
+	const plugins = await getPlugins()
+	const appModules = await getAppModules()
 
-    for await (const plugin of plugins) {
-        console.debug(`[app] plugin ${plugin.name} loaded`)
+	app.directive('visible', vVisible)
 
-        if (plugin.setup) {
-            await plugin.setup(app)
-        }
-    }
+	for await (const plugin of plugins) {
+		console.debug(`[app] plugin ${plugin.name} loaded`)
+
+		if (plugin.setup) {
+			await plugin.setup(app)
+		}
+	}
 
 
-    for await (const appModule of appModules) {
-        console.debug(`[app] module ${appModule.name} loaded`)
+	for await (const appModule of appModules) {
+		console.debug(`[app] module ${appModule.name} loaded`)
 
-        await appModule.setup({
-            addAppPage: p => {
-                console.debug(`[app] module ${appModule.name} added app page ${p.name}`)
+		const log = (message: string, ...args: string[])  => console.debug(`[${appModule.name}] ${message}`, ...args)
 
-                appPages.value.push(p)
-            },
+		await appModule.setup({
+			addAppPage: p => {
+				log(`added app page ${p.name}`)
 
-            addEntryMiddleware: m => {
-                console.debug(`[app] module ${appModule.name} added entry middleware`)
+				appPages.value.push(p)
+			},
 
-                entryMiddlewares.value.push(m)
-            },
+			addEntryMiddleware: m => {
+				log(`added entry middleware`)
 
-            addRoute: r => {
-                console.debug(`[app] module ${appModule.name} added route ${r.path}`)
-    
-                router.addRoute(r)
-            },
+				entryMiddlewares.value.push(m)
+			},
 
-            addMenuItem: m => {
-                console.debug(`[app] module ${appModule.name} added menu item ${m.name}`)
+			addRoute(a: any, b: any){
+				const path = typeof a === 'string' ? b.path : a.path
 
-                menuItems.value.push(m)
-            }
-        })
-    }
+				log(`added route ${path}`)
 
-    app.use(router)
+				return router.addRoute(a, b)
+			},
 
-    return app
+			addMenuItem: m => {
+				log(`added menu item ${m.name}`)
+
+				menuItems.value.push(m)
+			}
+		})
+	}
+
+	app.use(router)
+
+	return app
 }
 
 createApp().then((app) => {
-    app.mount('#app')
+	app.mount('#app')
 })
 

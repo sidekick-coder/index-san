@@ -16,8 +16,7 @@ import { useGlobalResolvers } from '@/modules/hecate/composables/global-resolver
 
 // general
 const tm = useI18n()
-const { drive: _drive, decode } = useDrive();
-const drive = unref(_drive);
+const drive = useWorkspaceDrive() 
 
 // entry
 const path = defineProp<string>('path', {

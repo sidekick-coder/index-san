@@ -15,7 +15,7 @@ export function useDirectoryEntries(path: MaybeRef<string>, options?: Options){
 
     const _path = isRef(path) ? path : ref(path)
 
-    const { drive } = useDrive()
+    const drive = useWorkspaceDrive() 
 
     const data = ref<DriveEntry[]>([])
     const loading = ref(false)
@@ -34,7 +34,7 @@ export function useDirectoryEntries(path: MaybeRef<string>, options?: Options){
     async function load(){
         loading.value = true
 
-        return drive.value.list(_path.value)
+        return drive.list(_path.value)
             .then(entries => {
                 data.value = orderBy(entries, ['type', 'name'], ['asc', 'asc'])
             })

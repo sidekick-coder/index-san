@@ -1,12 +1,12 @@
 import { createDrive } from "drive-fsa/composables/createDrive";
-import type { Drive } from "./useDrive";
+import type { WorkspaceDrive } from "./useWorkspaceDrive";
 
-export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
+export function createWorkspaceDrive(handle: FileSystemDirectoryHandle) {
     const fsaDrive = createDrive(handle, {
         debug: false 
     })
 
-    const list: Drive['list'] = async (path, options) => {
+    const list: WorkspaceDrive['list'] = async (path, options) => {
         const entries = await fsaDrive.list(path, {
             recursive: !!options?.recursive
         })
@@ -18,7 +18,7 @@ export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
         }))
     }
 
-    const get: Drive['get'] = async (path) => {
+    const get: WorkspaceDrive['get'] = async (path) => {
         const entry = await fsaDrive.find(path)
 
         if (!entry) {
@@ -32,29 +32,29 @@ export function createWorkspaceDrive(handle: FileSystemDirectoryHandle): Drive {
         }
     }
 
-    const read: Drive['read'] = async (path) => {
+    const read: WorkspaceDrive['read'] = async (path) => {
         return fsaDrive.read(path)
     }
 
-    const write: Drive['write'] = async (path, content) => {
+    const write: WorkspaceDrive['write'] = async (path, content) => {
         await fsaDrive.write(path, content)
 
         emitHook('drive:write', { path, content })
     }
 
-    const destroy: Drive['destroy'] = async (path) => {
+    const destroy: WorkspaceDrive['destroy'] = async (path) => {
         await fsaDrive.destroy(path)
 
         emitHook('drive:destroy', { path })
     }
 
-    const move: Drive['move'] = async (from, to) => {
+    const move: WorkspaceDrive['move'] = async (from, to) => {
         await fsaDrive.move(from, to)
 
         emitHook('drive:move', { from, to })
     }
 
-    const mkdir: Drive['mkdir'] = async (path) => {
+    const mkdir: WorkspaceDrive['mkdir'] = async (path) => {
         await fsaDrive.mkdir(path)
 
         emitHook('drive:mkdir', { path })

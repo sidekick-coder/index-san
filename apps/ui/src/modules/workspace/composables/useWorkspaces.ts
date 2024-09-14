@@ -1,6 +1,11 @@
 import { get, set } from 'idb-keyval'
 import uuid from 'uuid-random'
 
+export interface Workspace {
+	id: string
+	label: string
+	handle?: any 
+}
 
 export function useWorkspaces(){
     const loading = ref(false)
@@ -19,7 +24,7 @@ export function useWorkspaces(){
     }
 
     async function save(workspace: Pick<Workspace, 'handle'|'label'>){
-        const data = workspaces.value.map(w => ({
+        const data: Workspace[] = workspaces.value.map(w => ({
             id: w.id,
             label: w.label,
             handle: w.handle        

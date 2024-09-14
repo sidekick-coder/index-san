@@ -5,8 +5,7 @@ import AppPageRender from '@/modules/appPage/components/AppPageRender.vue'
 import orderBy from 'lodash/orderBy'
 
 // general
-const { drive: _drive, resolve } = useDrive()
-const drive = unref(_drive)
+const drive = useWorkspaceDrive() 
 
 // load
 const middlewares = useEntryMiddlewares()
@@ -23,7 +22,7 @@ const result = ref<EntryMiddlewareResult>()
 async function setResult(){
     const args = Array.isArray(path.value) ? path.value : [path.value]
 
-    const filename = `${args.join('/')}`
+    const filename = decodeURIComponent(`${args.join('/')}`)
 
     const entry = await drive.get(filename === '' ? '/' : filename)
 

@@ -20,9 +20,7 @@ const readonly = defineProp<boolean>('readonly', {
     required: false
 })
 
-const { drive: _drive, encode, decode } = useDrive()
-
-const drive = unref(_drive)
+const drive = useWorkspaceDrive() 
 
 // load
 const text = ref('')
@@ -45,7 +43,7 @@ async function save(){
 </script>
 
 <template>
-    <div class="h-full flex flex-col">
+    <div class="h-full w-full flex flex-col">
         <DirectoryEntryToolbar :path="path" />
         
         <div class="flex-1">

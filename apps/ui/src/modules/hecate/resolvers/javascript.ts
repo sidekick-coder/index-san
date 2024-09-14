@@ -9,9 +9,7 @@ export const javascriptResolver: HecateCompilerImportResolver = {
 }
 
 export async function importJavascriptFile(filename: string) {
-	const { drive: _drive, decode } = useDrive();
-
-	const drive = _drive.value
+	const drive = useWorkspaceDrive() 
 
 	const entry = await drive.get(filename);
 

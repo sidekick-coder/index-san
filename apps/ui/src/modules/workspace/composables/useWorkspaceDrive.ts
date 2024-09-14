@@ -1,4 +1,3 @@
-
 export interface DriveEntry {
 	name: string
 	path: string
@@ -9,7 +8,7 @@ export interface DriveListOptions {
 	recursive?: boolean
 }
 
-export interface Drive {
+export interface WorkspaceDrive {
 	get: (path: string) => Promise<DriveEntry | null>
 	list: (path: string, options?: DriveListOptions) => Promise<DriveEntry[]>
 	read: (path: string) => Promise<Uint8Array | null>
@@ -19,24 +18,18 @@ export interface Drive {
 	mkdir: (path: string) => Promise<void>
 }
 
-const drive = ref<Drive>() as Ref<Drive>
+const drive = ref<WorkspaceDrive>()
 
-export function useDrive() {
+export function provideWorkspaceDrive(payload: WorkspaceDrive) {
+	drive.value = payload
+}
 
-	const isLoaded = computed(() => drive.value !== undefined)
+export function useWorkspaceDrive() {
+	const result = unref(drive) 
 
-	function setDrive(newDrive: Drive) {
-		drive.value = newDrive
+	if (!result) {
+		throw new Error('Error loading workspace drive')
 	}
 
-	return {
-		drive,
-		isLoaded,
-		setDrive,
-		encode,
-		decode,
-		basename,
-		dirname,
-		resolve
-	}
+	return result
 }

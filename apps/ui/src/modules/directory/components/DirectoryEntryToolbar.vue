@@ -31,7 +31,7 @@ watch(() => path.value, setControls, { immediate: true })
                 size="none"
                 class="h-8 w-8"
                 :class="controls.home ? '' : 'text-gray-500 pointer-events-none'"
-                to="/entries"
+                :to="{ name: 'entry', params: { path: '/' } }"
             >
                 <is-icon
                     size="sm"

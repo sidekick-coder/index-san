@@ -1,12 +1,10 @@
-import { workspaceGuard } from '@/router/guards/workspaceGuard'
-
 export default defineAppModule({
     setup({ addRoute }) {
-        addRoute({
-            path: '/entries/:path(.*)*',
+        addRoute('workspace', {
+            path: '/workspaces/:workspaceId/entries/:path(.*)*',
+			name: 'entry',
             props: true,
             component: () => import('./components/EntryProvider.vue'),
-			beforeEnter: workspaceGuard
         })
     }
 })

@@ -3,7 +3,6 @@ import type { IsPluginInfo } from "./listPlugins";
 import { addPluginImport } from "./plugin-resolvers";
 import { importJavascriptFile } from "@/modules/hecate/resolvers/javascript";
 import type { EntryMiddleware } from "@/composables/defineEntryMiddleware";
-import type { AppPage } from "@/composables/defineAppPage";
 
 const loading = ref(true)
 const entryMiddlewares = useEntryMiddlewares()
@@ -11,20 +10,19 @@ const appPages = useAppPages()
 const appMenuItems = useMenuItems()
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
-	const { drive, decode, resolve } = useDrive()
-
+	const drive = useWorkspaceDrive()
 	const folder = resolve('.is/plugins', pluginInfo.id)
 
 	const filename = resolve(folder, 'index.js')
 
-	const fileExist = await drive.value.get(filename)
+	const fileExist = await drive.get(filename)
 
 	if (!fileExist) {
 		console.debug('[plugins] index.js file not found fo plugin: ', pluginInfo)
 		return
 	}
 
-	const contents = await drive.value.read(filename)
+	const contents = await drive.read(filename)
 
 	const text = decode(contents!)
 
@@ -47,14 +45,14 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 	}
 
 	const components = [] as any[]
-	const pages = [] as any[]
-	const menuItems = [] as any[]
+	const pages = new Map<string, any>()
+	const menuItems = new Map<string, any>()
 
 	await pluginDefinition.setup({
 		resolve: (...args: string[]) => resolve(folder, ...args),
 		addComponent: (payload: any) => components.push(payload),
-		addAppPage: (payload: any) => pages.push(payload),
-		addMenuItem: (payload: any) => menuItems.push(payload),
+		addAppPage: (payload: any) => pages.set(payload.name, payload),
+		addMenuItem: (payload: any) => menuItems.set(payload.name, payload),
 		addImport: (key: string, filename: string) => {
 			addPluginImport(key, filename)
 
@@ -81,7 +79,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		}
 	}
 
-	for await (const pageDef of pages) {
+	for await (const pageDef of Array.from(pages.values())) {
 		const component = await importJavascriptFile(pageDef.filename)
 
 		if (component?.default) {
@@ -94,7 +92,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 		}
 	}
 
-	for await (const menuDef of menuItems) {
+	for await (const menuDef of Array.from(menuItems.values())) {
 		const component = await importJavascriptFile(menuDef.filename)
 
 		if (component?.default) {
@@ -111,8 +109,6 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 
 
 export async function loadActivePlugins() {
-	loading.value = true
-
 	const plugins = await listPlugins()
 
 	const activePlugins = plugins.filter(p => p.active)
@@ -123,7 +119,7 @@ export async function loadActivePlugins() {
 		})
 	}
 
-	loading.value = false
+	console.debug('[app] plugins loaded', activePlugins)
 }
 
 
