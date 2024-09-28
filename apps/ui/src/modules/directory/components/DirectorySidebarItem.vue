@@ -11,13 +11,13 @@ const router = useRouter()
 
 // entry
 const entry = defineProp<DriveEntry>('entry', {
-    type: Object,
-    required: true
+	type: Object,
+	required: true
 })
 
 const level = defineProp<number>('level', {
-    type: Number,
-    default: 1
+	type: Number,
+	default: 1
 })
 
 // folder
@@ -25,21 +25,21 @@ const show = ref(false)
 
 const { data: children, load: loadChildren } = useDirectoryEntries(entry.value.path)
 
-function setShow(){
-    if (entry.value.type !== 'directory')  return
+function setShow() {
+	if (entry.value.type !== 'directory') return
 
-    if (!children.value.length) {
-        loadChildren()
-    }
+	if (!children.value.length) {
+		loadChildren()
+	}
 
-    if (show.value) return
+	if (show.value) return
 
-    show.value = route.path.startsWith(`/entries/${entry.value.path}`)
+	show.value = route.path.startsWith(`/entries/${entry.value.path}`)
 }
 
-function onDirectoryUpdate({ path, from, to }: any){
+function onDirectoryUpdate({ path, from, to }: any) {
 
-    if (entry.value.type !== 'directory')  return
+	if (entry.value.type !== 'directory') return
 
 	if (![path, to, from].some(p => p?.startsWith(entry.value.path))) return
 
@@ -71,7 +71,9 @@ const hideActions = defineProp('hideActions', {
 })
 
 const active = computed(() => {
-	return route.path === `/entries/${entry.value.path}`
+	if (route.name != 'entry') return false
+
+	return route.params.path === entry.value.path
 })
 
 function onClick() {
@@ -80,7 +82,12 @@ function onClick() {
 		return
 	}
 
-	router.push(`/entries/${entry.value.path}`)
+	router.push({
+		name: 'entry',
+		params: {
+			path: entry.value.path
+		}
+	})
 }
 
 
@@ -88,9 +95,9 @@ function onClick() {
 
 <template>
     <is-list-item
-        class="px-4 items-center group"        
+        class="px-4 items-center group"
         :active="active"
-        :style="{ paddingLeft: `${level * 1.5}rem` }"
+        :style="{ paddingLeft: `${level * 1.1}rem` }"
         @click="onClick"
     >
         <div class="flex flex-col w-full">
@@ -125,7 +132,13 @@ function onClick() {
                         variant="text"
                         size="none"
                         class="size-8 opacity-0 group-hover:opacity-100"
-                        :to="`/entries/${entry.path}`"
+                        :to="{
+                            name: 'entry',
+                            params: {
+                                path: entry.path
+
+                            }
+                        }"
                         @click.stop
                     >
                         <is-icon
@@ -140,7 +153,7 @@ function onClick() {
                         size="none"
                         class="size-8"
                     >
-                        <is-icon                            
+                        <is-icon
                             :name="show ? 'heroicons:chevron-up-solid' : 'heroicons:chevron-down-solid'"
                             size="xs"
                         />

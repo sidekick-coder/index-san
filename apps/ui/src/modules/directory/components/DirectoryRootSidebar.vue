@@ -6,26 +6,29 @@ import type { DriveEntry } from '@/composables/useDrive';
 const { data: entries, loading, load } = useDirectoryEntries('/')
 
 // root
-const { drive } = useDrive()
+const drive = useWorkspaceDrive() 
 
 const rootEntry = ref<DriveEntry | null>(null)
 
 onMounted(async () => {
-	rootEntry.value = await drive.value.get('/')
+	rootEntry.value = await drive.get('/')
 })
 
-const title = computed(() => $config.name|| $workspace.label)
-
 onMounted(load)
-
 </script>
 
 <template>
     <div class="flex flex-col">
         <is-list-item
             v-if="rootEntry"
-            to="/entries"
-            class="px-4 items-center group"
+            :to="{
+                name: 'entry',
+                params: {
+                    path: '/' 
+                }
+            }"
+
+            class="px-4 items-center group border-b border-body-500"
         >
             <is-icon
                 name="heroicons:folder-open-solid"
@@ -34,7 +37,7 @@ onMounted(load)
             />
 
             <div class="ml-4 font-bold">
-                {{ title }}
+                Root 
             </div>
         </is-list-item>
 
@@ -61,7 +64,6 @@ onMounted(load)
             >
                 <DirectorySidebarItem
                     :entry="entry"
-                    :level="2"
                 />
             </div>
         </div>
