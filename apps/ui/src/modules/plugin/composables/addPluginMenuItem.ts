@@ -11,11 +11,18 @@ const appMenuItems = useMenuItems()
 
 export async function addPluginMenuItem(payload: AddPayload) {
 	const { pluginId, filename, ...menuDef } = payload
-	const fileModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
+	let component: any
+
+	if (filename) {
+		const fileModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
+
+		component = fileModule.default
+	}
+
 	
 	appMenuItems.value.push({
 		...menuDef,
-		component: fileModule?.default
+		component
 	})
 
 }

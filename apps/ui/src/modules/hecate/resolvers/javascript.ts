@@ -7,9 +7,23 @@ export const javascriptResolver: HecateCompilerImportResolver = {
 		return importJavascriptFile(key)
 	}
 }
+export function useRelativeResolvers(filename: string) {
+	const resolvers: HecateCompilerImportResolver[] = []
+
+	resolvers.push({
+		test: (key) => key.startsWith('./') && key.endsWith('.js'),
+		resolve: async (key) => {
+			const folder = dirname(filename)
+
+			return importJavascriptFile(resolve(folder, key.replace('./', '')))
+		}
+	})
+
+	return resolvers
+}
 
 export async function importJavascriptFile(filename: string) {
-	const drive = useWorkspaceDrive() 
+	const drive = useWorkspaceDrive()
 
 	const entry = await drive.get(filename);
 
@@ -26,12 +40,16 @@ export async function importJavascriptFile(filename: string) {
 	const text = decode(contents);
 
 	const compiler = createCompiler({
-		importResolvers: useGlobalResolvers(),
+		importResolvers: [
+			...useGlobalResolvers(),
+			...useRelativeResolvers(filename)
+		] 
 	});
 
 	const result = await compiler.compile(text);
 
 	if (result.error) {
+		console.error(result.code)
 		throw result.error;
 	}
 

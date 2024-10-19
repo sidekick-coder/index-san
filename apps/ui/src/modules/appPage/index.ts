@@ -4,6 +4,7 @@ import AppPageVideo from './components/AppPageVideo.vue'
 export default defineAppModule({
     setup({ addRoute, addAppPage, addEntryMiddleware }) {
         addRoute('workspace', {
+			name: 'app-page',
             path: '/workspaces/:workspaceId/app-page/:name(.*)*',
             component: () => import('./pages/AppPage.vue'),
         })

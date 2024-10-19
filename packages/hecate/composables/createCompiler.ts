@@ -5,6 +5,7 @@ import HConsole from "../nodes/HConsole"
 import HFunction from "../nodes/HFunction"
 import HImport from "../nodes/HImport"
 import HExportDefaultObject from "../nodes/HExplortDefaultObject"
+import HImportDefault from "../nodes/HImportDefault"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
@@ -141,6 +142,14 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 
 				return [true, minify(newCode)]
 			}
+			
+			if (node instanceof HImportDefault) {
+				const replace = `\nconst ${node.name} = $hecate.import('${node.from}').default;`
+
+				const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
+
+				return [true, minify(newCode)]
+			}
 		}
 
 		return [false, code]
@@ -178,6 +187,10 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 			if (node instanceof HImport) {
 				imports[node.from] = null
 			}
+
+			if (node instanceof HImportDefault) {
+				imports[node.from] = null
+			}
 		}
 
 		const transformed = transformAll(code, [
@@ -209,7 +222,8 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 		const result = {
 			exports: {} as Record<string, any>,
 			error: null as any,
-			logs: [] as any[]
+			logs: [] as any[],
+			code: finalCode
 		}
 
 		for await (const key of Object.keys(imports)) {
