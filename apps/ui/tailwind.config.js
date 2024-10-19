@@ -8,6 +8,12 @@ module.exports = {
 		'./src/**/*.{vue,js,ts,jsx,tsx}',
 		'../../packages/hephaestus/components/*.{vue,js,ts,jsx,tsx}',
 	],
+	safelist: [
+		{ pattern: /(text|bg)-./, variants: ['hover'] },
+		{ pattern: /(p|pl|pt|pr|pb)-./ },
+		{ pattern: /(m|ml|mt|mr|mb)-./ },
+		{ pattern: /rotate-./ },
+	],
 	theme: {
 		fontFamily: {
 			roboto: ['Roboto', 'sans-serif'],
