@@ -102,17 +102,26 @@ function onClick() {
     >
         <div class="flex flex-col w-full">
             <div class="flex-1 flex items-center">
-                <is-icon
-                    v-if="entry.type === 'directory' && show"
-                    name="heroicons:folder-open-solid"
-                    class="text-primary-300"
-                />
+                <template v-if="entry.type === 'directory'">
+                    <is-btn
+                        size="none"
+                        color="none"
+                        class="p-1 hover:bg-body-500 relative"
+                        variant="text"
+                        @click.stop="show = !show"
+                    >
+                        <is-icon
+                            name="heroicons:folder-solid"
+                            class="relative text-sm group-hover:opacity-0 text-primary-300"
+                        />
 
-                <is-icon
-                    v-else-if="entry.type === 'directory'"
-                    name="heroicons:folder-solid"
-                    class="text-primary-300"
-                />
+                        <is-icon
+                            name="heroicons:chevron-right-solid"
+                            :class="show ? 'rotate-90' : ''"
+                            class="transition-all absolute  opacity-0 group-hover:opacity-100 text-sm"
+                        />
+                    </is-btn>
+                </template>
 
                 <DirectoryEntryIcon
                     v-else
@@ -129,9 +138,10 @@ function onClick() {
                     class="ml-auto"
                 >
                     <is-btn
-                        variant="text"
                         size="none"
-                        class="size-8 opacity-0 group-hover:opacity-100"
+                        color="none"
+                        class="p-1 hover:bg-body-500 relative opacity-0 group-hover:opacity-100"
+                        variant="text"
                         :to="{
                             name: 'entry',
                             params: {
@@ -143,18 +153,6 @@ function onClick() {
                     >
                         <is-icon
                             name="heroicons:arrow-right-solid"
-                            size="xs"
-                        />
-                    </is-btn>
-
-                    <is-btn
-                        v-if="children.length"
-                        variant="text"
-                        size="none"
-                        class="size-8"
-                    >
-                        <is-icon
-                            :name="show ? 'heroicons:chevron-up-solid' : 'heroicons:chevron-down-solid'"
                             size="xs"
                         />
                     </is-btn>

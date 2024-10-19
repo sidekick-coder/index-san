@@ -12,7 +12,7 @@ export default defineAppModule({
             name: 'plugins',
             order: 1,
             label: 'Plugins',
-            icon: 'heroicons:bolt-solid',
+            icon: 'heroicons:square-3-stack-3d-16-solid',
             component: PluginSidebar,
         })
 

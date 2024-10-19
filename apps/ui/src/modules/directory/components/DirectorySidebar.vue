@@ -186,7 +186,7 @@ watch(entries, async () => {
                         />
                     </div>
 
-                    <div class="ml-4 font-bold truncate">
+                    <div class="ml-4 truncate">
                         {{ e.name }}
                     </div>
                 </is-list-item>

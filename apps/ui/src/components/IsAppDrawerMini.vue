@@ -62,6 +62,7 @@ function exitWorkspace() {
         <div class="flex flex-col h-full">
             <is-list-item
                 justify="center"
+                class="h-12"
                 @click="onItemClick()"
             >
                 <is-logo class="w-5 h-5" />
@@ -77,6 +78,7 @@ function exitWorkspace() {
                         v-bind="attrs"
                         justify="center"
                         :class="activeMenuItem === item.name ? '!text-primary-300 bg-primary-900/25' : ''"
+                        class="h-12"
                         @click="onItemClick(item)"
                     >
                         <is-icon

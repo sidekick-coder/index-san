@@ -12,7 +12,8 @@ module.exports = {
 		{ pattern: /(text|bg)-./, variants: ['hover'] },
 		{ pattern: /(p|pl|pt|pr|pb)-./ },
 		{ pattern: /(m|ml|mt|mr|mb)-./ },
-		{ pattern: /rotate-./ },
+		{ pattern: /rotate-./, variants: ['hover'] },
+		{ pattern: /opacity-./, variants: ['hover', 'group-hover'] },
 	],
 	theme: {
 		fontFamily: {
