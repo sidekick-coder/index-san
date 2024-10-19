@@ -2,7 +2,6 @@ import type { HecateCompilerImportResolver } from "hecate/composables/createComp
 import { javascriptResolver } from "../resolvers/javascript";
 import { vueResolver } from "../resolvers/vue";
 import { driveResolver } from "../resolvers/drive";
-import { pluginResolver } from "@/modules/plugin/composables/plugin-resolvers";
 
 interface Options {
 	extend: HecateCompilerImportResolver[]
@@ -13,7 +12,7 @@ export function useGlobalResolvers(options?: Options) {
 		javascriptResolver,
 		vueResolver,
 		driveResolver,
-		pluginResolver
+		usePluginResolver()	
 	]
 
 	if (options?.extend) {

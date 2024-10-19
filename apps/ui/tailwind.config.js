@@ -6,7 +6,7 @@ module.exports = {
 	content: [
 		'./index.html',
 		'./src/**/*.{vue,js,ts,jsx,tsx}',
-		'../../packages/hephaestus/**/*.{vue,js,ts,jsx,tsx}',
+		'../../packages/hephaestus/components/*.{vue,js,ts,jsx,tsx}',
 	],
 	theme: {
 		fontFamily: {

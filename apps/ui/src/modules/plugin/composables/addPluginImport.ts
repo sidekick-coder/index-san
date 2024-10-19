@@ -3,7 +3,7 @@ import { defineImportResolver } from "hecate/composables/defineImportResolver"
 
 const register = ref(new Map<string, string>)
 
-export const pluginResolver = defineImportResolver({
+const pluginResolver = defineImportResolver({
 	test: key => {
 		return register.value.has(key)
 	} ,
@@ -18,7 +18,10 @@ export const pluginResolver = defineImportResolver({
 	}
 })
 
-export function addPluginImport(key: string, filename: string){
-	register.value.set(key, filename)
+export function usePluginResolver(){
+	return pluginResolver
+}
 
+export function addPluginImport(pluginId: string, key: string, filename: string){
+	register.value.set(key, resolve('.is/plugins', pluginId, filename))
 }

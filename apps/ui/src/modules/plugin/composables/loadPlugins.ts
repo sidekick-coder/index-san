@@ -1,108 +1,48 @@
-import { createCompiler } from "hecate/composables/createCompiler";
 import type { IsPluginInfo } from "./listPlugins";
-import { addPluginImport } from "./plugin-resolvers";
 import { importJavascriptFile } from "@/modules/hecate/resolvers/javascript";
-import type { EntryMiddleware } from "@/composables/defineEntryMiddleware";
 
 const loading = ref(true)
-const entryMiddlewares = useEntryMiddlewares()
-const appPages = useAppPages()
 const appMenuItems = useMenuItems()
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
-	const drive = useWorkspaceDrive()
-	const folder = resolve('.is/plugins', pluginInfo.id)
 
-	const filename = resolve(folder, 'index.js')
-
-	const fileExist = await drive.get(filename)
-
-	if (!fileExist) {
-		console.debug('[plugins] index.js file not found fo plugin: ', pluginInfo)
-		return
+	for (const importDef of pluginInfo.imports) {
+		addPluginImport(pluginInfo.id, importDef.name, importDef.filename)
 	}
 
-	const contents = await drive.read(filename)
+	for await (const pageDef of pluginInfo.pages) {
+		await addPluginAppPage({
+			pluginId: pluginInfo.id,
+			name: pageDef.name,
+			filename: pageDef.filename
+		})
 
-	const text = decode(contents!)
-
-	const compiler = createCompiler({
-		importResolvers: [],
-		logger: {
-			log(...args) {
-				console.debug(`[plugins][${pluginInfo.name}]`, ...args)
-			},
-		}
-	})
-
-	const { exports } = await compiler.compile(text)
-
-	const pluginDefinition = exports.default
-
-	if (typeof pluginDefinition.setup !== 'function') {
-		console.debug('[plugins] could not run plugin setup', pluginInfo)
-		return
+		console.debug(`[plugin(${pluginInfo.id})] add app page`, pageDef)
 	}
 
-	const components = [] as any[]
-	const pages = new Map<string, any>()
-	const menuItems = new Map<string, any>()
-
-	await pluginDefinition.setup({
-		resolve: (...args: string[]) => resolve(folder, ...args),
-		addComponent: (payload: any) => components.push(payload),
-		addAppPage: (payload: any) => pages.set(payload.name, payload),
-		addMenuItem: (payload: any) => menuItems.set(payload.name, payload),
-		addImport: (key: string, filename: string) => {
-			addPluginImport(key, filename)
-
-			console.debug(`[plugin(${pluginInfo.id})] add module`, { key, filename })
-		},
-		addEntryMiddleware: (payload: EntryMiddleware) => {
-			entryMiddlewares.value.push(payload)
-
-			console.debug(`[plugin(${pluginInfo.id})] add entry middleware`, payload)
-		},
-	})
-
-	for await (const componentDef of components) {
-		const component = await importJavascriptFile(componentDef.filename)
-
-		if (component?.default) {
-			addPluginComponent({
-				name: componentDef.name,
-				icon: componentDef.icon,
-				component: component.default
-			})
-
-			console.debug(`[plugin(${pluginInfo.id})] add component`, componentDef)
-		}
+	for await (const middlewareDef of pluginInfo.middlewares) {
+		await addPluginEntryMiddleware(pluginInfo.id, middlewareDef.filename)
 	}
 
-	for await (const pageDef of Array.from(pages.values())) {
-		const component = await importJavascriptFile(pageDef.filename)
+	for await (const componentDef of pluginInfo.components) {
+		await addPluginComponent({
+			pluginId: pluginInfo.id,
+			name: componentDef.name,
+			icon: componentDef.icon,
+			filename: componentDef.filename
+		})
 
-		if (component?.default) {
-			appPages.value.push({
-				...pageDef,	
-				component: component.default
-			})
-
-			console.debug(`[plugin(${pluginInfo.id})] add app page`, pageDef)
-		}
+		console.debug(`[plugin(${pluginInfo.id})] add component`, componentDef)
 	}
 
-	for await (const menuDef of Array.from(menuItems.values())) {
-		const component = await importJavascriptFile(menuDef.filename)
 
-		if (component?.default) {
-			appMenuItems.value.push({
-				...menuDef,
-				component: component.default
-			})
+	for await (const menuDef of pluginInfo.menu) {
+		await addPluginMenuItem({
+			...menuDef,
+			pluginId: pluginInfo.id
+		})
 
-			console.debug(`[plugin(${pluginInfo.id})] add menu`, menuDef)
-		}
+		console.debug(`[plugin(${pluginInfo.id})] add menu`, menuDef)
 	}
 
 }
