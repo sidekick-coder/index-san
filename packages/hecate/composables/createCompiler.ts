@@ -148,7 +148,7 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 
 		for (const node of allNodes(nodes)) {
 			if (node instanceof HImport) {
-				const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');`
+				const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');\n`
 
 				const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
@@ -156,7 +156,7 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 			}
 			
 			if (node instanceof HImportDefault) {
-				const replace = `\nconst ${node.name} = $hecate.import('${node.from}').default;`
+				const replace = `\nconst ${node.name} = $hecate.import('${node.from}').default;\n`
 
 				const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
@@ -212,7 +212,7 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 		const transformed = transformAll(code, [
 			transformExports,
 			transformImports,
-			transformConsole
+			// transformConsole
 		])
 
 		const lines = [
