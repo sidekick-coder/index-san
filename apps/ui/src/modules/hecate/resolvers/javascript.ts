@@ -11,11 +11,11 @@ export function useRelativeResolvers(filename: string) {
 	const resolvers: HecateCompilerImportResolver[] = []
 
 	resolvers.push({
-		test: (key) => key.startsWith('./') && key.endsWith('.js'),
+		test: (key) => /\.{1,2}\/[^'"]+\.(js|ts)/.test(key),
 		resolve: async (key) => {
-			const folder = dirname(filename)
+			let folder = dirname(filename)
 
-			return importJavascriptFile(resolve(folder, key.replace('./', '')))
+			return importJavascriptFile(resolve(folder, key))
 		}
 	})
 
@@ -47,6 +47,8 @@ export async function importJavascriptFile(filename: string) {
 	});
 
 	const result = await compiler.compile(text);
+
+	// console.error(result.code)
 
 	if (result.error) {
 		console.error(result.code)

@@ -9,6 +9,7 @@ import HConsoleProcessor from './processors/HConsoleProcessor'
 import HHecateObjectProcessor from './processors/HHecateObjectProcessor'
 import HExportDefaultObjectProcessor from './processors/HExportDefaultObjectProcessor'
 import HImportDefaultProcessor from './processors/HImportDefaultProcessor'
+import HAsyncFunctionProcessor from './processors/HAsyncFunctionProcessor'
 
 export default class HParser extends BaseParser<HNode> {
     constructor() {
@@ -19,6 +20,7 @@ export default class HParser extends BaseParser<HNode> {
             HImportProcessor,
             HImportDefaultProcessor,
             HVariableProcessor,
+            HAsyncFunctionProcessor,
             HFunctionProcessor,
             HUnknownProcessor,
             HHecateObjectProcessor,

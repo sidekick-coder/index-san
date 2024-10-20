@@ -6,6 +6,7 @@ import HFunction from "../nodes/HFunction"
 import HImport from "../nodes/HImport"
 import HExportDefaultObject from "../nodes/HExplortDefaultObject"
 import HImportDefault from "../nodes/HImportDefault"
+import HAsyncFunction from "../nodes/HAsyncFunction"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
@@ -119,6 +120,17 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 
 				return [true, minify(newCode)]
 			}
+
+			if (node instanceof HAsyncFunction && node.export) {
+				const token = node.tokens.find((t) => t.value === 'export')
+
+				if (!token) continue
+
+				const newCode = code.slice(0, token.start) + code.slice(token.end + 1)
+
+				return [true, minify(newCode)]
+			}
+
 			if (node instanceof HExportDefaultObject) {
 				const replace = `\nconst __default = ${node.value}`
 
@@ -177,6 +189,10 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 
 		for (const node of allNodes(parser.toNodes(code))) {
 			if (node instanceof HFunction && node.export) {
+				needExport.push(node.name)
+			}
+			
+			if (node instanceof HAsyncFunction && node.export) {
 				needExport.push(node.name)
 			}
 

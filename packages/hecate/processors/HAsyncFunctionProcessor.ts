@@ -1,10 +1,9 @@
 import { BaseProcessor } from '@language-kit/core'
 import HNode from '../base/HNode'
-import HFunction from '../nodes/HFunction'
+import HAsyncFunction from '../nodes/HAsyncFunction'
 
-export default class HFunctionProcessor extends BaseProcessor<HNode> {
-
-    public order = 2
+export default class HAsyncFunctionProcessor extends BaseProcessor<HNode> {
+    public order = 1
 
     public findEnd() {
         const start = this.tokens.findIndex((t) => t.value === '{')
@@ -57,18 +56,15 @@ export default class HFunctionProcessor extends BaseProcessor<HNode> {
     }
 
     public isFunction(){
-        const [current] = this.tokens
-
-        return current.value === 'function'
+        return this.tokens.slice(0, 3).toText().trim() === 'async function'
     }
 
     public isExportFunction(){
-        const [current, _space, next] = this.tokens
-
-        return current.value === 'export' && next.value === 'function'
+        return this.tokens.slice(0, 5).toText().trim() === 'export async function'
     }
 
     public process() {
+
         if (!this.isFunction() && !this.isExportFunction()) {
             return false
         }
@@ -79,7 +75,7 @@ export default class HFunctionProcessor extends BaseProcessor<HNode> {
 
         const tokens = this.tokens.slice(0, endIndex + 1)
 
-        const node = new HFunction()
+        const node = new HAsyncFunction()
 
         node.tokens = tokens
         node.name = this.findName()
