@@ -10,7 +10,7 @@ const classes = computed(() => {
     return twMerge(Array.from(classMap.value.values()).join(' '), className.value)
 })
 
-classMap.value.set('general', 'inline-flex items-center justify-center')
+classMap.value.set('general', 'inline-flex items-center justify-center relative')
 
 // color
 const variant = defineProp<'text' | 'fill'>('variant', {
@@ -18,17 +18,17 @@ const variant = defineProp<'text' | 'fill'>('variant', {
     default: 'fill',
 })
 
-const color = defineProp<'primary' | 'danger' | 'success' | 'warning' | 'body-500'>('color',  {
+const color = defineProp<'primary' | 'danger' | 'success' | 'warning' | 'body-500'>('color', {
     type: String,
     default: 'primary',
 })
 
-function setFillColor(){
+function setFillColor() {
     const options: Record<typeof color.value, string> = {
         primary: 'bg-primary-500 text-body-0',
-		danger: 'bg-danger-500 text-body-0',
-		success: 'bg-success-500 text-body-0',
-		warning: 'bg-warning-500 text-body-0',
+        danger: 'bg-danger-500 text-body-0',
+        success: 'bg-success-500 text-body-0',
+        warning: 'bg-warning-500 text-body-0',
         'body-500': 'bg-body-500 text-body-0',
     }
 
@@ -37,7 +37,7 @@ function setFillColor(){
     classMap.value.set('color', option)
 }
 
-function setTextColor(){
+function setTextColor() {
     const options: Record<typeof color.value, string> = {
         primary: 'hover:bg-primary-400/50',
         danger: 'hover:bg-danger-400/50',
@@ -51,7 +51,7 @@ function setTextColor(){
     classMap.value.set('color', option)
 }
 
-function setVariant(){
+function setVariant() {
     const options = {
         text: setTextColor,
         fill: setFillColor,
@@ -72,7 +72,7 @@ const size = defineProp<'none' | 'sm' | 'md' | 'lg'>('size', {
     default: 'md',
 })
 
-function setSize(){
+function setSize() {
     const options = {
         none: '',
         xs: 'px-2 py-0.5 text-xs',
@@ -89,12 +89,12 @@ function setSize(){
 watch(size, setSize, { immediate: true })
 
 // rounded
-const rounded = defineProp<'none'| 'sm' | 'md' | 'lg' | 'full'>('rounded', {
+const rounded = defineProp<'none' | 'sm' | 'md' | 'lg' | 'full'>('rounded', {
     type: String,
     default: 'md',
 })
 
-function setRounded(){
+function setRounded() {
     const options = {
         none: '',
         sm: 'rounded-sm',
@@ -122,16 +122,26 @@ const disabled = defineProp<boolean>('disabled', {
     default: false,
 })
 
-function setDisabled(){
+function setDisabled() {
     if (disabled.value) {
         classMap.value.set('disabled', 'cursor-not-allowed opacity-50')
         return
-    } 
-    
+    }
+
     classMap.value.delete('disabled')
 }
 
 watch(disabled, setDisabled, { immediate: true })
+
+const loading = defineProp<boolean>('loading', {
+    type: Boolean,
+    default: false,
+})
+
+const contentClass = defineProp<string>('contentClass', {
+    type: String,
+    default: '',
+})
 
 </script>
 
@@ -142,6 +152,22 @@ watch(disabled, setDisabled, { immediate: true })
         :class="classes"
         :disabled="disabled"
     >
-        <slot />
+        <div
+            v-if="loading"
+            class="absolute inset-0 flex items-center justify-center"
+        >
+            <is-spinner size="22" />
+        </div>
+
+        <div
+            :class="twMerge([
+                loading ? 'opacity-0' : 'opacity-100',
+                'flex min-h-full min-w-full items-center justify-center',
+                contentClass,
+            ])
+            "
+        >
+            <slot />
+        </div>
     </component>
 </template>

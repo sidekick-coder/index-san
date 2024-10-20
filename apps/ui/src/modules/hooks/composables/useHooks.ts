@@ -34,7 +34,7 @@ export async function emitHook<K extends keyof HookEvents>(name: K, data: HookEv
 	const subscriptions = listeners.filter(l => l.name === name)
 
 	for await (const s of subscriptions) {
-		await s.handler(data)
+		s.handler(data)
 	}
 
 	if (debug) console.debug(`[hook] emit ${name} `, { subscriptions, data })
