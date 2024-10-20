@@ -9,7 +9,7 @@ module.exports = {
 		'../../packages/hephaestus/components/*.{vue,js,ts,jsx,tsx}',
 	],
 	safelist: [
-		{ pattern: /(text|bg)-./, variants: ['hover'] },
+		{ pattern: /(text|bg)-./, variants: ['hover', 'focus'] },
 		{ pattern: /(p|pl|pt|pr|pb)-./ },
 		{ pattern: /(m|ml|mt|mr|mb)-./ },
 		{ pattern: /rotate-./, variants: ['hover'] },
