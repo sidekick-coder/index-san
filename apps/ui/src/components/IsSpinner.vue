@@ -1,5 +1,5 @@
 <template>
-    <sc-icon
+    <is-icon
         name="gg:spinner"
         class="animate-spin"
     />

@@ -1,6 +1,8 @@
 <template>
     <is-app>
-        <is-snackbar-container />
+        <is-snackbar-provider />
+        <is-dialog-provider />
+
         <suspense>
             <router-view />
         </suspense>
