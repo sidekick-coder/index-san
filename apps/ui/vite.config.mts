@@ -6,6 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import DefineProp from '@vue-macros/define-prop/vite'
+import DefineEmit from '@vue-macros/define-emit/vite'
 
 export default defineConfig({
     optimizeDeps: {
@@ -20,6 +21,7 @@ export default defineConfig({
     plugins: [
         vue({ script: { defineModel: true } }),       
         DefineProp(),
+		DefineEmit(),
         AutoImport({
             dts: 'runtime/auto-imports.d.ts',
             dirs: [

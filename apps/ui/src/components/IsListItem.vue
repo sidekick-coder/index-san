@@ -5,6 +5,8 @@ import { twMerge } from 'tailwind-merge'
 
 
 // general
+const route = useRoute()
+const router = useRouter()
 
 const attrs = useAttrs()
 
@@ -59,13 +61,11 @@ function setTextColor(){
         body: `
             text-body-50
             hover-and-clickable:bg-body-600
-            [&.router-link-active]:bg-body-600
             data-[active=true]:bg-body-600
         `,
         primary: `
             text-primary-50
             hover-and-clickable:bg-primary-600
-            [&.router-link-active]:bg-primary-600
             data-[active=true]:bg-primary-600
         `,
     }
@@ -80,14 +80,12 @@ function setFillColor(){
         body: `
             bg-body-600
             hover-and-clickable:bg-body-500
-            [&.router-link-active]:bg-body-500
             data-[active=true]:bg-body-500
         `,
         primary: `
             bg-primary-600
             text-body-500
             hover-and-clickable:bg-primary-500
-            [&.router-link-active]:bg-primary-500
             data-[active=true]:bg-primary-500
         `,
     }
@@ -119,6 +117,14 @@ const clickable = defineProp<boolean>('clickable', {
 const to = defineProp<RouterLinkProps['to']>('to', {
     type: [String, Object] as PropType<RouterLinkProps['to']>,
     default: null,
+})
+
+const isToActive = computed(() => {
+	if (!to.value) return
+
+	const resolved = router.resolve(to.value)
+
+	return route.fullPath === resolved.fullPath
 })
 
 function setClickable(){
@@ -164,7 +170,7 @@ watch(justify, setJustify, { immediate: true })
         :is="to ? RouterLink : 'div'"
         :to="to"
         :class="classes"
-        :data-active="active"
+        :data-active="active || isToActive"
     >
         <slot />
     </component>
