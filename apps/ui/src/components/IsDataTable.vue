@@ -9,7 +9,7 @@ const fields = defineProp<F[]>('fields', {
     default: () => [],
 })
 
-const itemFieldClass = defineProp<F[]>('itemFieldClass', {
+const itemFieldClass = defineProp<string>('itemFieldClass', {
     type: String,
     default: null,
 })
@@ -63,12 +63,12 @@ function findItemValue(item: any, field: F) {
     <div class="flex w-full flex-col">
         <div
             v-if="fields.length"
-            class="hidden items-center border-y border-body-500 bg-body-800 md:flex"
+            class="hidden border-y border-body-500 bg-body-800 md:flex"
         >
             <div
                 v-for="(f, index) in fields"
                 :key="index"
-                :class="twMerge('flex-1 px-5 py-2 font-bold border-r border-body-500', f.class)"
+                :class="twMerge('flex-1 px-5 py-2 font-bold border-r border-body-500 last:border-r-0', f.class)"
             >
                 {{ f.label }}
             </div>
@@ -94,7 +94,7 @@ function findItemValue(item: any, field: F) {
                 class="flex flex-col items-center md:flex-row border-b border-body-500"
             >
                 <div class="w-full px-5 py-2 text-center text-body-50">
-                    No items 
+                    No items
                 </div>
             </div>
 
@@ -106,7 +106,7 @@ function findItemValue(item: any, field: F) {
                 <div
                     v-for="field in fields"
                     :key="`${findItemKey(item)}-${field.name}`"
-                    :class="twMerge('w-full flex md:w-auto md:flex-1 px-5 py-2 border-b border-r border-body-500', itemFieldClass)"
+                    :class="twMerge('w-full flex md:w-auto md:flex-1 px-5 py-2 border-b last:border-r-0 border-r border-body-500', field.class, itemFieldClass)"
                 >
                     <div class="w-6/12 font-bold md:hidden">
                         {{ field.label }}

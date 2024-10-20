@@ -12,6 +12,7 @@ module.exports = {
 		{ pattern: /(text|bg)-./, variants: ['hover', 'focus'] },
 		{ pattern: /(p|pl|pt|pr|pb)-./ },
 		{ pattern: /(m|ml|mt|mr|mb)-./ },
+		{ pattern: /(w|max-w|h|max-h)-./ },
 		{ pattern: /rotate-./, variants: ['hover'] },
 		{ pattern: /opacity-./, variants: ['hover', 'group-hover'] },
 	],
