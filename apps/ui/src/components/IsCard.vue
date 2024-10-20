@@ -1,53 +1,65 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { RouterLink, RouterLinkProps } from 'vue-router'
 
 // general
-const classMap = ref(new Map<string, string>())
-const classes = computed(() => Array.from(classMap.value.values()).join(' '))
-
-classMap.value.set('general', 'overflow-hidden')
-
-// color
-const color = defineProp<'body-800'>('color',  {
+const className = defineProp<string>('class', {
     type: String,
-    default: 'body-800',
+    default: null,
 })
 
-function setColor(){
-    const options = {
+const { set, classes } = useClassBuilder({ class: className })
+
+set('base', [
+    'rounded',
+    'overflow-hidden',
+    'transition-colors duration-200',
+    '[&>*:is(.card-content,.card-head)]:px-5',
+    '[&>*:is(.card-content,.card-head):first-child]:pt-5',
+    '[&>*:is(.card-content,.card-head)]:pb-5',
+])
+
+// color
+const color = defineProp<'none' | 'default' | 'body-600' | 'body-800'>('color', {
+    type: String,
+    default: 'default',
+})
+
+function setColor() {
+    const options: Record<typeof color.value, string> = {
+        'none': '',
+        'default': 'bg-body-900',
+        'body-600': 'bg-body-600 [&.clickable]:hover:bg-body-500',
         'body-800': 'bg-body-800',
     }
 
-    const option = options[color.value]
+    const colorClass = options[color.value]
 
-    classMap.value.set('color', option)
+    set('color', colorClass)
 }
 
 watch(color, setColor, { immediate: true })
 
-// rounded
-const rounded = defineProp<'sm' | 'md' | 'lg'>('rounded', {
-    type: String,
-    default: 'md',
+// link
+const to = defineProp<RouterLinkProps['to']>('to', {
+    type: [String, Object],
+    default: null,
 })
 
-function setRounded(){
-    const options = {
-        sm: 'rounded-sm',
-        md: 'rounded-md',
-        lg: 'rounded-lg',
-    }
+function setClickable() {
+    let isClickable = !!to.value
 
-    const option = options[rounded.value]
-
-    classMap.value.set('rounded', option)
+    set('clickable', isClickable ? 'clickable cursor-pointer' : '')
 }
 
-watch(rounded, setRounded, { immediate: true })
-
+watch(to, setClickable, { immediate: true })
 </script>
 
 <template>
-    <div :class="classes">
+    <component
+        :is="to ? RouterLink : 'div'"
+        :class="classes"
+        :to="to"
+    >
         <slot />
-    </div>
+    </component>
 </template>
