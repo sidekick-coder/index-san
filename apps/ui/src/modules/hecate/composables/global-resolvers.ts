@@ -7,6 +7,7 @@ import { snackbarResolver } from "../resolvers/snackbar";
 import { hookResolver } from "../resolvers/hook";
 import { utilsResolver } from "../resolvers/utils";
 import { dialogResolver } from "../resolvers/dialog";
+import { hecateResolver } from "../resolvers/hecate";
 
 interface Options {
 	extend: HecateCompilerImportResolver[]
@@ -22,6 +23,7 @@ export function useGlobalResolvers(options?: Options) {
 		hookResolver,
 		utilsResolver,
         dialogResolver,
+        hecateResolver,
 		usePluginResolver()	
 	]
 

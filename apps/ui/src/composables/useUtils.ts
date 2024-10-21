@@ -1,6 +1,6 @@
-export function tryCatch<T extends Function>(tryer: T) {
+export async function tryCatch<T extends Function>(tryer: T) {
   try {
-    const result = tryer();
+    const result = await tryer();
     return [result, null];
   } catch (error) {
     return [null, error];

@@ -22,6 +22,7 @@ export interface HecateCompilerLogger {
 }
 
 export interface HecateCompilerOptions {
+    globals?: Record<string, any>,
 	importResolvers: HecateCompilerImportResolver[]
 	logger?: HecateCompilerLogger
 }
@@ -32,7 +33,7 @@ export interface HecateCompilerTransformFn {
 
 const AsyncFunction = Object.getPrototypeOf(async function() { }).constructor
 
-export function createCompiler({ importResolvers, logger }: HecateCompilerOptions) {
+export function createCompiler({ globals, importResolvers, logger }: HecateCompilerOptions) {
 
 	const parser = new HParser()
 
@@ -215,10 +216,14 @@ export function createCompiler({ importResolvers, logger }: HecateCompilerOption
 			// transformConsole
 		])
 
+        const globalsVars = Object.entries(globals || {}).map(([k, v]) => `const ${k} = "${v}"`)
+
 		const lines = [
 			"// -------- hecate header -------- //",
 			"",
 			"$hecate = this.$hecate;",
+            "",
+            ...globalsVars,
 			"",
 			"// -------- code -------- //",
 			"",

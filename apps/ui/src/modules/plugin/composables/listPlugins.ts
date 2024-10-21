@@ -36,7 +36,7 @@ export async function listPlugins() {
 		const pluginConfig = $config.activePlugins.find(ap => ap.id === e.name)
 		const contents = await drive.read(resolve(e.path, 'manifest.json'))
 		
-		const [json] = tryCatch(() => contents ? JSON.parse(decode(contents)) : {})
+		const [json] = await tryCatch(() => contents ? JSON.parse(decode(contents)) : {})
 
 		plugins.push({
 			id: e.name,

@@ -40,6 +40,10 @@ export async function importJavascriptFile(filename: string) {
 	const text = decode(contents);
 
 	const compiler = createCompiler({
+        globals: {
+            __dirname: dirname(filename),
+            __filename: filename
+        },
 		importResolvers: [
 			...useGlobalResolvers(),
 			...useRelativeResolvers(filename)

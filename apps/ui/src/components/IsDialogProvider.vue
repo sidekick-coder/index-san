@@ -9,7 +9,9 @@ const dialog = useQuickDialog()
         :model-value="true"
         @update:model-value="d.onCancel()"
     >
-        <is-card class="w-72">
+        <is-card
+            class="w-72 bg-body-600"
+        >
             <is-card-head>
                 <div>
                     <is-card-title class="mb-1">
@@ -41,7 +43,7 @@ const dialog = useQuickDialog()
                         class="flex-1"
                         @click="d.onOk()"
                     >
-                        {{ d.okText || 'ok' }}
+                        {{ d.okText || 'Ok' }}
                     </is-btn>
 
                     <is-btn

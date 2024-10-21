@@ -63,12 +63,12 @@ function findItemValue(item: any, field: F) {
     <div class="flex w-full flex-col">
         <div
             v-if="fields.length"
-            class="hidden border-y border-body-500 bg-body-800 md:flex"
+            class="hidden border-y border-body-500 bg-body-800 md:flex min-h-10"
         >
             <div
                 v-for="(f, index) in fields"
                 :key="index"
-                :class="twMerge('flex-1 px-5 py-2 font-bold border-r border-body-500 last:border-r-0', f.class)"
+                :class="twMerge('flex-1 px-5 py-2 font-bold border-r border-body-500 last:border-r-0 ', f.class)"
             >
                 {{ f.label }}
             </div>
