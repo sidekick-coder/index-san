@@ -63,26 +63,34 @@ const itemClass = defineProp('itemClass', {
     default: ''
 })
 
-function findItemClass(item) {
+function findItemClass(item: any) {
     if (typeof itemClass.value === 'function') {
         return itemClass.value(item)
     }
 
     return itemClass.value
 }
+
+const className = defineProp<string>('class', {
+    type: [String, Array, Object]
+})
 </script>
 
 <template>
-    <div class="flex min-w-full flex-col">
+    <div :class="twMerge('flex w-full flex-col', className)">
         <div
             v-if="fields.length"
-            class="hidden border-y border-body-500 bg-body-800 md:flex min-h-10"
+            class="hidden  md:flex min-h-10"
         >
             <div
                 v-for="(f, index) in fields"
                 :key="index"
                 :style="f.style"
-                :class="twMerge('flex-1 px-5 py-2 font-bold border-r border-body-500 last:border-r-0 ', f.class)"
+                :class="twMerge(
+                    'flex-1 px-5 py-2 bg-body-800 font-bold',
+                    'border-y border-r border-body-500 last:border-r-0',
+                    f.class
+                )"
             >
                 {{ f.label }}
             </div>
