@@ -5,6 +5,7 @@ export interface DataField<T = DataItem> {
     label?: string
     value?: string | ((row: T) => any)
     class?: string
+    style?: any
 }
 export interface DataFilter {
     name: string

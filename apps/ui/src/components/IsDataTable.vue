@@ -57,10 +57,23 @@ function findItemValue(item: any, field: F) {
 
     return ''
 }
+
+const itemClass = defineProp('itemClass', {
+    type: [String, Function],
+    default: ''
+})
+
+function findItemClass(item) {
+    if (typeof itemClass.value === 'function') {
+        return itemClass.value(item)
+    }
+
+    return itemClass.value
+}
 </script>
 
 <template>
-    <div class="flex w-full flex-col">
+    <div class="flex min-w-full flex-col">
         <div
             v-if="fields.length"
             class="hidden border-y border-body-500 bg-body-800 md:flex min-h-10"
@@ -68,6 +81,7 @@ function findItemValue(item: any, field: F) {
             <div
                 v-for="(f, index) in fields"
                 :key="index"
+                :style="f.style"
                 :class="twMerge('flex-1 px-5 py-2 font-bold border-r border-body-500 last:border-r-0 ', f.class)"
             >
                 {{ f.label }}
@@ -101,17 +115,19 @@ function findItemValue(item: any, field: F) {
             <div
                 v-for="item in items"
                 :key="findItemKey(item)"
-                class="flex flex-col md:flex-row"
+                :class="twMerge('flex flex-col md:flex-row', findItemClass(item))"
             >
                 <div
                     v-for="field in fields"
                     :key="`${findItemKey(item)}-${field.name}`"
-                    :class="twMerge('w-full flex md:w-auto md:flex-1 px-5 py-2 border-b last:border-r-0 border-r border-body-500', field.class, itemFieldClass)"
+                    :class="twMerge(
+                        'flex-1 flex px-5 py-2 border-b last:border-r-0 border-r border-body-500',
+                        field.class,
+                        itemFieldClass,
+                    )"
+                    :style="field.style"
                 >
-                    <div class="w-6/12 font-bold md:hidden">
-                        {{ field.label }}
-                    </div>
-                    <div class="w-6/12 break-all md:w-full">
+                    <div class="break-all w-full">
                         <slot
                             :name="`item-${field.name}`"
                             :item="item"
