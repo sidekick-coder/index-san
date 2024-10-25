@@ -5,7 +5,7 @@ export interface HookEvents {
 	'drive:destroy': { path: string }
 	'drive:move': { from: string, to: string }
 	'drive:mkdir': { path: string },
-	'workspace:loaded': { workspace: Workspace }
+	'workspace:loaded': { workspace: Omit<Workspace, 'handle'> }
 }
 
 export interface HookListener {

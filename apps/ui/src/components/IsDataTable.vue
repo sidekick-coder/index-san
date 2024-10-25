@@ -140,6 +140,7 @@ const className = defineProp<string>('class', {
                             :name="`item-${field.name}`"
                             :item="item"
                             :field="field"
+                            :value="findItemValue(item, field)"
                         >
                             {{ findItemValue(item, field) }}
                         </slot>

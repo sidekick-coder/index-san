@@ -40,7 +40,7 @@ export async function findHandle(rootHandle: FileSystemDirectoryHandle, path: st
 		return currentHandle as FileSystemHandle
 
 	} catch (error) {
-		console.error(error)
+		console.error(`Error on finding handle: ${path}\n`, error)
 		return null
 	}
 }

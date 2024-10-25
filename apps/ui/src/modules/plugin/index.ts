@@ -15,8 +15,6 @@ export default defineAppModule({
             icon: 'heroicons:square-3-stack-3d-16-solid',
             component: PluginSidebar,
         })
-
-		onHook('workspace:loaded', loadActivePlugins)
 	
     }
 })

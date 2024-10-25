@@ -48,6 +48,10 @@ const drive = createWorkspaceDrive(workspace!.handle)
 
 provideWorkspaceDrive(drive)
 
+emitHook('workspace:loaded', {
+    workspace,
+})
+
 // configuration
 await loadConfig()
 
