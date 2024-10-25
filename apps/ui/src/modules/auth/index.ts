@@ -13,6 +13,7 @@ export default defineAppModule({
             name: 'settings',
             label: 'Config',
             icon: 'heroicons:cog-6-tooth-16-solid',
+            position: "bottom",
             to: {
                 name: 'settings'
             } 

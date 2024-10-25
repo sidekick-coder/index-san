@@ -19,6 +19,10 @@ const activeMenuItem = defineModel('activeMenuItem', {
     default: ''
 })
 
+const orderedMenuItems = computed(() => orderBy(menuItems.value, 'order'))
+const topMenuItems = computed(() => orderedMenuItems.value.filter(i => i.position === 'top' || !i.position))
+const bottomMenuItems = computed(() => orderedMenuItems.value.filter(i => i.position === 'bottom'))
+
 function onItemClick(item?: MenuItem) {
 	if (!item) {
 		return
@@ -69,7 +73,7 @@ function exitWorkspace() {
             </is-list-item>
 
             <is-tooltip
-                v-for="(item, i) in orderBy(menuItems, 'order')"
+                v-for="(item, i) in topMenuItems"
                 :key="i"
                 placement="right"
             >
@@ -95,6 +99,30 @@ function exitWorkspace() {
             
             <div class="grow" />
 
+            <is-tooltip
+                v-for="(item, i) in bottomMenuItems"
+                :key="i"
+                placement="right"
+            >
+                <template #activator="{ attrs }">
+                    <is-list-item
+                        v-bind="attrs"
+                        justify="center"
+                        :class="activeMenuItem === item.name ? '!text-primary-300 bg-primary-900/25' : ''"
+                        class="h-12"
+                        @click="onItemClick(item)"
+                    >
+                        <is-icon
+                            :name="item.icon"
+                            size="xl"
+                        />
+                    </is-list-item>
+                </template>
+
+                <div>
+                    {{ item.label }}
+                </div>
+            </is-tooltip>
             <is-tooltip placement="right">
                 <template #activator="{ attrs }">
                     <is-list-item

@@ -5,6 +5,7 @@ export interface MenuItem {
     name: string
     label: string
     to?: RouterLinkProps['to']
+    position?: 'top' | 'bottom'
     icon: string
     component?: any
 }

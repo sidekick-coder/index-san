@@ -20,7 +20,6 @@ export function useAuth() {
     }
 
     async function load() {
-        console.log('load')
         const credentials = await findCredentials()
 
         if (!credentials.token) {
@@ -56,14 +55,18 @@ export function useAuth() {
     }
 
     async function logout() {
-        const [, error] = await tryCatch(() => $api('/api/auth/logout'))
+        const [, error] = await tryCatch(() => $api('/api/auth/logout', {
+            method: 'POST'
+        }))
 
         if (error) {
             console.error(error)
             return
         }
 
-        user.value = null
+        await writeJson('.is/credentials.json', {})
+        
+        reset()
     }
 
 

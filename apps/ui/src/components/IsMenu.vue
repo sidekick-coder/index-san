@@ -6,29 +6,41 @@ import type { ComponentPublicInstance } from 'vue';
 defineOptions({
     inheritAttrs: false,
 })
+// activator
+const activatorRef = ref<Element | null>(null)
+const activatorRects = ref<DOMRect | null>(null)
+
+function setActivatorRects() {
+    if (!activatorRef.value) {
+        return
+    }
+
+    activatorRects.value = activatorRef.value.getBoundingClientRect()
+}
+
+watch(activatorRef, setActivatorRects, { immediate: true })
 
 // floating
-const root = ref<any>(null)
-const floating = ref<HTMLElement | null>(null)
+const contentRef = ref<HTMLElement | null>(null)
 
 const placement = defineProp<Placement>('placement', {
     type: String,
     default: 'bottom',
 })
 
-const { floatingStyles } = useFloating(root, floating, {
+const { floatingStyles } = useFloating(activatorRef, contentRef, {
     placement,
     middleware: [shift()],
 })
 
 function onRef(el: Element | ComponentPublicInstance | null)  {
     if (el instanceof Element) {
-        root.value = el
+        activatorRef.value = el
         return
     }
 
     if (el?.$el) {
-        root.value = el.$el
+        activatorRef.value = el.$el
         return
     }
 }
@@ -44,8 +56,15 @@ const closeOnContentClick = defineProp<boolean>('closeOnContentClick', {
     default: true,
 })
 
-function toggle() {
-    model.value = !model.value
+const openOnClick = defineProp<Boolean>('openOnClick', {
+    type: Boolean,
+    default: true,
+})
+
+function onClick() {
+    if (openOnClick.value) {
+        model.value = true
+    }
 }
 
 function onContentClick(){
@@ -55,10 +74,10 @@ function onContentClick(){
 
 }
 
-onClickOutside(floating, () => {
+onClickOutside(contentRef, () => {
     model.value = false
 }, {
-    ignore: [root],
+    ignore: [activatorRef],
 })
 
 </script>
@@ -68,12 +87,12 @@ onClickOutside(floating, () => {
         name="activator"
         :attrs="{
             ref: onRef,
-            onClick: toggle,
+            onClick: onClick,
         }" 
     />
 
     <div
-        ref="floating"
+        ref="contentRef"
         class="z-20"
         :style="floatingStyles"
         :class="!model ? 'pointer-events-none' : ''"
@@ -86,7 +105,7 @@ onClickOutside(floating, () => {
             leave-to-class="opacity-0 translate-y-4"
         >
             <div v-visible="model">
-                <slot />
+                <slot :activator-rects="activatorRects" />
             </div>
         </transition>
     </div>

@@ -15,6 +15,10 @@ export interface PluginComponentItem {
 const appPages = useAppPages()
 
 export async function addPluginAppPage(payload: AddPayload){	
+    const exists = appPages.value.find(page => page.name === payload.name)
+
+    if (exists) return
+
 	const fileModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
 
 	appPages.value.push({

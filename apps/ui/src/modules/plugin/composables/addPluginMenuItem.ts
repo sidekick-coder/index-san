@@ -10,11 +10,18 @@ interface AddPayload extends Omit<MenuItem, 'component'> {
 const appMenuItems = useMenuItems()
 
 export async function addPluginMenuItem(payload: AddPayload) {
+    const exists = appMenuItems.value.find(menu => menu.name === payload.name)
+
+    if (exists) return
+
 	const { pluginId, filename, ...menuDef } = payload
-	let component: any
+	
+    let component: any
 
 	if (filename) {
-		const fileModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
+        const fullFilename = resolve('.is/plugins', pluginId, filename)
+
+		const fileModule = await importJavascriptFile(fullFilename)
 
 		component = fileModule.default
 	}

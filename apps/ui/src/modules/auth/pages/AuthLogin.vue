@@ -17,32 +17,46 @@ async function submit() {
 
 <template>
     <div class="p-5">
-        <div v-if="user">
-            User logged in
+        <is-card v-if="user">
+            <is-card-head>
+                <is-card-title>
+                    Logged as {{ user.email }}
+                </is-card-title>
+            </is-card-head>
 
-            {{ user }}
+            <is-card-content>
+                <is-btn @click="logout">
+                    Logout
+                </is-btn>
+            </is-card-content>
+        </is-card>
 
-            <is-btn @click="logout">
-                Logout  
-            </is-btn>
-        </div>
         <form
             v-else
             @submit.prevent="submit"
         >
-            <input
-                v-model="payload.email"
-                type="email"
-                placeholder="Email"
-            >
-            <input
-                v-model="payload.password"
-                type="password"
-                placeholder="Password"
-            >
-            <button type="submit">
-                Login
-            </button>
+            <is-card>
+                <is-card-head>
+                    <is-card-title>
+                        Login
+                    </is-card-title>
+                </is-card-head>
+                <is-card-content class="flex flex-col gap-y-4">
+                    <is-text-field
+                        v-model="payload.email"
+                        label="Email"
+                    />
+                    <is-text-field
+                        v-model="payload.password"
+                        label="Password"
+                        type="password"
+                    />
+
+                    <is-btn type="submit">
+                        Login
+                    </is-btn>
+                </is-card-content>
+            </is-card>
         </form>
     </div>
 </template>
