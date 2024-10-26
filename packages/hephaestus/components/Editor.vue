@@ -19,6 +19,7 @@ import HImport from 'hecate/nodes/HImport';
 import { HephaestusMarkdownParser } from '../markdown/MarkdownParser';
 import { MarkdownNodeComponent } from '../markdown/MarkdownNodeComponent';
 import { MarkdownNodeLogicalComponent } from '../markdown/MarkdownNodeLogicalComponent';
+import HAsyncFunction from 'hecate/nodes/HAsyncFunction';
 
 
 // extensions
@@ -101,6 +102,10 @@ async function setSetup(){
         }
 
         if (n instanceof HFunction) {
+            properties.push(n.name)
+        }
+
+        if (n instanceof HAsyncFunction) {
             properties.push(n.name)
         }
 
@@ -200,7 +205,6 @@ onClickOutside(editedContainerRef, saveEditedNode)
                 v-for="(node, index) in nodes"
                 :key="index"
                 class="relative"
-                @dblclick="editNode(node, index)"
             >
                 <div
                     v-if="editedIndex === index"
