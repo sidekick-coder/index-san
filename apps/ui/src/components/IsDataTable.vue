@@ -88,7 +88,7 @@ const className = defineProp<string>('class', {
                 :style="f.style"
                 :class="twMerge(
                     'flex-1 px-5 py-2 bg-body-800 font-bold',
-                    'border-y border-r border-body-500 last:border-r-0',
+                    'border-y border-body-500',
                     f.class
                 )"
             >
@@ -98,18 +98,14 @@ const className = defineProp<string>('class', {
 
         <div
             v-if="loading"
-            class="flex w-full flex-col"
+            class="flex w-full items-center justify-center h-10 border-b border-body-500 text-sm"
         >
-            <div
-                v-for="i in 3"
-                :key="i"
-                class="flex h-14 w-full animate-pulse bg-body-400"
-            />
+            Loading...
         </div>
 
         <div
             v-else
-            class="flex w-full flex-col"
+            class="flex w-full flex-col justify-start"
         >
             <div
                 v-if="!items.length"
@@ -123,13 +119,13 @@ const className = defineProp<string>('class', {
             <div
                 v-for="item in items"
                 :key="findItemKey(item)"
-                :class="twMerge('flex flex-col md:flex-row', findItemClass(item))"
+                :class="twMerge('flex flex-col md:flex-row border-b border-body-500 min-h-10', findItemClass(item))"
             >
                 <div
                     v-for="field in fields"
                     :key="`${findItemKey(item)}-${field.name}`"
                     :class="twMerge(
-                        'flex-1 flex px-5 py-2 border-b last:border-r-0 border-r border-body-500',
+                        'flex-1 flex px-5 py-2',
                         field.class,
                         itemFieldClass,
                     )"

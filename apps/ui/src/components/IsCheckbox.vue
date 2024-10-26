@@ -2,7 +2,7 @@
 import xor from 'lodash/xor'
 
 const model = defineModel({
-    type: Boolean,
+    type: [Boolean, String, Number] as unknown as PropType<boolean | string | number>,
     default: false,
 })
 
@@ -13,6 +13,16 @@ const modelMultiple = defineModel('multiple', {
 
 const label = defineProp('label', {
     type: String
+})
+
+const positiveValue = defineProp('positiveValue', {
+    type: [String, Boolean, Number],
+    default: true
+})
+
+const negativeValue = defineProp('negativeValue', {
+    type: [String, Boolean, Number],
+    default: false,
 })
 
 const itemValue = defineProp('itemValue', {
@@ -32,13 +42,17 @@ const isSelected = computed(() => {
         return true
     }
 
-    return model.value
+    if (negativeValue.value === model.value) {
+        return false
+    }
+
+    return model.value === positiveValue.value
 })
 
 function onClick() {
     if (readonly.value) return
 
-    model.value = !model.value
+    model.value = isSelected.value ? negativeValue.value : positiveValue.value
 
     modelMultiple.value = xor(modelMultiple.value, [itemValue.value])
 }
@@ -70,7 +84,7 @@ watch(size, setSize, { immediate: true })
 </script>
 <template>
     <label
-        class="flex cursor-pointer items-center gap-x-2 py-2"
+        class="flex cursor-pointer items-center gap-x-2"
         :class="[loading ? 'opacity-75' : '', label ? 'w-full' : '']"
         tabindex="0"
         @click.prevent="onClick"
