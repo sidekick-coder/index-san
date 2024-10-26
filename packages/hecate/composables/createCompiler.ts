@@ -287,6 +287,11 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
         await execute(finalCode, { $hecate }).catch((err) => {
             result.error = err
+            console.error('[hecate] Error: ' + err.message, {
+                globals: globals,
+                stack: err.stack,
+                code: finalCode
+            })
         })
 
         return result
