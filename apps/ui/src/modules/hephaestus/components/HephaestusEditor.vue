@@ -189,7 +189,7 @@ const compiler = createCompiler({
             <template v-else>
                 <div
                     v-if="mode === 'text' || mode === 'split'"
-                    class="flex-1 border-r border-body-500"
+                    class="w-6/12 border-r border-body-500"
                 >
                     <MonacoEditor
                         v-model="text"
@@ -202,7 +202,7 @@ const compiler = createCompiler({
             
                 <div
                     v-if="mode === 'blocks' || mode === 'split'"
-                    class="flex-1 max-w-full"
+                    class="w-6/12"
                 >
                     <HephaestusEditor
                         v-model="nodes"
