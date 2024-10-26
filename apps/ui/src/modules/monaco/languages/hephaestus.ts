@@ -64,7 +64,7 @@ export default {
 
             // index-san scripts component block
             [
-                /^\s*::!\s*\w+\s*/,
+                /^\s*::!\s*[a-zA-z0-9-]+\s*/,
                 {
                     token: 'variable.source',
                     next: 'scriptComponent',
@@ -72,7 +72,7 @@ export default {
             ],
             // normal component block
             [
-                /^\s*::\s*\w+\s*/,
+                /^\s*::\s*[a-zA-z0-9-]+\s*/,
                 {
                     token: 'variable.source',
                     next: 'defaultComponent',
@@ -96,7 +96,7 @@ export default {
         componentAttributes: [
             // mach name="value"
             [
-                /(\w+)(\s*=\s*)("|')([^"']+)("|')/g,
+                /([a-zA-Z0-9_-]+)(\s*=\s*)("|')([^"']+)("|')/g,
                 ['entity.other.attribute-name', 'keyword', 'string', 'string', 'string'],
             ],
             // mach start quotes
