@@ -9,21 +9,20 @@ export default class HImportProcessor extends BaseProcessor<HNode> {
     public order = 1
 
     public findEnd() {
-        return this.tokens.findIndex((t) => {
-            if (t.value === ';') {
-                return true
-            }
+        const start = this.tokens.findIndex((t) => t.value === '"' || t.value === "'")
 
-            if (t.type === 'BreakLine') {
-                return true
-            }
+        const end = this.tokens.findIndex((t, i) => {
+            if (i <= start) return false
 
-            return false
+            return t.value === '"' || t.value === "'";
         })
+
+        return end
     }
     
     public findFrom() {
         const start = this.tokens.findIndex((t) => t.value === '"' || t.value === "'")
+
         const end = this.tokens.findIndex((t, i) => {
             if (i <= start) return false
 
