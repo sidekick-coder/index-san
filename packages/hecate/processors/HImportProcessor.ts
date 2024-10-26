@@ -1,7 +1,5 @@
-// LineProcessor.ts
 import { BaseProcessor } from '@language-kit/core'
 import HNode from '../base/HNode'
-import HConst from '../nodes/HVariable'
 import HImport from '../nodes/HImport'
 
 export default class HImportProcessor extends BaseProcessor<HNode> {
