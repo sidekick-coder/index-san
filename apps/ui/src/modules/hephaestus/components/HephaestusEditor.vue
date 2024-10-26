@@ -202,7 +202,7 @@ const compiler = createCompiler({
             
                 <div
                     v-if="mode === 'blocks' || mode === 'split'"
-                    class="w-6/12"
+                    :class=" mode === 'blocks' ? 'w-full' :'w-6/12'"
                 >
                     <HephaestusEditor
                         v-model="nodes"

@@ -33,7 +33,7 @@ const icon = computed(() => {
     return 'dashicons:editor-code'
 })
 
-function setComponent(){
+function setComponent() {
     loading.value = true
 
     const search = components.value.find(c => c.name === node.value.name)
@@ -43,7 +43,7 @@ function setComponent(){
         loading.value = false
         return
     }
-    
+
     current.value = search
 
     const attrs: string[] = []
@@ -78,15 +78,19 @@ watch(node, setComponent, { immediate: true })
 
 </script>
 
-<template>    
+<template>
     <BlockBase
         :icon="icon"
         :class="loading ? 'animate-pulse' : ''"
         class="relative"
     >
+        <component
+            :is="instance"
+            v-if="instance"
+        />
 
-        <component v-if="instance" :is="instance"></component>
-
-        <div v-else>Component not found</div>
+        <div v-else>
+            Component not found
+        </div>
     </BlockBase>
 </template>
