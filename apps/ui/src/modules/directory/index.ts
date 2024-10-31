@@ -4,7 +4,7 @@ import DirectoryRootSidebar from "./components/DirectoryRootSidebar.vue"
 import { directoryEntryMiddleware } from "./directoryEntryMiddleware"
 
 export default defineAppModule({
-    setup({ addAppPage, addEntryMiddleware, addMenuItem }) {
+    setup({ addEntryMiddleware, addMenuItem }) {
         addAppPage({
             name: 'directory',
             component: DirectoryAppPage,

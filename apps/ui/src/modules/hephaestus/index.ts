@@ -1,7 +1,7 @@
 import HephaestusEditor from "./components/HephaestusEditor.vue"
 
 export default defineAppModule({
-    setup({ addAppPage, addEntryMiddleware, addRoute }) {
+    setup({ addEntryMiddleware, addRoute }) {
 
 		addRoute({
 			path: '/hephaestus/live',

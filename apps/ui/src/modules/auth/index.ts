@@ -1,6 +1,8 @@
 export default defineAppModule({
     async setup({ addMenuItem, addRoute }){
 
+        if (!import.meta.env.VITE_APP_ENABLE_API) return
+
         const { load } = useAuth()
 
         addRoute('workspace', {

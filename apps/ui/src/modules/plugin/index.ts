@@ -2,7 +2,7 @@ import PluginListAppPage from './components/PluginListAppPage.vue'
 import PluginSidebar from './components/PluginSidebar.vue'
 
 export default defineAppModule({
-    async setup({ addAppPage, addMenuItem }) {
+    async setup({ addMenuItem }) {
 		addAppPage({
 			name: 'Plugins',
 			component: PluginListAppPage 

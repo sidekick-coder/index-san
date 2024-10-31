@@ -3,7 +3,7 @@ import { monacoEditorEntryMiddleware } from "./monacoEditorEntryMiddleware"
 
 
 export default defineAppModule({
-    async setup({ addAppPage, addEntryMiddleware }) {
+    async setup({ addEntryMiddleware }) {
         
         // register monaco worker
         await import('@/modules/monaco/services/monaco-sw')

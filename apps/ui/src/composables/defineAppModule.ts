@@ -1,10 +1,6 @@
 import type { Router, RouteRecordRaw } from "vue-router";
-import type { AppPage } from "./defineAppPage";
 import type { EntryMiddleware } from "./defineEntryMiddleware";
 import type { MenuItem } from "./defineMenuItem";
-
-// type AddRoute = (a: RouteRecordRaw) => void
-// type AddRouteWithParent = (a: string, b: routerecordraw) => void
 
 interface AddRoute {
 	(a: string, b: RouteRecordRaw): void
@@ -16,10 +12,6 @@ export interface AppModuleSetupContext {
     addRoute: AddRoute 
     // entry middleware
     addEntryMiddleware: (middleware: EntryMiddleware) => void
-    
-    // app pages
-    addAppPage: (appPage: AppPage) => void
-
     // add menu item
     addMenuItem: (menuItem: MenuItem) => void
 }

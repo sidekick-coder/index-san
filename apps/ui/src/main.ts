@@ -49,7 +49,6 @@ async function createApp() {
 		routes: []
 	})
 
-	const appPages = useAppPages()
 	const entryMiddlewares = useEntryMiddlewares()
 	const menuItems = useMenuItems()
 
@@ -73,11 +72,6 @@ async function createApp() {
 		const log = (message: string, ...args: string[])  => console.debug(`[${appModule.name}] ${message}`, ...args)
 
 		await appModule.setup({
-			addAppPage: p => {
-				log(`added app page ${p.name}`)
-
-				appPages.value.push(p)
-			},
 
 			addEntryMiddleware: m => {
 				log(`added entry middleware`)
