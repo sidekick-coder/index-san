@@ -7,6 +7,8 @@ import HImport from "../nodes/HImport"
 import HExportDefaultObject from "../nodes/HExplortDefaultObject"
 import HImportDefault from "../nodes/HImportDefault"
 import HAsyncFunction from "../nodes/HAsyncFunction"
+import HImportInline from "../nodes/HImportInline"
+import HVariable from "../nodes/HVariable"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
@@ -32,6 +34,8 @@ export interface HecateCompilerTransformFn {
 }
 
 const AsyncFunction = Object.getPrototypeOf(async function() { }).constructor
+
+const cache = new Map<string, any>()
 
 export function createCompiler({ globals, importResolvers, logger }: HecateCompilerOptions) {
 
@@ -68,10 +72,18 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         const result = nodes.slice()
 
         nodes.forEach((node) => {
-            if (node instanceof HFunction) {
-                result.push(...allNodes(node.children))
+            if ((node as any).children) {
+                result.push(...allNodes((node as any).children))
             }
         })
+
+        if (result.length > 2000) {
+            console.log('length', result.length, result[0])
+            // console.log(result.map(n => n.toText()).join(''))
+            // console.log(result)
+            throw new Error('Too many nodes')
+        }
+
 
         return result
     }
@@ -112,6 +124,16 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
     // remove exports
     const transformExports: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
         for (const node of allNodes(nodes)) {
+            if (node instanceof HVariable && node.export) {
+                const token = node.tokens.find((t) => t.value === 'export')
+
+                if (!token) continue
+
+                const newCode = code.slice(0, token.start) + code.slice(token.end + 1)
+
+                return [true, minify(newCode)]
+            }
+
             if (node instanceof HFunction && node.export) {
                 const token = node.tokens.find((t) => t.value === 'export')
 
@@ -163,57 +185,73 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
                 return [true, minify(newCode)]
             }
-        }
 
-        return [false, code]
-    }
-
-    const transformConsole: HecateCompilerTransformFn = (code: string, nodes: NodeArray) => {
-        for (const node of allNodes(nodes)) {
-            if (node instanceof HConsole) {
-                const replace = `\n$hecate.console.${node.level}(${node.args.join(', ')});`
+            if (node instanceof HImportInline) {
+                const replace = `$hecate.lazyImport('${node.from}');`
 
                 const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
                 return [true, minify(newCode)]
             }
+
         }
 
         return [false, code]
     }
 
+
+    async function hexdigest(code: string) {
+        const encoder = new TextEncoder()
+        const data = encoder.encode(code)
+
+        const hash = await window.crypto.subtle.digest('SHA-256', data)
+
+        return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
+    }
+
     async function compile(code: string) {
+        const hash = await hexdigest(code)
+
+        const cached = cache.get(hash)
+
+        if (cached) {
+            return cached
+        }
+
         const imports = {} as Record<string, any>
 
         // register imports & exports
-        const needExport: string[] = []
+        const exportDefinition: any[] = []
 
         for (const node of allNodes(parser.toNodes(code))) {
+            if (node instanceof HVariable && node.export) {
+                exportDefinition.push(node.name)
+            }
+
             if (node instanceof HFunction && node.export) {
-                needExport.push(node.name)
+                exportDefinition.push(node.name)
             }
 
             if (node instanceof HAsyncFunction && node.export) {
-                needExport.push(node.name)
+                exportDefinition.push(node.name)
             }
 
             if (node instanceof HExportDefaultObject) {
-                needExport.push('default: __default')
+                exportDefinition.push('default: __default')
             }
 
             if (node instanceof HImport) {
-                imports[node.from] = null
+                imports[node.from] = {}
             }
 
             if (node instanceof HImportDefault) {
-                imports[node.from] = null
+                imports[node.from] = {}
             }
         }
 
         const transformed = transformAll(code, [
             transformExports,
             transformImports,
-            // transformConsole
         ])
 
         const globalsVars = Object.entries(globals || {}).map(([k, v]) => `const ${k} = "${v}"`)
@@ -230,11 +268,11 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             transformed,
         ]
 
-        if (needExport.length) {
+        if (exportDefinition.length) {
             lines.push(
                 '// -------- hecate footer -------- //',
                 "",
-                `$hecate.export({ ${needExport.join(', ')} });`
+                `$hecate.export({ ${exportDefinition.join(', ')} });`
             )
         }
 
@@ -250,17 +288,12 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         for await (const key of Object.keys(imports)) {
             const resolver = importResolvers.find((r) => r.test(key))
 
+
             if (!resolver) {
-                result.error = new Error(`[hecate] Import resolver not found for ${key}`)
-                return result
+                throw new Error(`[hecate] Import resolver not found for ${key}`)
             }
 
             imports[key] = await resolver.resolve(key)
-                .then((data) => data)
-                .catch((err) => {
-                    console.error(err)
-                    result.error = err
-                })
 
             if (result.error) {
                 return result
@@ -268,6 +301,15 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         }
 
         const $hecate = {
+            lazyImport: async (path: string) => {
+                const resolver = importResolvers.find((r) => r.test(path))
+
+                if (!resolver) {
+                    throw new Error(`[hecate] Import resolver not found for ${path}`)
+                }
+
+                return resolver.resolve(path)
+            },
             import: (path: string) => {
                 return imports[path]
             },
@@ -293,6 +335,21 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
                 code: finalCode
             })
         })
+
+
+        if (code.includes('@hecate debug')) {
+            console.log('[hecate]', {
+                hash: hash,
+                globals: globals,
+                imports: imports,
+                code: finalCode,
+                exports: result.exports,
+                logs: result.logs,
+                nodes: parser.toNodes(code)
+            })
+        }
+
+        cache.set(hash, result)
 
         return result
 

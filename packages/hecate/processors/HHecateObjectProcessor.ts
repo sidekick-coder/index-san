@@ -7,7 +7,7 @@ export default class HHecateObjectProcessor extends BaseProcessor<HHecateObject>
     public order = 1
 
     public findEnd() {
-        return this.tokens.findIndex((t) => t.value === ';')
+        return this.tokens.findIndex((t) => t.value === ')')
     }
 
     public process() {

@@ -5,8 +5,73 @@ import HVariable from '../nodes/HVariable'
 
 export default class HVariableProcessor extends BaseProcessor<HNode> {
     public order = 1
+
+    public findEndFunction() {
+        const start = this.tokens.findIndex((t) => t.value === '{')
+        let open = 0
+
+        const index =  this.tokens.findIndex((t, i) => {
+            if (i <= start) return false
+
+            if (t.value === '{') {
+                open++
+                return
+            }
+
+            if (open > 0 && t.value === '}') {
+                open--
+                return
+            }
+
+            if (open === 0 && t.value === '}') {
+                return true
+            }
+
+            return false
+        })
+
+        return index
+    }
+
+    public findEndArray() {
+        const start = this.tokens.findIndex((t) => t.value === '[')
+        let open = 0
+
+        const index =  this.tokens.findIndex((t, i) => {
+            if (i <= start) return false
+
+            if (t.value === '[') {
+                open++
+                return
+            }
+
+            if (open > 0 && t.value === ']') {
+                open--
+                return
+            }
+
+            if (open === 0 && t.value === ']') {
+                return true
+            }
+
+            return false
+        })
+
+        return index
+    }
     
     public findEnd() {
+        const start = this.tokens.findIndex((t) => t.value === '=')
+        const definitionToken = this.tokens.slice(start).find((t) => t.type !== 'WhiteSpace')
+
+        if (definitionToken?.value === '{') {
+            return this.findEndFunction()
+        }
+
+        if (definitionToken?.value === '[') {
+            return this.findEndArray()
+        }
+
         return this.tokens.findIndex((t) => {
             if (t.value === ';') {
                 return true
@@ -48,6 +113,12 @@ export default class HVariableProcessor extends BaseProcessor<HNode> {
         return token?.value || ''
     }
 
+    public findValueTokens(){
+        const start = this.tokens.findIndex((t) => t.value === '=')
+        const end = this.findEnd()
+
+        return this.tokens.slice(start + 1, end)
+    }
     public findValue(){
         const start = this.tokens.findIndex((t) => t.value === '=')
         const end = this.findEnd()
@@ -58,16 +129,16 @@ export default class HVariableProcessor extends BaseProcessor<HNode> {
     public process() {
         const current = this.tokens[0]
 
-        
         if (!this.isVariable() && !this.isExportVariable()) {
             return false
         }
         
-        
         const endIndex = this.findEnd()
 
-        if (endIndex === -1) return false
-
+        if (endIndex === -1) {
+            console.error('[hecate] error finind end of variable')
+            return false
+        } 
 
         const tokens = this.tokens.slice(0, endIndex + 1)
 
@@ -78,6 +149,11 @@ export default class HVariableProcessor extends BaseProcessor<HNode> {
         node.name = this.findName()
         node.export = this.isExportVariable()
         node.value = this.findValue()
+        node.children = this.parser.toNodes(this.findValue(), {
+            lexer: {
+                includeEndOfFileToken: false
+            }
+        })
 
         this.nodes.push(node)
 
