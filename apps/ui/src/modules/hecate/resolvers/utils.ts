@@ -7,6 +7,8 @@ export const utilsResolver = defineImportResolver({
 	test: (path: string) => path === 'app:utils',
 	resolve: async () => {
 		return {
+            hasPlugin,
+            useState,
 			tryCatch,
             debounce,
             throttle,
