@@ -58,8 +58,6 @@ async function createApp() {
 	app.directive('visible', vVisible)
 
 	for await (const plugin of plugins) {
-		console.debug(`[app] plugin ${plugin.name} loaded`)
-
 		if (plugin.setup) {
 			await plugin.setup(app)
 		}
@@ -67,29 +65,19 @@ async function createApp() {
 
 
 	for await (const appModule of appModules) {
-		console.debug(`[app] module ${appModule.name} loaded`)
-
-		const log = (message: string, ...args: string[])  => console.debug(`[${appModule.name}] ${message}`, ...args)
 
 		await appModule.setup({
 
 			addEntryMiddleware: m => {
-				log(`added entry middleware`)
 
 				entryMiddlewares.value.push(m)
 			},
 
 			addRoute(a: any, b: any){
-				const path = typeof a === 'string' ? b.path : a.path
-
-				log(`added route ${path}`)
-
 				return router.addRoute(a, b)
 			},
 
 			addMenuItem: m => {
-				log(`added menu item ${m.name}`)
-
 				menuItems.value.push(m)
 			}
 		})

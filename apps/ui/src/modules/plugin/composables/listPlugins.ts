@@ -5,6 +5,7 @@ export interface IsPluginManifest {
 	pages?: any[]
 	menu?: any[]
 	middlewares?: any[]
+    order?: number
 }
 
 export interface IsPluginInfo extends Required<IsPluginManifest> {
@@ -46,6 +47,7 @@ export async function listPlugins() {
 			menu: [],
 			components: [],
 			middlewares: [],
+            order: 999,
 			...json,
 			active: !!pluginConfig?.active
 		})
