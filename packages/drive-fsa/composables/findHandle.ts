@@ -13,6 +13,10 @@ async function findChildEntries(handle: FileSystemDirectoryHandle) {
 
 export async function findHandle(rootHandle: FileSystemDirectoryHandle, path: string) {
 	try {
+        if (!path) {
+            throw new Error('Path is empty')
+        }
+
 		if (isRootPath(path)) {
 			return rootHandle
 		}
@@ -40,7 +44,7 @@ export async function findHandle(rootHandle: FileSystemDirectoryHandle, path: st
 		return currentHandle as FileSystemHandle
 
 	} catch (error) {
-		console.error(`Error on finding handle: ${path}\n`, error)
+		console.error(`[drive-fsa] Error on finding handle for "${path}"\n`, error)
 		return null
 	}
 }
