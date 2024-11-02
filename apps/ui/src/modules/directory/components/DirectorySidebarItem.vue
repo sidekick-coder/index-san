@@ -11,13 +11,13 @@ const router = useRouter()
 
 // entry
 const entry = defineProp<DriveEntry>('entry', {
-	type: Object,
-	required: true
+    type: Object,
+    required: true
 })
 
 const level = defineProp<number>('level', {
-	type: Number,
-	default: 1
+    type: Number,
+    default: 1
 })
 
 // folder
@@ -26,24 +26,24 @@ const show = ref(false)
 const { data: children, load: loadChildren } = useDirectoryEntries(entry.value.path)
 
 function setShow() {
-	if (entry.value.type !== 'directory') return
+    if (entry.value.type !== 'directory') return
 
-	if (!children.value.length) {
-		loadChildren()
-	}
+    if (!children.value.length) {
+        loadChildren()
+    }
 
-	if (show.value) return
+    if (show.value) return
 
-	show.value = route.path.startsWith(`/entries/${entry.value.path}`)
+    show.value = route.path.startsWith(`/entries/${entry.value.path}`)
 }
 
 function onDirectoryUpdate({ path, from, to }: any) {
 
-	if (entry.value.type !== 'directory') return
+    if (entry.value.type !== 'directory') return
 
-	if (![path, to, from].some(p => p?.startsWith(entry.value.path))) return
+    if (![path, to, from].some(p => p?.startsWith(entry.value.path))) return
 
-	loadChildren()
+    loadChildren()
 }
 
 watch(() => route.path, setShow, { immediate: true })
@@ -53,41 +53,36 @@ watch(() => route.path, setShow, { immediate: true })
 const hooks = ['drive:write', 'drive:destroy', 'drive:mkdir', 'drive:move'] as const
 
 onMounted(() => {
-	hooks.forEach((h) => {
-		onHook(h, onDirectoryUpdate)
-	})
+    hooks.forEach((h) => {
+        onHook(h, onDirectoryUpdate)
+    })
 })
 
 onUnmounted(() => {
-	hooks.forEach((h) => {
-		offHook(h, onDirectoryUpdate)
-	})
+    hooks.forEach((h) => {
+        offHook(h, onDirectoryUpdate)
+    })
 })
 // actions
 
 const hideActions = defineProp('hideActions', {
-	type: Boolean,
-	default: false
+    type: Boolean,
+    default: false
 })
 
 const active = computed(() => {
-	if (route.name != 'entry') return false
+    if (route.name != 'entry') return false
 
-	return route.params.path === entry.value.path
+    return route.params.path === entry.value.path
 })
 
 function onClick() {
-	if (entry.value.type === 'directory') {
-		show.value = !show.value
-		return
-	}
-
-	router.push({
-		name: 'entry',
-		params: {
-			path: entry.value.path
-		}
-	})
+    router.push({
+        name: 'entry',
+        params: {
+            path: entry.value.path
+        }
+    })
 }
 
 
@@ -131,31 +126,6 @@ function onClick() {
 
                 <div class="ml-3 truncate flex-1">
                     {{ entry.name }}
-                </div>
-
-                <div
-                    v-if="entry.type === 'directory' && !hideActions"
-                    class="ml-auto"
-                >
-                    <is-btn
-                        size="none"
-                        color="none"
-                        class="p-1 hover:bg-body-500 relative opacity-0 group-hover:opacity-100"
-                        variant="text"
-                        :to="{
-                            name: 'entry',
-                            params: {
-                                path: entry.path
-
-                            }
-                        }"
-                        @click.stop
-                    >
-                        <is-icon
-                            name="heroicons:arrow-right-solid"
-                            size="xs"
-                        />
-                    </is-btn>
                 </div>
             </div>
         </div>
