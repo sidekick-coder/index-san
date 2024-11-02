@@ -9,6 +9,7 @@ import HImportDefault from "../nodes/HImportDefault"
 import HAsyncFunction from "../nodes/HAsyncFunction"
 import HImportInline from "../nodes/HImportInline"
 import HVariable from "../nodes/HVariable"
+import { SourceMapGenerator } from "source-map"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
@@ -209,7 +210,9 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
     }
 
-    async function compile(code: string) {
+    async function compile(code: string, options: any) {
+        const filename = options.filename || 'unknown'
+
         const start = Date.now()
         const hash = await hexdigest(code)
 
@@ -257,7 +260,8 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
         const globalsVars = Object.entries(globals || {}).map(([k, v]) => `const ${k} = "${v}"`)
 
-        const lines = [
+
+        const header = [
             "// -------- hecate header -------- //",
             "",
             "$hecate = this.$hecate;",
@@ -266,16 +270,41 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             "",
             "// -------- code -------- //",
             "",
-            transformed,
         ]
 
-        if (exportDefinition.length) {
-            lines.push(
-                '// -------- hecate footer -------- //',
-                "",
-                `$hecate.export({ ${exportDefinition.join(', ')} });`
-            )
-        }
+        const footer = [
+            '// -------- hecate footer -------- //',
+            "",
+            `$hecate.export({ ${exportDefinition.join(', ')} });`,
+        ]
+
+        const sourceMap = new SourceMapGenerator({
+            file: filename,
+        })
+
+        code.split('\n').forEach((_, index) => {
+            sourceMap.addMapping({
+                source: filename,
+                original: { line: index + 1, column: 0 },
+                generated: { line: index + header.length + 1, column: 0 }
+            })
+        })
+
+        sourceMap.setSourceContent(filename, code)
+
+        footer.push(
+            "",
+            `//# sourceURL=${filename}`,
+            `//# sourceMappingURL=data:application/json;charset=utf-8;base64,${btoa(sourceMap.toString())}`
+        )
+
+        const lines = [
+            ...header,
+            transformed,
+            ...footer
+        ]
+
+
 
         const finalCode = lines.join('\n')
 
@@ -354,9 +383,9 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         cache.set(hash, result)
 
         result.time = Date.now() - start
-        const basename = globals?.__filename ? globals.__filename.split('/').pop() : 'unknown'
+        const basename = filename.split('/').pop()
 
-        console.debug('[hecate] compiled in', result.time, 'ms', basename)
+        console.debug(`[hecate] compiled ${basename} in ${result.time}ms`)
 
         return result
 

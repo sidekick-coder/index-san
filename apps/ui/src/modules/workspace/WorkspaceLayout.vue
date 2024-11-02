@@ -3,7 +3,6 @@ const drawer = useLocalStorage('drawer', true)
 
 // general
 const route = useRoute()
-const router = useRouter()
 
 // workspace
 const workspaceId = computed(() => String(route.params.workspaceId))
@@ -19,6 +18,7 @@ if (!workspace) {
 	 throw new Error('Workspace not found')	
 }
 
+provideCurrentWorkspace(workspace)
 
 // permissions
 async function verifyPermission(handle: any) {

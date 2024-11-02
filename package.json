@@ -46,6 +46,7 @@
     "dependencies": {
         "@vue/tsconfig": "^0.5.1",
         "changelogen": "^0.5.5",
+        "source-map": "^0.7.4",
         "tsup": "^8.0.2",
         "tsx": "^4.7.1",
         "vue": "^3.4.21"
