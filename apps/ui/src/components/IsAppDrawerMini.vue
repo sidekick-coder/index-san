@@ -43,19 +43,6 @@ function onItemClick(item?: MenuItem) {
     drawer.value = true
 }
 
-function isActive(item: MenuItem) {
-	if (item.to) {
-		return route.to === item.to
-	}
-
-    if (activeMenuItem.value === item?.name) {
-        drawer.value = !drawer.value
-        return
-    }
-
-    activeMenuItem.value = item?.name
-    drawer.value = true
-}
 function exitWorkspace() {
     router.push('/workspaces')
 }

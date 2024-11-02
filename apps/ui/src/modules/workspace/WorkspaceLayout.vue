@@ -82,8 +82,10 @@ const sidebarComponent = computed(() => {
             :class="drawer && sidebarComponent ? 'w-80 border-r' : 'w-0'"
         >
             <component
-                :is="sidebarComponent"
-                v-if="sidebarComponent"
+                :is="item.component"
+                v-for="(item, i) in menuItems"
+                v-show="item.name === activeMenuItem"
+                :key="i"
             />
         </div>
 
