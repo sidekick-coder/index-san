@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { createEditor, type EditorOptions } from '@/modules/monaco/composables/createEditor'
+import * as monaco from 'monaco-editor'
 
 // editor
 const language = defineProp<string>('language', {
@@ -103,6 +104,14 @@ watch(model,
         if (value !== editor.getValue()) {
             editor.setValue(value)
         }
+    }
+)
+
+watch(language,
+    (value) => {
+        if (!editor) return
+        monaco.editor.setModelLanguage(editor.getModel()!, value)
+
     }
 )
 </script>
