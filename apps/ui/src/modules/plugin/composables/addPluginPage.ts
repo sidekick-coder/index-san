@@ -1,5 +1,3 @@
-import { importJavascriptFile } from "@/modules/hecate/resolvers/javascript"
-
 interface AddPayload {
     pluginId: string
     name: string
@@ -16,7 +14,7 @@ export async function addPluginAppPage(payload: AddPayload) {
 
     const filename = resolve('.is/plugins', payload.pluginId, payload.filename)
 
-    const fileModule = await importJavascriptFile(filename)
+    const fileModule = await importModule(filename)
 
     addAppPage({
         name: payload.name,

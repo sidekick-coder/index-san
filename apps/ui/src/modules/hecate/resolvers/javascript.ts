@@ -7,6 +7,7 @@ export const javascriptResolver: HecateCompilerImportResolver = {
 		return importJavascriptFile(key)
 	}
 }
+
 export function useRelativeResolvers(filename: string) {
 	const resolvers: HecateCompilerImportResolver[] = []
 
@@ -51,8 +52,6 @@ export async function importJavascriptFile(filename: string) {
 	});
 
 	const result = await compiler.compile(text);
-
-	// console.error(result.code)
 
 	if (result.error) {
 		console.error(result.code)

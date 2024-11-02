@@ -122,7 +122,7 @@ const disabled = defineProp<boolean>('disabled', {
 
                 <template #append>
                     <is-icon
-                        name="chevron-down"
+                        name="heroicons:chevron-down-16-solid"
                         class="text-2xl"
                     />
                 </template>
