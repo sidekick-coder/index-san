@@ -5,15 +5,14 @@ export const loadedPlugins = ref(new Map<string, IsPluginInfo>())
 const loading = ref(true)
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
-    const start = Date.now()
-
     const isLoaded = loadedPlugins.value.has(pluginInfo.id)
 
     if (isLoaded) {
         return
     }
 
-    console.group(`[plugins] ${pluginInfo.id}`)
+    console.group(`%c[plugins] ${pluginInfo.id}`, 'background: #333; color: #bada55')
+    console.time(`time`)
 
     const drive = useWorkspaceDrive()
 
@@ -64,8 +63,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 
     loadedPlugins.value.set(pluginInfo.id, pluginInfo)
 
-    console.debug(`[plugins] ${pluginInfo.id} loaded`, Date.now() - start)
-
+    console.timeEnd(`time`)
     console.groupEnd()
 }
 

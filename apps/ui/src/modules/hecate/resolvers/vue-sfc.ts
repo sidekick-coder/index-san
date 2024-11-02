@@ -19,6 +19,7 @@ export const vueSfcResolver = defineImportResolver({
 
 export async function importVueFile(filename: string) {
     const drive = useWorkspaceDrive()
+    const workspace = useCurrentWorkspace()
 
     const entry = await drive.get(filename);
 
@@ -89,7 +90,9 @@ export async function importVueFile(filename: string) {
         '}'
     ].join('')
 
-    const result = await compiler.compile(transformedCode)
+    const result = await compiler.compile(transformedCode, {
+        filename: `/workspaces/${workspace.id}/entries/${filename}`,
+    })
 
     if (result.error) {
         throw result.error;

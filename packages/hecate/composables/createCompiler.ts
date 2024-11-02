@@ -210,8 +210,8 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
     }
 
-    async function compile(code: string, options: any) {
-        const filename = options.filename || 'unknown'
+    async function compile(code: string, options?: any) {
+        const filename = options?.filename || 'unknown'
 
         const start = Date.now()
         const hash = await hexdigest(code)
@@ -368,24 +368,24 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         })
 
 
+        result.time = Date.now() - start
+        
+        const basename = filename.split('/').pop()
+
         if (code.includes('@hecate debug')) {
-            console.log('[hecate]', {
+            console.log(`[hecate] ${basename}`, {
                 hash: hash,
                 globals: globals,
                 imports: imports,
                 code: finalCode,
                 exports: result.exports,
                 logs: result.logs,
-                nodes: parser.toNodes(code)
+                nodes: parser.toNodes(code),
+                time: result.time
             })
         }
 
         cache.set(hash, result)
-
-        result.time = Date.now() - start
-        const basename = filename.split('/').pop()
-
-        console.debug(`[hecate] compiled ${basename} in ${result.time}ms`)
 
         return result
 
