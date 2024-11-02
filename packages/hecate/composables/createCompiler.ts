@@ -210,6 +210,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
     }
 
     async function compile(code: string) {
+        const start = Date.now()
         const hash = await hexdigest(code)
 
         const cached = cache.get(hash)
@@ -279,6 +280,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         const finalCode = lines.join('\n')
 
         const result = {
+            time: 0,
             exports: {} as Record<string, any>,
             error: null as any,
             logs: [] as any[],
@@ -350,6 +352,11 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         }
 
         cache.set(hash, result)
+
+        result.time = Date.now() - start
+        const basename = globals?.__filename ? globals.__filename.split('/').pop() : 'unknown'
+
+        console.debug('[hecate] compiled in', result.time, 'ms', basename)
 
         return result
 

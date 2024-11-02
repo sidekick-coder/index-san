@@ -20,14 +20,17 @@ export function usePluginComponents(){
 	return register.value 
 }
 
-export async function addPluginComponent(payload: AddPayload){
-	
-	const componentModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
+export function addPluginComponent(payload: AddPayload){
+    const component = defineAsyncComponent(async () => {
+	    const componentModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
+
+        return componentModule?.default
+    })
 
 	register.value.push({
 		pluginId: payload.pluginId,
 		name: payload.name,
 		icon: payload.icon,
-		component: componentModule?.default,
+		component,
 	})
 }

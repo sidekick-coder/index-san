@@ -5,6 +5,8 @@ export const loadedPlugins = ref(new Map<string, IsPluginInfo>())
 const loading = ref(true)
 
 export async function loadPlugin(pluginInfo: IsPluginInfo) {
+    const start = Date.now()
+
     const isLoaded = loadedPlugins.value.has(pluginInfo.id)
 
     if (isLoaded) {
@@ -19,8 +21,8 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
         addPluginImport(pluginInfo.id, importDef.name, importDef.filename)
     }
 
-    for await (const pageDef of pluginInfo.pages) {
-        await addPluginAppPage({
+    for (const pageDef of pluginInfo.pages) {
+        addPluginAppPage({
             pluginId: pluginInfo.id,
             name: pageDef.name,
             filename: pageDef.filename
@@ -32,8 +34,8 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
         await addPluginEntryMiddleware(pluginInfo.id, middlewareDef.filename)
     }
 
-    for await (const componentDef of pluginInfo.components) {
-        await addPluginComponent({
+    for (const componentDef of pluginInfo.components) {
+        addPluginComponent({
             pluginId: pluginInfo.id,
             name: componentDef.name,
             icon: componentDef.icon,
@@ -43,12 +45,11 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
     }
 
 
-    for await (const menuDef of pluginInfo.menu) {
-        await addPluginMenuItem({
+    for (const menuDef of pluginInfo.menu) {
+        addPluginMenuItem({
             ...menuDef,
             pluginId: pluginInfo.id
         })
-
     }
 
     const setupFile = resolve('/.is/plugins', pluginInfo.id, 'index.js')
@@ -63,7 +64,7 @@ export async function loadPlugin(pluginInfo: IsPluginInfo) {
 
     loadedPlugins.value.set(pluginInfo.id, pluginInfo)
 
-    console.debug(`[plugins] ${pluginInfo.id} loaded`)
+    console.debug(`[plugins] ${pluginInfo.id} loaded`, Date.now() - start)
 
     console.groupEnd()
 }

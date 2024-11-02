@@ -10,14 +10,17 @@ export interface PluginComponentItem {
     component: any
 }
 
-export async function addPluginAppPage(payload: AddPayload) {
+export function addPluginAppPage(payload: AddPayload) {
+    const component = defineAsyncComponent(async () => {
+        const filename = resolve('.is/plugins', payload.pluginId, payload.filename)
 
-    const filename = resolve('.is/plugins', payload.pluginId, payload.filename)
+        const fileModule = await importModule(filename)
 
-    const fileModule = await importModule(filename)
+        return fileModule?.default
+    })
 
     addAppPage({
         name: payload.name,
-        component: fileModule?.default,
+        component,
     })
 }
