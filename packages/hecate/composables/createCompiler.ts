@@ -80,8 +80,6 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
         if (result.length > 2000) {
             console.log('length', result.length, result[0])
-            // console.log(result.map(n => n.toText()).join(''))
-            // console.log(result)
             throw new Error('Too many nodes')
         }
 
@@ -363,7 +361,10 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             console.error('[hecate] Error: ' + err.message, {
                 globals: globals,
                 stack: err.stack,
-                code: finalCode
+                code: finalCode,
+                imports: imports,
+                filename: filename,
+                nodes: parser.toNodes(code)
             })
         })
 

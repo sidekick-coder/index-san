@@ -47,13 +47,18 @@ export default class extends BaseProcessor<HNode> {
 
 		const isExportDefaultObject = this.tokens.slice(0, 5).toText() === 'export default {'
 
+
+
 		if (!isExportDefaultObject) {
             return false
         }
 
         const endIndex = this.findEnd()
 
-        if (endIndex === -1) return false
+        if (endIndex === -1) {
+            console.error('[hecate] invalid export default object')
+            return false
+        } 
 
         const tokens = this.tokens.slice(0, endIndex + 1)
 

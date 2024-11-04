@@ -65,11 +65,6 @@ onUnmounted(() => {
 })
 // actions
 
-const hideActions = defineProp('hideActions', {
-    type: Boolean,
-    default: false
-})
-
 const active = computed(() => {
     if (route.name != 'entry') return false
 

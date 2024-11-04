@@ -1,3 +1,6 @@
+import camelCase from "lodash/camelCase"
+import upperFirst from "lodash/upperFirst"
+
 interface AddPayload {
     pluginId: string
     name: string
@@ -16,7 +19,10 @@ export function addPluginAppPage(payload: AddPayload) {
 
         const fileModule = await importModule(filename)
 
-        return fileModule?.default
+        return {
+            name: upperFirst(camelCase(payload.name)),
+            ...fileModule?.default,
+        }
     })
 
     addAppPage({
