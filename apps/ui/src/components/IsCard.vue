@@ -13,9 +13,9 @@ set('base', [
     'rounded',
     'overflow-hidden',
     'transition-colors duration-200',
-    '[&>*:is(.card-content,.card-head)]:px-5',
-    '[&>*:is(.card-content,.card-head):first-child]:pt-5',
-    '[&>*:is(.card-content,.card-head)]:pb-5',
+    '[&>*:is(.card-content,.card-head)]:px-4',
+    '[&>*:is(.card-content,.card-head):first-child]:pt-4',
+    '[&>*:is(.card-content,.card-head)]:pb-4',
 ])
 
 // color
