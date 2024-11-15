@@ -167,6 +167,25 @@ watch(model, validate)
 onMounted(() => {
     validations.value.push(validate)
 })
+
+// readonly
+const readonly = defineProp<boolean>('readonly', {
+    type: Boolean,
+    default: false,
+})
+
+function setReadonly(value: boolean) {
+    if (value) {
+        setContainer('readonly', 'border-dashed')
+        return
+    }
+
+    setContainer('readonly', '')
+}
+
+watch(readonly, setReadonly, {
+    immediate: true,
+})
 </script>
 
 <template>
