@@ -1,9 +1,9 @@
 
-const files = import.meta.glob('../components/*.vue', { eager: true })
+const files = import.meta.glob('../components/**/*.vue', { eager: true })
 const components: any = {}
 
 Object.entries(files).forEach(([filename, value]: any) => {
-    const name = filename.replace('../components/', '').replace('.vue', '')
+    const name = basename(filename).replace('.vue', '')
 
     components[name] = value.default
 })

@@ -12,7 +12,7 @@ module.exports = {
 		{ pattern: /(flex|block|relative|absolute)/},
 		{ pattern: /(shrink|rounded)-./},
 		{ pattern: /(text|bg)-./, variants: ['hover', 'focus'] },
-		{ pattern: /(p|pl|pt|pr|pb)-./ },
+		{ pattern: /(p|pl|pt|pr|pb|py|px)-./ },
 		{ pattern: /(m|ml|mt|mr|mb)-./ },
 		{ pattern: /(w|max-w|h|max-h|min-w|min-h)-./ },
 		{ pattern: /rotate-./, variants: ['hover'] },

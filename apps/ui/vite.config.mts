@@ -25,6 +25,7 @@ export default defineConfig({
         AutoImport({
             dts: 'runtime/auto-imports.d.ts',
             dirs: [
+                'src/components/**/*.{js,ts}',
                 'src/composables',
                 'src/modules/*/composables',
             ],
@@ -36,7 +37,7 @@ export default defineConfig({
         }),
         Components({
             dts: 'runtime/components.d.ts',
-            dirs: ['src/components', 'src/modules/*/components'],
+            dirs: ['src/components/**/*.vue', 'src/modules/*/components'],
         }),
         VitePWA({
             registerType: 'autoUpdate',
