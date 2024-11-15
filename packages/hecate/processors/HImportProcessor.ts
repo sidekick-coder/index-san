@@ -36,12 +36,33 @@ export default class HImportProcessor extends BaseProcessor<HNode> {
 
         const properties = [] as HImport['properties']
 
-        this.tokens.slice(start + 1, end)
-            .filter(t => t.type === 'Word')
-            .forEach((t) => {
+        const items = [] as  HImport['tokens'][]
+        let current = [] as any 
+
+        this.tokens.slice(start + 1, end + 1)
+            .filter(t => t.type !== 'WhiteSpace' && t.type !== 'BreakLine')
+            .forEach((t, i, array) => {
+
+                if (t.value === ',' || i === array.length - 1) { 
+                    items.push(current)
+                    current = []
+                    return
+                }
+
+                current.push(t)
+            })
+
+            items.forEach((item) => {
+                const [name, _as, ...alias] = item
+
+                if (!name) return
+
                 properties.push({
-                    name: t.value
+                    name: name.value,
+                    alias: alias?.map(t => t.value).join('') 
                 })
+
+
             })
 
         return properties

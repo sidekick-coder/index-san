@@ -2,8 +2,9 @@ import { BaseProcessor } from '@language-kit/core'
 import HNode from '../base/HNode'
 import HImport from '../nodes/HImport'
 import HImportDefault from '../nodes/HImportDefault'
+import HImportAllAs from '../nodes/HImportAllAs'
 
-export default class HImportDefaultProcessor extends BaseProcessor<HNode> {
+export default class HImportAllAsProcessor extends BaseProcessor<HNode> {
 
     public order = 1
 
@@ -31,7 +32,7 @@ export default class HImportDefaultProcessor extends BaseProcessor<HNode> {
     }
 
     public findName(){
-        const start = this.tokens.findIndex((t) => t.type === 'WhiteSpace')
+        const start = this.tokens.findIndex((t) => t.value === 'as') + 1
         const end = this.tokens.findIndex((t) => t.value === 'from')
 
         return this.tokens.slice(start + 1, end)
@@ -40,11 +41,7 @@ export default class HImportDefaultProcessor extends BaseProcessor<HNode> {
     }
 
     public isImport(){
-        const [current, next] = this.tokens
-
-        if (current.value !== 'import') return false
-
-        return next.type === 'WhiteSpace' 
+        return this.tokens.slice(0, 5).toText() === 'import * as'
     }
 
     public process() {
@@ -56,7 +53,7 @@ export default class HImportDefaultProcessor extends BaseProcessor<HNode> {
 
         const tokens = this.tokens.slice(0, endIndex + 1)
 
-        const node = new HImportDefault()
+        const node = new HImportAllAs()
 
         node.tokens = tokens
         node.from = this.findFrom()

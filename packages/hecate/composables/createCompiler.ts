@@ -10,6 +10,7 @@ import HAsyncFunction from "../nodes/HAsyncFunction"
 import HImportInline from "../nodes/HImportInline"
 import HVariable from "../nodes/HVariable"
 import { SourceMapGenerator } from "source-map"
+import HImportAllAs from "../nodes/HImportAllAs"
 
 export type HecateCompiler = ReturnType<typeof createCompiler>
 
@@ -170,12 +171,23 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
         for (const node of allNodes(nodes)) {
             if (node instanceof HImport) {
-                const replace = `\nconst { ${node.properties.map(p => p.name).join(', ')} } = $hecate.import('${node.from}');\n`
+                const properties = node.properties.map(p => p.alias ? `${p.name}: ${p.alias}` : p.name).join(', ')
+
+                const replace = `\nconst { ${properties} } = $hecate.import('${node.from}');\n`
 
                 const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
                 return [true, minify(newCode)]
             }
+
+            if (node instanceof HImportAllAs) {
+                const replace = `\nconst ${node.name} = $hecate.import('${node.from}');\n`
+
+                const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
+
+                return [true, minify(newCode)]
+            }
+
 
             if (node instanceof HImportDefault) {
                 const replace = `\nconst ${node.name} = $hecate.import('${node.from}').default;\n`
@@ -243,6 +255,10 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             }
 
             if (node instanceof HImport) {
+                imports[node.from] = {}
+            }
+
+            if (node instanceof HImportAllAs) {
                 imports[node.from] = {}
             }
 

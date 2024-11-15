@@ -67,5 +67,8 @@
     *::-webkit-scrollbar-thumb {
         background-color: rgb(var(--color-body-500));
     }
+}
 
+body {
+  @apply text-body-50;
 }

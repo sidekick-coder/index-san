@@ -11,6 +11,7 @@ import HExportDefaultObjectProcessor from './processors/HExportDefaultObjectProc
 import HImportDefaultProcessor from './processors/HImportDefaultProcessor'
 import HAsyncFunctionProcessor from './processors/HAsyncFunctionProcessor'
 import HImportInlineProcessor from './processors/HImportInlineProcessor'
+import HImportAllAsProcessor from './processors/HImportAllAsProcessor'
 
 export default class HParser extends BaseParser<HNode> {
     constructor() {
@@ -18,6 +19,7 @@ export default class HParser extends BaseParser<HNode> {
 
         this.setProcessors([
 			HExportDefaultObjectProcessor,
+            HImportAllAsProcessor,
             HImportProcessor,
             HImportDefaultProcessor,
             HImportInlineProcessor,

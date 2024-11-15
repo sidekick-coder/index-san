@@ -87,7 +87,7 @@ const className = defineProp<string>('class', {
                 :key="index"
                 :style="f.style"
                 :class="twMerge(
-                    'flex-1 px-5 py-2 bg-body-800 font-bold',
+                    'flex-1 px-5 py-2 font-bold',
                     'border-y border-body-500',
                     f.class
                 )"
