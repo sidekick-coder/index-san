@@ -404,6 +404,8 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
         cache.set(hash, result)
 
+        console.debug(`[hecate] compiled ${basename} in ${result.time}ms`)
+
         return result
 
     }

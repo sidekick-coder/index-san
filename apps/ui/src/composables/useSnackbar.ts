@@ -36,12 +36,12 @@ export function useQuickSnackbar() {
         setTimeout(() => remove(item.id), timeout)
     }
 
-    function error(message: string) {
-        show({ title: message, color: 'danger' })
+    function error(title: string, message?: string) {
+        show({ title, message, color: 'danger' })
     }
 
-    function success(message: string) {
-        show({ title: message, color: 'success' })
+    function success(title: string, message?: string) {
+        show({ title, message, color: 'success' })
     }
 
     return reactive({

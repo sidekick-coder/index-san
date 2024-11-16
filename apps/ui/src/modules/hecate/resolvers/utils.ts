@@ -2,6 +2,8 @@ import { defineImportResolver } from "hecate/composables/defineImportResolver"
 import get from 'lodash/get'
 import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
+import { useRouteQuery } from '@vueuse/router'
+
 
 export const utilsResolver = defineImportResolver({
 	test: (path: string) => path === 'app:utils',
@@ -12,7 +14,8 @@ export const utilsResolver = defineImportResolver({
 			tryCatch,
             debounce,
             throttle,
-            get
+            get,
+            useRouteQuery,
 		} 
 	}
 })

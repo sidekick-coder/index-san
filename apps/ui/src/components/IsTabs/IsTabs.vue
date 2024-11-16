@@ -14,7 +14,7 @@ const model = defineModel<number | string>({
     default: null 
 })
 
-const headerContainerClass = defineProp('headerContainerClass',{
+const headerContainerClass = defineProp<string>('headerContainerClass',{
     type: String,
     default: ''
 })
