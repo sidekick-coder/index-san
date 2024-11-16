@@ -102,15 +102,10 @@ export default class HVariableProcessor extends BaseProcessor<HNode> {
     }
 
     public findName() {
-        const fnKeywordIndex = this.tokens.findIndex((t) => ['const', 'let', 'var'].includes(t.value))
+        const start = this.tokens.findIndex((t) => ['const', 'let', 'var'].includes(t.value))
+        const end = this.tokens.findIndex((t, i) => t.value === '=' && i > start)
 
-        const token = this.tokens.find((t, i) => {
-            if (i <= fnKeywordIndex) return false
-
-            return t.type === 'Word'
-        })
-
-        return token?.value || ''
+        return this.tokens.slice(start + 1, end).map((t) => t.value).join('').trim()
     }
 
     public findValueTokens(){
