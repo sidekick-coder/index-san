@@ -407,7 +407,17 @@ export function createCompiler({ globals, importResolvers, logger, resolvePath: 
 
         cache.set(hash, result)
 
-        console.debug(`[hecate] compiled ${basename} in ${result.time}ms`)
+        let color = 'green'
+
+        if (result.time > 500) {
+            color = 'yellow'
+        }
+
+        if (result.time > 1000) {
+            color = 'red'
+        }
+
+        console.debug( `%c [hecate] compiled ${basename} in ${result.time}ms`, `color: ${color}`)
 
         return result
 

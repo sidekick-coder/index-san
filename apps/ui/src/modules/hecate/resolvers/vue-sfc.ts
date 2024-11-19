@@ -34,6 +34,7 @@ export async function importVueFile(filename: string) {
     })
 
     const template = descriptor.template?.content || ''
+
     const scriptCompited = compileScript(descriptor, {
         id: filename,
     })
@@ -52,6 +53,8 @@ export async function importVueFile(filename: string) {
     })
 
     scriptCode = scriptCode.replace('setup(', 'components: { ' + components.join(', ') + ' },\n  setup(')
+
+
 
     const compiler = createCompiler({
         globals: {
