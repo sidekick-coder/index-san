@@ -55,7 +55,7 @@ function shouldBeVisible(i: number): boolean {
         <is-btn
             v-for="i in total"
             :key="i"
-            :variant="i === page ? 'default' : 'tonal'"
+            :variant="i === page ? 'fill' : 'tonal'"
             :class="shouldBeVisible(i) ? '' : 'hidden'"
             padding="none"
             size="md"

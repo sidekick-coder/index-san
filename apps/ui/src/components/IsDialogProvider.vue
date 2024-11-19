@@ -10,7 +10,7 @@ const dialog = useQuickDialog()
         @update:model-value="d.onCancel()"
     >
         <is-card
-            class="w-72 bg-body-600"
+            class="w-72 bg-body-700"
         >
             <is-card-head>
                 <div>

@@ -9,6 +9,7 @@ import { utilsResolver } from "../resolvers/utils";
 import { dialogResolver } from "../resolvers/dialog";
 import { hecateResolver } from "../resolvers/hecate";
 import { apiResolver } from "../resolvers/api";
+import { vueSfcResolver } from "../resolvers/vue-sfc";
 
 interface Options {
 	extend: HecateCompilerImportResolver[]
@@ -19,6 +20,7 @@ export function useGlobalResolvers(options?: Options) {
 		javascriptResolver,
 		vueResolver,
 		vueRouterResolver,
+        vueSfcResolver,
 		driveResolver,
 		snackbarResolver,
 		hookResolver,

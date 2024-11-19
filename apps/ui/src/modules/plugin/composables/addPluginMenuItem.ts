@@ -20,7 +20,7 @@ export function addPluginMenuItem(payload: AddPayload) {
 
     if (filename) {
         component = defineAsyncComponent(async () => {
-            const fullFilename = resolve('.is/plugins', pluginId, filename)
+            const fullFilename = resolve('/.is/plugins', pluginId, filename)
 
             const fileModule = await importModule(fullFilename)
 

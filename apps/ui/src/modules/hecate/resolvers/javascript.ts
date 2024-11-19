@@ -1,6 +1,5 @@
 import { createCompiler, type HecateCompilerImportResolver } from "hecate/composables/createCompiler";
 import { useGlobalResolvers } from "../composables/global-resolvers";
-import { useRelativeResolvers } from "./relative";
 
 export const javascriptResolver: HecateCompilerImportResolver = {
     test: (key) => key.startsWith('/') && key.endsWith('.js'),
@@ -34,8 +33,22 @@ export async function importJavascriptFile(filename: string) {
         },
         importResolvers: [
             ...useGlobalResolvers(),
-            ...useRelativeResolvers(filename)
-        ]
+        ],
+
+        resolvePath: path => {
+            const options = ['./', '../']
+
+            if (!options.some(option => path.startsWith(option))) return path
+
+            const folder = dirname(filename)
+
+            const resolved = resolve(folder, path)
+
+            if (resolved.startsWith('/')) return resolved
+
+            return '/' + resolved 
+        }
+
     });
 
     const result = await compiler.compile(text, {

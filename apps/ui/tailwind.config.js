@@ -25,6 +25,9 @@ module.exports = {
 			railway: ['Railway', 'sans-serif'],
 		},
 		extend: {
+            height: {
+                inherit: 'inherit',
+            },
 			colors: {
 				primary: {
 					50: 'rgb(var(--color-primary-50) / <alpha-value>)',

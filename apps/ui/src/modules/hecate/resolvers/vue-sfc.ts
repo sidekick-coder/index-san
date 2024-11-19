@@ -2,16 +2,10 @@
 import { defineImportResolver } from 'hecate/composables/defineImportResolver';
 import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc'
 import { createCompiler } from 'hecate/composables/createCompiler';
-import { useRelativeResolvers } from './relative';
-
-import HVariable from 'hecate/nodes/HVariable';
-import HFunction from 'hecate/nodes/HFunction';
-import HAsyncFunction from 'hecate/nodes/HAsyncFunction';
-import HImport from 'hecate/nodes/HImport';
-import HImportDefault from 'hecate/nodes/HImportDefault';
+import { resolvePath } from 'drive-fsa/composables/resolvePath';
 
 export const vueSfcResolver = defineImportResolver({
-    test: (path: string) => path.endsWith('.vue'),
+    test: (path: string) => path.startsWith('/') && path.endsWith('.vue'),
     resolve: async (key) => {
         return importVueFile(key)
     }
@@ -66,8 +60,20 @@ export async function importVueFile(filename: string) {
         },
         importResolvers: [
             ...useGlobalResolvers(),
-            ...useRelativeResolvers(filename),
-        ]
+        ],
+        resolvePath: path => {
+            const options = ['./', '../']
+
+            if (!options.some(option => path.startsWith(option))) return path
+
+            const folder = dirname(filename)
+
+            const resolved = resolve(folder, path)
+
+            if (resolved.startsWith('/')) return resolved
+
+            return '/' + resolved 
+        }
     });
 
     const { error, exports } = await compiler.compile(scriptCode, {

@@ -29,6 +29,7 @@ export interface HecateCompilerOptions {
     globals?: Record<string, any>,
     importResolvers: HecateCompilerImportResolver[]
     logger?: HecateCompilerLogger
+    resolvePath?: (key: string) => string
 }
 
 export interface HecateCompilerTransformFn {
@@ -39,7 +40,9 @@ const AsyncFunction = Object.getPrototypeOf(async function() { }).constructor
 
 const cache = new Map<string, any>()
 
-export function createCompiler({ globals, importResolvers, logger }: HecateCompilerOptions) {
+export function createCompiler({ globals, importResolvers, logger, resolvePath: _resolvePath }: HecateCompilerOptions) {
+
+    const resolvePath = _resolvePath || ((key: string) => key)
 
     const parser = new HParser()
 
@@ -80,7 +83,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
         })
 
         if (result.length > 2000) {
-            console.log('length', result.length, result[0])
+            console.error('length', result.length, result[0])
             throw new Error('Too many nodes')
         }
 
@@ -173,7 +176,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             if (node instanceof HImport) {
                 const properties = node.properties.map(p => p.alias ? `${p.name}: ${p.alias}` : p.name).join(', ')
 
-                const replace = `\nconst { ${properties} } = $hecate.import('${node.from}');\n`
+                const replace = `\nconst { ${properties} } = $hecate.import('${resolvePath(node.from)}');\n`
 
                 const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
@@ -181,7 +184,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             }
 
             if (node instanceof HImportAllAs) {
-                const replace = `\nconst ${node.name} = $hecate.import('${node.from}');\n`
+                const replace = `\nconst ${node.name} = $hecate.import('${resolvePath(node.from)}');\n`
 
                 const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
@@ -190,7 +193,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
 
 
             if (node instanceof HImportDefault) {
-                const replace = `\nconst ${node.name} = $hecate.import('${node.from}').default;\n`
+                const replace = `\nconst ${node.name} = $hecate.import('${resolvePath(node.from)}').default;\n`
 
                 const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
@@ -198,7 +201,7 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             }
 
             if (node instanceof HImportInline) {
-                const replace = `$hecate.lazyImport('${node.from}');`
+                const replace = `$hecate.lazyImport('${resolvePath(node.from)}')`
 
                 const newCode = code.slice(0, node.start) + replace + code.slice(node.end + 1)
 
@@ -255,15 +258,15 @@ export function createCompiler({ globals, importResolvers, logger }: HecateCompi
             }
 
             if (node instanceof HImport) {
-                imports[node.from] = {}
+                imports[resolvePath(node.from)] = {}
             }
 
             if (node instanceof HImportAllAs) {
-                imports[node.from] = {}
+                imports[resolvePath(node.from)] = {}
             }
 
             if (node instanceof HImportDefault) {
-                imports[node.from] = {}
+                imports[resolvePath(node.from)] = {}
             }
         }
 

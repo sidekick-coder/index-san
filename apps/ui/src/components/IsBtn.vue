@@ -51,10 +51,24 @@ function setTextColor() {
     classMap.value.set('color', option)
 }
 
+function setTonalColor() {
+    const options: Record<typeof color.value, string> = {
+        'primary': 'bg-primary-300/25 text-primary-100 hover:bg-primary-300/75 hover:text-body-0',
+        'danger': 'bg-danger-100 text-danger-100 hover:bg-danger-200',
+        'success': 'bg-success-100 text-success-100 hover:bg-success-200',
+        'warning': 'bg-warning-100 text-warning-100 hover:bg-warning-200',
+        'body-500': 'bg-body-500 text-body-0 hover:bg-body-400',
+    }
+
+    const colorValue = options[color.value]
+
+    classMap.value.set('color', colorValue || '')
+}
 function setVariant() {
     const options = {
         text: setTextColor,
         fill: setFillColor,
+        tonal: setTonalColor,
     }
 
     const option = options[variant.value]
