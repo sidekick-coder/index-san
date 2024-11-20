@@ -109,7 +109,6 @@ const disabled = defineProp<boolean>('disabled', {
                 :model-value="displayValue"
                 :class="twMerge('cursor-pointer', className)"
                 :disabled="disabled"
-                readonly
                 v-bind="merge({}, $attrs, menuProps.attrs)"
             >
                 <template #default>

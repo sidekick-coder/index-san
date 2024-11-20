@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import xor from 'lodash/xor'
 
-const model = defineModel({
+const model = defineModel<any>({
     type: [Boolean, String, Number] as unknown as PropType<boolean | string | number>,
     default: false,
 })
@@ -37,6 +37,8 @@ const loading = defineProp('loading', {
     type: Boolean
 })
 
+const emit = defineEmits(['change'])
+
 const isSelected = computed(() => {
     if (itemValue.value && modelMultiple.value.includes(itemValue.value)) {
         return true
@@ -55,6 +57,8 @@ function onClick() {
     model.value = isSelected.value ? negativeValue.value : positiveValue.value
 
     modelMultiple.value = xor(modelMultiple.value, [itemValue.value])
+
+    emit('change', model.value)
 }
 
 // size
@@ -84,7 +88,7 @@ watch(size, setSize, { immediate: true })
 </script>
 <template>
     <label
-        class="flex cursor-pointer items-center gap-x-2"
+        class="flex cursor-pointer items-center gap-x-2 focus:outline-none group"
         :class="[loading ? 'opacity-75' : '', label ? 'w-full' : '']"
         tabindex="0"
         @click.prevent="onClick"
@@ -96,6 +100,7 @@ watch(size, setSize, { immediate: true })
             v-else
             :name="isSelected ? 'mdi:checkbox-marked' : 'mdi:checkbox-blank-outline'"
             :class="[isSelected ? 'text-body-0' : 'text-body-100', iconClasses]"
+            class="group-focus:ring-2 rounded"
         />
 
         <slot

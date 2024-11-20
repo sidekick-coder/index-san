@@ -10,7 +10,7 @@ const classes = computed(() => {
     return twMerge(Array.from(classMap.value.values()).join(' '), className.value)
 })
 
-classMap.value.set('general', 'inline-flex items-center justify-center relative')
+classMap.value.set('general', 'inline-flex items-center justify-center relative focus:outline-none transition-colors duration-200')
 
 // color
 const variant = defineProp<'text' | 'fill'>('variant', {
@@ -43,7 +43,7 @@ function setTextColor() {
         danger: 'hover:bg-danger-400/50',
         success: 'hover:bg-success-400/50',
         warning: 'hover:bg-warning-400/50',
-        'body-500': 'hover:bg-body-500/50',
+        'body-500': 'hover:bg-body-500/50 focus:bg-body-500/50',
     }
 
     const option = options[color.value]
