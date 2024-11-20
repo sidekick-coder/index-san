@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "devDependencies": {
-    "@vue-macros/define-prop": "^0.3.3",
     "vite": "^5.2.4",
-    "vitest": "^1.4.0",
     "vue": "^3.4.21"
   },
   "scripts": {
@@ -17,7 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "@language-kit/markdown": "^1.8.0",
-    "@vueuse/core": "^10.9.0",
     "hecate": "^1.0.0"
   }
 }
