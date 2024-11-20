@@ -36,7 +36,12 @@ export function createWorkspaceDrive(handle: FileSystemDirectoryHandle) {
         return fsaDrive.read(path)
     }
 
-    const write: WorkspaceDrive['write'] = async (path, content) => {
+    const write: WorkspaceDrive['write'] = async (path, content, options) => {
+
+        if (options?.recursive && !(await get(dirname(path)))) {
+            await mkdir(dirname(path), { recursive: true })
+        }
+
         await fsaDrive.write(path, content)
 
         emitHook('drive:write', { path, content })
@@ -54,7 +59,11 @@ export function createWorkspaceDrive(handle: FileSystemDirectoryHandle) {
         emitHook('drive:move', { from, to })
     }
 
-    const mkdir: WorkspaceDrive['mkdir'] = async (path) => {
+    const mkdir: WorkspaceDrive['mkdir'] = async (path, options) => {
+        if (options?.recursive && !(await get(dirname(path)))) {
+            await mkdir(dirname(path), { recursive: true })
+        }
+
         await fsaDrive.mkdir(path)
 
         emitHook('drive:mkdir', { path })

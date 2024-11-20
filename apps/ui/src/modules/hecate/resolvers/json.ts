@@ -27,13 +27,15 @@ export async function importJson(filename: string) {
     return JSON.parse(text)
 }
 
-export async function writeJson(filename: string, data: any) {
+export async function writeJson(filename: string, data: any, options?: any) {
     const drive = useWorkspaceDrive()
 
     const text = JSON.stringify(data, null, 2)
 
     const contents = encode(text)
 
-    await drive.write(filename, contents)
+    await drive.write(filename, contents, {
+        recursive: true,
+    })
 }
 

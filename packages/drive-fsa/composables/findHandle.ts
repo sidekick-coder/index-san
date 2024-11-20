@@ -44,7 +44,6 @@ export async function findHandle(rootHandle: FileSystemDirectoryHandle, path: st
 		return currentHandle as FileSystemHandle
 
 	} catch (error) {
-		console.error(`[drive-fsa] Error on finding handle for "${path}"\n`, error)
 		return null
 	}
 }

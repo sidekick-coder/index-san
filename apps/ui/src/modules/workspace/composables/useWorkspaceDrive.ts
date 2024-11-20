@@ -4,18 +4,18 @@ export interface DriveEntry {
 	type: 'file' | 'directory'
 }
 
-export interface DriveListOptions {
-	recursive?: boolean
+export interface CommonOptions {
+    recursive?: boolean
 }
 
 export interface WorkspaceDrive {
 	get: (path: string) => Promise<DriveEntry | null>
-	list: (path: string, options?: DriveListOptions) => Promise<DriveEntry[]>
+	list: (path: string, options?: CommonOptions) => Promise<DriveEntry[]>
 	read: (path: string) => Promise<Uint8Array | null>
-	write: (path: string, content: any) => Promise<void>
+	write: (path: string, content: any, options?: CommonOptions) => Promise<void>
 	destroy: (path: string) => Promise<void>
 	move: (from: string, to: string) => Promise<void>
-	mkdir: (path: string) => Promise<void>
+	mkdir: (path: string, options?: CommonOptions) => Promise<void>
 }
 
 const drive = ref<WorkspaceDrive>()
