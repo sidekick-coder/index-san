@@ -47,6 +47,9 @@ export default defineConfig({
                 'pwa/logo-180.svg',
                 'pwa/screenshot-01.png'
             ],
+            workbox: {
+                maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+            },
             devOptions: {
                 // enabled: true,
             },
