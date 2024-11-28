@@ -9,14 +9,14 @@ A simple wrapper to use browser File System Access API in a more convenient way.
 npm install drive-fsa
 ```
 
-## Drive
+## createDrive
 
 ```ts
 import { createDrive } from 'drive-fsa';
 
 const handle = await window.showDirectoryPicker();
 
-const drive = new createDrive(handle);
+const drive = createDrive(handle);
 
 // list all files in the root directory
 const entries = await drive.list('/');
@@ -30,7 +30,9 @@ const entry = await drive.get('/file.txt');
 // read file, returns a Uint8Array
 const data = await drive.read('/file.txt');
 
-// write to file, needs to by a Uint8Array
+const text = new TextDecoder().decode(data);
+
+// write to file, needs to be a Uint8Array
 await drive.write('/file.txt', new TextEncoder().encode('Hello, World!'));
 
 // delete file 

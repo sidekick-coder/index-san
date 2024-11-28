@@ -1,6 +1,6 @@
 {
     "name": "drive-fsa",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "Wrapper for the File System Access API",
     "homepage": "https://github.com/sidekick-coder/index-san",
     "repository": {
@@ -22,7 +22,13 @@
     "devDependencies": {
         "@types/wicg-file-system-access": "^2023.10.5"
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
+    "keywords": [
+        "fsa",
+        "fs",
+        "file system access api",
+        "browser",
+        "wrapper"
+    ],
+    "author": "henrique <henrique@sidekick-coder.com>",
+    "license": "MIT"
 }
