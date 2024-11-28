@@ -1,6 +1,10 @@
 import { findHandle } from "./findHandle"
 
-export async function readEntry(rootHandle: FileSystemDirectoryHandle, path: string) {
+interface Options {
+    responseType: 'arraybuffer' | 'text' | 'json'
+}
+
+export async function readEntry(rootHandle: FileSystemDirectoryHandle, path: string, options?: Options) {
     const handle = await findHandle(rootHandle, path)
 
     if (!handle) {
@@ -15,5 +19,15 @@ export async function readEntry(rootHandle: FileSystemDirectoryHandle, path: str
 
     const contents = await file.arrayBuffer()
 
-    return new Uint8Array(contents)
+    const buffer = new Uint8Array(contents)
+
+    if (options?.responseType === 'text') {
+        return new TextDecoder().decode(buffer)
+    }
+
+    if (options?.responseType === 'json') {
+        return JSON.parse(new TextDecoder().decode(buffer))
+    }
+
+    return buffer 
 }
