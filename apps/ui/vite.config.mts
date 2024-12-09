@@ -10,7 +10,7 @@ import DefineEmit from '@vue-macros/define-emit/vite'
 
 export default defineConfig({
     optimizeDeps: {
-        exclude: ['hephaestus']
+        exclude: ['hephaestus', 'drive-fsa']
     },
     resolve: {
         alias: {
@@ -48,7 +48,7 @@ export default defineConfig({
                 'pwa/screenshot-01.png'
             ],
             workbox: {
-                maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 5MB
+                maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // 10MB
             },
             devOptions: {
                 // enabled: true,
