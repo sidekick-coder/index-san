@@ -2,7 +2,6 @@
 import { defineImportResolver } from 'hecate/composables/defineImportResolver';
 import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc'
 import { createCompiler } from 'hecate/composables/createCompiler';
-import { resolvePath } from 'drive-fsa/composables/resolvePath';
 
 export const vueSfcResolver = defineImportResolver({
     test: (path: string) => path.startsWith('/') && path.endsWith('.vue'),

@@ -18,6 +18,7 @@ export const utilsResolver = defineImportResolver({
             get,
             set,
             useRouteQuery,
+            copy
 		} 
 	}
 })

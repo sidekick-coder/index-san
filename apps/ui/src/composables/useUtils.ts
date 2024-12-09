@@ -6,3 +6,7 @@ export async function tryCatch<T extends Function>(tryer: T) {
     return [null, error];
   }
 };
+
+export function copy<T>(value: T) {
+  return JSON.parse(JSON.stringify(value));
+}

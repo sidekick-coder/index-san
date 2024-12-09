@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import DirectoryEntryToolbar from '@/modules/directory/components/DirectoryEntryToolbar.vue';
-import { findHandle } from 'drive-fsa/composables/findHandle';
+import { findHandle } from 'drive-fsa';
 
 // general
 const path = defineProp<string>('path', {

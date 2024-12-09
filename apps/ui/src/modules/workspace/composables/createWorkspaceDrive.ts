@@ -1,4 +1,4 @@
-import { createDrive } from "drive-fsa/composables/createDrive";
+import { createDrive } from "drive-fsa";
 import type { WorkspaceDrive } from "./useWorkspaceDrive";
 
 export function createWorkspaceDrive(handle: FileSystemDirectoryHandle) {
