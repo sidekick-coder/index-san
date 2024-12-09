@@ -1,4 +1,3 @@
-import { importJavascriptFile } from "@/modules/hecate/resolvers/javascript"
 
 interface AddPayload {
 	pluginId: string
@@ -22,7 +21,7 @@ export function usePluginComponents(){
 
 export function addPluginComponent(payload: AddPayload){
     const component = defineAsyncComponent(async () => {
-	    const componentModule = await importJavascriptFile(resolve('.is/plugins', payload.pluginId, payload.filename))
+	    const componentModule = await importModule(resolve('.is/plugins', payload.pluginId, payload.filename))
 
         return componentModule?.default
     })

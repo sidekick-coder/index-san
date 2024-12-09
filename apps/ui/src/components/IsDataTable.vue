@@ -9,6 +9,11 @@ const fields = defineProp<F[]>('fields', {
     default: () => [],
 })
 
+const fieldClass = defineProp<string>('fieldClass', {
+    type: String,
+    default: null,
+})
+
 const itemFieldClass = defineProp<string>('itemFieldClass', {
     type: String,
     default: null,
@@ -89,10 +94,16 @@ const className = defineProp<string>('class', {
                 :class="twMerge(
                     'flex-1 px-5 py-2 font-bold',
                     'border-y border-body-500',
+                    fieldClass,
                     f.class
                 )"
             >
-                {{ f.label }}
+                <slot
+                    name="field"
+                    :field="f"
+                >
+                    {{ f.label }}
+                </slot>
             </div>
         </div>
 
@@ -122,7 +133,7 @@ const className = defineProp<string>('class', {
                 :class="twMerge('flex flex-col md:flex-row border-b border-body-500 min-h-10', findItemClass(item))"
             >
                 <div
-                    v-for="field in fields"
+                    v-for="(field, fieldIndex) in fields"
                     :key="`${findItemKey(item)}-${field.name}`"
                     :class="twMerge(
                         'flex-1 flex px-5 py-2',
@@ -136,6 +147,7 @@ const className = defineProp<string>('class', {
                             :name="`item-${field.name}`"
                             :item="item"
                             :field="field"
+                            :field-index="fieldIndex"
                             :value="findItemValue(item, field)"
                         >
                             {{ findItemValue(item, field) }}

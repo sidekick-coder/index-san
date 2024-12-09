@@ -11,14 +11,15 @@ module.exports = {
 	safelist: [
 		{ pattern: /(flex|block|relative|absolute)/},
 		{ pattern: /(shrink|rounded)-./},
-		{ pattern: /(text|bg)-./, variants: ['hover', 'focus'] },
+		{ pattern: /(text|bg)-./, variants: ['hover', 'focus', 'focus-within', 'active', 'disabled', 'group-hover'] },
 		{ pattern: /(p|pl|pt|pr|pb|py|px)-./ },
 		{ pattern: /(m|ml|mt|mr|mb)-./ },
 		{ pattern: /(w|max-w|h|max-h|min-w|min-h)-./ },
+		{ pattern: /(size)-./ },
 		{ pattern: /rotate-./, variants: ['hover'] },
 		{ pattern: /opacity-./, variants: ['hover', 'group-hover'] },
-		{ pattern: /border-(t|l|r|b)/ },
-		{ pattern: /border-(t|l|r|b)-./ },
+		{ pattern: /border-(t|l|r|b|x|y)/ },
+		{ pattern: /border-(t|l|r|b|x|y)-./ },
 	],
 	theme: {
 		fontFamily: {

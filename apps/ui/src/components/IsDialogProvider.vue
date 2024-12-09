@@ -41,6 +41,7 @@ const dialog = useQuickDialog()
                     <is-btn
                         v-if="!d.hideOk"
                         class="flex-1"
+                        autofocus
                         @click="d.onOk()"
                     >
                         {{ d.okText || 'Ok' }}

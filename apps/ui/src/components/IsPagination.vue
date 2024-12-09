@@ -9,6 +9,16 @@ const page = defineModel({
     default: 1,
 })
 
+const size = defineProp<string>('size', {
+    type: String,
+    default: 'md',
+})
+
+const color = defineProp('color', {
+    type: String,
+    default: null,
+})
+
 function shouldBeVisible(i: number): boolean {
     if (total.value <= 5) {
         return true
@@ -33,16 +43,16 @@ function shouldBeVisible(i: number): boolean {
     <div class="flex w-full justify-center gap-x-2">
         <template v-if="!shouldBeVisible(1)">
             <is-btn
-                padding="none"
-                size="md"
+                :size
+                :color
                 variant="tonal"
                 @click="page = 1"
             >
                 {{ 1 }}
             </is-btn>
             <is-btn
-                padding="none"
-                size="md"
+                :size
+                :color
                 variant="tonal"
                 disabled
                 class="hidden md:block"
@@ -57,9 +67,8 @@ function shouldBeVisible(i: number): boolean {
             :key="i"
             :variant="i === page ? 'fill' : 'tonal'"
             :class="shouldBeVisible(i) ? '' : 'hidden'"
-            padding="none"
-            size="md"
-            color="primary"
+            :size
+            :color
             @click="page = i"
         >
             {{ i }}
@@ -68,7 +77,8 @@ function shouldBeVisible(i: number): boolean {
         <template v-if="!shouldBeVisible(total)">
             <is-btn
                 padding="none"
-                size="md"
+                :size
+                :color
                 variant="tonal"
                 disabled
                 class="hidden md:block"
@@ -79,7 +89,8 @@ function shouldBeVisible(i: number): boolean {
 
             <is-btn
                 padding="none"
-                size="md"
+                :size
+                :color
                 variant="tonal"
                 @click="page = total"
             >
