@@ -7,7 +7,7 @@
         "lint": "npm -w ui run lint",
         "test": "echo \"Error: no test specified\"",
         "dev": "npm -w @index-san/electron run dev",
-        "build": "node scripts/build.js",
+        "build": "npm -w drive-fsa run build && npm -w ui run build",
         "make:changelog": "node scripts/changelog",
         "changelogen": "changelogen",
         "prepare": "husky install"
